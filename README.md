@@ -1,3 +1,3 @@
 # friendly-lamp
-js and python source,
-hello,this is my first github time
+js and python and C++ source,
+hello,work hard everyday
