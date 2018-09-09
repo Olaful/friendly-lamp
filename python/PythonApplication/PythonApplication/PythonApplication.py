@@ -6,6 +6,7 @@ listNum.sort()
 print(time.time())
 print(listNum)
 
+# 注意代码缩放的重要性，同级别的放在同一列，语法要求
 nLen = len(listNum)
 i = 0
 j = 0
@@ -21,3 +22,182 @@ while i < nLen:
     i = i + 1
 print(time.time())
 print(listNum)
+
+def myFunc():
+    print("hello, myFunc")
+
+# 表示以下定义的类都是新式类，如没有，则class class():为新式类，class class:为老式类
+# class创建的类可以理解为也是一种对象，所以也可以在函数中建立
+# type('myclass', (parenclass), {'name':setValua})可以创建父类为parenclass的类，并具有属性setValue()
+# 所以type其实就是所有类的父类，此外，python中的整数，字符串，函数，类都是对象，所以如"hello".count('e')
+# 的使用是正确的，这些对象都是由type创建的
+# 也可以指定元类__metaclass__=mytype，mytype从type继承而来，可以在其中增加一些属性，这样通过mytype创建的类
+# 也就拥有了这些属性，可以单独在某个class中定义__metaclass__属性，这样这个属性就只影响到这个类
+__metaclass__=type
+# myClass中代码被定义在类命名空间内
+class myclass:
+    # 构造函数
+    def __init__(seft):
+        seft.nMember = 0
+    # 析构函数
+    def __del__(): pass
+    # 方法中有seft参数，而函数中没有，这就是方法与函数的区别，seft会绑定到实例上
+    def setValue(seft):
+        pass
+    def getValue(seft):
+        return seft.name
+    # __双下划线开头的方法外部无法访问
+    def  __privateFunc(seft):
+        print("this is private func")
+        type("type")
+    def getSomeMsg(seft):
+        seft. __privateFunc()
+    # 单下划线开头的函数不会被import导入
+    def  _noImportFunc():
+        print("this func can't imported")
+
+x = myclass()
+x.name = 'hello'
+print (x.name)
+print (x.getValue())
+print (myclass.getValue(x))
+
+y = myFunc
+y()
+z = x.getValue
+print(z())
+
+# x._privateFunc()
+x.getSomeMsg()
+# 但通过以下这种隐秘的方式却是可以访问私有方法
+x._myclass__privateFunc()
+
+# 特性的改变只会体现在实例的成员上面
+x.nMember = 1
+x1 = myclass()
+print(repr(x.nMember)+";"+repr(x1.nMember))
+
+# 指定myClass为超类
+class subClass(myclass):
+    # 新式类构造函数中调用super方法，可以使用超类中的特性__init__
+    def __init__(seft):
+        super(myclass, seft).__init__()
+    
+    # 直接调用父类的构造函数初始化，支持老式类
+    #def __init__():
+    #    myclass.__init__()
+    # 重写超类中的方法
+    def setValue(seft):
+        ""
+x2 = subClass()
+# 使用超类中的方法
+print(x2.setValue())
+# 查看是否为超类
+print(issubclass(subClass, myclass))
+# 查看所有基类
+print(subClass.__bases__)
+# 查看所属的直接类
+print(subClass.__class__)
+print(isinstance(x2, myclass))
+
+class myClass1:
+    def talk():
+        ""
+    def setValue():
+        ""
+
+# 同时继承于两个类
+class ssubClass(myclass, myClass1):
+    ""
+x3 = ssubClass()
+# 使用的是第一个继承的myclass类中方法
+x3.setValue()
+# 检查对象是否有指定特性
+print(hasattr(x3, 'setValue'))
+# 获取特性
+print(getattr(x3, "setValue", ''))
+# 设置对象的特性并赋值
+setattr(x3, 'name', 'Mike')
+# 查看对象有哪些特性
+print(x3.__dict__)
+
+# 抛出了异常类的实例
+#raise Exception
+
+# 导入异常模块， 找不到模块。。。内建异常有SyntaxError等
+#import exceptions
+
+# 自定义继承于Exception的异常类
+class myException(Exception):
+    pass
+
+class myclass3:
+    def func():
+        # 发生异常并自定义捕捉异常类型
+        try :
+            1/0
+       # 捕捉并打印异常对象，如果没有捕捉异常，则异常传播至函数被调用的地方
+       # 如果都没有捕捉异常的地方，则会传播至全局区域，这时如果也没有捕捉，
+       # 则程序中止，相比if判断，效率高些，因为少了判断条件中执行的语句
+        except (ZeroDivisionError) as e:
+            print("catch the Exeption")
+            print(e)
+    
+            # 重新抛出异常
+            raise
+        except TypeError: pass
+
+        # 捕捉两种类型的异常
+        except(ZeroDivisionError, TypeError): pass
+
+        # 捕捉所有Exception异常,但不建议那么做，无法预知具体的异常错误
+        except Exception as e: pass
+
+        # 如果没捕捉到异常，则可以执行一些自定义操作
+        else: pass
+
+        # 不管是否抛出异常，都会执行finally中的语句，但在finally中引发的异常却是无法被捕捉到的
+        finally: pass
+
+# myclass3.func()
+
+def checkIndex(key):
+    if not isinstance(key, (int)): raise TypeError
+    if key < 0 : raise IndexError
+
+# __双下划线开头的为特殊函数
+class myList:
+    def __init__(self, start = 0, step = 1):
+        self.start = start
+        self.step = step
+        self.changed = {}
+    
+    def __getitem__(seft, key):
+        checkIndex(key)
+
+        try: return seft.changed[key]
+        except KeyError:
+            return seft.start + key*seft.step
+    
+    def __setitem__(seft, key, value):
+        checkIndex(key)
+
+        seft.changed[key] = value
+
+s = myList(1,2)
+
+# s[4]调用了类中的特殊函数__getitem__
+print(s[4])
+
+# 继承list类并重写__init__与__getitem__方法，带有计数功能
+class myList2(list):
+    def __init__(seft, *args):
+        super(myList2, seft).__init__(*args)
+        seft.counter = 0
+    def __getitem__(seft, index):
+        seft.counter += 1
+        return super(myList2, seft).__getitem__(index)
+
+# 这样对象的用法就如同调用普通的函数一样，如x = list("hello")
+x = myList2("hello")
+print(x)
