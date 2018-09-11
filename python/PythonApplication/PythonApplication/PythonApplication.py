@@ -101,10 +101,67 @@ print(subClass.__class__)
 print(isinstance(x2, myclass))
 
 class myClass1:
+    def __init__(self):
+        self.width = 0
+        self.height = 0
     def talk():
         ""
-    def setValue():
-        ""
+    def setValue(self, size):
+        # 这种赋值方式为元组赋值，与width, height单独赋值是不一样的
+        self.width, self.height = size
+    def getValue(self):
+        return self.width, self.height
+
+    # property如果没有参数，那么size将不可以读写，这是隐藏方法的一种方式
+    size = property(getValue, setValue)
+
+x = myClass1()
+x.width = 1
+x.height = 2
+print("get size:")
+
+# 其实是调用property对象中的getValue函数
+print(x.size)
+
+# 其实是调用property对象中的setValue函数
+print("set size:")
+x.size = 3, 4
+print(x.width)
+
+class myClass11:
+    def __init__(self):
+        self.width = 0
+        self.height = 0
+
+    # 特殊方法中实现特性的赋值，所以类似于x.name = value
+    # 这样的特性操作就得先经过__setattr__方法，而不是直接的赋值
+    def __setattr__(self, name, value):
+        if name == 'size':
+            self.width, self.height = value
+        else:
+            # 如果使用self.name = value,将会再次调用__setattr__，这样会
+            # 出现死循环
+            self.__dict__[name] = value
+
+    # 这个也会拦截对象的__dict__特性，这时可以使用super函数使用超类
+    # 中的__getattr__方法
+    def __getattr__(self, name):
+        if name == 'size':
+            return self.width, self.height
+        else:
+            raise AttributeError
+
+    def __delattr__(self, name): pass
+
+x = myClass11()
+# 其实是调用特殊方法__setattr__
+print("set size by __setattr__:")
+x.size = 3, 4
+print(x.width)
+
+print("get size by __getattr__:")
+# 其实是调用特殊方法__getattr__
+print(x.size)
 
 # 同时继承于两个类
 class ssubClass(myclass, myClass1):
@@ -201,3 +258,18 @@ class myList2(list):
 # 这样对象的用法就如同调用普通的函数一样，如x = list("hello")
 x = myList2("hello")
 print(x)
+
+class myClass4:
+    # 指定该方法为静态方法，可以直接使用类调用
+    @staticmethod
+    def staticFunc(): print("this is a static func")
+    
+    # 指定该方法为类方法，且cls参数会自动绑定到当前类上，
+    # 所以可以直接只用类调用，当然也可以使用类实例调用
+    @classmethod
+    def classFunc(cls): print("this is a class func")
+
+myClass4.staticFunc()
+myClass4.classFunc()
+x = myClass4()
+x.staticFunc()
