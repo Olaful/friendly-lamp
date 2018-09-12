@@ -135,6 +135,7 @@ class myClass11:
 
     # 特殊方法中实现特性的赋值，所以类似于x.name = value
     # 这样的特性操作就得先经过__setattr__方法，而不是直接的赋值
+    # 特殊方法就是在特定操作下自动被调用的方法，如赋值操作
     def __setattr__(self, name, value):
         if name == 'size':
             self.width, self.height = value
@@ -273,3 +274,67 @@ myClass4.staticFunc()
 myClass4.classFunc()
 x = myClass4()
 x.staticFunc()
+
+# 由于对象中实现了__next__与__iter__方法，所以
+# 该对象可像列表那样在for循环中迭代使用，该对象
+# 也可称为迭代器，当__next__无返回值时，将引发StopIteration异常
+# 迭代器就是使用__next__函数时才会计算值并返回，这就是迭代器的优势，
+# 只有迭代时才会计算生成值
+class myIter:
+    def __init__(self):
+        self.a = 0
+        self.b = 1
+    def __next__(self):
+        self.a, self.b = self.b, self.a + self.b
+        return self.a
+    def __iter__(self):
+        return self
+
+iter1 = myIter()
+
+# in iter时，对象实例调用了__iter__方法，返回对象实例本身
+# 继而再调用__next__函数，把返回的结果赋值于i
+for i in iter1:
+    if i > 100:
+        print(i)
+        break
+
+# 获取list对象的迭代器
+iter2 = iter([1, 2, 3])
+next(iter2)
+
+class myIter2:
+    value = 0    
+    def __next__(self):
+        self.value += 1
+        if self.value > 10: raise StopIteration
+        return self.value
+        return self.value
+    def __iter__(self):
+        return self
+
+iter3 = myIter2()
+
+# list对象的构造函数可以将迭代器转换成列表
+print(list(iter3))
+
+nested = [[1,2], [3,4], [5,6,7]]
+
+# 函数中包含有yield语句的则该函数称为生成器，
+# yield语句会使函数冻结暂停，等待被激活后从暂停
+# 点开始继续执行
+def myGenerator(listParam):
+    for sublist in listParam:
+        for element in sublist:
+            yield element
+
+# 每一次in进入，都从暂停点进入
+for element in myGenerator(nested):
+    print(element)
+
+# 生成器推导式，返回一个生成器
+creator = (i for i in range(5, 10))
+print(next(creator))
+
+# 可以这样使用生成器，无需多一对圆括号
+sum(i for i in range(5, 10))
