@@ -321,14 +321,15 @@ print(list(iter3))
 nested = [[1,2], [3,4], [5,6,7]]
 
 # 函数中包含有yield语句的则该函数称为生成器，
-# yield语句会使函数冻结暂停，等待被激活后从暂停
+# yield语句会使函数冻结暂停，返回一个迭代器等待被激活后从暂停
 # 点开始继续执行
 def myGenerator(listParam):
     for sublist in listParam:
         for element in sublist:
+            # 第一次被挂起后，再次激活运行后yield才会返回值，其实是外部通过
+            # send方法发送给生成器的值
             yield element
 
-# 每一次in进入，都从暂停点进入
 for element in myGenerator(nested):
     print(element)
 
@@ -338,3 +339,54 @@ print(next(creator))
 
 # 可以这样使用生成器，无需多一对圆括号
 sum(i for i in range(5, 10))
+
+nested = [[1,2], [3,4,[33,44]], [5,6,7]]
+
+# 使用递归生成器能处理嵌套层数不固定的序列，但要是迭代元素为
+# 字符串时，将导致无限递归，因为字符串就是队列，for i in永远不会引发
+# 异常
+def myGenerator2(listParam):
+    try:
+        for sublist in listParam:
+            # 试图迭代一个非序列对象时，引发异常，捕捉并产生元素
+            for element in myGenerator2(sublist):
+                yield element
+    except TypeError:
+        yield listParam
+
+for element in myGenerator2(nested):
+    print(element)
+
+
+nested = ['h', ['e', 'llo']]
+def myGenerator3(listParam):
+    try:
+        # 迭代字符串时，加入检查机制，如果为字符串，则直接产生元素
+        # 这样不会导致无穷递归
+        try: listParam + ''
+        except TypeError: pass
+        else: raise TypeError
+        for sublist in listParam:
+            # 试图迭代一个非序列对象时，引发异常，捕捉并产生元素 
+            for element in myGenerator3(sublist):
+                yield element
+    except TypeError:
+        yield listParam
+
+for element in myGenerator3(nested):
+    print(element)
+print(list(myGenerator3(nested)))
+
+def myGenerator4(value):
+    while(True):
+        new = (yield value)
+        if new is not None: value = new
+
+x = myGenerator4(1)
+# next方法被调用后，yield返回None
+print(next(x))
+
+# 再次使用时，传给生成器的参数变成了None，
+# send方法会在生成器挂起后发送数据给生成器的yield表达式
+# 激活生成器
+print(x.send('hello'))
