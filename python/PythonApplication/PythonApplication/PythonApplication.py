@@ -1,6 +1,8 @@
 import time
 listNum = [6, 4, 8, 9, 2, 5, 7, 676, 33, 334, 22222]
 
+# -------------------------------------------------------------------------------------------------------------------------------------------------------
+"""
 print(time.time())
 listNum.sort()
 print(time.time())
@@ -412,7 +414,7 @@ def myGenerator4(listParam):
 for element in myGenerator4(nested):
     print(element)
 
-# 4*4棋盘，同行同列同对角线不能放置同一*符号，已知前三个位置，求第四个可能的位置
+# n*n棋盘，同行同列同对角线不能放置同一*符号，已知前n-1位置，求第n个可能的位置
 # ------------
 # |   | * |   |   |
 # ------------
@@ -602,6 +604,9 @@ print(q)
 q.extend([6,7])
 print(q)
 
+"""
+# -------------------------------------------------------------------------------------------------------------------------------------------------------
+
 # 时间模块
 import time
 
@@ -648,7 +653,8 @@ print(a)
 # 从序列中随机返回n个元素
 print(random.sample([1, 1, 2, 2, 3, 3, 4, 5], 2))
 
-# 例子，可以这样来理解，随机抛三枚骰子后，求骰子朝上的面的点的总和
+
+# 例子，可以这样来理解，随机抛三枚骰子后，求骰子朝上的面的点数的总和
 sum = 0
 for i in range(3): sum += random.randrange(6) + 1
 print(sum)
@@ -661,4 +667,6 @@ poker = ['%s%s' % (s, d) for s in shape for d in digital]
 #poker.append('♔ ♕'.split())
 poker.extend('♔ ♕'.split())
 random.shuffle(poker)
-pprint.pprint(poker[:12])
+
+from pprint import pprint
+pprint(poker[:12])
