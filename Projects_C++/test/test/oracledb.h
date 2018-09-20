@@ -12,21 +12,21 @@
 
 #include<string>
 using namespace std;
- 
+
 class DBOper
 {
 public:
-    //初始化数据库操作需要的对象
-    DBOper();
-	DBOper(char *szUserID, char *szPwd);
-    ~DBOper();
+	//初始化数据库操作需要的对象
+	DBOper();
+	DBOper(const char *szUserID, const char *szPwd);
+	~DBOper();
 
-    //连接至数据库
-    bool ConnToDB(char *strConn,char *szUserID, char*szPwd);
- 
-    //数据库操作函数
-    //查询操作删除以及添加
-    _RecordsetPtr ExecuteSql(const string strSql);
+	//连接至数据库
+	bool ConnToDB(const char *strConn, const char *szUserID, const char*szPwd);
+
+	//数据库操作函数
+	//查询操作删除以及添加
+	void ExecuteSql(const string strSql);
 
 	// 开启事务
 	void TransBegin();
@@ -54,59 +54,63 @@ public:
 	// 结果集移动至下一行
 	void MoveNext();
 
+	int RecordCnt();
+
 	// 根据关键字获取对应字段值
 	//template <typename T>
 	//void GetValue(char *szKey, T &result);
-	void GetValue(char *szKey, int &nValue) // 类体实现相当于自动内联了
+	// 类体实现相当于自动内联了
+	void GetValue(const char *szKey, int &nValue)
 	{
 		_variant_t varResult;
 		varResult = m_pRst->GetCollect(_variant_t(szKey));
 		nValue = varResult.intVal;
 	}
-	
-	inline void GetValue(char *szKey, char *szValue) // inline只在当前单元有效,所以不能在CPP文件中实现
+
+	// inline只在当前单元有效,所以不能在CPP文件中实现
+	inline void GetValue(const char *szKey, char *szValue)
 	{
 		_variant_t varResult;
 		varResult = m_pRst->GetCollect(_variant_t(szKey));
 		strcpy(szValue, (LPSTR)(LPCSTR)_bstr_t(varResult));
 	}
-	
-	inline void GetValue(char *szKey, float &fValue)
+
+	inline void GetValue(const char *szKey, float &fValue)
 	{
 		_variant_t varResult;
 		varResult = m_pRst->GetCollect(_variant_t(szKey));
 		fValue = varResult.fltVal;
 	}
-	
-	inline void GetValue(char *szKey, double &dValue)
+
+	inline void GetValue(const char *szKey, double &dValue)
 	{
 		_variant_t varResult;
 		varResult = m_pRst->GetCollect(_variant_t(szKey));
 		dValue = varResult.dblVal;
 	}
-	
-	inline void GetValue(char *szKey, string &strValue)
+
+	inline void GetValue(const char *szKey, string &strValue)
 	{
 		_variant_t varResult;
 		varResult = m_pRst->GetCollect(_variant_t(szKey));
-		strValue = varResult.pcVal;
+		strValue = (LPSTR)(LPCSTR)_bstr_t(varResult);
 	}
- 
+
 private:
 	// 打印连接错误信息
-    void PrintErrorInfo(_com_error &);
- 
+	void PrintErrorInfo(_com_error &);
+
 private:
-    //初始化数据库连接、命令、记录集
-    _ConnectionPtr CreateConnPtr();
-    _CommandPtr CreateCommPtr();
-    //_RecordsetPtr CreateRecsetPtr();
- 
+	//初始化数据库连接、命令、记录集
+	_ConnectionPtr CreateConnPtr();
+	_CommandPtr CreateCommPtr();
+	//_RecordsetPtr CreateRecsetPtr();
+
 private:
-    //数据库连接需要的连接、命令操作对象
-    _ConnectionPtr m_pConnection;
-    _CommandPtr m_pCommand;
-	
+	//数据库连接需要的连接、命令操作对象
+	_ConnectionPtr m_pConnection;
+	_CommandPtr m_pCommand;
+
 private:
 	// 是否已经回滚事务标志
 	char m_cRollbackFlag;
@@ -116,4 +120,21 @@ private:
 
 	// 结果集
 	_RecordsetPtr m_pRst;
+};
+
+class myDbException : public exception
+{
+public:
+	virtual const char* what() const throw()
+	{
+		return szErrorMsg;
+	}
+
+	myDbException(const char* szMsg)
+	{
+		strcpy_s(szErrorMsg, szMsg);
+	}
+
+private:
+	char szErrorMsg[1024];
 };

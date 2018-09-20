@@ -1,316 +1,355 @@
-#include"test.h"
+#include "test.h"
 
+// static成员需定义后才可以使用 // 应该在cpp中定义，因为maintest.cpp与test.cpp中都包含了头文件test.h, maintest.cpp又使用到了test.cpp中的内容， link的时候maintest.cpp
+// 中定义了nNum, 使用到test.cpp文件时，又引用了test.h头文件，又定义了一次nNum, 所以会重定义错误
+int A::nNum = 0;	
 
-	template <typename T>
-	inline T const& Max (T const& a, T const& b) 
-	{ 
-    return a < b ? b:a; 
-	}
-
-//void main()	// main中无return的话编译器会自动在目标文件中加入return 0，不过最好在编码时就使用int main(int argc, char *argv[])
-int main(int argc, char *argv[])
+void B::inner()
 {
-	cout << "welcome" << endl;
-	cout << "参数个数:" << argc << endl;
-
-	for (size_t i = 0; i < argc; i++)
-	{
-		cout << "参数值：" << argv[i] << endl;
-	}
-
-	SYSTEMTIME st;
-	::GetLocalTime(&st);
-	char szTime[32];
-	sprintf_s(szTime, "systemtime: %d/%d/%d %d:%d:%d\n", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
-	cout << szTime << endl;
-
-	char cSwitch = 'b';
-
-	if (cSwitch == 'a')
-	{
-			int i = 39;
-			int j = 20;
-			cout << "Max(i, j): " << Max(i, j) << endl;
-
-			int p4[5] = {1, 2, 3, 4, 5};
-			char *p = "pppp";
-			char p1[5] = "Dddd"; // '\0'结尾，所以最多为4个字符
-			char p2[5] = "dddd";
-			char sz[] = "abcdf";
-			char *szPtr[] = {"you", "me", "him"};
-			unsigned int a = 1;
-			int b = 10;
-
-			cout << "a*(-2):" << a * (-2) << endl;	// -2的补码1.....10, 其中int转换成unsigned int 符号位1被当作数值位
-			cout << "b << 1:" <<  (b<<1 )<< endl;	// 位运算符 b*2^1
-			cout << "b >> 1:" << (b >> 1) << endl;
-			cout << szPtr[0] << endl;
-			cout << "get p content:" << p << endl; // 指针从它指向的首地址开始读取内容
-			cout << "get p adress :" << &p << endl;
-			cout << "get *p:" << *p << endl;
-			cout << "get p+1 adress :" << &p+1 << endl;
-			cout << "get p+2 adress :" << &p+2 << endl;
-			cout << "get p head+1 :" << p+1 << endl;
-			cout << "get p head-1 :" << p-1 << endl;
-			cout << "get sizeof(p4) :" << sizeof(p4) << endl;
-			cout << "get sizeof(*p4) :" << sizeof(*p4) << endl;
-			cout << "get sizeof(*p) :" << sizeof(*p) << endl; // 获取指针变量的长度
-			cout << "get sizeof(p) :" << sizeof(p) << endl; // 获取占用的内存长度 32位编译器下结果是4，64位是8
-			cout << "get strlen(p) :" << strlen(p) << endl; // 获取内容长度
-			cout << "get sizeof(p1) :" << sizeof(p1) << endl;
-			cout << "get strlen(p1) :" << strlen(p1) << endl;
-			cout << "get sizeof(sz) :" << sizeof(sz) << endl;
-
-			cout << "get p1+1:" << p1+1 << endl;
-			cout << "get p1-1:" << p1 - 1 << endl;
-			cout << "get p1[4]:" << p1[4] << endl;
-			cout << "get *p1+1:" << *p1+1 << endl;
-			cout << "get p2:" << *p2+1 << endl;
-			cout << "get type p4:" << typeid(p4).name() << endl;
-
-			cout << "get ascii++:" << 'a'+1 << endl;   // 'a' ascii转换成十进制97后加1
-			cout << "get str++:" << "dddd"+1 << endl; // 相当于指针向右移动一位
-
-			char *p3 = p1;
-			cout << "get p3:" << p3 << endl; 
-	}
-	
-	if (cSwitch == 'b')
-	{
-		A *objA;
-
-		B objB;
-		objA = &objB;	// 指针地址传值才能实现虚函数多态
-		int sum = objA->add(1234, 2);
-		cout << "a+b:" << sum << endl;
-
-		float fArea = objB.GetTriangleArea(1.0, 3.0);
-		cout << "triarea:" << fixed << setprecision(2) << fArea << endl;
-
-		//A objA1;
-		//B objB1();
-		//objA1 = objB1;
-		//int sum1 = objA1.add(1, 2);
-		//cout << "a+b:" << sum1 << endl;
-
-		//C objC;
-		//A *objA2 = &objC;
-		//cout << "a+b:" << objA2->add(1, 2) << endl;
-
-		//B objB2;
-		//D objD(&objB2);
-		//objD.Print();
-
-		A objA2(5, "hello");	// 调用有参构造函数
-		Object::E objE(&objA2);
-		objE.Print();
-
-		F<int> objF;	// 把类模板F实例化为F类, 如何不加<参数类型>则无法实例化F类
-		cout << objF.add(2,3) << endl;
-
-		F<float> objF1;	// 把类模板F实例化为F类
-		cout << objF1.add(2.1f,3.1f) << endl;
-
-		F<float> objF2;
-		cout << objF2.Sub(2.1,3.1) << endl;
-
-		B objB1;
-		objB1.inlinefunc();
-		objB1.inner();
-
-		cout << C::Monday << endl;
-		cout << C::Tuesday << endl;
-		cout << C::Wednesday << endl;
-
-		D objD;
-		char szDst[3];
-		char *szSrc = "source";
-
-		objD.mySprintf(szDst, sizeof(szDst) - 1, szSrc);
-		cout << "mySprintf:" << szDst << endl;
-	}
-
-	if (cSwitch == 'c')
-	{
-		ifstream sourcefile("E:\\C++\\myfile\\1.txt");
-		ofstream destfile("E:\\C++\\myfile\\2.txt", ofstream::app);
-
-		string temp;
-		if (!sourcefile.is_open())
-		{
-			cout << "文件E:\\C++\\myfile\\1.txt不能成功打开" << endl; 
-		}
-
-		while (getline(sourcefile, temp))
-		{
-			destfile << temp;
-		}
-	}
-
-	// 使用外部dll
-	if (cSwitch == 'd')
-	{
-#ifdef _WIN64
-		cout << "Sub:" << Sub(10, 5) << endl;
-#endif // _WIN64
-		//cout << "Add:" << Add(10, 5) << endl;
-	}
-
-	if (cSwitch == 'e')
-	{
-		float fData = GetArea(2);
-		cout << "data:" << fData << endl;
-	}
-
-	if(cSwitch == 'f')
-	{
-		// fstream 继承于iostream, iostream 同时继承于istream与ostream， ifstream继承于istream，ofstream继承于ostream
-		ifstream sourcefile1("E:\\C++\\myfile\\1.txt");
-		ifstream sourcefile2("E:\\C++\\myfile\\2.txt");
-		ofstream destfile("E:\\C++\\myfile\\3.txt", ios::out|ios::trunc); // 以输出方式打开(内存到文件) 打开并清空文件
-	
-		string temp1;
-		string temp2;
-		string temp3 = "";
-
-		if (!sourcefile1.is_open())
-		{
-			cout << "文件E:\\C++\\myfile\\1.txt不能成功打开" << endl; 
-		}
-		if (!sourcefile2.is_open())
-		{
-			cout << "文件E:\\C++\\myfile\\2.txt不能成功打开" << endl; 
-		}
-		
-		while (getline(sourcefile1, temp1))
-		{
-			while(getline(sourcefile2, temp2))
-			{
-				if(strcmp(temp1.c_str(), temp2.c_str()) == 0) // strcmp 返回值  参数1>参数2 1  参数1<参数2 -1 参数1=参数2 0
-				{
-					temp3 = "";
-					break;
-				}
-				else
-				{
-					temp3 = temp1;
-				}
-			}
-
-			if (!temp3.empty())
-				destfile << temp3 + "\n";
-
-			// 清楚流标志位并定位到开头
-			sourcefile2.clear();
-			sourcefile2.seekg(0);
-		}
-	}
-
-	if (cSwitch == 'g')
-	{
-		DBOper dbOper;
-   
-		bool bConn=dbOper.ConnToDB("Provider=OraOLEDB.Oracle;Persist Security Info=True;DataSource=ORCLss","tbq","tbq");
-		if (false == bConn)
-		{
-		    printf("连接数据库出现错误\n");
-		}
-		else
-		{
-			printf("连接数据库成功!\n");
-
-			_RecordsetPtr pRst;
-
-			char cAtion = 'Q';
-			char sql[255] = { 0 };
- 
-			if (cAtion == 'Q') // 查询数据
-			{
-				strcpy_s(sql, "select* from test");
-				pRst = dbOper.ExecuteSql(sql);
-
-				if (NULL == pRst)
-				{
-				    printf("查询数据出现错误！\n");
-				}
-				else if(pRst->adoEOF)
-				{
-				    pRst->Close();
-				    printf("Thereis no records in this table\n");
-				}
-				else
-				{
-					printf("正在查询...\n");
-					printf("ID\tNAME\n");
-					_variant_t vSno, vName;
-					while(!pRst->adoEOF)
-					{
-					    //pRst->MoveFirst();//记录集指针移动到查询结果集的前面
-					    vSno = pRst->GetCollect(_variant_t((long)0)); // 0表示第一个字段
-					    vName = pRst->GetCollect(_variant_t("name"));
- 
-					    printf("%s\t%s\n",(LPSTR)(LPCSTR)(_bstr_t)vSno, (LPSTR)(LPCSTR)_bstr_t(vName));
-					    pRst->MoveNext();
-					}
-				}
-			}
-			else if (cAtion == 'A')	// 插入数据
-			{
-				dbOper.TransBegin(); // 开始事务
-				strcpy_s(sql, "insert into test(ID, NAME) values(7, '你好')");
-				pRst = dbOper.ExecuteSql(sql);
-
-				_RecordsetPtr pRst1;
-				pRst1 = dbOper.ExecuteSql("insert into test(ID, NAME) values(7, '你好')");
-
-				if (NULL !=pRst && NULL != pRst1)
-				{
-					printf("插入数据成功\n");
-				}
-				else
-				{
-					dbOper.RollbakTrans(); // 回滚事务
-				}
-				dbOper.CheckCommit(); // 检查未提交事务并提交
-			}
-			else if (cAtion == 'D')	// 删除数据
-			{
-				sprintf_s(sql, "deletefrom test where id = '%d'",1);
-				pRst = dbOper.ExecuteSql(sql);
-				if (NULL !=pRst)
-				{
-					printf("删除数据成功\n");
-				}
-			}
-		}
-	}
-
-	if (cSwitch == 'h')
-	{
-		DBOper dbOper("tbq","tbq");
-
-		string sql = "select * from test";
-
-		int nID = 0;
-		char szName[16] = "";
-
-		dbOper.Open(sql);
-		dbOper.Execute();
-		cout << "id" << "\t" << "name" << endl;
-		while(!dbOper.Eof())
-		{
-			dbOper.GetValue("id", nID);
-			dbOper.GetValue("name", szName);
-			cout << nID << "\t";
-			cout << szName << endl;
-			dbOper.MoveNext();
-		}
-
-		dbOper.Close();
-
-		dbOper.Open(sql);
-
-	}
-
-	system("pause");
+	cout << "This is out defined" << endl;
 }
+
+myString::myString()
+{
+	m_strData = NULL;
+	m_nLen = 0;
+}
+
+myString::myString(const char *str)
+{
+	m_strData = new char[max_len+1];
+	if (!m_strData)
+	{
+		// cerr不把内容送到缓冲区，直接输出到屏幕，cout先输出到缓冲区，到从缓冲区输出到屏幕
+		cerr << "Allocation Error!\n";
+		exit(1);
+	}
+	m_nLen = strlen(str);
+	strcpy(m_strData, str);
+}
+
+char* myString::c_str() const
+{
+	return m_strData;
+}
+
+unsigned myString::length() const
+{
+	return m_nLen;
+}
+
+ myString operator+(const myString &obj1, const myString &obj2)
+{
+	 char *strTmp = new char[max_len + 1];
+	 if (!strTmp)
+	 {
+		 cerr << "Allocation Error!\n";
+		 exit(1);
+	 }
+	 strcpy(strTmp, obj1.m_strData);
+	 strcat(strTmp, obj2.m_strData);
+	 myString myStr(strTmp);
+
+	 delete strTmp;
+	return myStr;
+}
+
+ myString myString::operator+=(const myString &obj)
+ {
+	 char *tmp = m_strData;
+	 m_strData = new char[max_len + 1];
+	 if (!m_strData)
+	 {
+		 cerr << "Allocation Error!\n";
+	 }
+	 strcpy(m_strData, tmp);
+	 strcat(m_strData, obj.m_strData);
+	 myString strTmp(m_strData);
+
+	 return strTmp;
+ }
+
+ bool myString::operator==(const myString &obj)
+ {
+	 if (strcmp(m_strData, obj.m_strData) == 0)
+		 return true;
+	 else
+		 return false;
+ }
+
+ bool myString::operator!=(const myString &obj)
+ {
+	 if (strcmp(m_strData, obj.m_strData) != 0)
+		 return true;
+	 else
+		 return false;
+ }
+
+ char myString::operator[](unsigned int nIdx)
+ {
+	 return m_strData[nIdx];
+ }
+
+ ostream &operator<<(ostream &os, myString &obj)
+ {
+	 os << obj.m_strData;
+	 return os;
+ }
+
+ istream &operator>>(istream &is, myString &obj)
+ {
+	 is >> obj.m_strData;
+	 return is;
+ }
+
+ myString &myString::subString(int nPos, int nLen)
+ {
+	 if (nPos <0 || nLen < 0 || nPos+ nLen -1 > max_len)
+	 {
+		 m_nLen = 0;
+		 m_strData[0] = '\0';
+	 }
+	 else
+	 {
+		 if (nPos + nLen > m_nLen)
+			 nLen = m_nLen - nPos;
+		 m_nLen = nLen;
+
+		 for (int i = 0,  j = nPos; i < nLen; i++, j++)
+		 {
+			 m_strData[i] = m_strData[j];
+		 }
+		 m_strData[nLen] = '\0';
+	 }
+
+	 return *this;
+ }
+
+ myWinsocket::myWinsocket(int nPort, const char* szIP, char cFlag)
+ {
+	 m_cFlag = cFlag;
+
+	 // TCP 服务端
+	 if (m_cFlag == '0')
+	 {
+		 WSADATA wsaDATA;
+		 if (WSAStartup(MAKEWORD(2, 2), &wsaDATA) != 0)
+		 {
+			 cout << "加载套接字失败:" << WSAGetLastError() << endl;
+			 exception e("加载套接字失败:" + WSAGetLastError());
+			 throw e;
+		 }
+
+		 m_sockSrv = socket(AF_INET, SOCK_STREAM, 0);
+
+		 SOCKADDR_IN addrSrv;
+		 addrSrv.sin_family = AF_INET;
+		 addrSrv.sin_port = htons(nPort);
+		 addrSrv.sin_addr.S_un.S_addr = htonl(INADDR_ANY);
+
+		 if (bind(m_sockSrv, (LPSOCKADDR)&addrSrv, sizeof(SOCKADDR_IN)) == SOCKET_ERROR)
+		 {
+			 cout << "绑定套接字失败:" << WSAGetLastError() << endl;
+			 exception e("绑定套接字失败:" + WSAGetLastError());
+			 throw e;
+		 }
+
+		 if (listen(m_sockSrv, 10) == SOCKET_ERROR)
+		 {
+			 cout << "监听套接字失败:" << WSAGetLastError() << endl;
+			 exception e("监听套接字失败:" + WSAGetLastError());
+			 throw e;
+		 }
+
+		 cout << "服务端启动成功，开始监听" << endl;
+
+		 // 客户端信息
+		 SOCKADDR_IN addrClient;
+		 int len = sizeof(SOCKADDR);
+		 // acccept阻塞，有结果返回代码才会往下走, recv, cin也是阻塞的
+		 m_sockConn = accept(m_sockSrv, (SOCKADDR*)&addrClient, &len);
+		 if (m_sockConn == SOCKET_ERROR)
+		 {
+			 cout << "建立连接失败:" << WSAGetLastError() << endl;
+			 exception e("建立连接失败:" + WSAGetLastError());
+			 throw e;
+		 }
+
+		 cout << "成功与客户端建立连接，客户端IP:" << inet_ntoa(addrClient.sin_addr) << endl;
+	 }
+	 // TCP 客户端
+	 else if (m_cFlag == '1')
+	 {
+		 WSADATA wsaDATA;
+		 if (WSAStartup(MAKEWORD(2, 2), &wsaDATA) != 0)
+		 {
+			 cout << "加载套接字失败:" << WSAGetLastError() << endl;
+			 exception e("加载套接字失败:" + WSAGetLastError());
+			 throw e;
+		 }
+
+		 SOCKADDR_IN addrSrv;
+		 addrSrv.sin_family = AF_INET;
+		 addrSrv.sin_port = htons(nPort);
+		 addrSrv.sin_addr.S_un.S_addr = inet_addr(szIP);
+
+		 m_sockClient = socket(AF_INET, SOCK_STREAM, 0);
+		 if(m_sockClient == SOCKET_ERROR)
+		 {
+			 cout << "创建套接字失败:" << WSAGetLastError() << endl;
+			 exception e("创建套接字失败:" + WSAGetLastError());
+			 throw e;
+		 }
+
+		 if (connect(m_sockClient, (struct sockaddr*)&addrSrv, sizeof(addrSrv)) == INVALID_SOCKET)
+		 {
+			 cout << "连接服务器失败:" << WSAGetLastError() << endl;
+			 exception e("连接服务器失败:" + WSAGetLastError());
+			 throw e;
+		 }
+	 }
+	 // UDP 服务端
+	 else if (m_cFlag == '2')
+	 {
+		 WSADATA wsaDATA;
+
+		 if(WSAStartup(MAKEWORD(2, 2), &wsaDATA) != 0)
+		 {
+			 cout << "加载套接字失败:" << WSAGetLastError() << endl;
+			 char szError[128] = {0};
+			 sprintf_s(szError, sizeof(szError) - 1, "加载套接字失败:%d", WSAGetLastError());
+			 exception e(szError);
+			 throw e;
+		 }
+
+		 m_sockSrv = socket(AF_INET, SOCK_DGRAM, 0);
+		 if (SOCKET_ERROR == m_sockSrv)
+		 {
+			 cout << "创建套接字失败:" << WSAGetLastError() << endl;
+			 char szError[128] = { 0 };
+			 sprintf_s(szError, sizeof(szError) - 1, "创建套接字失败:%d", WSAGetLastError());
+			 exception e(szError);
+			 throw e;
+		 }
+
+		 SOCKADDR_IN addrSrv;
+		 addrSrv.sin_family = AF_INET;
+		 addrSrv.sin_port = htons(nPort);
+		 addrSrv.sin_addr.S_un.S_addr = htonl(INADDR_ANY);
+
+		 if (bind(m_sockSrv, (LPSOCKADDR)&addrSrv, sizeof(SOCKADDR_IN)) == SOCKET_ERROR)
+		 {
+			 cout << "绑定套接字失败:" << WSAGetLastError() << endl;
+			 char szError[128] = { 0 };
+			 sprintf_s(szError, sizeof(szError) - 1, "绑定套接字失败:%d", WSAGetLastError());
+			 exception e(szError);
+			 throw e;
+		 }
+
+		 cout << "服务端启动成功，等待客户端发送数据" << endl;
+	 }
+	 // UDP 客户端
+	 else
+	 {
+		 WSADATA wsaDATA;
+
+		 if (WSAStartup(MAKEWORD(2, 2), &wsaDATA) != 0)
+		 {
+			 cout << "加载套接字失败:" << WSAGetLastError() << endl;
+			 char szError[128] = { 0 };
+			 sprintf_s(szError, sizeof(szError) - 1, "加载套接字失败:%d", WSAGetLastError());
+			 exception e(szError);
+			 throw e;
+		 }
+
+		 m_sockClient = socket(AF_INET, SOCK_DGRAM, 0);
+		 if (SOCKET_ERROR == m_sockClient)
+		 {
+			 cout << "创建套接字失败:" << WSAGetLastError() << endl;
+			 char szError[128] = { 0 };
+			 sprintf_s(szError, sizeof(szError) - 1, "创建套接字失败:%d", WSAGetLastError());
+			 exception e(szError);
+			 throw e;
+		 }
+
+		 m_addrSrv.sin_family = AF_INET;
+		 m_addrSrv.sin_port = htons(nPort);
+		 m_addrSrv.sin_addr.S_un.S_addr = inet_addr(szIP);
+	 }
+ }
+
+ int myWinsocket::sendMsg(const char *strSendmsg, int nSize)
+ {
+	 if (send(m_sockConn, strSendmsg, nSize, 0) == SOCKET_ERROR)
+	 {
+		 exception e("发送数据失败" );
+		 throw e;
+	 }
+ }
+
+ int myWinsocket::revMsg(char *strRevmsg, int nSize)
+ {
+	 return recv(m_sockConn, strRevmsg, nSize, 0);
+ }
+
+ int myWinsocket::sendToSrv(const char *strSendmsg, int nSize)
+ {
+	 return send(m_sockClient, strSendmsg, nSize, 0);
+ }
+
+ int myWinsocket::revSrvMsg(char *strSendmsg, int nSize)
+ {
+	 return recv(m_sockClient, strSendmsg, nSize, 0);
+ }
+
+ int myWinsocket::recvMsgFrom(char *strSendmsg, int nSize)
+ {
+	 int nLen = sizeof(SOCKADDR);
+	 return recvfrom(m_sockSrv, strSendmsg, nSize, 0, (SOCKADDR*)&m_addrClnt, &nLen);
+ }
+
+ int myWinsocket::sendMsgTo(const char *strSendmsg, int nSize)
+ {
+	 int nLen = sizeof(SOCKADDR);
+	 return sendto(m_sockSrv, strSendmsg, nSize, 0, (SOCKADDR*)&m_addrClnt, nLen);
+ }
+
+ int myWinsocket::sendMsgToSrv(const char *strSendmsg, int nSize)
+ {
+	 int nLen = sizeof(SOCKADDR);
+	 return sendto(m_sockClient, strSendmsg, nSize, 0, (SOCKADDR*)&m_addrSrv, nLen);
+ }
+
+ int myWinsocket::recvMsgFromSrv(char *strSendmsg, int nSize)
+ {
+	 int nLen = sizeof(SOCKADDR);
+	 if (SOCKET_ERROR == recvfrom(m_sockClient, strSendmsg, nSize, 0, (SOCKADDR*)&m_addrSrv, &nLen))
+	 {
+		 cout << "接收数据失败!" << endl;
+		 return false;
+	 }
+	 return true;
+ }
+
+ myWinsocket::~myWinsocket()
+ {
+	 if (m_cFlag == '0')
+	 {
+		 closesocket(m_sockSrv);
+		 closesocket(m_sockConn);
+	 }
+	 else if (m_cFlag == '1')
+	 {
+		 closesocket(m_sockClient);
+	 }
+	 else if (m_cFlag == '2')
+	 {
+		 closesocket(m_sockSrv);
+	 }
+	 else
+	 {
+		 closesocket(m_sockClient);
+	 }
+
+	 WSACleanup();
+ }

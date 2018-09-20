@@ -7,6 +7,7 @@ print(time.time())
 print(listNum)
 
 # 注意代码缩放的重要性，同级别的放在同一列，语法要求
+# 以下以冒泡排序算法示例
 nLen = len(listNum)
 i = 0
 j = 0
@@ -26,7 +27,7 @@ print(listNum)
 def myFunc():
     print("hello, myFunc")
 
-# 表示以下定义的类都是新式类，如没有，则class class():为新式类，class class:为老式类
+# __metaclass__=type表示以下定义的类都是新式类，如没有，则class class():为新式类，class class:为老式类
 # class创建的类可以理解为也是一种对象，所以也可以在函数中建立
 # type('myclass', (parenclass), {'name':setValua})可以创建父类为parenclass的类，并具有属性setValue()
 # 所以type其实就是所有类的父类，此外，python中的整数，字符串，函数，类都是对象，所以如"hello".count('e')
@@ -92,7 +93,7 @@ class subClass(myclass):
 x2 = subClass()
 # 使用超类中的方法
 print(x2.setValue())
-# 查看是否为超类
+# 查看是否为该子类的超类
 print(issubclass(subClass, myclass))
 # 查看所有基类
 print(subClass.__bases__)
@@ -112,7 +113,7 @@ class myClass1:
     def getValue(self):
         return self.width, self.height
 
-    # property如果没有参数，那么size将不可以读写，这是隐藏方法的一种方式
+    # property如果没有参数，那么size将不可以读写，property是隐藏方法的一种方式
     size = property(getValue, setValue)
 
 x = myClass1()
@@ -135,7 +136,7 @@ class myClass11:
 
     # 特殊方法中实现特性的赋值，所以类似于x.name = value
     # 这样的特性操作就得先经过__setattr__方法，而不是直接的赋值
-    # 特殊方法就是在特定操作下自动被调用的方法，如赋值操作
+    # 特殊方法就是在特定操作下自动被调用的方法，如=赋值操作
     def __setattr__(self, name, value):
         if name == 'size':
             self.width, self.height = value
@@ -196,7 +197,7 @@ class myclass3:
             1/0
        # 捕捉并打印异常对象，如果没有捕捉异常，则异常传播至函数被调用的地方
        # 如果都没有捕捉异常的地方，则会传播至全局区域，这时如果也没有捕捉，
-       # 则程序中止，相比if判断，效率高些，因为少了判断条件中执行的语句
+       # 则程序中止，相比if判断，效率高些，因为判断条件中要执行完语句才知道结果
         except (ZeroDivisionError) as e:
             print("catch the Exeption")
             print(e)
@@ -259,6 +260,7 @@ class myList2(list):
 # 这样对象的用法就如同调用普通的函数一样，如x = list("hello")
 x = myList2("hello")
 print(x)
+print(x[2])
 
 class myClass4:
     # 指定该方法为静态方法，可以直接使用类调用
@@ -342,13 +344,14 @@ sum(i for i in range(5, 10))
 
 nested = [[1,2], [3,4,[33,44]], [5,6,7]]
 
-# 使用递归生成器能处理嵌套层数不固定的序列，但要是迭代元素为
+# 使用递归生成器能处理嵌套层数不固定的序列，但要是被迭代元素为
 # 字符串时，将导致无限递归，因为字符串就是队列，for i in永远不会引发
 # 异常
 def myGenerator2(listParam):
     try:
         for sublist in listParam:
-            # 试图迭代一个非序列对象时，引发异常，捕捉并产生元素
+            # 以上for in试图迭代一个非序列对象时，引发异常，捕捉并返回迭代器，
+            # 进而给element赋值，然后被使用于yield语句中
             for element in myGenerator2(sublist):
                 yield element
     except TypeError:
@@ -388,5 +391,274 @@ print(next(x))
 
 # 再次使用时，传给生成器的参数变成了None，
 # send方法会在生成器挂起后发送数据给生成器的yield表达式
-# 激活生成器
+# 激活生成器，生成器挂起后才能使用send方法
 print(x.send('hello'))
+
+# 以下并不是真正的生成器，由于可以像访问生成器那样
+# 对其迭代进行访问，所以也叫模拟生成器
+def myGenerator4(listParam):
+    result = []
+    try:
+        try: listParam + ''
+        except TypeError: pass
+        else: raise TypeError
+        for sublist in listParam:
+            for element in myGenerator3(sublist):
+                result.append(element)
+    except TypeError:
+        result.append(listParam)
+    return result
+
+for element in myGenerator4(nested):
+    print(element)
+
+# 4*4棋盘，同行同列同对角线不能放置同一*符号，已知前三个位置，求第四个可能的位置
+# ------------
+# |   | * |   |   |
+# ------------
+# |   |   |   | * |
+# ------------
+# | * |   |   |   |
+# ------------
+# |   |   |    |   |   pos:?
+# ------------
+
+def conflict(state, nextX):
+    nextY = len(state)
+    for i in range(nextY):
+        if abs(state[i] - nextX) in (0, nextY - i):
+            return True
+    return False
+
+def symbols(num, state):
+    if len(state) == num -1:
+        for pos in range(num):
+            if not conflict(state, pos):
+                yield pos
+pos = list(symbols(4, (1,3,0)))
+print(pos)
+
+# 递归实现符号位置摆放方案，可针对任意n*n棋盘
+def symbols2(num, state = ()):
+    for pos in range(num):
+        if not conflict(state, pos):
+            if len(state) == num -1:
+                yield (pos,)
+            else:
+                    for result in symbols2(num, state + (pos,)):
+                        yield (pos,) + result
+allPos = list(symbols2(4))
+print(allPos)
+
+# 整理下输出结果
+def formatPrint(solution):
+    def line(pos, length = len(solution)):
+        return '. ' * (pos) + 'X' + '. ' * (length - pos - 1)
+    for pos in solution:
+        print (line(pos))
+
+import random
+print(formatPrint(random.choice(list(symbols2(4)))))
+print(formatPrint(random.choice(list(symbols2(8)))))
+
+import sys
+
+# os也是标准库中常用的模块
+import os
+
+# environ获取环境变量
+print(os.environ["USERNAME"])
+
+# system用于执行外部程序，注意目录是""引起来的，这样不会被当作程序来运行
+# 而使用startfile不用双引号
+# os.system(r'D:\"Program Files (x86)"\"KuGou"\"KGMusic"\KuGou.exe')
+# os.startfile(r'D:\Program Files (x86)\KuGou\KGMusic\KuGou.exe')
+print(os.pathsep)
+
+import webbrowser
+# 可以这样打开网址
+# webbrowser.open("http://www.baidu.com")
+
+# 加载模块所在路径后，就可以直接导入该路径下的模块了，
+# 模块名就是文件名
+sys.path.append('../..')
+
+# sys模块还有其他有用的特性，如exit，可以退出当前程序
+# argv获取运行脚本时附带在脚本名称后面的参数
+print(sys.path)
+import pprint
+# 智能打印，包括对list对象的换行打印
+pprint.pprint(sys.path)
+import test1
+ # 使用模块的特性
+print(test1.test)
+
+# 查找模块所在位置
+print(test1.__file__)
+
+# 在交互器中使用help函数可以查看模块的特性信息
+# help(test1.test)
+
+# 重复导入的效果与一次导入的效果是相同的，
+# 所以两个模块可以互相导入
+import test1
+
+# 内置的dir函数可以查看模块中有哪些特性
+print([n for n in dir(test1) if not n.startswith('__')])
+
+
+# 表示当前.py程序要是在主程序中运行，则执行相应的操作
+if __name__ == '__main__': print('hello main')
+
+# 可以将模块放在编译器默认查找模块路径的目录下，这样可以直接导入，如site-packages目录
+# 也可以设定系统环境变量并设置路径，编译器会去该路径下寻找模块
+import easy_install
+
+# 导入包，包名其实就是目录名，该目录下必须包含__init__.py文件
+import mypacket
+# 可以直接使用包中__init__模块的特性
+print(mypacket.x)
+
+# 导入包中其他模块
+import mypacket.test
+
+import fileinput
+
+# fileinput模块的input函数可以在解释器中读取.py脚本名称后的参数指定的文件
+# inplace=True原地替换模式，所以请慎用
+#for line in fileinput.input(inplace=True):
+#    print(line)
+
+# 集合{1,2,4...}，有数学中常见的操作，如求并集，比较大小等
+a = set([1,2,3])
+b = set([3,4])
+print(a >= b)
+# union与|运算符等效
+print(a.union(b))
+print(a|b)
+c = a & b
+print(c.issubset(a))
+print(a.union(b))
+print(a-b)
+
+# 集合不能添加可变值，但可以使用frozenset添加其他集合
+a.add(6)
+a.add(frozenset(b))
+print(a)
+
+from functools import reduce
+# 可以求多个集合的并集
+x = reduce(set.union, [{1,2,3},{3,4}, {3,4,5}])
+print(x)
+
+from heapq import *
+from random import shuffle
+data = [1,2,3,4,5]
+# 打乱队列元素顺序
+shuffle(data)
+heap = []
+for n in data:
+    # heappush建立了堆，也可以使用heapify建立
+    heappush(heap, n)
+print(heap)
+
+# 入堆时，堆算法内部会自动把最小的数排序在第一位
+heappush(heap, 0.1)
+print(heap)
+
+# heappop弹出最小的元素
+print(heappop(heap))
+print(heappop(heap))
+
+# 弹出最小的元素后插入新的元素
+x=[0,1,2]
+heapreplace(x, 0.5)
+print(x)
+heapreplace(x, 3)
+print(x)
+
+y=[3,1,2]
+# 升序排序后返回堆前三个元素，比sorted函数效率更高
+n = nlargest(3, y)
+print(n)
+
+# 降序排序后返回堆前两个元素
+n = nsmallest(2, y)
+print(n)
+
+from collections import deque
+# 建立一个双端队列，可在列头或列尾增减元素
+q = deque(range(5))
+q.append(5)
+q.appendleft(6)
+print(q)
+print(q[0])
+q.pop()
+q.popleft()
+# 整体往右移动三位
+q.rotate(3)
+print(q)
+# 在右侧扩展队列
+q.extend([6,7])
+print(q)
+
+# 时间模块
+import time
+
+# (2018, 9, 20, 21, 31, 0, 30, 0) 对应年月日时分秒周天夏令时
+print(time.mktime((2018, 9, 20, 21, 31, 30, 3, 30, 0)))
+
+# 时间元组转换成字符串
+print(time.asctime())
+
+# 将秒数转换为日期元组
+print(time.localtime())
+
+# 等待三秒钟后继续执行
+# time.sleep(3)
+
+# 获取全球统一标准时间
+uniTime = time.gmtime()
+print(uniTime)
+print(uniTime[0])
+
+# 随机数模块
+import random
+
+# 返回三位二进制后转换成长整型
+print(random.getrandbits(3))
+
+# 获取0-1之间的伪随机数
+print(random.random())
+
+# 获取1到5之间的随机实数
+print(random.uniform(1,5))
+
+# 返回range中的随意数
+print(random.randrange(1,10))
+
+# 返回序列中的的随意元素
+print(random.choice([1,2,3,4,5]))
+
+# 打乱序列
+a = [1,2,3,4,5]
+random.shuffle(a)
+print(a)
+
+# 从序列中随机返回n个元素
+print(random.sample([1, 1, 2, 2, 3, 3, 4, 5], 2))
+
+# 例子，可以这样来理解，随机抛三枚骰子后，求骰子朝上的面的点的总和
+sum = 0
+for i in range(3): sum += random.randrange(6) + 1
+print(sum)
+
+# 建立 一副扑克牌并随机打乱顺序
+digital = list(range(2,11)) + 'J Q K A'.split()
+shape = "♠ ♥ ♣ ♦ ".split()  
+
+poker = ['%s%s' % (s, d) for s in shape for d in digital]
+#poker.append('♔ ♕'.split())
+poker.extend('♔ ♕'.split())
+random.shuffle(poker)
+pprint.pprint(poker[:12])

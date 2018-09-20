@@ -1,11 +1,20 @@
+//  WIN32_LEAN_AND_MEAN 屏蔽一些不常用的API，windows.h可能包含了winsock.h头文件，导致一些API如accept出现重定义
+#define WIN32_LEAN_AND_MEAN
 #include<stdlib.h>
+#include <stdio.h>
 #include<iostream>
 #include<fstream>
 #include<string>
 #include<iomanip>
 #include<sstream>
-#include <windows.h>
 #include "oracledb.h"
+#include <windows.h>
+
+#include<WinSock2.h>
+#pragma comment(lib, "ws2_32.lib")
+
+#include<pthread.h>
+#pragma comment(lib, "pthreadVC2.lib")
 
 using   namespace   std;
 
@@ -25,7 +34,8 @@ using   namespace   std;
 class A
 {
 public:
-	static int nNum; // 所有对象共用
+	// 所有对象共用
+	static int nNum; 
 	A()
 	{
 		m_iData = 1;
@@ -33,7 +43,8 @@ public:
 		nNum++;
 	}
 
-	A(int a, char *b) // 有参构造函数
+	// 有参构造函数
+	A(int a, char *b)
 	{
 		m_iData = a;
 		m_pData = b;
@@ -61,7 +72,8 @@ public:
 	int m_iData;
 	char *m_pData;
 
-protected:	// 不可通过实例对象访问
+	// 不可通过实例对象访问
+protected:
 	bool Check(double a, double b)
 	{
 		stringstream ss;
@@ -111,21 +123,25 @@ public:
 		}
 	}
 
-	void print()	// 类中定义实现的函数会被内联处理
+	// 类中定义实现的函数会被内联处理
+	void print()
 	{
 		cout << m_nData << "," << m_nData << endl;
 	}
 
-	void oper() /*const*/  // 如加const，则报错  // 不加const只能被非const成员函数调用
+	// 如加const，则报错  // 不加const只能被非const成员函数调用
+	void oper() /*const*/ 
 	{
 		m_nData = 1;
 	}
 
 	// static B obj();
 
-	void inner();	// 此内部没有定义的函数不会被内联处理
+	// 此内部没有定义的函数不会被内联处理
+	void inner();	
 
-	inline void inlinefunc()	// 编译阶段在被调用的地方会以函数体{}替代，代码俩较少且经常使用时建议内联
+	// 编译阶段在被调用的地方会以函数体{}替代，代码俩较少且经常使用时建议内联
+	inline void inlinefunc()
 	{
 		cout << "This is a inline func" << endl;
 	}
@@ -152,8 +168,10 @@ public:
 
 	enum day
 	{
-		Monday = 1, // enum中成员默认从数字0开始的
-		Tuesday = 3, // 以下的成员值从此处递增，下一个为4
+		// enum中成员默认从数字0开始的
+		Monday = 1, 
+		// 以下的成员值从此处递增，下一个为4
+		Tuesday = 3, 
 		Wednesday,
 		Thursday,
 		Friday
@@ -188,7 +206,8 @@ public:
 		cout << m_objA->m_iData << "," << m_objA->m_pData << endl;
 	}
 
-	void mySprintf(char *szDst, unsigned int strlen, const char *szSrc)	// 自定义安全拷贝函数
+	// 自定义安全拷贝函数
+	void mySprintf(char *szDst, unsigned int strlen, const char *szSrc)	
 	{
 		if (szDst == NULL ||  szSrc == NULL)
 		{
@@ -209,8 +228,6 @@ private:
 	A *m_objA;
 };
 
-int A::nNum;	// static成员需定义后才可以使用
-
 struct Object
 {
 	class E;
@@ -222,7 +239,8 @@ public:
 	E(A *parent) : m_objA(parent)
 	{}
 
-	int operator() (char *tmp)	// 函数对象
+	// 函数对象
+	int operator() (char *tmp)	
 	{
 		cout << tmp << endl;
 	}
@@ -248,6 +266,7 @@ private:
 	A *m_objA;
 };
 
+// 类模板
 template<class TYPE>
 class F
 {
@@ -261,13 +280,78 @@ public:
 private:
 };
 
-template<class TYPE>	// 在外部定义类模板的成员需加上虚拟类型定义
+// 在外部定义类模板的成员需加上虚拟类型定义
+template<class TYPE>	
 TYPE F<TYPE>::Sub(TYPE a, TYPE b)
 {
 	return a*2 - b*2;
 }
 
-void B::inner()
+const int max_len = 1024;
+
+// 自定义string类
+class myString
 {
-	cout << "This is out defined" << endl;
-}
+public:
+	myString();
+	myString(const char *str);
+
+	myString operator+=(const myString &obj);
+
+	// 声明为友元函数，使其可以访问类myString的private,protected成员
+	friend myString operator+(const myString &obj1, const myString &obj2);
+
+	bool operator==(const myString &obj);
+	bool operator!=(const myString &obj);
+	char operator[](unsigned int nIdx);
+
+	friend ostream &operator<<(ostream &os, myString &obj);
+	friend istream &operator>>(istream &is, myString &obj);
+
+	myString &subString(int nPos, int nIdx);
+
+	// 返回m_strData
+	char* c_str() const;
+
+	// 返回m_nLen
+	unsigned int length() const;
+
+protected:
+
+private:
+	char *m_strData;
+	unsigned int m_nLen;
+};
+
+class myWinsocket
+{
+public:
+	myWinsocket() {};
+	myWinsocket(int nPort, const char* szIP, char cFlag);
+	~myWinsocket();
+
+public:
+	// TCP
+	int sendMsg(const char *strSendmsg, int nSize);
+	int revMsg(char *strRevmsg, int nSize);
+
+	int sendToSrv(const char *strSendmsg, int nSize);
+	int revSrvMsg(char *strSendmsg, int nSize);
+
+	// UDP
+	int recvMsgFrom(char *strSendmsg, int nSize);
+	int sendMsgTo(const char *strSendmsg, int nSize);
+
+	int sendMsgToSrv(const char *strSendmsg, int nSize);
+	int recvMsgFromSrv(char *strSendmsg, int nSize);
+protected:
+private:
+	char m_cFlag;
+
+	SOCKET m_sockSrv;
+	SOCKET m_sockClient;
+	SOCKET m_sockConn;
+
+	SOCKADDR_IN m_addrSrv;
+	SOCKADDR_IN m_addrClnt;
+};
