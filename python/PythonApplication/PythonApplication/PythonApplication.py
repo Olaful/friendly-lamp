@@ -661,7 +661,7 @@ print(sum)
 
 # 建立 一副扑克牌并随机打乱顺序
 digital = list(range(2,11)) + 'J Q K A'.split()
-shape = "♠ ♥ ♣ ♦ ".split()  
+shape = "♠ ♥ ♣ ♦".split()  
 
 poker = ['%s%s' % (s, d) for s in shape for d in digital]
 #poker.append('♔ ♕'.split())
@@ -670,3 +670,105 @@ random.shuffle(poker)
 
 from pprint import pprint
 pprint(poker[:12])
+
+#while poker:
+#    tmp = input("get poker:")
+#    x = poker.pop();
+#    print(x)
+
+# shelve模块提供一种简单的数据存储方案，可以把数据存储在dat二进制文件中
+import shelve
+# open方法:如果文件不存在，会创建test1.py.dat文件，返回一个shelf对象
+f = shelve.open('mypacket/test1.py')
+# 返回的对象可以当做字典一样使用，这里把数据存储到了dat文件中
+f['x'] = [1,2]
+# 这里的对象与普通字典不一样，append方法其实是把数据添加到副本中
+# 所以f['x']并没有被改变
+f['x'].append(3)
+print(f['x'])
+
+# 可以通过重新赋值达到append的效果
+temp = f['x']
+temp.append(3)
+f['x'] = temp
+print(f['x'])
+
+# 存取完数据后close对象，不然之后的操作可能会损坏已经存取的数据，下次读取的
+# 时候可能读取不了
+f.close()
+
+f = shelve.open('mypacket/test1.py')
+# 再次打开存储文件的时候，可以访问到之前存储过的内容
+print(f['x'])
+# 试图访问对象不存在的key时，会出错
+# print(f['y'])
+f.close()
+
+# 正则表达式模块
+import re
+# 会在开头匹配，匹配到则返回match对象，否则返回None
+# 首先会把'h'转换成re匹配对象，再去匹配，search也会经过这样的
+# 的转换
+print(re.match('h', 'hello'))
+# 转换成re匹配对象，使用其匹配效率会更高
+x = re.compile('he')
+print(x.match('hello'))
+
+print(re.match('e', 'hello'))
+# ? 可选项，匹配有的或是没有的
+print(re.match('e?', 'hello'))
+# 会从开始到结尾匹配，找到第一个符合的就返回
+print(re.search('e', 'hello'))
+
+text = "hello... wo-rld! are you ok"
+# 以指定模式分割字符串，[]集合匹配，+匹配1到多个，匹配集合中的单个字符，'.'为通配符
+x = re.split('[. ]+', text)
+print(x)
+# 位于集合匹配中的^符号是非的意思
+x = re.findall('[^h]+', text)
+print(x)
+# ()子模式匹配，'wo'两边会被分割开来，但'o'会出现在分割后的列表中
+x = re.split('w(o)', text)
+print(x)
+# 返回的是()组中的内容，| 管道可以匹配两个
+print(re.findall('a(rr|re)', text))
+
+# 以列表形式返回所有匹配到的项，返回组0，即所有匹配到的项
+print(re.findall('[a-z]+', text))
+# \反斜杠转义了正则表达式中的'-'符号，使其不会当作范围字符来处理
+print(re.findall('[.\-!]+', text))
+
+# 字符串中把匹配模式的pat替换成指定字符
+pat = 'ok'
+print(re.sub(pat, 'sure', text))
+
+# 把字符串中的所有正则表达式字符进行转义，如. ? - 等
+print(re.escape(text))
+x = re.search('(ar.)', text)
+# 返回匹配模式对象中的第1个匹配组
+# 位于匹配模式中()内的内容就是匹配组的内容
+# 如果没有()，默认匹配到的所有字符就是组的内容，即组0
+print(x.group(1))
+# 返回第一个匹配组匹配项的开始索引
+print(x.start(1))
+# 返回第一个匹配组匹配项的结束索引
+print(x.end(1))
+# 有了re.VERBOSE参数，就可以在匹配模式中添加注释了，这样不会当作
+# 匹配模式的一部分去匹配
+print(re.search('\- # 转义"-"符号', text, re.VERBOSE))
+
+# \1将使用匹配组1([^\*]+)匹配到的内容进行替换
+print(re.sub('\*([^\*]+)\*', r'<html>\1</html>', 'hello *world*!'))
+# .+把中间的星号也当作任意字符来对待了，直到遇到最后的*为止，这是贪婪匹配
+print(re.sub('\*(.+)\*', r'<html>\1</html>', 'hello *wo**rld*!'))
+# .+? 加个?，只要遇到符合匹配的就匹配一个，接着再继续匹配，这是非贪婪匹配
+print(re.sub('\*(.+?)\*', r'<html>\1</html>', 'hello *wo**rld*!'))
+
+import fileinput
+# 例子，查找文件中所有type的值，使用.*?非贪婪匹配
+# 这样找到第一个符合匹配的就返回，而不是忽略中间的'type'继续匹配到最后一个'type'
+pat = re.compile('.*?type="(.*?)"( |>)')
+for line in fileinput.input():
+    result = pat.search(line)
+    if result: print(result.group(1))
+
