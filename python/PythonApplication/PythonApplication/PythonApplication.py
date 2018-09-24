@@ -526,7 +526,8 @@ import mypacket.test
 
 import fileinput
 
-# fileinput模块的input函数可以在解释器中读取.py脚本名称后的参数指定的文件
+# fileinput模块的input函数可以在解释器中读取.py脚本名称后的参数指定的文件，读取完一个文件后
+# 继续读取下一个文件，也可以nextfile自动切换到下一个文件
 # inplace=True原地替换模式，所以请慎用
 #for line in fileinput.input(inplace=True):
 #    print(line)
@@ -544,9 +545,10 @@ print(a.union(b))
 print(a-b)
 
 # 集合不能添加可变值，但可以使用frozenset添加其他集合
+# 已有的元素不会被添加进去
 a.add(6)
 a.add(frozenset(b))
-print(a)
+print(sorted(a))
 
 from functools import reduce
 # 可以求多个集合的并集
@@ -604,8 +606,6 @@ print(q)
 q.extend([6,7])
 print(q)
 
-"""
-# -------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # 时间模块
 import time
@@ -626,6 +626,10 @@ print(time.localtime())
 uniTime = time.gmtime()
 print(uniTime)
 print(uniTime[0])
+
+from timeit import timeit
+# 计算代码运行所需时间
+timeit('x=range(10)')
 
 # 随机数模块
 import random
@@ -654,7 +658,7 @@ print(a)
 print(random.sample([1, 1, 2, 2, 3, 3, 4, 5], 2))
 
 
-# 例子，可以这样来理解，随机抛三枚骰子后，求骰子朝上的面的点数的总和
+# 例子，可以这样来理解，抛三枚骰子后，求骰子朝上的面的点数的总和
 sum = 0
 for i in range(3): sum += random.randrange(6) + 1
 print(sum)
@@ -772,3 +776,42 @@ for line in fileinput.input():
     result = pat.search(line)
     if result: print(result.group(1))
 
+# 查找获取不重复的数据
+pat = re.compile('.*?type="(.*?)"')
+typeset = set()
+for line in fileinput.input():
+    for result in pat.findall(line):
+        typeset.add(result)
+print(sorted(typeset))
+
+# 模板填充变量，定义:[name="Mike"]， 模板:hello, [name]->hello, Mike
+# 可以接收两个文件，一个是模板变量定义文件，一个是模板文件
+pat = re.compile('\[(.+?)\]')
+# 把变量收集到该作用域
+scope = {}
+def replacement(match):
+    code = match.group(1)
+    try:
+        # 如果作用域中定义了变量，则计算值并返回
+        return str(eval(code, scope))
+    except SyntaxError:
+        # python 2.0写法
+        # exec(code) in scope
+        # python 3.0写法
+        # 在作用域中计算如"name='mike'",
+        exec(code, scope)
+        return ''
+
+# 文件内容全部存于一个字符串中
+lines = []
+for line in fileinput.input():
+    lines.append(line)
+# 转换成字符串
+text = ''.join(lines)
+
+# 每匹配到一个，就把匹配到的内容作为参数调用replacement函数，
+# 用函数返回的值替换匹配到的项
+print(pat.sub(replacement, text))
+
+"""
+# -------------------------------------------------------------------------------------------------------------------------------------------------------
