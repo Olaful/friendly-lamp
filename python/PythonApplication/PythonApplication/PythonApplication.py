@@ -815,3 +815,41 @@ print(pat.sub(replacement, text))
 
 """
 # -------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# open方法返回一个文件流对象，此方法不会自动创建文件
+f = open(r'e:\somefile.txt')
+# 从文件开头读取三个字节长度的内容，并记录读取到的位置
+f.read(3)
+# 从上一次读取到的位置继续读取
+f.read(2)
+# 确定不再使用文件流的时候应该手动调用close方法关闭文件
+# close后才会解除其他程序对文件的访问限制
+# 虽然程序退出的时候也会自动关闭，但可能因为某些情况
+# 如程序崩溃可能会导致无法正确地保存文件，
+f.colse()
+f = open(r'e:\somefile.txt')
+# 读取文件所有内容
+f.read()
+f.colse()
+f = open(r'e:\somefile.txt')
+# 读取一行
+f.readline()
+# 从上次读取到的行后位置继续读取新行
+f.readline()
+f.close()
+f = open(r'e:\somefile.txt')
+# 返回一个列表，列表中的每一项对应文件每一行的内容,
+# 包括行尾的换行符\n
+f.readlines()
+f.close()
+# 指定w参数可以向文件中写入内容
+f = open(r'e:\somefile.txt', 'w')
+# \n是换行符
+f.write('how are you\nfine, thanks\n')
+f.close()
+f = open(r'e:\somefile.txt', 'w')
+# 按行写入，接受列表传参
+f.writelines(['so late!\n', 'maybe we can walk faster'])
+f.close()
+
+
