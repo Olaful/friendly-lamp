@@ -816,40 +816,79 @@ print(pat.sub(replacement, text))
 """
 # -------------------------------------------------------------------------------------------------------------------------------------------------------
 
-# open方法返回一个文件流对象，此方法不会自动创建文件
-f = open(r'e:\somefile.txt')
+# open方法返回一个文件流对象，此方法不会自动创建文件，参数默认是'r'
+f = open(r'myfile\template.txt')
 # 从文件开头读取三个字节长度的内容，并记录读取到的位置
 f.read(3)
 # 从上一次读取到的位置继续读取
 f.read(2)
+# 移动到文件流第二个字节
+f.seek(2)
 # 确定不再使用文件流的时候应该手动调用close方法关闭文件
 # close后才会解除其他程序对文件的访问限制
 # 虽然程序退出的时候也会自动关闭，但可能因为某些情况
 # 如程序崩溃可能会导致无法正确地保存文件，
-f.colse()
-f = open(r'e:\somefile.txt')
-# 读取文件所有内容
-f.read()
-f.colse()
-f = open(r'e:\somefile.txt')
+f.close()
+f = open(r'myfile\template.txt')
+# 读取文件所有内容，读到文件尾时，返回空字符串
+print(f.read())
+f.close()
+f = open(r'myfile\template.txt')
 # 读取一行
 f.readline()
 # 从上次读取到的行后位置继续读取新行
 f.readline()
 f.close()
-f = open(r'e:\somefile.txt')
+f = open(r'myfile\template.txt')
 # 返回一个列表，列表中的每一项对应文件每一行的内容,
 # 包括行尾的换行符\n
 f.readlines()
 f.close()
 # 指定w参数可以向文件中写入内容
-f = open(r'e:\somefile.txt', 'w')
+f = open(r'myfile\template.txt', 'w')
 # \n是换行符
 f.write('how are you\nfine, thanks\n')
 f.close()
-f = open(r'e:\somefile.txt', 'w')
+f = open(r'myfile\template.txt', 'w')
 # 按行写入，接受列表传参
 f.writelines(['so late!\n', 'maybe we can walk faster'])
 f.close()
+
+# with语句结束后会自动关闭文件，即使发生异常也会关闭
+with open(r'myfile\template.txt') as f:
+    f.read()
+
+def process(str):
+    print("process...."+str)
+
+f = open(r'myfile\template.txt')
+# 在循环读取文件的过程中，可以针对读取到的每一项内容进行自定义处理
+#while True:
+#    char = f.read(1)
+#    if not char: break
+#    process(char)
+#f.close()
+while True:
+    line = f.readline()
+    if not line: break
+    process(line)
+f.close()
+
+#f = open(r'myfile\template.txt')
+#for char in f.read():
+#    process(char)
+#f.close()
+ 
+# 每次只读取一行如readline函数，这种叫做懒惰行迭代，只读取需要的行
+import fileinput
+for line in fileinput.input(r'myfile\template.txt'):
+    process(line)
+
+# 可以直接对文件流进行迭代
+for line in open(r'myfile\template.txt'):
+    process(line)
+    
+
+
 
 

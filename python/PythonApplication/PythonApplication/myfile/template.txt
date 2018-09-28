@@ -1,2 +1,2 @@
-hello, [name]!
-it is [day]
+so late!
+maybe we can walk faster
