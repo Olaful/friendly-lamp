@@ -854,6 +854,11 @@ f = open(r'myfile\template.txt', 'w')
 f.writelines(['so late!\n', 'maybe we can walk faster'])
 f.close()
 
+# 以二进制方式读取文件，读取声音等二进制文件的时候需要，而且不会把文件中
+# 换行解释成换行符
+f = open(r'myfile\template.txt', 'rb')
+print(f.read())
+
 # with语句结束后会自动关闭文件，即使发生异常也会关闭
 with open(r'myfile\template.txt') as f:
     f.read()
@@ -884,11 +889,20 @@ import fileinput
 for line in fileinput.input(r'myfile\template.txt'):
     process(line)
 
-# 可以直接对文件流进行迭代
+# 可以直接对文件流进行迭代，但在程序关闭的时候才能close文件
 for line in open(r'myfile\template.txt'):
     process(line)
-    
+ 
+# 对标准输入进行迭代
+#import sys
+#for line in sys.stdin:
+#	print("new line"+line)
 
+# 把文件流转换成列表
+lines = list(open(r'myfile\template.txt'))
+print(lines)
 
-
-
+# 文件流赋值给多变量时，就相当于把文件每一行赋值给单独的变量
+f, s = open(r'myfile\template.txt')
+print(f)
+print(s)
