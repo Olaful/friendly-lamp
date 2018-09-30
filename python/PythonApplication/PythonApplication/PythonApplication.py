@@ -813,9 +813,6 @@ text = ''.join(lines)
 # 用函数返回的值替换匹配到的项
 print(pat.sub(replacement, text))
 
-"""
-# -------------------------------------------------------------------------------------------------------------------------------------------------------
-
 # open方法返回一个文件流对象，此方法不会自动创建文件，参数默认是'r'
 f = open(r'myfile\template.txt')
 # 从文件开头读取三个字节长度的内容，并记录读取到的位置
@@ -906,3 +903,73 @@ print(lines)
 f, s = open(r'myfile\template.txt')
 print(f)
 print(s)
+"""
+# -------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# 流行GUI库wxPython，还有其他GUI库如Tkinter(python标准库自带)，AWT、Swing(两者都是在Jython环境中使用)
+import wx
+app = wx.App()
+# None 表示不需要父部件作为构造函数的参数来创建窗口(Frame)
+win = wx.Frame(None, title = '文本编辑器', pos = (660, 390), size = (435, 500))
+# 在Frame上增加控件
+# 可以设置每个按钮的大小，风格
+# 如果只有一个按钮，设置位置及大小将无效，以下是固定设置控件的尺寸，
+# 并不会随窗口大小而变化
+#btnOpen = wx.Button(win, label = '打开', pos = (255, 5), size = (80,25))
+#btnSave = wx.Button(win, label = '保存', pos = (335, 5), size = (80,25))
+#textInput = wx.TextCtrl(win, pos = (5,5), size = (250, 25))
+## 指定了style风格后，文本框转换成文本区
+#contextText = wx.TextCtrl(win, pos = (5, 35), size = (410, 425), style = wx.TE_MULTILINE | wx.HSCROLL)
+
+def load(event):
+     f = open(textInput.GetValue())
+     contextText.SetValue(f.read())
+     f.close()
+        
+def save(event):
+    f = open(textInput.GetValue(), 'w')
+    f.write(contextText.GetValue())
+    f.close
+
+def eraseBackground(event):
+     dc = event.GetDC()
+     if not dc:
+         dc = wx.ClientDC(contextText)
+         rect = contextText.GetUpdateRegion().GetBox()
+         dc.SetClippingRect(rect)
+     dc.Clear()
+     bmp = wx.Bitmap(r"E:\picture\fire.jpg")
+     dc.DrawBitmap(bmp, 0, 0)
+
+# 以下以相对大小设置控件尺寸
+# 控件都放在一个面板上
+bkg = wx.Panel(win)
+btnOpen = wx.Button(bkg, label = '打开')
+# 把打开文件函数绑定到点击按钮事件上
+btnOpen.Bind(wx.EVT_BUTTON, load)
+btnSave = wx.Button(bkg, label = '保存')
+btnSave.Bind(wx.EVT_BUTTON, save)
+textInput = wx.TextCtrl(bkg)
+contextText = wx.TextCtrl(bkg, style = wx.TE_MULTILINE | wx.HSCROLL)
+contextText.SetBackgroundColour("LIGHT GREY")
+#contextText.Bind(wx.EVT_ERASE_BACKGROUND, eraseBackground)
+
+# 尺寸控制器，默认水平布局
+hbox = wx.BoxSizer()
+# 以下控件设置的水平空间占用比例为1:0:0，当然比例也调整成其他如3:2:1
+hbox.Add(textInput, proportion = 1, flag = wx.EXPAND)
+# 设置左边距为5
+hbox.Add(btnOpen, proportion = 0, flag = wx.LEFT, border = 5)
+hbox.Add(btnSave, proportion = 0, flag = wx.LEFT, border = 5)
+
+# 垂直布局尺寸器，尺寸器中也可以把其他的尺寸器添加进来，形成多层次布局
+vbox = wx.BoxSizer(wx.VERTICAL)
+vbox.Add(hbox, proportion = 0, flag = wx.EXPAND | wx.ALL, border = 5)
+vbox.Add(contextText, proportion = 1, flag = wx.EXPAND | wx.LEFT | wx.BOTTOM | wx.RIGHT, border = 5)
+
+# 设置面板尺寸控制器
+bkg.SetSizer(vbox)
+
+# 窗口只有Show才会展示，不然会隐藏
+win.Show()
+app.MainLoop()
