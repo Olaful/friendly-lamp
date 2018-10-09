@@ -903,8 +903,6 @@ print(lines)
 f, s = open(r'myfile\template.txt')
 print(f)
 print(s)
-"""
-# -------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # 流行GUI库wxPython，还有其他GUI库如Tkinter(python标准库自带)，AWT、Swing(两者都是在Jython环境中使用)
 import wx
@@ -973,3 +971,38 @@ bkg.SetSizer(vbox)
 # 窗口只有Show才会展示，不然会隐藏
 win.Show()
 app.MainLoop()
+"""
+# -------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# sqlite数据库模块
+import sqlite3
+# 会创建一个数据库db文件
+conn = sqlite3.connect('myfile/mysqlitedb.db')
+# 游标
+curs = conn.cursor()
+#curs.execute("""
+#    CREATE TABLE fruit
+#    (
+#        id INTEGER primary key,
+#        name TEXT,
+#        desc TEXT
+#    )
+#"""
+#    )
+
+insertSql = "insert into fruit values(?,?,?)"
+querySql = "select id, name, desc from fruit"
+# 从文件中读取数据并插入数据库文件中
+#for line in open('myfile/fruit.txt'):
+# fields = line.split(',')
+# vals = [v for v in fields]
+# curs.execute(insertSql, vals)
+#curs.execute(insertSql, [2, 'watermelon', 'contain a lot of moisture'])
+# 插入不同的数据类型，如Time,Date等
+#curs.execute(insertSql, [sqlite3.Time(1,2,3), '', 'contain a lot of moisture'])
+curs.execute(querySql)
+# fetchall获取所有行
+for row in curs.fetchall():
+    print(row)
+conn.commit()
+conn.close()
