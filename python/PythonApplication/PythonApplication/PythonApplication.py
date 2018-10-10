@@ -971,8 +971,6 @@ bkg.SetSizer(vbox)
 # 窗口只有Show才会展示，不然会隐藏
 win.Show()
 app.MainLoop()
-"""
-# -------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # sqlite数据库模块
 import sqlite3
@@ -980,14 +978,14 @@ import sqlite3
 conn = sqlite3.connect('myfile/mysqlitedb.db')
 # 游标
 curs = conn.cursor()
-#curs.execute("""
+#curs.execute(
 #    CREATE TABLE fruit
 #    (
 #        id INTEGER primary key,
 #        name TEXT,
 #        desc TEXT
 #    )
-#"""
+#
 #    )
 
 insertSql = "insert into fruit values(?,?,?)"
@@ -1001,8 +999,34 @@ querySql = "select id, name, desc from fruit"
 # 插入不同的数据类型，如Time,Date等
 #curs.execute(insertSql, [sqlite3.Time(1,2,3), '', 'contain a lot of moisture'])
 curs.execute(querySql)
-# fetchall获取所有行
+# fetchall获取所有行，还有rowcount，description等操作
 for row in curs.fetchall():
     print(row)
 conn.commit()
 conn.close()
+
+"""
+# -------------------------------------------------------------------------------------------------------------------------------------------------------
+# 网络编程套接字模块
+import socket
+# 建立一个服务端套接字，建立套接字->绑定地址->监听连接->等待连接
+server = socket.socket()
+host  = socket.gethostname()
+port = 1025
+# 绑定的地址格式为元组
+server.bind((host, port))
+# 最多同时监听5个连接
+server.listen(5)
+while True:
+    # accept接收连接请求之前会阻塞
+    client, addrClt = server.accept()
+    print('Got connection from ',addrClt)
+    client.send(b'Thanks for connecting')
+    client.close()
+    
+#client = socket.socket()
+#host  = socket.gethostname()
+#port = 1025
+#client.connect((host, port))
+## 一次最多可接收1024个字节的内容
+#print(client.recv(1024))
