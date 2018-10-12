@@ -1034,6 +1034,7 @@ while True:
 # python3中urllib是一个包，urlopen位于包的request模块中
 from urllib.request import urlopen
 # 也可以open本地文件
+# 返回类文件对象
 webpage = urlopen('https://www.python.org/')
 # 可以把返回的页面当作文件一样读取
 text = webpage.read()
