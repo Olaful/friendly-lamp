@@ -1005,8 +1005,6 @@ for row in curs.fetchall():
 conn.commit()
 conn.close()
 
-"""
-# -------------------------------------------------------------------------------------------------------------------------------------------------------
 # 网络编程套接字模块
 import socket
 # 建立一个服务端套接字，建立套接字->绑定地址->监听连接->等待连接
@@ -1018,7 +1016,7 @@ server.bind((host, port))
 # 最多同时监听5个连接
 server.listen(5)
 while True:
-    # accept接收连接请求之前会阻塞
+    # accept接收连接请求之前会阻塞55
     client, addrClt = server.accept()
     print('Got connection from ',addrClt)
     client.send(b'Thanks for connecting')
@@ -1030,3 +1028,18 @@ while True:
 #client.connect((host, port))
 ## 一次最多可接收1024个字节的内容
 #print(client.recv(1024))
+
+"""
+# -------------------------------------------------------------------------------------------------------------------------------------------------------
+# python3中urllib是一个包，urlopen位于包的request模块中
+from urllib.request import urlopen
+# 也可以open本地文件
+webpage = urlopen('https://www.python.org/')
+# 可以把返回的页面当作文件一样读取
+text = webpage.read()
+text = text.decode('utf-8')
+
+import re
+#s = '<a href="http://map.baidu.com" name="tj_trmap" class="mnav">地图</a>'
+rerult = re.search('<a href="(.*?)" .*?>about</a>', text, re.IGNORECASE)
+print(rerult.group(1))
