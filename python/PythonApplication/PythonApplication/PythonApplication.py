@@ -75,6 +75,16 @@ x.getSomeMsg()
 # 但通过以下这种隐秘的方式却是可以访问私有方法
 x._myclass__privateFunc()
 
+def myfunc2(*args):
+    return [1, 2, 3, 4]
+
+# 可以先对函数的返回值进行操作后再赋值给变量
+y = myfunc2()[0:2]
+# 组装成元组形式的入参
+y = myfunc2(*(1,2,3))
+# 组装成字典形式的入参
+y = myfunc2(**{'a':1, 'b':2})
+
 # 特性的改变只会体现在实例的成员上面
 x.nMember = 1
 x1 = myclass()
@@ -1016,7 +1026,7 @@ server.bind((host, port))
 # 最多同时监听5个连接
 server.listen(5)
 while True:
-    # accept接收连接请求之前会阻塞55
+    # accept接收连接请求之前会阻塞
     client, addrClt = server.accept()
     print('Got connection from ',addrClt)
     client.send(b'Thanks for connecting')
@@ -1029,8 +1039,6 @@ while True:
 ## 一次最多可接收1024个字节的内容
 #print(client.recv(1024))
 
-"""
-# -------------------------------------------------------------------------------------------------------------------------------------------------------
 # python3中urllib是一个包，urlopen位于包的request模块中
 from urllib.request import urlopen
 # 也可以open本地文件
@@ -1038,9 +1046,192 @@ from urllib.request import urlopen
 webpage = urlopen('https://www.python.org/')
 # 可以把返回的页面当作文件一样读取
 text = webpage.read()
+# 如果存在中文，则按utf-8格式解码
 text = text.decode('utf-8')
 
 import re
 #s = '<a href="http://map.baidu.com" name="tj_trmap" class="mnav">地图</a>'
 rerult = re.search('<a href="(.*?)" .*?>about</a>', text, re.IGNORECASE)
 print(rerult.group(1))
+
+from urllib.request import urlretrieve
+from urllib.request import quote
+# 获取网页文件并保存到本地，没有指定文件名时，保存在临时目录，使用
+# urlcleanup可以清除临时目录中的文件
+urlretrieve('https://www.python.org/', 'myfile/python.html')
+# quote会把url中的特殊字符转换成对url友好的字符后再返回url
+# 如会把~转换成%7E，unquote功能则相反
+webpage = urlopen(quote('https://www.~myurl.org/'))
+
+from urllib.request import urlencode
+# 返回param1=test&amp;param2=%c%de类似的字符串
+# 这些字符串可以在url中当作参数
+print(urlencode({'param1':'test', 'param2':'你好'}))
+
+# 导入基础网络服务器框架socketserver，包含TCP,UDP类等
+from socketserver import TCPServer, StreamRequestHandler, ThreadingMixIn
+
+# 使用线程处理，每来自一个请求，开启一个线程来处理，
+# 也可以采用分叉进程来处理，就是开启多个进程，但在windows中不支持
+class Server(ThreadingMixIn, TCPServer): pass
+
+# 继承于StreamRequestHandler类
+class Handler(StreamRequestHandler):
+    # 重写StreamRequestHandler类中handle处理函数
+    def handle(self):
+        addr = self.request.getpeername()
+        print('the connection from ', addr)
+        self.wfile.write(b'hello')
+
+#server = TCPServer(('', 1025), Handler)
+# 把端口号与自定义处理类作为构造函数的参数
+server = Server(('', 1025), Handler)
+server.serve_forever()
+
+import socket, select
+s = socket.socket()
+s.bind((socket.gethostname(), 1025))
+s.listen(5)
+inputs = [s]
+# 结合select 模块实现响应多个连接
+while True:
+    # 找出准备好读写的套接字，这样就是处理多个连接了，实现异步socket，select的第四个参数为等待连接的超时时间，为0则不会阻塞
+    # 返回的元组的第一个元素是输入文件描述符序列
+    # select会监听inputs的状态
+    # 给每一个连接分配一个时间片段，这点不同于多线程的同时处理，不会出现多线程中的同步问题
+    rs, ws, es = select.select(inputs, [], [], 0)
+    for r in rs:
+        # 有新客户端请求连接
+        if r is s:
+            c, addr = s.accept()
+            print('connection from ', addr)
+            inputs.append(c)
+        else:
+             try:
+                 data = r.recv(1024)
+                 disconnected = not data
+             except socket.error:
+                 disconnected = True
+             if disconnected:
+                 print(r.getpeername(), 'disconnected')
+                 inputs.remove(r)
+             else:
+                print(data)
+
+import socket, select
+s = socket.socket()
+s.bind((socket.gethostname(), 1025))
+
+fmap = {s.fileno():s}
+
+s.listen(5)
+# 使用poll方法实现接收多个请求连接
+# 返回一个poll对象
+p = select.poll()
+# 注册一个对象得到其文件描述符
+p.register(s)
+while True:
+    events = p.poll()
+    # 获取对象的状态，包括其文件描述符，在对象上发生的事件
+    for fd, event in events:
+        # 有新客户端请求连接
+        if fd in fmap:
+            c, addr = s.accept()
+            print('connection from ', addr)
+            p.register(c)
+            # 把客户端的socket对象也注册
+            fmap[c.fileno()] = c
+        elif event & select.POLLINT:
+            data = fmap[fd].recv(1024)
+            if not data:
+                print(fmap[fd].getpeername(), 'disconnected')
+                p.unregister(fd)
+                del fmap[fd]
+        else:
+            print(data)
+
+# 使用twisted的简单网络服务器， 这是基于事件处理的网络编程框架
+from twisted.internet import reactor
+from twisted.internet.protocol import Protocol, Factory
+from twisted.protocols.basic import LineReceiver
+
+# 继承于Protocol类
+class MyLogger(Protocol):
+    # 重写Protocol类的函数，有客户端连接时自动被调用
+    def connectionMade(self):
+        print ('connection from ', self.transport.client)
+    # 客户端断开连接时自动被调用
+    def connectionLost(self, reason):
+        print(self.transport.client, 'disconnected')
+    # 接收到客户端数据自动被调用，可能一行只显示一个字符
+    def dataReceived(self, data):
+        print(data)
+
+# 协议对象工厂
+factory = Factory()
+# 自定义处理协议，但也可以默认使用工厂中默认的协议
+factory.protocol = MyLogger
+reactor.listenTCP(1025, factory)
+# 启动服务器
+reactor.run()
+
+# 继承于LineReceiver类
+class MyLogger(LineReceiver):
+    def connectionMade(self):
+        print ('connection from ', self.transport.client)
+
+    def connectionLost(self, reason):
+        print(self.transport.client, 'disconnected')
+
+    # 可以接收到完整的行，而不是每一个字符占一行
+    def lineReceived(self, line):
+        print(line)
+
+factory = Factory()
+factory.protocol = MyLogger
+reactor.listenTCP(1025, factory)
+reactor.run()
+
+from subprocess import Popen, PIPE
+text = open('myfile/test.html', 'rb').read()
+# 使用subprocess打开tidy,tidy可以用来修复不规范的html文件(如标签没有正确结束)，以便利于解析
+tidy = Popen('tidy', stdin = PIPE, stdout = PIPE, stderr = PIPE, shell = True)
+tidy.stdin.write(text)
+# 以下实际中不会输出数据
+tidy.stdout.read()
+
+from urllib.request import urlopen
+from HTMLParser import HTMLParser
+
+class Scraper(HTMLParser):
+    in_li =False
+    in_data = False
+    # 找到开始标签时自动调用
+    # attr由（键，值）组成的列表
+    def handle_startstag(self, tag, attrs):
+        attrs = dict(attrs)
+        if tag == 'li':
+            self.in_li = True
+        if tag == 'li' and 'data-title' in attrs:
+            self.in_data = True
+            self.chuncks = []
+
+    # 使用文本数据时自动调用
+    def handle_data(self, data):
+        if self.in_data:
+            self.chuncks.append(data)
+
+    # 找到结束标签时自动调用
+    def handle_endtag(self, tag):
+        if tag == 'li':
+            self.in_li = False
+        if tag == 'li':
+            if self.in_li and self.in_data:
+                print('%s' % ''.join(self.chuncks))
+
+text = urlopen('https://movie.douban.com/').read()
+parser = Scraper()
+parser.feed(repr(text))
+parser.close()
+"""
+# -------------------------------------------------------------------------------------------------------------------------------------------------------
