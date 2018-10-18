@@ -1233,5 +1233,45 @@ text = urlopen('https://movie.douban.com/').read()
 parser = Scraper()
 parser.feed(repr(text))
 parser.close()
+from urllib.request import urlopen
+import re
+exp1 = re.compile(r'<li class="ui-slide-item"  data-title="(.*?)" data-release=".*?"')
+exp2 = re.compile(r'<li class="title">.*?<a.*?>(.*?)</a>.*?</li>')
+text = urlopen('https://movie.douban.com/').read()
+text = text.decode('utf-8')
+movie = set()
+for name in exp1.findall(text):
+    movie.add(name)
+
+for name in exp2.findall(text):
+    movie.add(name)
+
+print(movie)
 """
-# -------------------------------------------------------------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------
+from urllib.request import urlopen
+from bs4 import BeautifulSoup
+
+text = urlopen('https://movie.douban.com/').read()
+# Beautiful Soup自动将输入文档转换为Unicode编码，输出文档转换为utf-8编码，所以不需要手动转换格式
+#text = text.decode('utf-8')
+movie = set()
+# 使用html.parser解析器，此外还有lxml解析器，xml解析器，html5lib解析器
+soup = BeautifulSoup(text, 'html.parser')
+# 获取li标签
+print(soup.li)
+# 获取标签属性
+print(soup.li.attrs)
+# for tag in soup('li'):
+#     nameall = tag('a', 'reference')
+#     if not nameall: continue
+#     name = nameall[0]
+#     movie.add(name)
+# 查找类为title的li标签
+lill = soup.find_all('li', class_ = 'title')
+for nameall in lill:
+    for name in nameall.find_all('a'):
+        # 获取标签的文本域内容
+        content = name.get_text()
+        movie.add(content)
+print(movie)
