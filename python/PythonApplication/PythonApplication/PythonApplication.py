@@ -1247,8 +1247,7 @@ for name in exp2.findall(text):
     movie.add(name)
 
 print(movie)
-"""
-#---------------------------------------------------------------------------
+
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 
@@ -1275,3 +1274,5 @@ for nameall in lill:
         content = name.get_text()
         movie.add(content)
 print(movie)
+"""
+#---------------------------------------------------------------------------
