@@ -1063,9 +1063,10 @@ urlretrieve('https://www.python.org/', 'myfile/python.html')
 # 如会把~转换成%7E，unquote功能则相反
 webpage = urlopen(quote('https://www.~myurl.org/'))
 
-from urllib.request import urlencode
+from urllib.parse import urlencode
 # 返回param1=test&amp;param2=%c%de类似的字符串
-# 这些字符串可以在url中当作参数
+# 这些字符串可以在url中当作参数，如服务器cgi脚本是用
+# python编写的，则可通过cgi模块的getvalue方法获取到参数
 print(urlencode({'param1':'test', 'param2':'你好'}))
 
 # 导入基础网络服务器框架socketserver，包含TCP,UDP类等
@@ -1276,3 +1277,8 @@ for nameall in lill:
 print(movie)
 """
 #---------------------------------------------------------------------------
+import webbrowser
+from urllib.parse import urlencode
+urlparam = urlencode({'name':'tbq'})
+# 访问cgi脚本编写的服务器并自定义传入参数
+webbrowser.open('http://localhost/cgi-bin/test.cgi?'+urlparam)
