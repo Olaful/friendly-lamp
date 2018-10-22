@@ -1275,10 +1275,17 @@ for nameall in lill:
         content = name.get_text()
         movie.add(content)
 print(movie)
-"""
-#---------------------------------------------------------------------------
+
 import webbrowser
 from urllib.parse import urlencode
 urlparam = urlencode({'name':'tbq'})
 # 访问cgi脚本编写的服务器并自定义传入参数
+# 构建较大型复杂网站服务器可以使用django，zope等框架
 webbrowser.open('http://localhost/cgi-bin/test.cgi?'+urlparam)
+"""
+#---------------------------------------------------------------------------
+# doctest测试工具，检测模块中的文档字符串
+import doctest, test
+# 会检查模块中所有的文档字符串，如文档字符串
+# 包含'func(x)'，则会检查这个例子在解释器中是否有语法错误
+doctest.testmod(test)
