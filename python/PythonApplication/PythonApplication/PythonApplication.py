@@ -1282,10 +1282,33 @@ urlparam = urlencode({'name':'tbq'})
 # 访问cgi脚本编写的服务器并自定义传入参数
 # 构建较大型复杂网站服务器可以使用django，zope等框架
 webbrowser.open('http://localhost/cgi-bin/test.cgi?'+urlparam)
-"""
-#---------------------------------------------------------------------------
 # doctest测试工具，检测模块中的文档字符串
 import doctest, test
 # 会检查模块中所有的文档字符串，如文档字符串
-# 包含'func(x)'，则会检查这个例子在解释器中是否有语法错误
+# 包含'>>> func(x)'，则会检查这个例子在解释器中运行是否得到正确的结果
 doctest.testmod(test)
+"""
+#---------------------------------------------------------------------------
+# 单元测试工具unittest，还有专门针对unittest的GUI界面模块
+import unittest, test
+
+# 继承于TestCase
+class myunitest(unittest.TestCase):
+    def testone(self):
+        for x in range(-10, 10):
+            for y in range(-10, 10):
+                result = test.func3(x,y)
+                # 如果result == x*y不成立，则抛错
+                # 此外还有其他错误抛出方法如failIf,assertEqual等
+                self.failUnless(result == x*y, '失败1')
+
+    def testtwo(self):
+        for x in range(-10, 10):
+            for y in range(-10, 10):
+                x = x/10.0
+                y = y/10.0
+                result = test.func3(x,y)
+                self.failUnless(result == x*y, '失败2')
+
+# main函数运行的时候会把TestCase的子类实例化，之后执行'test'开头的的所有方法
+unittest.main()
