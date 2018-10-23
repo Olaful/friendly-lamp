@@ -5,7 +5,7 @@ host  = socket.gethostname()
 port = 1025
 client.connect((host, port))
 print(client.recv(1024))
-"""
+    """
 #---------------------------------------------------------------
 def square(x):
     """
@@ -23,11 +23,14 @@ def func2():
     >>> 1
     """
 
-def func3(x,y):
+def func3(x, y):
     if x == 7 and y == 9:
         return 'unexpected numer'
-    else:
-        return x*y
+    # pylint检查会提示，return后面不必要的else
+    # 所以为了规范，后面的return不放在else中了
+    #else:
+    #    return x*y
+    return x*y
 
 if __name__ == '__main__':
     import doctest, test

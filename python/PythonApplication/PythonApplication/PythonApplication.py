@@ -1,6 +1,11 @@
 import time
 listNum = [6, 4, 8, 9, 2, 5, 7, 676, 33, 334, 22222]
+'''
+site-packages\pip\compat\__init__.py", line 75, in console_to_str
+    return s.decode('utf_8')
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xd1 in position 3: invalid continuation byte
 
+'''
 # -------------------------------------------------------------------------------------------------------------------------------------------------------
 """
 print(time.time())
@@ -1287,8 +1292,7 @@ import doctest, test
 # 会检查模块中所有的文档字符串，如文档字符串
 # 包含'>>> func(x)'，则会检查这个例子在解释器中运行是否得到正确的结果
 doctest.testmod(test)
-"""
-#---------------------------------------------------------------------------
+
 # 单元测试工具unittest，还有专门针对unittest的GUI界面模块
 import unittest, test
 
@@ -1311,4 +1315,20 @@ class myunitest(unittest.TestCase):
                 self.failUnless(result == x*y, '失败2')
 
 # main函数运行的时候会把TestCase的子类实例化，之后执行'test'开头的的所有方法
+unittest.main()
+"""
+#---------------------------------------------------------------------------
+# 代码规范检查工具pychecker, pylint会检查代码的语法，命名规范等
+# 如定义x变量则会提示短变量，不是规范的命名
+# 可以这样在命令行下使用pylint module，还可以在子进程中调用命令并输出检查结果
+import unittest, test
+from subprocess import Popen, PIPE
+class myunitest2(unittest.TestCase):
+    def testone(self):
+        # -rn关闭其他报告信息，只显示错误与警告信息
+        cmd = 'pylint', '-rn', 'test'
+        pylint = Popen(cmd, stdout = PIPE, stderr = PIPE)
+        # 如果检查结果为空，证明代码规范检查通过
+        self.assertEqual(pylint.stdout.read(), '')
+
 unittest.main()
