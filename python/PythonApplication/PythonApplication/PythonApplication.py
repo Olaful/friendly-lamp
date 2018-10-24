@@ -1332,3 +1332,15 @@ class myunitest2(unittest.TestCase):
         self.assertEqual(pylint.stdout.read(), '')
 
 unittest.main()
+
+# 代码运行分析工具，如分析运行次数，时间
+import profile, test
+# 检查某个函数运行所花时间
+#profile.run('test.func3(1, 2)')
+# 将检查结果保存至文件中
+#profile.run('test.func3(1, 2)', 'test.profile')
+
+import pstats
+# pstats工具可以查看保存后的代码分析文件
+p = pstats.Stats('test.profile')
+print(p.print_stats())
