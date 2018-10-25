@@ -1,17 +1,21 @@
-"""
+""""
 import socket
 client = socket.socket()
-host  = socket.gethostname()
-port = 1025
-client.connect((host, port))
+client.connect((socket.gethostname(), 1025))
 print(client.recv(1024))
+client.send('de')
+
+import sys
+name = sys.argv[0]
+print(name)
+"""
+#-------------------------------------
+def squra(x):
     """
-#---------------------------------------------------------------
-def square(x):
-    """
-    >>> square(2)
-    4
-    >>> square(5)
+    test function
+    >>> squra(2)
+    5
+    >>> squra(5)
     25
     """
     return x*x
@@ -23,14 +27,32 @@ def func2():
     >>> 1
     """
 
-def func3(x, y):
+def func3(x,y):
     if x == 7 and y == 9:
         return 'unexpected numer'
-    # pylint检查会提示，return后面不必要的else
-    # 所以为了规范，后面的return不放在else中了
-    #else:
-    #    return x*y
-    return x*y
+    else:
+        return x*y
+
+def func4():
+    from mylib import testCmodule
+    isHw = testCmodule.is_huiwen('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhehhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh')
+    print(isHw)
+
+def func5():
+    test = 'hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhehhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh'
+    nLen = len(test)
+    for i in range(nLen//2):
+        if test[i] != test[nLen-1-i]:
+            return False
+    return True
+
+def func6():
+    for i in range(100000000):
+        pass
+
+def func7():
+    from mylib import testCmodule
+    test = testCmodule.vistData(1)
 
 if __name__ == '__main__':
     import doctest, test
