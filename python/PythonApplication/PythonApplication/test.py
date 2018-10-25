@@ -34,8 +34,8 @@ def func3(x,y):
         return x*y
 
 def func4():
-    from mylib import testCmodule
-    isHw = testCmodule.is_huiwen('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhehhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh')
+    from mylib import mydll
+    isHw = mydll.is_huiwen('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhehhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh')
     print(isHw)
 
 def func5():
@@ -46,13 +46,14 @@ def func5():
             return False
     return True
 
-def func6():
-    for i in range(100000000):
-        pass
+def func6(nNum):
+    for i in range(nNum):
+        a = i
+    return a - 1
 
-def func7():
-    from mylib import testCmodule
-    test = testCmodule.vistData(1)
+def func7(nNum):
+    from mylib import mydll
+    test = mydll.vistData(nNum)
 
 if __name__ == '__main__':
     import doctest, test

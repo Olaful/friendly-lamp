@@ -1353,13 +1353,15 @@ print(p.print_stats())
 # 还有其他工具可以使用，这些工具有的将C或者C++代码嵌入python代码中，或者
 # 直接导入已经存在的C语言库等，一般需要频繁使用且速度要求高的部分模块可以
 # 通过这些方法来使用外部语言编写的模块
-from mylib import testCmodule
-isHw = testCmodule.is_huiwen('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhehhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh')
+from mylib import mydll
+isHw = mydll.is_huiwen('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhehhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh')
 print(isHw)
 #print(dir(testCmodule))
 
 import profile, test
-# 检查某个函数运行所花时间
-profile.run('test.func6()')
+# 遍历1到一亿的数字，python:c++耗时比为69:1
+profile.run('test.func6(100000001)')
 print('--------------------------------------')
-profile.run('test.func7()')
+profile.run('test.func7(100000000)')
+print(test.func6(100000001))
+print(mydll.vistData(100000000))
