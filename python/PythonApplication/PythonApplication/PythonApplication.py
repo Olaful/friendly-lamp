@@ -1345,3 +1345,21 @@ p = pstats.Stats('test.profile')
 print(p.print_stats())
 """
 #---------------------------------------------------------------------------
+# 以下为导入C++编写的模块，中间需要用到的工具为swig，gcc(或者vs)编译
+# 以swig+vs为例：1.编写module.i接口说明文件 2.swig处理.i文件产生包装代码
+# 3.源代码与包装代码一起编译产生dll文件 4.把产生的.dll文件改后缀为.pyd,前缀
+# 加上_，之后把swig产生的.py与所改的.pyd文件放在python能访问到的目录下，如
+# python36/Lib
+# 还有其他工具可以使用，这些工具有的将C或者C++代码嵌入python代码中，或者
+# 直接导入已经存在的C语言库等，一般需要频繁使用且速度要求高的部分模块可以
+# 通过这些方法来使用外部语言编写的模块
+from mylib import testCmodule
+isHw = testCmodule.is_huiwen('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhehhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh')
+print(isHw)
+#print(dir(testCmodule))
+
+import profile, test
+# 检查某个函数运行所花时间
+profile.run('test.func6()')
+print('--------------------------------------')
+profile.run('test.func7()')
