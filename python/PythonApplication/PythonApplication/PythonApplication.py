@@ -1365,3 +1365,9 @@ print('--------------------------------------')
 profile.run('test.func7(100000000)')
 print(test.func6(100000001))
 print(mydll.vistData(100000000))
+
+# 创建python安装包,使用distutil工具，首先编写setup.py文件，里面指定安装的内容，包括
+# 包括模块名或者包名，作者等信息，之后运行setup文件，会生成.tar.gz格式(也可以通过命令行参数指定格式)
+# 的安装包，里面包含setup.py脚本，运行这个脚本就可以安装模块了，python setup.py bdist --formats=wininst
+# 会创建基于window系统.exe文件，运行其也可以安装模块，此外还有其他专业的安装程序可以使用,如Inno setup，
+# McMilan installer
