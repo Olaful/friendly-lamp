@@ -1343,8 +1343,7 @@ import pstats
 # pstats工具可以查看保存后的代码分析文件
 p = pstats.Stats('test.profile')
 print(p.print_stats())
-"""
-#---------------------------------------------------------------------------
+
 # 以下为导入C++编写的模块，中间需要用到的工具为swig，gcc(或者vs)编译
 # 以swig+vs为例：1.编写module.i接口说明文件 2.swig处理.i文件产生包装代码
 # 3.源代码与包装代码一起编译产生dll文件 4.把产生的.dll文件改后缀为.pyd,前缀
@@ -1370,4 +1369,36 @@ print(mydll.vistData(100000000))
 # 包括模块名或者包名，作者等信息，之后运行setup文件，会生成.tar.gz格式(也可以通过命令行参数指定格式)
 # 的安装包，里面包含setup.py脚本，运行这个脚本就可以安装模块了，python setup.py bdist --formats=wininst
 # 会创建基于window系统.exe文件，运行其也可以安装模块，此外还有其他专业的安装程序可以使用,如Inno setup，
-# McMilan installer
+# McMilan installer，py2exe模块能用py脚本生成exe文件，当然也可以使用pyinstaller工具
+
+from distutils.core import setup, Extension
+import py2exe
+
+#setup(
+#	name='mymodule',
+#	version='2.0',
+#	description='test module',
+#	author='tbq',
+#	py_modules=['mymodule']
+#)
+
+#setup(
+#    name='mymodule',
+#	version='2.0',
+# 使用源文件与.i文件生成python包
+#    ext_modules = [Extension('mymodule', ['mymodule.c', 'mymodule.i'])]
+#    )
+
+setup(console=['mymodule.py'])
+"""
+#---------------------------------------------------------------------------
+from configparser import ConfigParser
+# 获取配置文件的信息
+file = "E:/hexo/source.Olaful.github.io/Olaful.github.io/python/PythonApplication/PythonApplication/myfile/myconfig.ini"
+config = ConfigParser()
+config.read(file)
+# 获取区段
+print(config.sections())
+print(config.get('num', 'PI'))
+# 获取后转换为float类型
+print(config.getfloat('num', 'PI'))
