@@ -1390,8 +1390,7 @@ import py2exe
 #    )
 
 setup(console=['mymodule.py'])
-"""
-#---------------------------------------------------------------------------
+
 from configparser import ConfigParser
 # 获取配置文件的信息
 file = "E:/hexo/source.Olaful.github.io/Olaful.github.io/python/PythonApplication/PythonApplication/myfile/myconfig.ini"
@@ -1402,3 +1401,54 @@ print(config.sections())
 print(config.get('num', 'PI'))
 # 获取后转换为float类型
 print(config.getfloat('num', 'PI'))
+
+# 发送微信消息
+from wxpy import *
+# 初始化机器人，扫码登陆
+bot = Bot()
+
+# 搜索名称含有 "助教-Abby2" 的女性深圳好友
+my_friend = bot.friends().search('助教-Abby2', sex=FEMALE)[0]
+
+# 发送文本给好友
+my_friend.send('Hello WeChat!')
+
+# 发送图片
+#my_friend.send_image('my_picture.jpg')
+
+# 打印来自其他好友、群聊和公众号的消息
+@bot.register()
+def print_others(msg):
+    print(msg)
+
+# 回复 my_friend 的消息 (优先匹配后注册的函数!)
+@bot.register(my_friend)
+def reply_my_friend(msg):
+    return 'received: {} ({})'.format(msg.text, msg.type)
+
+# 自动接受新的好友请求
+@bot.register(msg_types=FRIENDS)
+def auto_accept_friends(msg):
+    # 接受好友请求
+    new_friend = msg.card.accept()
+    # 向新的好友发送消息
+    new_friend.send('我自动接受了你的好友请求')
+
+
+# 进入 Python 命令行、让程序保持运行
+embed()
+
+# 或者仅仅堵塞线程
+# bot.join()
+"""
+#---------------------------------------------------------------------------
+import logging
+# 指定输出日志信息的文件，输入提示信息级别
+logging.basicConfig(level=logging.INFO, filename='myfile/mylog.log')
+logging.info('start the program')
+logging.info('begin the func')
+1/0
+# 上面导致程序中途退出，以下内容不会写入文件
+# 这样就可以通过日志查看程序执行到大概哪个地方出错了
+logging.info('func end')
+logging.info('endind  program')
