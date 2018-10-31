@@ -1440,8 +1440,7 @@ embed()
 
 # 或者仅仅堵塞线程
 # bot.join()
-"""
-#---------------------------------------------------------------------------
+
 import logging
 # 指定输出日志信息的文件，输入提示信息级别
 logging.basicConfig(level=logging.INFO, filename='myfile/mylog.log')
@@ -1452,3 +1451,70 @@ logging.info('begin the func')
 # 这样就可以通过日志查看程序执行到大概哪个地方出错了
 logging.info('func end')
 logging.info('endind  program')
+"""
+#---------------------------------------------------------------------------
+file = open('myfile/template.txt').readlines()
+def filegrt(file):
+    for line in file:
+        yield line
+        yield '\n'
+
+# 把文本的每一个段落格式化成一个个块
+def block(file):
+    block = []
+    for line in filegrt(file):
+        if line.strip():
+            block.append(line)
+        elif block:
+            yield ''.join(block).strip()
+            block = []
+
+#for i  in block(file):
+#    print(i)
+
+import re, sys
+
+print('<html><head><head/><title></title><body>')
+title = True
+
+# 对文本进行html转换
+# 从命令行的标准输入 < 中读取内容
+#for block in block(sys.stdin):
+for block in block(file):
+    # 单独处理每一个块
+    block = re.sub(r'\*(.+?)\*', r'<em>\1</em>', block)
+    if title:
+        print('<h1>')
+        print(block)
+        print('</h1>')
+        title = False
+    else:
+        print('<p>')
+        print(block)
+        print('</p>')
+
+print('</body></html>')
+
+from subprocess import Popen, PIPE
+file = open('myfile/out.html', 'w')
+cmd = 'python PythonApplication.py'
+p = Popen(cmd, stdout = file, stderr = PIPE, shell=True)
+
+# 自定义处理类超类，可以通过统一的形式调用各种方法
+class Handler:
+    def callback(self, pre, name, *args):
+        method = getattr(self, pre+name, None)
+        if callable(method): return method(*args)
+
+    def start(self, name):
+        self.callback('start_', name)
+
+    def end(self, name):
+       self.callback('end_', name)
+
+    def sub(self, name):
+        def substitution(match):
+            result = self.callback('sub_', name, match)
+            if result is None: return match.group(0)
+            return result
+        return substitution
