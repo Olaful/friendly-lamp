@@ -1512,16 +1512,16 @@ logging.info('begin the func')
 # 这样就可以通过日志查看程序执行到大概哪个地方出错了
 logging.info('func end')
 logging.info('endind  program')
-"""
-#---------------------------------------------------------------------------
+
 file = open('myfile/template.txt').readlines()
 def filegrt(file):
     for line in file:
         yield line
+        # 增加空行
         yield '\n'
 
 # 把文本的每一个段落格式化成一个个块
-def block(file):
+def blocks(file):
     block = []
     for line in filegrt(file):
         if line.strip():
@@ -1535,31 +1535,31 @@ def block(file):
 
 import re, sys
 
-print('<html><head><head/><title></title><body>')
-title = True
+#print('<html><head><head/><title></title><body>')
+#title = True
 
 # 对文本进行html转换
 # 从命令行的标准输入 < 中读取内容
 #for block in block(sys.stdin):
-for block in block(file):
-    # 单独处理每一个块
-    block = re.sub(r'\*(.+?)\*', r'<em>\1</em>', block)
-    if title:
-        print('<h1>')
-        print(block)
-        print('</h1>')
-        title = False
-    else:
-        print('<p>')
-        print(block)
-        print('</p>')
+#for block in block(file):
+#    # 单独处理每一个块
+#    block = re.sub(r'\*(.+?)\*', r'<em>\1</em>', block)
+#    if title:
+#        print('<h1>')
+#        print(block)
+#        print('</h1>')
+#        title = False
+#    else:
+#        print('<p>')
+#        print(block)
+#        print('</p>')
 
-print('</body></html>')
+#print('</body></html>')
 
-from subprocess import Popen, PIPE
-file = open('myfile/out.html', 'w')
-cmd = 'python PythonApplication.py'
-p = Popen(cmd, stdout = file, stderr = PIPE, shell=True)
+#from subprocess import Popen, PIPE
+#file = open('myfile/out.html', 'w')
+#cmd = 'python PythonApplication.py'
+#p = Popen(cmd, stdout = file, stderr = PIPE, shell=True)
 
 # 自定义处理类超类，可以通过统一的形式调用各种方法
 class Handler:
@@ -1581,57 +1581,60 @@ class Handler:
             return result
         return substitution
     
-    class HTMLRenderer(Handler):
-    """
-    给文本添加html标记的处理类，可通过超类中的
-    start,end,sub方法进行调用
-    """
-    def start_document(self):
-        print('<html><head></head><title></title><body>')
+class HTMLRenderer(Handler):
+  #
+  #给文本添加html标记的处理类，可通过超类中的
+  #start,end,sub方法进行调用
+  #
+  def start_document(self):
+      print('<html><head></head><title></title><body>')
 
-    def end_document(self):
-        print('</body></html>')
+  def end_document(self):
+      print('</body></html>')
 
-    def start_paragraph(self):
-        print('<p>')
+  def start_paragraph(self):
+      print('<p>')
 
-    def end_paragraph(self):
-        print('</p>')
+  def end_paragraph(self):
+      print('</p>')
 
-    def start_heading(self):
-        print('<h2>')
+  def start_heading(self):
+      print('<h2>')
 
-    def end_heading(self):
-        print('</h2>')
+  def end_heading(self):
+      print('</h2>')
 
-    def start_title(self):
-        print('<h1>')
+  def start_title(self):
+      print('<h1>')
 
-    def end_title(self):
-        print('</h1>')
+  def end_title(self):
+      print('</h1>')
 
-    def start_list(self):
-        print('<ul>')
+  def start_list(self):
+      print('<ul>')
 
-    def end_list(self):
-        print('</ul>')
+  def end_list(self):
+      print('</ul>')
 
-    def start_listitem(self):
-        print('<li>')
+  def start_listitem(self):
+      print('<li>')
 
-    def end_listitem(self):
-        print('</li>')
+  def end_listitem(self):
+      print('</li>')
 
-    def sub_emphasis(self, match):
-        return '<em>%s</em>' % match.group(1)
+  def sub_emphasis(self, match):
+      return '<em>%s</em>' % match.group(1)
 
-    def sub_url(self, match):
-        return '<a href="%s">%s</a>' % (match.group(1), match.group(1))
+  def sub_url(self, match):
+      return '<a href="%s">%s</a>' % (match.group(1), match.group(1))
 
-    def sub_mail(self, match):
-        return '<a href="mailto:%s">%s</a>' % (match.group(1), match.group(1))
+  def sub_mail(self, match):
+      return '<a href="mailto:%s">%s</a>' % (match.group(1), match.group(1))
 
-    def feed(self, data):
+  def sub_caps(self, match):
+      return '<em>%s</em>' % match.group(1)
+
+  def feed(self, data):
         print(data)
 
 import re, sys
@@ -1675,18 +1678,15 @@ class Rule:
 
 # 标题规则
 class HeadingRule(Rule):
-    """
-    标题最多由70个字符组成，不以冒号结尾
-    """
+    #标题最多由70个字符组成，不以冒号结尾
     type = 'heading'
     def condition(self, block):
         return not '\n' in block and len(block) <= 70 and not block[-1] == ';'
 
 # 题目规则，继承于标题规则类，因为标题规则依然适用于题目规则
 class TitleRule(HeadingRule):
-    """
-    文本第一个标题当作题目来对待
-    """
+    #文本第一个标题当作题目来对待
+   
     type = 'title'
     first = True
     def condition(self, block):
@@ -1696,9 +1696,8 @@ class TitleRule(HeadingRule):
 
 # 列表项规则
 class ListItemRule(Rule):
-    """
-    以'-'开头的段落为列表项
-    """
+    #以'-'开头的段落为列表项
+
     type = 'listitem'
     def condition(self, block):
         return block[0] == '-'
@@ -1712,9 +1711,8 @@ class ListItemRule(Rule):
         return True
 
 class ListRule(ListItemRule):
-    """
-    列表是非列表与最后一个列表之间的区段
-    """
+    #列表是非列表与最后一个列表之间的区段
+
     type = 'list'
     inside = False
 
@@ -1733,9 +1731,8 @@ class ListRule(ListItemRule):
 
 # 段落规则
 class ParagraphRule(Rule):
-    """
-    默认规则，处理不被其他规则处理的块，放在规则列表的最后一位
-    """
+    #默认规则，处理不被其他规则处理的块，放在规则列表的最后一位
+
     type = 'paragraph'
     def condition(self, block):
         return True
@@ -1747,13 +1744,15 @@ emphasis = r'\*(.+?)\*'
 url = r'(http://[\.a-zA-Z/]+)'
 # e-mail
 mail = r'([a-zA-Z0-9]+@[\.a-zA-Z]+[a-zA-Z]+)'
+# 大写强调
+caps = r'([A-Z]+)'
 
 class BasicTextParser(Parser):
-    """
-    增加需要的规则器与过滤器
-    """
+    #增加需要的规则器与过滤器
+
     def __init__(self, handler):
         Parser.__init__(self, handler)
+        # 规则判断的顺序很重要，先判断列表，后题目，标题，段落
         self.addRules(ListRule())
         self.addRules(ListItemRule())
         self.addRules(TitleRule())
@@ -1763,9 +1762,12 @@ class BasicTextParser(Parser):
         self.addFilter(emphasis, 'emphasis')
         self.addFilter(url, 'url')
         self.addFilter(mail, 'mail')
+        self.addFilter(caps, 'caps')
 
 handler = HTMLRenderer()
 parser = BasicTextParser(handler)
-f=open('myfile/test.txt').readlines()
+f=open('myfile/template.txt').readlines()
 #parser.parser(sys.stdin)
 parser.parser(f)
+"""
+#---------------------------------------------------------------------------
