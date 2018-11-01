@@ -1441,6 +1441,67 @@ embed()
 # 或者仅仅堵塞线程
 # bot.join()
 
+# 单链表
+# 定义一个节点，包含本身自定义数据与指向下一个节点的指针
+class Node():
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+# 定义一个链表，包括初始化链表，打印链表，插入，删除节点
+# 求链表长度，这些操作都是通过移动指针遍历链表完成的
+class LinkList():
+    def __init__(self, node):
+        self.head = node
+
+    def printList(self):
+        p = self.head
+        while p:
+            print(p.data)
+            p = p.next
+
+    def insertList(self, pos, node):
+        p = self.head
+        index = 1
+        while index < pos:
+            p = p.next
+            index += 1
+            # python不支持自增或自减操作
+            #++index
+
+        node.next = p.next
+        p.next = node
+
+    def delList(self, pos):
+        p = self.head
+        index = 1
+        while index < pos:
+            pre = p
+            p = p.next
+            index += 1
+
+        pre.next = p.next
+        p = None
+
+    def getListLength(self):
+        cnt = 0
+        p = self.head
+        while p:
+            p = p.next
+            cnt += 1
+
+        return  cnt
+
+ll = LinkList(Node(1))
+print(ll.printList())
+
+# 在链表第一个位置后插入节点
+ll.insertList(1, Node(2))
+print(ll.printList())
+# 删除第二个位置的节点
+ll.delList(2)
+print(ll.printList())
+
 import logging
 # 指定输出日志信息的文件，输入提示信息级别
 logging.basicConfig(level=logging.INFO, filename='myfile/mylog.log')
@@ -1513,8 +1574,198 @@ class Handler:
        self.callback('end_', name)
 
     def sub(self, name):
+        # match对象由re.sub函数传入
         def substitution(match):
             result = self.callback('sub_', name, match)
             if result is None: return match.group(0)
             return result
         return substitution
+    
+    class HTMLRenderer(Handler):
+    """
+    给文本添加html标记的处理类，可通过超类中的
+    start,end,sub方法进行调用
+    """
+    def start_document(self):
+        print('<html><head></head><title></title><body>')
+
+    def end_document(self):
+        print('</body></html>')
+
+    def start_paragraph(self):
+        print('<p>')
+
+    def end_paragraph(self):
+        print('</p>')
+
+    def start_heading(self):
+        print('<h2>')
+
+    def end_heading(self):
+        print('</h2>')
+
+    def start_title(self):
+        print('<h1>')
+
+    def end_title(self):
+        print('</h1>')
+
+    def start_list(self):
+        print('<ul>')
+
+    def end_list(self):
+        print('</ul>')
+
+    def start_listitem(self):
+        print('<li>')
+
+    def end_listitem(self):
+        print('</li>')
+
+    def sub_emphasis(self, match):
+        return '<em>%s</em>' % match.group(1)
+
+    def sub_url(self, match):
+        return '<a href="%s">%s</a>' % (match.group(1), match.group(1))
+
+    def sub_mail(self, match):
+        return '<a href="mailto:%s">%s</a>' % (match.group(1), match.group(1))
+
+    def feed(self, data):
+        print(data)
+
+import re, sys
+# 文本解析器，一个文本可能由标题，段落，列表等组成，可把这些单独分成快
+# 针对每个快制定规则并处理，过滤信息,虽然实现这个在一个类中也可以完成
+# 但不利于扩展，把文本解析器分成过滤器，规则器，执行器来实现，利于功能
+# 的扩展
+class Parser:
+    def __init__(self, handler):
+        self.handler = handler
+        self.filters = []
+        self.rules = []
+
+    def addFilter(self, pattern, name):
+        def filter(block, handler):
+            # sub函数可以把匹配到的结果对象传给第二个参数使用
+            return re.sub(pattern, handler.sub(name), block)
+        self.filters.append(filter)
+
+    def addRules(self, rule):
+        self.rules.append(rule)
+
+    def parser(self, file):
+        self.handler.start('document')
+        for block in blocks(file):
+            for filer in self.filters:
+                block = filer(block, self.handler)
+            for rule in self.rules:
+                if rule.condition(block):
+                    if rule.action(block, self.handler): break
+        self.handler.end('document')
+
+# 规则的超类，包含一个action方法
+class Rule:
+    def action(self, block, handler):
+        handler.start(self.type)
+        handler.feed(block)
+        handler.end(self.type)
+        return True
+
+
+# 标题规则
+class HeadingRule(Rule):
+    """
+    标题最多由70个字符组成，不以冒号结尾
+    """
+    type = 'heading'
+    def condition(self, block):
+        return not '\n' in block and len(block) <= 70 and not block[-1] == ';'
+
+# 题目规则，继承于标题规则类，因为标题规则依然适用于题目规则
+class TitleRule(HeadingRule):
+    """
+    文本第一个标题当作题目来对待
+    """
+    type = 'title'
+    first = True
+    def condition(self, block):
+        if not self.first: return False
+        self.first = False
+        return HeadingRule.condition(self, block)
+
+# 列表项规则
+class ListItemRule(Rule):
+    """
+    以'-'开头的段落为列表项
+    """
+    type = 'listitem'
+    def condition(self, block):
+        return block[0] == '-'
+
+    # 不需要列表开头的'-'字符，由自定义的标记替换
+    # 所以重写超类中的action方法实现个性化处理
+    def action(self, block, handler):
+        handler.start(self.type)
+        handler.feed(block[1:].strip())
+        handler.end(self.type)
+        return True
+
+class ListRule(ListItemRule):
+    """
+    列表是非列表与最后一个列表之间的区段
+    """
+    type = 'list'
+    inside = False
+
+    # 列表可能存在于整个文件中，所以不能遇到列表开头就停止检查
+    def condition(self, block):
+        return True
+
+    def action(self, block, handler):
+        if not self.inside and ListItemRule.condition(self, block):
+            handler.start(self.type)
+            self.inside = True
+        elif self.inside and  not ListItemRule.condition(self, block):
+            handler.end(self.type)
+            self.inside = False
+        return False
+
+# 段落规则
+class ParagraphRule(Rule):
+    """
+    默认规则，处理不被其他规则处理的块，放在规则列表的最后一位
+    """
+    type = 'paragraph'
+    def condition(self, block):
+        return True
+
+# 过滤器的正则表达式
+# 强调内容
+emphasis = r'\*(.+?)\*'
+# url
+url = r'(http://[\.a-zA-Z/]+)'
+# e-mail
+mail = r'([a-zA-Z0-9]+@[\.a-zA-Z]+[a-zA-Z]+)'
+
+class BasicTextParser(Parser):
+    """
+    增加需要的规则器与过滤器
+    """
+    def __init__(self, handler):
+        Parser.__init__(self, handler)
+        self.addRules(ListRule())
+        self.addRules(ListItemRule())
+        self.addRules(TitleRule())
+        self.addRules(HeadingRule())
+        self.addRules(ParagraphRule())
+
+        self.addFilter(emphasis, 'emphasis')
+        self.addFilter(url, 'url')
+        self.addFilter(mail, 'mail')
+
+handler = HTMLRenderer()
+parser = BasicTextParser(handler)
+f=open('myfile/test.txt').readlines()
+#parser.parser(sys.stdin)
+parser.parser(f)
