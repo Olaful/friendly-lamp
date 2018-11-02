@@ -1771,3 +1771,164 @@ f=open('myfile/template.txt').readlines()
 parser.parser(f)
 """
 #---------------------------------------------------------------------------
+# reportlab是规则数据的包，还有其他功能丰富的包如PYX
+from reportlab.graphics.shapes import Drawing, String, PolyLine
+from reportlab.graphics import renderPDF
+from reportlab.lib import colors
+
+# d = Drawing(100, 100)
+# s = String(50, 50, 'My firest PDF', textAnchor='middle')
+# d.add(s)
+# renderPDF.drawToFile(d, 'myfile/mypdf.pdf', 'hello PDF')
+
+data = [
+    # year mon pre high low
+    (2007, 8, 113.2, 114.2, 112.2),
+    (2007, 9, 112.2, 115.2, 109.8),
+    (2007, 10, 111.0, 116.0, 106.0),
+    (2007, 11, 109.8, 116.8, 102.8),
+    (2007, 12, 107.3, 115.3, 99.3),
+    (2008, 1, 105.2, 114.2, 96.2),
+    (2008, 2, 104.1, 114.1, 94.1),
+    (2008, 3, 99.9, 110.9, 88.9),
+    (2009, 4, 94.8, 106.8, 82.8),
+    (2009, 5, 91.2, 104.2, 78.2)
+]
+
+# 时间等数据
+# 由于画图区域空间不够，所以对数据进行修剪
+times = [100*((row[0]+row[1]/12.0) - 2007) for row in data]
+pre = [row[2] for row in data]
+high = [row[3] for row in data]
+low = [row[4] for row in data]
+
+# 坐标点数据
+preposdata = list(zip(times, pre))
+highposdata = list(zip(times, high))
+lowposdata = list(zip(times, low))
+
+d = Drawing(300, 300)
+# 往绘图对象中添加坐标曲线，结合数据创建矢量图
+d.add(PolyLine(preposdata, strokeColor = colors.blue))
+d.add(PolyLine(highposdata, strokeColor = colors.red))
+d.add(PolyLine(lowposdata, strokeColor = colors.green))
+d.add(String(150, 150, 'Sunspots', fillColor = colors.red))
+
+# 写入pdf文件
+renderPDF.drawToFile(d, 'myfile/mypdf.pdf', 'sunspots data')
+
+from reportlab.graphics.shapes import Drawing, String, PolyLine
+from reportlab.graphics.charts.lineplots import LinePlot
+from reportlab.graphics import renderPDF
+from reportlab.lib import colors
+from urllib.request import urlopen
+
+data = []
+comment = '#'
+lines = urlopen('http://127.0.0.1:8080/data.txt').readlines()
+
+# 提取数据
+for line in lines:
+    # 读取到的数据是bytes格式，需要decode转换成string格式
+    if not line.isspace() and not str(line.decode()[0]) in comment:
+        data.append([float(n.decode()) for n in line.split()])
+
+print(data)
+times = [row[0]+row[1]/12.0 for row in data]
+pre = [row[2] for row in data]
+high = [row[3] for row in data]
+low = [row[4] for row in data]
+
+preposdata = list(zip(times, pre))
+highposdata = list(zip(times, high))
+lowposdata = list(zip(times, low))
+
+lp = LinePlot()
+# 曲线的开始坐标，x,y轴长度
+lp.x = 50
+lp.y = 50
+lp.width = 300
+lp.height = 150
+# 给曲线添加数据(x,y),根据列表元素的格数决定曲线的条数
+lp.data = [preposdata, highposdata, lowposdata]
+lp.lines[0].strokeColor = colors.blue
+lp.lines[1].strokeColor = colors.red
+lp.lines[2].strokeColor = colors.green
+
+d = Drawing(400, 300)
+d.add(lp)
+d.add(String(150, 150, 'Sunspots', fillColor = colors.red, fontSize = 15))
+
+# 一般产生的图形对象都可以添加到renderPDF中来产生pdf文件，如wxpython对象
+renderPDF.drawToFile(d, 'myfile/mypdf.pdf', 'sunspots data')
+
+# sax不会一次就把xml文档内容读入到内存中, 但dom文件数对象会
+from xml.sax import parse
+from xml.sax.handler import ContentHandler
+
+class myXMlHandler(ContentHandler):
+    # 标记是否位于某个标签内
+    in_headline = False
+    def __init__(self, headlines):
+        ContentHandler.__init__(self)
+        self.headlines = headlines
+        self.data = []
+
+    # 遇到开始标签时自动被调用
+    def startElement(self, name, attrs):
+        #print(name, attrs.keys())
+        if name == 'h1':
+            self.in_headline = True
+
+    def endElement(self, name):
+        if name == 'h1':
+            text = ''.join(self.data)
+            self.headlines.append(text)
+            self.data = []
+            self.in_headline = False
+
+    # 进入标签时自动被调用，提取xml文档中所有h1标签中的文本内容
+    def characters(self, content):
+        if self.in_headline == True:
+            self.data.append(content)
+
+headlines = []
+
+# 由于传headlines是可变的对象，相当于传引用，
+# 传不可变对象时，如数字，字符串，相当于传值
+parse('myfile/myxml.xml', myXMlHandler(headlines))
+print(headlines)
+"""
+#---------------------------------------------------------------------------
+from xml.sax import parse
+from xml.sax.handler import ContentHandler
+class myXMlHandler(ContentHandler):
+    passthrough = False
+
+    def startElement(self, name, attrs):
+        if name == 'page':
+            self.passthrough = True
+            self.out = open('myfile/'+attrs['name']+'.html', 'w')
+            self.out.write('<html><head>\n')
+            self.out.write('<title>%s</title>' % attrs['title'])
+            self.out.write('\n</head><body>\n')
+        elif self.passthrough:
+            self.out.write('<'+name)
+            for key, val in attrs.items():
+                self.out.write(' %s="%s" ' % (key, val))
+            self.out.write('>')
+
+
+    def endElement(self, name):
+        if name == 'page':
+            self.passthrough = False
+            self.out.write('\n</body></html>')
+            self.out.close()
+        elif self.passthrough:
+            self.out.write('</%s>' % name)
+
+    def characters(self, content):
+        if self.passthrough:
+            self.out.write(content)
+
+parse('myfile/myxml.xml', myXMlHandler())
