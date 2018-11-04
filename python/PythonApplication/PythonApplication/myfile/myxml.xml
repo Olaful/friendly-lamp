@@ -1,0 +1,34 @@
+<!--定义一个包含一个默认页面，一个目录，目录底下包含三个页面的网站结构-->
+<website>
+<page name="index" title="HomePage">
+	<h1 name="home" title="mytitle">☆welcome to my home page☆</h1>
+	<p>three page link below</p>
+	<ul>
+		<li>
+			<a href="htmlPages/pageone.html">pageone</a>
+		</li>
+		<li>
+			<a href="htmlPages/pagetwo.html">pagetwo</a>
+		</li>
+		<li>
+			<a href="htmlPages/pagethree.html">pagethree</a>
+		</li>
+	</ul>
+</page>
+
+<directory name="htmlPages">
+	<page name="pageone" title="pageone">
+		<h1>welcome to pageone</h1>
+		<p>there are nothing here</p>
+	</page>
+	<page name="pagetwo" title="pagetwo">
+		<h1>welcome to pagetwo</h1>
+		<p>there are nothing here</p>
+	</page>
+	<page name="pagethree" title="pagethree">
+		<h1>welcome to pagethree</h1>
+		<p>there are nothing here</p>
+	</page>
+</directory>
+</website>
+

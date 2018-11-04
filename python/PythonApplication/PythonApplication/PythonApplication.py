@@ -1769,8 +1769,7 @@ parser = BasicTextParser(handler)
 f=open('myfile/template.txt').readlines()
 #parser.parser(sys.stdin)
 parser.parser(f)
-"""
-#---------------------------------------------------------------------------
+
 # reportlab是规则数据的包，还有其他功能丰富的包如PYX
 from reportlab.graphics.shapes import Drawing, String, PolyLine
 from reportlab.graphics import renderPDF
@@ -1863,6 +1862,7 @@ d.add(String(150, 150, 'Sunspots', fillColor = colors.red, fontSize = 15))
 renderPDF.drawToFile(d, 'myfile/mypdf.pdf', 'sunspots data')
 
 # sax不会一次就把xml文档内容读入到内存中, 但dom文件数对象会
+# sax对xml使用的是unicode的处理方式
 from xml.sax import parse
 from xml.sax.handler import ContentHandler
 
@@ -1898,8 +1898,7 @@ headlines = []
 # 传不可变对象时，如数字，字符串，相当于传值
 parse('myfile/myxml.xml', myXMlHandler(headlines))
 print(headlines)
-"""
-#---------------------------------------------------------------------------
+
 from xml.sax import parse
 from xml.sax.handler import ContentHandler
 class myXMlHandler(ContentHandler):
@@ -1932,3 +1931,135 @@ class myXMlHandler(ContentHandler):
             self.out.write(content)
 
 parse('myfile/myxml.xml', myXMlHandler())
+
+from xml.sax import parse
+from xml.sax.handler import ContentHandler
+import os
+
+# 分三个层次解析xml，ContentHandler->Dispatcher->myXMlHandler
+# 按抽象程度开始写
+
+# 分发功能类
+class Dispatcher:
+    def dispatch(self, prefix, name, attrs=None):
+        # capitalize首字母大写
+        dname = 'default' + prefix.capitalize()
+        method = getattr(self, prefix+name.capitalize(), None)
+        if callable(method): args = ()
+        else:
+            method = getattr(self, dname, None)
+            # 定义一个元组入参，结束标签不需要attrs入参
+            args = name,
+        if prefix == 'start': args += attrs,
+        if callable(method): method(*args)
+
+    def startElement(self, name, attrs):
+        self.dispatch('start', name, attrs)
+
+    def endElement(self, name):
+       self.dispatch('end', name)
+
+# 具体实现类
+# 先继承于Dispatcher，因为要使用的是Dispatcher类中的start与end方法
+class myXMlHandler(Dispatcher, ContentHandler):
+    # 是否位于page标签内
+    passthrough = False
+    def __init__(self, *args):
+        self.directory = [args[0]]
+        self.ensureDirectory()
+
+    def ensureDirectory(self):
+        # 以路径符把路径连接起来，如*['path', 'subpath']->path//subpath
+        path = os.path.join(*self.directory)
+        if not os.path.isdir(path): os.makedirs(path)
+
+    def startDirectory(self, attrs):
+        self.directory.append(attrs['name'])
+        self.ensureDirectory()
+
+    def endDirectory(self):
+        # 弹出进入的目录，相当于返回上一层目录
+        self.directory.pop()
+
+    def startPage(self, attrs):
+        self.passthrough = True
+        self.out = open(os.path.join(*self.directory + [attrs['name'] + '.html']), 'w')
+        self.writeHeader(attrs)
+
+    def endPage(self):
+       self.wriFooter()
+       self.out.close()
+       self.passthrough = False
+
+    def writeHeader(self, attrs):
+         self.out.write('<html>\n<head>\n')
+         self.out.write('当前位置:'+'/'.join(self.directory))
+         self.out.write('<title>%s</title>' % attrs['title'])
+         self.out.write('\n</head>\n<body>\n')
+
+    def wriFooter(self):
+        self.out.write('\n</body>\n</html>')
+
+    def defaultStart(self, name, attrs):
+        if self.passthrough:
+            self.out.write('<'+name)
+            for key, val in attrs.items():
+                self.out.write(' %s="%s" ' % (key, val))
+            self.out.write('>')
+
+    def defaultEnd(self, name):
+        if self.passthrough:
+            self.out.write('</%s>' % name)
+
+    def characters(self, content):
+        if self.passthrough: self.out.write(content)
+
+parse('myfile/myxml.xml', myXMlHandler('myfile/html'))
+"""
+#---------------------------------------------------------------------------
+#from nntplib import *
+#s = NNTP('web.aioe.org')
+#(resp, count, first, last, name) = s.group('comp.lang.python')
+#(resp, subs) = s.xhdr('subject', (str(first)+'-'+str(last)))
+#for subject in subs[-10:]:
+#  print(subject)
+#number = input('Which article do you want to read? ')
+#(reply, num, id, list) = s.body(str(number))
+#for line in list:
+#  print(line)
+
+# 新闻组信息获取模块
+from nntplib import NNTP
+import time
+import datetime
+#yesterday = time.time() - 24*60*60
+#yesterday = time.localtime(yesterday)
+
+#date = time.strftime('%y%m%d', yesterday)
+#hour = time.strftime('%H%M%S', yesterday)
+# 十天以前
+yesterday = datetime.date.today() + datetime.timedelta(days = -4)
+
+servername = 'web.aioe.org'
+group = 'comp.lang.python.announce'
+# 向NNTP服务器发送一条newnews指令
+server = NNTP(servername)
+# 获取全部新闻组信息
+(resp, count, first, last, name) = server.group(group)
+# 获取指定日期之后的新闻组信息，ids为文章ID
+(resp, ids) = server.newnews(group, yesterday)
+body = server.body('<mailman.355.1541073920.2799.python-announce-list@python.org>')[1].lines
+print(body)
+
+subject = []
+for id in ids:
+    (resp, ArticleInfoObj) = server.head(id)
+    for line in ArticleInfoObj.lines:
+        if line.lower().startswith(b'subject:'):
+            subject = line[9:]
+            break
+    body = server.body(id)[1].lines
+
+    print(subject)
+    print('-'*len(subject))
+    print('\n'.join([b.decode() for b in body]))
