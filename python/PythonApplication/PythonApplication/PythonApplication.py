@@ -2063,3 +2063,160 @@ for id in ids:
     print(subject)
     print('-'*len(subject))
     print('\n'.join([b.decode() for b in body]))
+    
+"""
+#---------------------------------------------------------------------------
+from nntplib import NNTP
+import datetime
+import re
+from email import message_from_string
+from urllib.request import urlopen
+
+# 新闻获取：多个新闻发布源->新闻代理：1.获取所有发布源的新闻信息并统一格式化(title:body) 2.新闻信息发布到多个目标文件(纯文本,html文件等)
+
+# 新闻代理
+class NewsAgent:
+    def __init__(self):
+        self.sources = []
+        self.destinations = []
+
+    # 添加新闻源
+    def addSource(self, source):
+        self.sources.append(source)
+
+    # 添加发布目标
+    def adddes(self, des):
+        self.destinations.append(des)
+
+    # 发布到文件
+    def distribute(self):
+        items = []
+        for source in self.sources:
+            items.extend(source.getItems())
+        for des in self.destinations:
+            des.releaseItems(items)
+
+# 定义新闻信息结构(title:body)
+class NewItems:
+    def __init__(self, title, body):
+        self.title = title
+        self.body = body
+
+# nntp服务器获取新闻
+class NNTPSource:
+    def __init__(self, servername, group, newstime):
+        self.servername = servername
+        self.group = group
+        self.newstime = newstime
+
+    # 获取新闻title与Body信息
+    def getItems(self):
+        server = NNTP(self.servername)
+        (resp, ids) = server.newnews(self.group, self.newstime)
+
+        for id in ids:
+            (resp, artitle) = server.article(id)
+            msg = message_from_string('\n'.join([n.decode() for n in artitle.lines]))
+            # 根据subject关键字获取title
+            title = msg['subject']
+            body = msg.get_payload()
+            # bdoy信息包含多个部分时，只取第一部分
+            if msg.is_multipart():
+                body = body[0]
+
+            # 保存获取的信息
+            yield NewItems(title, body)
+        # 释放连接
+        server.quit()
+
+# 其他新闻网站获取新闻
+class OtherWebSource:
+    def __init__(self, url, titleExp, bodyExp):
+        self.url = url
+        self.titleExp = titleExp
+        self.bodyExp = bodyExp
+
+    def getItems(self):
+        file = urlopen(self.url).read().decode('utf-8')
+        titles = self.titleExp.findall(file)
+        print(titles)
+        bodys= self.bodyExp.findall(file)
+
+        for title, body in list(zip(titles, bodys)):
+            yield NewItems(title, body)
+
+# 发布为纯文本格式
+class TextDes:
+    def __init__(self, filename):
+        self.filename = filename
+    def releaseItems(self, items):
+        f = open(self.filename, 'w')
+        for item in items:
+            print(item.title, file=f)
+            print('-'*len(item.title)*3, file=f)
+            print(item.body, file=f)
+        #f.close()
+
+
+# 发布为Html格式
+class HtmlDes:
+    def __init__(self, filename):
+        self.filename = filename
+
+    def releaseItems(self, items):
+        f = open(self.filename, 'w')
+        print('<html>\n<head>\n<title>News</title>\n</head>\n<body>', file=f)
+        print('<h1>\n', file=f)
+        print('<ul>', file=f)
+
+        # 新闻标题列表
+        id = 0;
+        for item in items:
+            id += 1
+            print('<li><a href="#%d">%s</a></li>' % (id, item.title), file=f)
+
+        print('</ul>', file=f)
+        print('</h1>', file=f)
+
+        # 标题及正文
+        id = 0;
+        for item in items:
+            id += 1
+            print('<h2 id="%d">%s</h2><p>%s</p>' % (id, item.title, item.body), file=f)
+
+        print('\n</body>\n</html>', file=f)
+
+        #f.close()
+
+# 主函数
+def runDefaultSetup():
+
+    newsAgent = NewsAgent()
+
+    # 添加以nntp方式获取的新闻源
+    newstime = datetime.date.today() + datetime.timedelta(days=-4)
+    nntp = NNTPSource(servername='web.aioe.org', group='comp.lang.python.announce', newstime=newstime)
+
+    newsAgent.addSource(nntp)
+
+    # 添加以url方式获取的新闻源
+    url = 'http://culture.ifeng.com/'
+    titleExp = re.compile(r'<a href=".*?" target="_blank">[(.*?)]{10}</a>')
+    bodyExp = re.compile(r'<a href="(.*?)" target="_blank">[(.*?)]{10}</a>')
+
+    otherWeb = OtherWebSource(url, titleExp, bodyExp)
+
+    newsAgent.adddes(HtmlDes('myfile/news.html'))
+
+    newsAgent.distribute()
+
+#runDefaultSetup()
+
+url = 'http://culture.ifeng.com/'
+titleExp = re.compile(r'(<h2>|<p>)\s*<a href=".*?" target="_blank">(.*?)</a>\s*(</h2>|</p>)')
+bodyExp = re.compile(r'<a href="(.*?)" target="_blank">[(.*?)]{10}</a>')
+
+otherWeb = OtherWebSource(url, titleExp, bodyExp)
+
+for item in otherWeb.getItems():
+    print(item.title)
