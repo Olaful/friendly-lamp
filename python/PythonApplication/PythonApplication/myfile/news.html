@@ -1,0 +1,712 @@
+<html>
+<head>
+<title>News</title>
+</head>
+<body>
+<h2>
+
+<ul>
+<li><a href="#1">pytest 3.9.3</a></li>
+<li><a href="#2">ANN: psutil 5.4.8 released</a></li>
+<li><a href="#3">[ANN] Bloscpack v0.15.0</a></li>
+<li><a href="#4">=?UTF-8?Q?=5BANN=5D_Josh_Bartlett_=E2=80=94_pygame_Artist_in_Residence?=</a></li>
+<li><a href="#5">ANN: TkGridGUI 0.0.20 released</a></li>
+<li><a href="#6">Introducing NimbusML - experimental Python bindings for ML.NET</a></li>
+<li><a href="#7">pytest 3.10</a></li>
+<li><a href="#8">=?UTF-8?Q?ANN:_Python_Meeting_D=c3=bcsseldorf_-_07.11.2018?=</a></li>
+<li><a href="#9">NumPy 1.15.4 release</a></li>
+<li><a href="#10">中国游戏进化史：没有人知道潮水的方向</a></li>
+<li><a href="#11">史铁生：合欢树还在，母亲却不在了</a></li>
+<li><a href="#12">韩少功评佩索阿：自相矛盾常是智者的犹疑</a></li>
+<li><a href="#13">莫言读《旱魃》杂感：朱先生是我真正的先驱</a></li>
+<li><a href="#14">古代名媛是如何做到脚底生香的 从画中找证据</a></li>
+<li><a href="#15">看钱君匋的书画收藏：从金农到邓石如、伊秉绶、吴昌硕</a></li>
+<li><a href="#16">“成都·蓬皮杜：国际艺术双年展”：期待突破美术馆围墙</a></li>
+<li><a href="#17">中国“规划政治”的重大转型: 压力、博弈及其前途 </a></li>
+<li><a href="#18">NHK节目揭底：那些贫穷又丧气的普通日本人</a></li>
+<li><a href="#19">刀枪弓剑：台湾高山族人有哪些兵器？</a></li>
+<li><a href="#20">《阿拉姜色》好：将信仰袪魅，描摹日常的诗意与苍凉</a></li>
+<li><a href="#21">林青霞张爱玲三毛： 一首歌唱尽三个女子的传奇一生</a></li>
+<li><a href="#22">历史上的“如懿”为什么剪发？</a></li>
+<li><a href="#23">全世界的神话中，人类都是用泥巴捏出来的</a></li>
+<li><a href="#24">这个穿旗袍造原子弹的中国女人 世界欠她一个诺贝尔奖</a></li>
+<li><a href="#25">希腊各城邦之首斯巴达 不可不谓希腊的奇葩</a></li>
+</ul>
+</h2>
+<h2 id="1">pytest 3.9.3</h2><p>Hi everyone,
+
+pytest 3.9.3 has just been released to PyPI.
+
+This is a bug-fix release, being a drop-in replacement. To upgrade::
+
+  pip install --upgrade pytest
+
+The full changelog is available at
+https://docs.pytest.org/en/latest/changelog.html.
+
+Thanks to all who contributed to this release, among them:
+
+* Andreas Profous
+* Ankit Goel
+* Anthony Sottile
+* Bruno Oliveira
+* Daniel Hahler
+* Jon Dufresne
+* Ronny Pfannschmidt
+
+
+Happy testing,
+The pytest Development Team</p>
+<h2 id="2">ANN: psutil 5.4.8 released</h2><p>Hello all,
+I'm glad to announce the release of psutil 5.4.8:
+https://github.com/giampaolo/psutil
+
+About
+=====
+
+psutil (process and system utilities) is a cross-platform library for
+retrieving information on running processes and system utilization (CPU,
+memory, disks, network) in Python. It is useful mainly for system
+monitoring, profiling and limiting process resources and management of
+running processes. It implements many functionalities offered by command
+line tools such as: ps, top, lsof, netstat, ifconfig, who, df, kill, free,
+nice, ionice, iostat, iotop, uptime, pidof, tty, taskset, pmap. It
+currently supports Linux, Windows, macOS, Sun Solaris, FreeBSD, OpenBSD,
+NetBSD and AIX, both 32-bit and 64-bit architectures, with Python versions
+from 2.6 to 3.6. PyPy is also known to work.
+
+What's new
+==========
+
+2018-10-30
+
+**Enhancements**
+
+- #1197: [Linux] cpu_freq() is now implemented by parsing /proc/cpuinfo in
+case
+  /sys/devices/system/cpu/* filesystem is not available.
+- #1310: [Linux] psutil.sensors_temperatures() now parses /sys/class/thermal
+  in case /sys/class/hwmon fs is not available (e.g. Raspberry Pi).  (patch
+  by Alex Manuskin)
+- #1320: [Posix] better compilation support when using g++ instead of gcc.
+  (patch by Jaime Fullaondo)
+
+**Bug fixes**
+
+- #715: do not print exception on import time in case cpu_times() fails.
+- #1004: [Linux] Process.io_counters() may raise ValueError.
+- #1277: [OSX] available and used memory (psutil.virtual_memory()) metrics
+are
+  not accurate.
+- #1294: [Windows] psutil.Process().connections() may sometimes fail with
+  intermittent 0xC0000001.  (patch by Sylvain Duchesne)
+- #1307: [Linux] disk_partitions() does not honour PROCFS_PATH.
+- #1320: [AIX] system CPU times (psutil.cpu_times()) were being reported
+with
+  ticks unit as opposed to seconds.  (patch by Jaime Fullaondo)
+- #1332: [OSX] psutil debug messages are erroneously printed all the time.
+  (patch by Ilya Yanok)
+- #1346: [SunOS] net_connections() returns an empty list.  (patch by Oleksii
+  Shevchuk)
+
+Links
+=====
+
+- Home page: https://github.com/giampaolo/psutil
+- Download: https://pypi.org/project/psutil/#files
+- Documentation: http://psutil.readthedocs.io
+- What's new: https://github.com/giampaolo/psutil/blob/master/HISTORY.rst
+
+--
+
+Giampaolo - http://grodola.blogspot.com</p>
+<h2 id="3">[ANN] Bloscpack v0.15.0</h2><p>============================
+Announcing Bloscpack v0.15.0
+============================
+
+What is new?
+============
+
+Two new high-level API functions have been added:
+
+* 'pack_bytes_to_bytes'
+* 'unpack_bytes_from_bytes'
+
+As you might expect from the naming, these allow you to perform fully
+in-memory based compression and decompression via the bytes datatype.
+
+Additionally there are a few bugfixes, support for python-blosc
+1.6.1 and support for Python 3.7.
+
+For more info, have a look at the changelog:
+
+https://github.com/Blosc/bloscpack#changelog
+
+Documentation and examples are available at:
+
+https://github.com/Blosc/bloscpack
+
+
+What is it?
+===========
+
+Bloscpack is a command-line interface and serialization format for
+Blosc. Blosc (http://www.blosc.org) is an extremely fast meta-codec
+designed for high compression speeds. Bloscpack allows you to use Blosc
+from the command-line to compress and decompress files. Additionally,
+Bloscpack has a Python-API that allows you to compress and serialize
+data to a file system. Additionally, Bloscpack supports efficient
+serialization and de-serialization of Numpy arrays and might in fact be
+one of the fastest ways to save arrays to disk. Bloscpack uses the
+Python bindings for Blosc (http://python-blosc.blosc.org/) under the
+hood.
+
+----
+
+  **Enjoy data!**
+</p>
+<h2 id="4">=?UTF-8?Q?=5BANN=5D_Josh_Bartlett_=E2=80=94_pygame_Artist_in_Residence?=</h2><p>The pygame Artist in Residence grant *celebrates the Python arts community*
+and lends a tiny bit of support to someones art practice.
+An artist residency usually works something like; a person spends some time
+in either a gallery making something to present or in a music club doing a
+weekly spot. The pygame artist in residence will do it in their own space,
+but be present on the top of the pygame website in the form of a thumbnail
+and a link to their patreon/blog/artist statement/website/whatever.
+
+Josh Bartlett was the first recipient, and has been featured on the pygame
+website in October. Please see the pygame artist in residence profile page
+<https://www.pygame.org/artist-in-residence/1> for more info.
+
+Also, Josh is blogging <https://sqizit.bartletts.id.au/>, so you can read
+about him and some updates on his work there.
+
+ps. Thank you to everyone who applied, and those who helped with selection.
+Hopefully the next one will go more smoothly as the process is improved.</p>
+<h2 id="5">ANN: TkGridGUI 0.0.20 released</h2><p>To All,
+
+I'm announcing the first release of TkGridGUI.
+I consider it to be Alpha code, but still very usable.
+
+TkGridGUI is a graphic user interface for creating python Tkinter
+applications.
+
+The user creates a fully "wired" python Tkinter GUI application by placing
+widgets into a hierarchical grid structure.
+
+TkGridGUI generates python source code for all the basic Tkinter widgets,
+Button, Label and Entry, as well structures such as menus, notebooks and
+statusbars. Within the generated python source code, user application code
+is placed in designated areas.
+
+Common widget bindings, keyboard shortcuts and StringVar objects are
+created by default.
+
+The workflow moves between placing widgets, editing widget properties,
+adding application logic to the generated python source code and testing
+the application after each change.
+
+TkGridGUI runs on Linux and Windows with python 2 and 3.
+
+See the Code at: https://github.com/sonofeft/TkGridGUI
+
+See the Docs at: https://sonofefttkgridgui.readthedocs.io/en/latest/
+
+See PyPI page at:https://pypi.python.org/pypi/tkgridgui</p>
+<h2 id="6">Introducing NimbusML - experimental Python bindings for ML.NET</h2><p>We are excited to announce that yesterday we released and open sourced Nimb=
+usML<https://na01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fgit=
+hub.com%2FMicrosoft%2FNimbusML&data=3D02%7C01%7Cganaziro%40microsoft.com%7C=
+0c37bb14ad3545d507c008d6410025dc%7C72f988bf86f141af91ab2d7cd011db47%7C1%7C0=
+%7C636767866514956851&sdata=3D1irzCc9xFFC0OID4SNpVniylBH7dxjgIXCv2L8pT01E%3=
+D&reserved=3D0> ! This project provides experimental Python bindings for ML=
+.NET<https://na01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fgit=
+hub.com%2Fdotnet%2Fmachinelearning&data=3D02%7C01%7Cganaziro%40microsoft.co=
+m%7C0c37bb14ad3545d507c008d6410025dc%7C72f988bf86f141af91ab2d7cd011db47%7C1=
+%7C0%7C636767866514966861&sdata=3DCA6yPTUsjOjnHhEkXpugahOPgg%2BVRYusE%2B%2B=
+I%2FiQmyuI%3D&reserved=3D0> (an open source and cross-platform machine lear=
+ning framework for .NET)
+
+
+NimbusML allows you to build ML.NET pipelines in Python and also integrate =
+them into Scikit-Learn pipelines.
+
+
+
+Highlights
+
+
+
+=B7         Cross-platform: NimbusML is supported on Mac, Linux, and Window=
+s.
+
+=B7         Efficient interop with Scikit-learn/Pandas: NimbusML can accept=
+ Pandas dataframes as input and its components can also be used within Scik=
+it-learn pipelines.
+
+=B7         Majority of ML.NET components are available: Most ML.NET compon=
+ents can be used through NimbusML.
+
+=B7         Performance parity with ML.NET: When using only NimbusML compon=
+ents (loaders, transforms, scorers, and evaluators), NimbusML performance m=
+atches ML.NET performance.
+
+=B7         Familiar APIs for Scikit-learn users: NimbusML adheres to exist=
+ing Scikit-learn conventions but also introduces some new concepts such as =
+how to work with multiple columns in the pipelines.
+
+=B7         Open-source: NimbusML will be built in the open and we encourag=
+e any non-confidential issues/questions to be added on GitHub. Please let u=
+s know if you are interested in contributing.
+
+=B7         Interop with ML.NET models: models trained in NimbusML can be d=
+eployed in .NET applications using ML.NET (see here<https://na01.safelinks.=
+protection.outlook.com/?url=3Dhttps%3A%2F%2Fdocs.microsoft.com%2Fen-us%2FNi=
+mbusML%2Floadsavemodels&data=3D02%7C01%7Cganaziro%40microsoft.com%7C0c37bb1=
+4ad3545d507c008d6410025dc%7C72f988bf86f141af91ab2d7cd011db47%7C1%7C0%7C6367=
+67866514976865&sdata=3DWRAvv8XWuUs%2BSQvAHwGj8eP1XXOrgwKbkWSmhV5ipyo%3D&res=
+erved=3D0> for an example).
+
+
+
+Click here to view the NimbusML repo.<https://na01.safelinks.protection.out=
+look.com/?url=3Dhttps%3A%2F%2Fgithub.com%2FMicrosoft%2FNimbusML&data=3D02%7=
+C01%7Cganaziro%40microsoft.com%7C0c37bb14ad3545d507c008d6410025dc%7C72f988b=
+f86f141af91ab2d7cd011db47%7C1%7C0%7C636767866514976865&sdata=3D%2FmjPQoZIil=
+dRuLJPocDTlMf0Xn65yAyn9R7oNUveNYw%3D&reserved=3D0>
+
+Click here to view the NimbusML samples.<https://na01.safelinks.protection.=
+outlook.com/?url=3Dhttps%3A%2F%2Fgithub.com%2FMicrosoft%2FNimbusML-samples&=
+data=3D02%7C01%7Cganaziro%40microsoft.com%7C0c37bb14ad3545d507c008d6410025d=
+c%7C72f988bf86f141af91ab2d7cd011db47%7C1%7C0%7C636767866514986870&sdata=3DL=
+JVm0IQClk4IgFmkpJbGsFp0r%2BZwSKpRALWA4T3QVN8%3D&reserved=3D0>
+
+Click here to view the NimbusML docs.<https://na01.safelinks.protection.out=
+look.com/?url=3Dhttps%3A%2F%2Fdocs.microsoft.com%2Fen-us%2FNimbusML%2Foverv=
+iew&data=3D02%7C01%7Cganaziro%40microsoft.com%7C0c37bb14ad3545d507c008d6410=
+025dc%7C72f988bf86f141af91ab2d7cd011db47%7C1%7C0%7C636767866514986870&sdata=
+=3DjcgvpNNckRDO0bsGhgYD%2BVesxVHie3hU5doRQ7VfR7A%3D&reserved=3D0>
+
+
+
+Installation
+
+
+
+NimbusML can be installed using pip:
+
+pip install nimbusml
+
+
+
+
+You can run a quick test with:
+
+python -m nimbusml.examples.FastLinearClassifier
+
+
+
+
+NimbusML has been tested on Windows 10, MacOS 10.13, Ubuntu 14.04, Ubuntu 1=
+6.04, Ubuntu 18.04, CentOS 7, and RHEL 7.
+
+
+
+NimbusML requires Python 2.7, 3.5, or 3.6 (64 bit). Python 3.7 is not suppo=
+rted yet.
+
+
+
+Getting Started
+
+
+
+Documentation can be found here<https://na01.safelinks.protection.outlook.c=
+om/?url=3Dhttps%3A%2F%2Fdocs.microsoft.com%2Fen-us%2FNimbusML%2Foverview&da=
+ta=3D02%7C01%7Cganaziro%40microsoft.com%7C0c37bb14ad3545d507c008d6410025dc%=
+7C72f988bf86f141af91ab2d7cd011db47%7C1%7C0%7C636767866514996884&sdata=3DRbo=
+JY%2B%2FkznoN0g1ecoE0neZ4UeEKLvAIsIoFKDPID4I%3D&reserved=3D0>. Sample noteb=
+ooks can be found here<https://na01.safelinks.protection.outlook.com/?url=
+=3Dhttps%3A%2F%2Fgithub.com%2FMicrosoft%2FNimbusML-Samples&data=3D02%7C01%7=
+Cganaziro%40microsoft.com%7C0c37bb14ad3545d507c008d6410025dc%7C72f988bf86f1=
+41af91ab2d7cd011db47%7C1%7C0%7C636767866514996884&sdata=3DtIRDpTjIv2ZrKoxzM=
+wYAsUCFumzgqKChnpsJCsmtK1c%3D&reserved=3D0>. A few examples:
+
+
+
+=B7         Twitter Sentiment Analysis<https://na01.safelinks.protection.ou=
+tlook.com/?url=3Dhttps%3A%2F%2Fdocs.microsoft.com%2Fen-us%2FNimbusML%2Ftuto=
+rials%2Fb_b-sentiment-analysis-2-data-streaming-with-filedatastream&data=3D=
+02%7C01%7Cganaziro%40microsoft.com%7C0c37bb14ad3545d507c008d6410025dc%7C72f=
+988bf86f141af91ab2d7cd011db47%7C1%7C0%7C636767866515006889&sdata=3DwBQ3Xbia=
+M7UqT7GsB0f%2BBirYIgBtHw38GaTsh6ySkPs%3D&reserved=3D0>
+
+=B7         Ranking with LightGBM<https://na01.safelinks.protection.outlook=
+.com/?url=3Dhttps%3A%2F%2Fdocs.microsoft.com%2Fen-us%2FNimbusML%2Ftutorials=
+%2Fb_e-learning-to-rank-with-microsoft-bing-data&data=3D02%7C01%7Cganaziro%=
+40microsoft.com%7C0c37bb14ad3545d507c008d6410025dc%7C72f988bf86f141af91ab2d=
+7cd011db47%7C1%7C0%7C636767866515006889&sdata=3D6C5DN89JLuvOuG1BFEgvFACDnX1=
+PyrDCQzk5O2j1g84%3D&reserved=3D0>
+
+=B7         Image clustering using a TensorFlow model<https://na01.safelink=
+s.protection.outlook.com/?url=3Dhttps%3A%2F%2Fdocs.microsoft.com%2Fen-us%2F=
+NimbusML%2Ftutorials%2Fb_f-image-processing-clustering&data=3D02%7C01%7Cgan=
+aziro%40microsoft.com%7C0c37bb14ad3545d507c008d6410025dc%7C72f988bf86f141af=
+91ab2d7cd011db47%7C1%7C0%7C636767866515016898&sdata=3D7bE9pUF7D6ELHjZ8nHznl=
+Te40oC3O5EWrOYR7jceU6s%3D&reserved=3D0>
+
+=B7         Binary classification with Logistic Regression<https://na01.saf=
+elinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fdocs.microsoft.com%2Fen-=
+us%2Fpython%2Fapi%2Fnimbusml%2Fnimbusml.linear_model.logisticregressionbina=
+ryclassifier%3Fview%3Dnimbusml-py-latest&data=3D02%7C01%7Cganaziro%40micros=
+oft.com%7C0c37bb14ad3545d507c008d6410025dc%7C72f988bf86f141af91ab2d7cd011db=
+47%7C1%7C0%7C636767866515016898&sdata=3DXBeUH4m6J5R3M2rYWsW8HNdkEoi5GMwlogz=
+sN%2BFYo2I%3D&reserved=3D0>
+
+=B7         Save and load models (and use NimbusML models in ML.NET)<https:=
+//na01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fdocs.microsoft=
+.com%2Fen-us%2Fnimbusml%2Floadsavemodels%3Fview%3Dnimbusml-py-latest&data=
+=3D02%7C01%7Cganaziro%40microsoft.com%7C0c37bb14ad3545d507c008d6410025dc%7C=
+72f988bf86f141af91ab2d7cd011db47%7C1%7C0%7C636767866515026911&sdata=3D5pUTz=
+UcE50TYsqQlRLPG8MV%2BW60a5OpGaLmAgn5XWmI%3D&reserved=3D0>
+
+
+
+Sentiment analysis example with NimbusML components:
+
+
+
+from nimbusml import Pipeline, FileDataStream
+from nimbusml.datasets import get_dataset
+from nimbusml.ensemble import FastTreesBinaryClassifier
+from nimbusml.feature_extraction.text import NGramFeaturizer
+
+
+
+train_file =3D get_dataset('gen_twittertrain').as_filepath()
+test_file =3D get_dataset('gen_twittertest').as_filepath()
+
+train_data =3D FileDataStream.read_csv(train_file, sep=3D'\t')
+test_data =3D FileDataStream.read_csv(test_file, sep=3D'\t')
+
+
+
+pipeline =3D Pipeline([ # nimbusml pipeline
+    NGramFeaturizer(columns=3D{'Features': ['Text']}),
+    FastTreesBinaryClassifier(feature=3D['Features'], label=3D'Label')
+])
+
+
+
+# fit and predict
+pipeline.fit(train_data)
+results =3D pipeline.predict(test_data)
+
+
+
+
+A complete notebook for this example can be found here<https://na01.safelin=
+ks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fgithub.com%2FMicrosoft%2FNim=
+busML-Samples%2Fblob%2Fmaster%2Fsamples%2F2.2%2520%255BText%255D%2520Sentim=
+ent%2520Analysis%25202%2520-%2520Data%2520Streaming%2520with%2520FileDataSt=
+ream.ipynb&data=3D02%7C01%7Cganaziro%40microsoft.com%7C0c37bb14ad3545d507c0=
+08d6410025dc%7C72f988bf86f141af91ab2d7cd011db47%7C1%7C0%7C63676786651502691=
+1&sdata=3DWHuyTVINzb5RCO2fxQqeyhEgXf%2Bh1rfxDjhMjQJtOV4%3D&reserved=3D0>.
+
+Sentiment analysis example with NimbusML + Scikit-Learn components:
+
+from nimbusml.datasets import get_dataset
+from nimbusml.ensemble import FastTreesBinaryClassifier
+
+from sklearn.pipeline import Pipeline
+from sklearn.feature_extraction.text import TfidfVectorizer
+import pandas as pd
+
+
+
+train_file =3D get_dataset('gen_twittertrain').as_filepath()
+test_file =3D get_dataset('gen_twittertest').as_filepath()
+
+train_data =3D pd.read_csv(train_file, sep=3D'\t')
+test_data =3D pd.read_csv(test_file, sep=3D'\t')
+
+
+
+pipeline =3D Pipeline([ # sklearn pipeline
+    ('tfidf', TfidfVectorizer()), # sklearn transform
+    ('clf', FastTreesBinaryClassifier()) # nimbusml learner
+])
+
+
+
+# fit and predict
+pipeline.fit(train_data["Text"], train_data["Label"])
+results =3D pipeline.predict(test_data["Text"])
+
+
+
+
+A complete notebook for this example can be found here<https://na01.safelin=
+ks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fgithub.com%2FMicrosoft%2FNim=
+busML-Samples%2Fblob%2Fmaster%2Fsamples%2F2.3%2520%255BText%255D%2520Sentim=
+ent%2520Analysis%25203%2520-%2520Combining%2520NimbusML%2520and%2520Scikit-=
+learn.ipynb&data=3D02%7C01%7Cganaziro%40microsoft.com%7C0c37bb14ad3545d507c=
+008d6410025dc%7C72f988bf86f141af91ab2d7cd011db47%7C1%7C0%7C6367678665150369=
+07&sdata=3DONit2cuOtU8AznT7uD6QzK9oltVikb3yM8e2MZ9DiI4%3D&reserved=3D0>.
+
+
+
+Thank you!
+
+
+
+-ML.NET Team
+</p>
+<h2 id="7">pytest 3.10</h2><p>The pytest team is proud to announce the 3.10.0 release!
+
+pytest is a mature Python testing tool with more than a 2000 tests
+against itself, passing on many different interpreters and platforms.
+
+This release contains a number of bugs fixes and improvements, so users are
+encouraged
+to take a look at the CHANGELOG:
+
+    https://docs.pytest.org/en/latest/changelog.html
+
+For complete documentation, please visit:
+
+    https://docs.pytest.org/en/latest/
+
+As usual, you can upgrade from pypi via:
+
+    pip install -U pytest
+
+Thanks to all who contributed to this release, among them:
+
+* Anders Hovm=C3=B6ller
+* Andreu Vallbona Plazas
+* Ankit Goel
+* Anthony Sottile
+* Bernardo Gomes
+* Brianna Laugher
+* Bruno Oliveira
+* Daniel Hahler
+* David Szotten
+* Mick Koch
+* Niclas Olofsson
+* Palash Chatterjee
+* Ronny Pfannschmidt
+* Sven-Hendrik Haase
+* Ville Skytt=C3=A4
+* William Jamir Silva
+
+
+Happy testing,
+The Pytest Development Team</p>
+<h2 id="8">=?UTF-8?Q?ANN:_Python_Meeting_D=c3=bcsseldorf_-_07.11.2018?=</h2><p>
+[This announcement is in German since it targets a local user group
+ meeting in Düsseldorf, Germany]
+
+________________________________________________________________________
+
+ANKÜNDIGUNG
+
+                      Python Meeting Düsseldorf
+
+                           https://pyddf.de/
+
+        Ein Treffen von Python Enthusiasten und Interessierten
+                     in ungezwungener Atmosphäre.
+
+                   Mittwoch, 07.11.2018, 18:00 Uhr
+           Raum 1, 2.OG im Bürgerhaus Stadtteilzentrum Bilk
+         Düsseldorfer Arcaden, Bachstr. 145, 40217 Düsseldorf
+
+Diese Nachricht ist auch online verfügbar:
+https://www.egenix.com/company/news/Python-Meeting-Duesseldorf-2018-11-07
+________________________________________________________________________
+
+NEUIGKEITEN
+
+ * Bereits angemeldete Vorträge:
+
+   Charlie Clark
+     "Context Managers and Generators"
+
+   Marc-André Lemburg
+     "The History of Unicode in Python"
+
+   Jens Diemer
+     "Django for Runners"
+
+   Ilya Kamenschchikov
+     "Object Detection Using TensorFlow"
+
+   Sowie einige Buchrezensionen.
+
+   Weitere Vorträge können gerne noch angemeldet werden: info@pyddf.de
+
+ * Startzeit und Ort:
+
+   Wir treffen uns um 18:00 Uhr im Bürgerhaus in den Düsseldorfer
+   Arcaden.
+
+   Das Bürgerhaus teilt sich den Eingang mit dem Schwimmbad und
+   befindet sich an der Seite der Tiefgarageneinfahrt der Düsseldorfer
+   Arcaden.
+
+   Über dem Eingang steht ein großes "Schwimm' in Bilk" Logo. Hinter
+   der Tür direkt links zu den zwei Aufzügen, dann in den 2. Stock
+   hochfahren. Der Eingang zum Raum 1 liegt direkt links, wenn man aus
+   dem Aufzug kommt.
+
+   Google Street View: http://bit.ly/11sCfiw
+
+________________________________________________________________________
+
+EINLEITUNG
+
+Das Python Meeting Düsseldorf ist eine regelmäßige Veranstaltung in
+Düsseldorf, die sich an Python Begeisterte aus der Region wendet:
+
+ * https://pyddf.de/
+
+Einen guten Überblick über die Vorträge bietet unser YouTube-Kanal,
+auf dem wir die Vorträge nach den Meetings veröffentlichen:
+
+ * https://www.youtube.com/pyddf/
+
+Veranstaltet wird das Meeting von der eGenix.com GmbH, Langenfeld,
+in Zusammenarbeit mit Clark Consulting & Research, Düsseldorf:
+
+ * https://www.egenix.com/
+ * http://www.clark-consulting.eu/
+
+________________________________________________________________________
+
+PROGRAMM
+
+Das Python Meeting Düsseldorf nutzt eine Mischung aus (Lightning)
+Talks und offener Diskussion.
+
+Vorträge können vorher angemeldet werden, oder auch spontan während
+des Treffens eingebracht werden. Ein Beamer mit XGA Auflösung
+steht zur Verfügung.
+
+(Lightning) Talk Anmeldung bitte formlos per EMail an info@pyddf.de
+
+________________________________________________________________________
+
+KOSTENBETEILIGUNG
+
+Das Python Meeting Düsseldorf wird von Python Nutzern für Python
+Nutzer veranstaltet. Um die Kosten zumindest teilweise zu
+refinanzieren, bitten wir die Teilnehmer um einen Beitrag in Höhe von
+EUR 10,00 inkl. 19% Mwst, Schüler und Studenten zahlen EUR 5,00
+inkl. 19% Mwst.
+
+Wir möchten alle Teilnehmer bitten, den Betrag in bar mitzubringen.
+
+________________________________________________________________________
+
+ANMELDUNG
+
+Da wir nur für ca. 20 Personen Sitzplätze haben, möchten wir
+bitten, sich per EMail anzumelden. Damit wird keine Verpflichtung
+eingegangen. Es erleichtert uns allerdings die Planung.
+
+Meeting Anmeldung bitte formlos per EMail an info@pyddf.de
+
+________________________________________________________________________
+
+WEITERE INFORMATIONEN
+
+Weitere Informationen finden Sie auf der Webseite des Meetings:
+
+    https://pyddf.de/
+
+Mit freundlichen Grüßen,
+-- 
+Marc-Andre Lemburg
+eGenix.com
+
+Professional Python Services directly from the Experts (#1, Nov 03 2018)
+>>> Python Projects, Coaching and Consulting ...  http://www.egenix.com/
+>>> Python Database Interfaces ...           http://products.egenix.com/
+>>> Plone/Zope Database Interfaces ...           http://zope.egenix.com/
+________________________________________________________________________
+
+::: We implement business ideas - efficiently in both time and costs :::
+
+   eGenix.com Software, Skills and Services GmbH  Pastor-Loeh-Str.48
+    D-40764 Langenfeld, Germany. CEO Dipl.-Math. Marc-Andre Lemburg
+           Registered at Amtsgericht Duesseldorf: HRB 46611
+               http://www.egenix.com/company/contact/
+                      http://www.malemburg.com/
+
+</p>
+<h2 id="9">NumPy 1.15.4 release</h2><p>Hi All,
+
+On behalf of the NumPy team, I am pleased to announce the release of NumPy
+1.15.4. This is a bugfix release for bugs and regressions reported
+following the 1.15.3 release.  The most noticeable fix is probably having a
+boolean type fill value for masked arrays after the use of `==` and `!=`.
+The Python versions supported by this release are 2.7, 3.4-3.7. Wheels for
+this release can be downloaded from PyPI
+<https://pypi.org/project/numpy/1.15.4/>, source archives are available
+from Github <https://github.com/numpy/numpy/releases/tag/v1.15.4>.
+
+Compatibility Note
+==================
+
+The NumPy 1.15.x OS X wheels released on PyPI no longer contain 32-bit
+binaries.  That will also be the case in future releases. See `#11625 <
+https://github.com/numpy/numpy/issues/11625>`__ for the related
+discussion.  Those needing 32-bit support should look elsewhere or build
+from source.
+
+Contributors
+============
+
+A total of 4 people contributed to this release.  People with a "+" by their
+names contributed a patch for the first time.
+
+   - Charles Harris
+   - Matti Picus
+   - Sebastian Berg
+   - bbbbbbbbba +
+
+Pull requests merged
+====================
+
+A total of 4 pull requests were merged for this release.
+
+   - `#12296 <https://github.com/numpy/numpy/pull/12296>`__: BUG: Dealloc
+   cached buffer info
+   - `#12297 <https://github.com/numpy/numpy/pull/12297>`__: BUG: Fix fill
+   value in masked array '==' and '!=' ops.
+   - `#12307 <https://github.com/numpy/numpy/pull/12307>`__: DOC: Correct
+   the default value of `optimize` in `numpy.einsum`
+   - `#12320 <https://github.com/numpy/numpy/pull/12320>`__: REL: Prepare
+   for the NumPy 1.15.4 release
+
+Cheers,
+
+Charles Harris</p>
+<h2 id="10">中国游戏进化史：没有人知道潮水的方向</h2><p>2015年9月13日，日本东京，游戏巨头任天堂庆祝《超级玛丽》游戏诞生30周年。图/视觉中国</p><p>流量打法失效、IPO窗口收紧、新领域尚未明晰，游戏行业“躺着赚钱”的时代似乎到头了。回顾中国游戏30年的发展史，一边高歌猛进，一边心揣不安，这便是中国游戏产业的现实。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img alt="null" src="http://p0.ifengimg.com/pmop/2018/1104/3990D6B38B7675D8E4AA0C416C8D6ECB08FA1021_size26_w420_h298.gif"/></p><p><strong>自2015年起，中国便超越美国成为全球游戏市场规模最大的国家。</strong></p><p>据荷兰市场研究公司Newzoo预测，2018年中国游戏市场收入有望达到379亿美元，占全球游戏收入的1/4以上。而根据中国音数协游戏工委（GPC）、伽马数据（CNG）联合发布的《2018年1—6月中国游戏产业报告》的统计，国内游戏用户规模为5.3亿人。</p><p><strong>不论是从市场规模还是用户数量来说，中国早已是世界游戏行业的“头号玩家”。</strong></p><p>与之相对照，4月有网友在知乎网上提问“哪个瞬间让你感觉中国游戏产业真的完了？”，浏览人数近3000万，排序第一的回答贴了一则新闻视频——受访的某游戏公司负责人表示：“中国现在基本上可以引领全球游戏行业的发展。”</p><p><strong>一边高歌猛进，一边心揣不安，这便是今天中国游戏产业的现实。</strong>我们试图书写中国的游戏产业文化史，发现故事的结局早已写在开头。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img alt="null" src="http://p0.ifengimg.com/pmop/2018/1104/5D220F8BF155696A0FA78E26DF1D0A6A0386B0BD_size72_w1080_h720.jpeg"/></p><p>2017年5月31日，河北石家庄，这是一台很古老的显像管电视，连上旁边的小霸王游戏机，多少人的童年是在玩游戏和看别人玩游戏中度过的。图/视觉中国</p><p><strong>01</strong></p><p><strong>主机/单机：山寨和初生</strong></p><p><strong>追新番《高分少女》的朋友们大概会对动画里的上世纪90年代感到既熟悉又陌生，仿佛那是和中国分处科技树两端的平行宇宙。</strong></p><p>那时，我们也在玩《超级马里奥》《坦克大战》《魂斗罗》，但连接中国普通家庭电视机的，更可能是配有键盘和学习卡带的山寨任天堂FC（Family Computer，俗称红白机）——小霸王学习机。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img alt="null" src="http://p0.ifengimg.com/pmop/2018/1104/F9CAF877523062511E51E2B951D932C6B89DFD3D_size28_w600_h333.jpeg"/></p><p>当初小霸王包装上的成龙还很年轻。</p><p><strong>“望子成龙小霸王。”小霸王学习机代言人成龙的这句广告词，恰如其分地承载了当时家长们对儿女的期待和寄望。</strong>1984年，邓小平视察上海时提出“计算机普及要从娃娃抓起”，加速了国家信息化建设的步伐。</p><p>在这种混合着对未来电子世界的乐观想象和现代化焦虑的社会情绪中，华语地区相继诞生了“小教授一号”（1981年，台湾宏基研制）、“小神通”（1981年，台湾神通公司研制）、YQ-1（1981年，中国第一台自行生产的电视游戏机，北京第一轻工业研究所研制）、中华学习机（1986年，电子部六所、国营734厂、陕西省计算机厂以及华明计算机有限公司参加研制）等山寨Apple II的个人电脑，构成了早期中国游戏机的群像。</p><p>事实上，“小霸王”们的确能教人编程，里面运行的是鼎鼎有名的BASIC语言，只<strong>是由此入门成为程序员的不知几何。</strong></p><p class="detailPic" style="margin:0 auto;text-align:center"><img alt="null" src="http://p0.ifengimg.com/pmop/2018/1104/06E67122F1D55DA6AFACC96F973290C6CED56D4A_size74_w1080_h718.jpeg"/></p><p>2011年1月26日，柏林，参观者观看展出的电脑游戏设备。这家电脑游戏博物馆展出了从1971年到2001年的50款掌上游戏机、电视游戏机和家用电脑。图/视觉中国</p><p>中国游戏产业的全面起航，则有赖于个人电脑流行的东风。上世纪80年代中后期，随着全球电脑硬件成本降低，不少开发商转型进入游戏产业。</p><p>我们较为熟悉的精讯、智冠、大宇、第三波等台湾游戏公司均在这一时期成立，并陆续推出了如《三国演义》《笑傲江湖》《魔道子》等带有浓厚中国文化意象的游戏作品。</p><p><strong>1992年，智冠在广州开设分公司，成为第一家进军大陆市场的台湾游戏公司。</strong>冥冥之中似有巧合，军人杨南征也在这一年退役，加入北京金盘电子有限公司，继而在两年后的10月推出了大陆第一款自研发游戏《神鹰突击队》。</p><p><strong>杨南征的目标很简单，就是想以电子游戏的形式推广兵棋推演。</strong>随后几年，他还先后策划了《波黑战争》《冲锋号》《成吉思汗》等将爱国主义和国防教育相结合的类型游戏。而在金盘之后，前导、目标、金山西山居等公司都在上世纪90年代中后期的游戏产业中扮演重要角色。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img alt="null" src="http://p0.ifengimg.com/pmop/2018/1104/50C3BBAC7D1C07EE7A86FB0801F259B3E594C9C9_size8_w640_h408.png"/></p><p class="detailPic" style="margin:0 auto;text-align:center"><img alt="null" src="http://p0.ifengimg.com/pmop/2018/1104/F0785FAC0AB66DAB2D5A211481ECBE1F70F8369D_size148_w640_h408.jpeg"/></p><p>1991年4月，智冠科技发布了战略游戏《三国演义》。</p><p>中国第一本专业游戏杂志《电子游戏软件》在1994年创刊。1995年，该刊刊载《乌鸦·乌鸦·叫》一文，以回应一位武汉大学玩友的来信。后者悲愤地写道：“你们写的攻略好是好，但那是日本的游戏！你们登的彩页美是美，但那是日本的广告？究竟哪一天我们能在贵刊上见到中国人自己制作的游戏！”</p><p>文章在当时引发了广泛讨论，“完全有资格被抬上‘影响国产游戏业’的地位”（祝佳音，《国产游戏这五年》），<strong>也像谶语一般召唤着同年《仙剑奇侠传》的横空出世。</strong></p><p class="detailPic" style="margin:0 auto;text-align:center"><img alt="null" src="http://p0.ifengimg.com/pmop/2018/1104/71A244DA3FF04D8CD45A61FEF90F4755CAB416B9_size78_w742_h963.jpeg"/></p><p>1995年，台湾大宇资讯发布了游戏《仙剑奇侠传》。</p><p>《仙剑奇侠传》在市场上取得的巨大成功，掀起了古风武侠RPG的浪潮，《剑侠情缘》《天地劫》《刀剑封魔录》《秦殇》等同类型游戏尾随而至。</p><p>同一时期，市场上还有前导推出的以三国历史背景创作的即时战略游戏《官渡》《赤壁》，由腾图取材中国古典文学开发的《美猴王》《水浒英雄传——火之魂》《镜花缘——百花仙子》等。</p><p>上海大学文化研究系博士邓剑认为，这些游戏之所以会在不同程度上出现“中国意象”概念，“<strong>一方面是为了市场生存而作出的策略之举，另一方面则是用爱国主义的情怀回应游戏领域内的‘文化入侵’</strong>”。</p><p>这种文化自觉的核心诉求在于，大至题材、故事、场景，小到装备饰物、音画细节、角色设计，游戏厂商试图通过在游戏文本中植入熟悉的中国元素，建构游戏领域的“想象的共同体”。<strong>可惜，在进入新世纪后，单机游戏的故事急速转弯。</strong></p><p class="detailPic" style="margin:0 auto;text-align:center"><img alt="null" src="http://p0.ifengimg.com/pmop/2018/1104/2A8778B9E08745A352D1AF16ACBC0579FADF6548_size51_w425_h600.jpeg"/></p><p>1997年，《剑侠情缘1》诞生。</p><p><strong>02</strong></p><p><strong>网游/页游：博弈和野蛮</strong></p><p><strong>雪崩不是突然而至的。</strong></p><p>1996年，EA和育碧进入中国，分别在北京和上海设立分支机构。</p><p>1997年，《血狮》面世，该游戏以极差的品质伤害了众多中国玩家的感情。同年7月爆发并持续三个月的亚洲金融风暴，让韩国政府认识到需调整原来经济增长的战略重心，网络游戏产业成为发展的着力点。</p><p>1998年，金盘撤掉了游戏开发部，腾图解体，前导宣布退出游戏市场。鲍岳桥、简晶、王建华始创的“联众游戏世界”则在同年6月上线。</p><p>2000年，《血狮》研发商尚洋电子解散多媒体部门，中国第一代游戏制作公司几近全军覆没。同年，文化部颁布《关于开展电子游戏经营场所专项治理的意见》，<strong>拉下了改变中国游戏市场行进轨道的操纵杆。</strong></p><p class="detailPic" style="margin:0 auto;text-align:center"><img alt="null" src="http://p0.ifengimg.com/pmop/2018/1104/1DD3D489E157EDA1EB2B3355BF499E4EDA492749_size44_w580_h435.jpeg"/></p><p>1997年，《血狮》亮相《大众软件》杂志封面。</p><p>摩尔定律说，集成电路性能每相隔18—24个月就会翻一番。对于玩家来说，物理硬件技术的高速更迭意味着更优质的视听表层感受，但在另一方面，<strong>对游戏厂商而言则意味着如雪球一般越滚越大的开发成本。</strong></p><p>在尚未教育用户养成付费习惯的条件下，政策法规便以保护青少年为由，改变了中国游戏产业的规则。2000年7月到9月，全国展开电子游戏经营场所的专项治理，“直接导致了游戏机硬件制造业的停止，客观上为中国游戏业的网络游戏化扫清了道路”（邓剑语）。中国网游产业就此按下了加速键。</p><p>2001年伊始，中国游戏厂商开始将视线投向代理网络游戏。来自韩国的《千年》《龙族》《红月》竞相登陆国内玩家电脑屏幕。5月，联众以同时在线17万人、注册用户约1800万的规模，成为世界用户数量第一的在线游戏网站。网易在11月推出了自研发的MMORPG网游《大话西游Online》，迈出了作为“游戏热爱者”的第一步。</p><p>继网易之后，当时国内三大门户网站的另外两家——新浪、搜狐在次年也加入战局，分别运营《天堂》和《骑士Online》。同样是11月，由上海盛大代理的韩国网络游戏《传奇》上线。该游戏在后续运营中实现了最高同时在线人数突破50万人，成为全球用户数量第一的网络游戏。2001年中国游戏市场总收入5亿元，网络游戏市场规模首次超过单机游戏，达到3.1亿元。<strong>至此，网游时代的序幕开启</strong>。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img alt="null" src="http://p0.ifengimg.com/pmop/2018/1104/A571DDFC305BBD6DDB4C0F1E99D89007EC6BCBD7_size100_w640_h480.jpeg"/></p><p>《传奇》游戏界面。这款游戏至今还有一批忠实粉丝。</p><p>邓剑认为，韩国网游在中国的滥觞是韩国技术优势和中国市场优势两者结合的结果，韩国开发商始终占据着与中国运营商在权力关系博弈中的最终优势，促使中国游戏公司下决心开发国产网游。</p><p>当时出现的《梦幻西游》《征途》《完美世界》，成为后来领跑中国网游行业的“御三家”，其开发商巨人网络和完美时空均在2007年奔赴美国纳斯达克敲钟。这是中国网游历史上的尖峰时刻。</p><p>此处需要敲一下黑板，《征途》一改出售游戏时间（点卡）营利的传统模式，以销售装备、道具等作为增值服务，实现了网游行业用户规模和收入的双井喷：在短短四五年时间里，用户数量从1000万增长到2亿多，收入从20多亿元增长到2009年的300亿元，印证了克里斯·安德森（就是提出“长尾理论”那位）在《免费：商业的未来》一书中的判断。</p><p><strong>“不充钱还想变强？”网络游戏最终也进入消费主义的生产逻辑。</strong></p><p class="detailPic" style="margin:0 auto;text-align:center"><img alt="null" src="http://p0.ifengimg.com/pmop/2018/1104/5879CC5163FE18879A118DD9A2C3AB14B1FDA7D4_size53_w1080_h763.jpeg"/></p><p>“人民币玩家”给网游行业带来了大量营收，但游戏的趣味也大打折扣了。图为2016年12月8日，成都，一位玩家正在演示如何玩《梦幻西游》。/视觉中国</p><p>否极泰来，泰极否来，这是《醒世恒言》这类中国古典通俗小说常常表达的主题。在巨人网络和完美时空于美国上市的2007年，以“51wan”“91wan”为代表，中国一些以数字命名的网页游戏公司陆续成立，游戏行业的焦点开始转移到成本更低、赚钱更快的页游之上。</p><p>这些资本和实力都欠缺的“数字游戏公司”以联合运营的模式协调利益分配，一改既往大厂单兵作战的思路，像繁殖期的兔子一样，生产出一个又一个低质、山寨的产品。</p><p>网页游戏开始爆发式生长，其中最具代表性的莫过于“传奇”系页游，同一套翅膀和盔甲素材组装起《烈火战神》《传奇霸业》《传奇荣耀》《传奇盛世》《贪玩蓝月》，就连广告文案都如出一辙：</p><p>“独特属性，由你打造。单挑BOSS，怒刷装备。皇城PK，胜者为王。屠龙宝刀，点击就送。极品装备，一秒刷爆。幸运抽奖，惊喜不断。经典装备，极品属性。神秘宝箱，开箱有喜。无限刷怪，双倍经验。”</p><p>从“老公今天不在家”式的软色情恶俗弹窗广告，到邀请林子聪、张卫健、古天乐、陈小春等怀旧港台明星情怀代言“是兄弟就来砍我”，再到自成一派世界观体系的“开局一只鲲，进化全靠吞”，<strong>中国页游厂商相信，哪怕再粗制滥造，只要有密集的渠道投放，照样能疯狂收割。</strong>普通玩家只能将“一刀满级”“油腻的师姐在哪里”挪用为网络文化模因，以讽刺这种无下限的资本逐利逻辑。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img alt="null" src="http://p0.ifengimg.com/pmop/2018/1104/535AAEF5FB378DF884F5B4E4FE34938C21E6CCD6_size60_w725_h444.jpeg"/></p><p>《贪玩蓝月》玩起了土味营销。</p><p><strong>03</strong></p><p><strong>手游/独立游戏：出海和未来</strong></p><p><strong>十年人事几翻新。从2011年起，中国游戏行业的热闹便不止于游戏厂商和玩家之间。</strong></p><p>在国内手游产品进入集中爆发期的前夕，《英雄联盟》上线运营。过去隐匿在屏幕后的第一代职业电竞选手借助直播镜头，在普通玩家的注目下实现自己无师自通的“骚操作”，奠定了直播行业的流量基础，也间接形塑了新一波网络文化。</p><p>2013年8月，已经是国民级应用的微信更新5.0版本，激起全民打飞机的热潮。《天天爱消除》也在同月正式上线，10天内注册用户突破4000万，连大妈都会跟着节奏喊几声“Amazing！”和“Excellent！”。</p><p>游戏、影视、动漫、直播、电竞、IP运作构成了今天我们庞大的泛娱乐生态景观，彼此间的边界开始模糊，游戏早已成为我们的生活方式、生产方式、思维方式。网易和腾讯各领风骚，《阴阳师》和《王者荣耀》在2016和2017年轮流成为年度社会关键词。</p><p>行业媒体《游戏葡萄》报道，<strong>2017年全年有38家上市游戏公司净利润破亿元，其中甚至有山东矿机这样的传统企业，通过资本运作的方式实现转型。</strong>然而，全民游戏的背面，也意味着行业人口红利的减退，买量成本随之水涨船高，出海成为国内一些手游厂商的最优解。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img alt="null" src="http://p0.ifengimg.com/pmop/2018/1104/F0734B1C4D571CB5A36E493C9D520F25F1941C4D_size22_w1080_h164.jpeg"/></p><p class="detailPic" style="margin:0 auto;text-align:center"><img alt="null" src="http://p0.ifengimg.com/pmop/2018/1104/6C4DC87547204FE0C50D449A5FA6F958065BE8A6_size98_w1000_h624.jpeg"/></p><p>山东矿机收购的麟游互动，旗下有《天龙八部3D》《少年三国志》等游戏。</p><p>App Annie发布的《2018上半年中国移动游戏出海报告》数据显示，今年上半年有超过200款游戏突破了百万级的下载量和收入，收入同比增速最快的市场为韩国，增幅达到153%，主要来自《仙境传说RO》和《三国志M》等游戏的贡献。</p><p>2016年5月出海韩国的网易自研游戏《率土之滨》则创下了用户平均星评5.0分、5星评论高达86.4%的好成绩。腾讯研究院发布的《中国游戏出海全景观察白皮书》写道：“<strong>从更大的层面来看，游戏出海不仅带来经济的增长，更具深远意义的是文化的传承和传播。</strong>”</p><p>游戏学者孙静在受访时，对中国游戏的文化输出现状持保留态度。她表示，当前中国的整体文化产业输出羸弱，游戏产业作为其中一环并不能独善其身，这是其一。回到游戏产品本身，消费文化仍然主导生产，这将导致大量的同质化产品淹没真正的好游戏，这是其二。而生产和消费关系的根本困境，是我们的“游戏素养”（Gaming Literacy）缺失。我们缺乏判断游戏好坏的“听说读写”能力，游戏厂商也缺乏拒绝流水线式生产的决心，这是其三。</p><p>“我们的游戏行业还缺少形式元素的探索，出海只是第一步。真正能称得上文化输出的，<strong>《风之旅人》这样的独立游戏可以算一个，陈星汉的作品里透出的‘禅态’才是欧美文化中少见的。</strong>”&nbsp;孙静说。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img alt="null" src="http://p0.ifengimg.com/pmop/2018/1104/F5B4E4DE13AD1D7BC62187FEECC6491C351FE811_size30_w1080_h608.jpeg"/></p><p>《风之旅人》由华人游戏制作人陈星汉负责制作，2013年3月发售。</p><p>讲述中国独立游戏开发者创作历程的纪录片《独行》在预告片中用“创造、重构、再现”三个动词宣告中国独立游戏开发者共同的野心，像《蜡烛人》《返校》《死神来了》《艾希》《汐》《ICEY》等国产独立游戏都取得了良好的国际口碑。</p><p><strong>不过，眼下对中国游戏从业人员来说，不稳定的版号政策才是他们的共同焦虑。</strong>流量打法失效、IPO窗口收紧、新领域尚未明晰，“还留下来的都是在赚辛苦钱”——一位小游戏外包厂商负责人接受《游戏陀螺》采访时如此表示。我们还不知道潮水流动的方向。</p><p><strong>本文首发于《新周刊》523期</strong><span class="ifengLogo"><a href="http://www.ifeng.com/" target="_blank"><img src="http://p2.ifengimg.com/a/2016/0810/204c433878d5cf9size1_w16_h16.png"/></a></span></p>
+<h2 id="11">史铁生：合欢树还在，母亲却不在了</h2><p>原标题:史铁生：合欢树还在，母亲却不在了</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p0.ifengimg.com/pmop/2018/1103/86A8FCF5D3C37029D0DD1C5CDBD3564425BC7AE1_size998_w507_h287.gif"/></p><p>文| 史铁生· 主播|&nbsp;雅萱</p><p>十岁那年，我在一次作文比赛中得了第一。</p><p>母亲那时候还年轻，急着跟我说她自己，说她小时候的作文作得还要好，老师甚至不相信那么好的文章会是她写的。</p><p>老师找到家来问，是不是家里的大人帮了忙。我那时可能还不到十岁呢。</p><p>我听得扫兴，故意笑：“可能？什么叫可能还不到？”她就解释。我装作根本不再注意她的话，对着墙打乒乓球，把她气得够呛。</p><p>不过我承认她聪明，承认她是世界上长得最好看的女的。她正给自己做一条蓝底白花的裙子。</p><p>二十岁，我的两条腿残废了。除去给人家画彩蛋，我想我还应该再干点别的事，先后改变了几次主意，最后想学写作。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p0.ifengimg.com/pmop/2018/1103/F91B06374FEE9A8AEAD41F659BDB9CCE3006501D_size84_w1080_h613.jpeg"/></p><p>母亲那时已不年轻，为了我的腿，她头上开始有了白发。医院已经明确表示，我的病情目前没办法治。母亲的全副心思却还放在给我治病上，到处找大夫，打听偏方，花很多钱。</p><p>她倒总能找来些稀奇古怪的药，让我吃，让我喝，或者是洗、敷、熏、灸。</p><p>“别浪费时间啦! 根本没用! ”我说，我一心只想着写小说，仿佛那东西能把残废人救出困境。“</p><p><strong>“再试一回，不试你怎么知道会没用？”她说，每一回都虔诚地抱着希望。然而对我的腿，有多少回希望就有多少回失望，最后一回，我的胯上被熏成烫伤。</strong></p><p>医院的大夫说，这实在太悬了，对于瘫痪病人。这差不多是要命的事。我倒没太害怕，心想死了也好，死了倒痛快。</p><p>母亲惊惶了几个月，昼夜守着我，一换药就说：“怎么会烫了呢？我还直留神呀！”幸亏伤口好起来，不然她非疯了不可。</p><p>后来她发现我在写小说。她跟我说：“那就好好写吧。”我听出来，她对治好我的腿也终于绝望。</p><p>“我年轻的时候也最喜欢文学，”她说。“跟你现在差不多大的时候，我也想过搞写作，”她说。“你小时候的作文不是得过第一？”她提醒我说。</p><p>我们俩都尽力把我的腿忘掉。她到处去给我借书，顶着雨或冒了雪推我去看电影，像过去给我找大夫，打听偏方那样，抱了希望。</p><p>三十岁时，我的第一篇小说发表了。母亲却已不在人世，过了几年，我的另一篇小说又侥幸获奖，母亲已经离开我整整七年。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p0.ifengimg.com/pmop/2018/1103/1883147F7A029455CC2250BCE760CCEB37DE02C3_size137_w1080_h613.jpeg"/></p><p>获奖之后，登门采访的记者就多，大家都好心好意，认为我不容易。但是我只准备了一套话，说来说去就觉得心烦。</p><p>我摇着车躲出去，坐在小公园安静的树林里，想：上帝为什么早早地召母亲回去呢？迷迷糊糊的，我听见回答：“她心里太苦了。”</p><p><strong>上帝看她受不住了，就召她回去。”我的心得到一点安慰，睁开眼睛，看见风在树林里吹过。</strong></p><p>我摇车离开那儿，在街上瞎逛，不想回家。</p><p><strong>母亲去世后，我们搬了家。我很少再到母亲住过的那个小院儿去。</strong></p><p>小院儿在一个大院儿的尽里头，我偶尔摇车到大院儿去坐坐，但不愿意去那小院儿，推说手摇车进去不方便。</p><p>院儿里的老太太们还都把我当儿孙看，尤其想到我又没了母亲，但都不说，光扯些闲活，怪我不常去。我坐在院子当中，喝东家的茶，吃西家的瓜。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p0.ifengimg.com/pmop/2018/1103/8D165136E2FE0E37143E4D9910DE7AA6ACD9A3E5_size219_w1080_h613.jpeg"/></p><p>有一年，人们终于又提到母亲：“到小院儿去看看吧，你妈种的那棵合欢树今年开花了！”我心里一阵抖，还是推说手摇车进出太不易。</p><p>大伙就不再说，忙扯些别的，说起我们原来住的房子里现在住了小两口，女的刚生了个儿子，孩子不哭不闹，光是瞪着眼睛看窗户上的树影儿。</p><p>我没料到那棵树还活着。那年，母亲到劳动局去给我找工作，回来时在路边挖了一棵刚出土的“含羞草”，以为是含羞草，种在花盆里长，竟是一棵合欢树。</p><p>母亲从来喜欢那些东西，但当时心思全在别处。第二年合欢树没有发芽，母亲叹息了一回，还不舍得扔掉，依然让它长在瓦盆里。</p><p>第三年，合欢树却又长出叶子，而且茂盛了。母亲高兴了很多天，以为那是个好兆头，常去侍弄它，不敢再大意。</p><p>又过一年，她把合欢树移出盆，栽在窗前的地上，有时念叨，不知道这种树几年才开花。</p><p><strong>再过一年，我们搬了家。悲痛弄得我们都把那棵小树忘记了。</strong></p><p>与其在街上瞎逛，我想，不如就去看看那棵树吧。</p><p>我也想再看着母亲住过的那间房。我老记着，那儿还有个刚来到世上的孩子，不哭不闹，瞪着眼睛看树影儿。是那棵合欢树的影子吗？小院儿里只有那棵树。</p><p>院儿里的老太太们还是那么欢迎我，东屋倒茶，西屋点烟，送到我跟前。</p><p>大伙都不知道我获奖的事，也许知道，但不觉得那很重要；还是都问我的腿，问我是否有了正式工作。</p><p>这回，想摇车进小院儿真是不能了，家家门前的小厨房都扩大，过道窄到一个人推自行车进出也要侧身。我问起那棵合欢树。大伙说，年年都开花，长到房高了。</p><p>这么说，我再看不见它了。我要是求人背我去看，倒也不是不行。我挺后悔前两年没有自己摇车进去看看。</p><p>我摇着车在街上慢慢走，不急着回家。人有时候只想独自静静地呆一会。悲伤也成享受。</p><p>有一天那个孩子长大了，会想到童年的事，会想起那些晃动的树影儿，会想起他自己的妈妈，他会跑去看看那棵树。<span class="ifengLogo"><a href="http://www.ifeng.com/" target="_blank"><img src="http://p2.ifengimg.com/a/2016/0810/204c433878d5cf9size1_w16_h16.png"/></a></span></p>
+<h2 id="12">韩少功评佩索阿：自相矛盾常是智者的犹疑</h2><p>原标题:韩少功评佩索阿｜自相矛盾常是智者的犹疑，不知所云或是诚者的坦白</p><blockquote><p><strong>《惶然录》译者序</strong></p><p>文/ 韩少功</p><p>选自《书屋》1998年第5期</p><p>决定翻译这本书，是因为两年前（小编注：本文写于1998年）去法国和荷兰，发现很多作家和批评家同行在谈论费尔南多· 佩索阿(Fernando Pessoa) 这个人，谈论这一个欧洲文学界重要的新发现。我没读过此人的书，常常闲在一边插不上话，不免有些侠侠。这样的情况遇得多了，自然生出一份好奇心，于是去书店一举买下他的三本著作，其中便有《惶然录》。</p><p><img height="240" width="385" src="http://p0.ifengimg.com/pmop/2018/1103/B50A96519A55F11329BF60B238AE78A4EC090AE2_size18_w385_h240.jpeg"/></p><p>▲佩索阿</p><p>佩索阿是葡萄牙人，生前默默无闻，仅出版过一本书，一九三九年去世以后始有诗名，享年四十七岁。这本《惶然录》收集了他晚期的随笔作品，都是一些“仿日记”的片断体，其中大部分直到一九八二年才得以用葡萄牙文发表，进入大语种则是九十年代的事情了，如最早的英文版直到一九九一年才与读者见面。原作者曾为这本书杜撰了一个名叫“伯纳多· 索阿雷斯”的作者，与自己本名“费尔南多· 佩索阿”的读音相近，并在卷首写了一篇介绍这位虚拟作者的短文，似乎索阿雷斯实有其人。</p><p>这当然不是有些先锋作家们爱玩的<strong>“间离化”小噱头</strong>，倒是切合了原作者一贯的思想和感觉。他在这本书里多次谈到自己的分裂，谈到自己不仅仅是自己，自己是一个群体的组合，<strong>自己是自己的同者又是自己的异者</strong>，如此等等，那么他在自己身上发现一个“索阿雷斯”，以他者的身分和视角来检视自己的写作，在这本书里寻求一种自我怀疑和自我对抗，就不难被人们理解了。</p><p>两个“索阿(SOA)”之间的一次长谈就是这样展开的。他(们)广泛关注着那个时代的生命存在间题，也是关注着人类至今无法终结的诸多困惑。读者也许不难看出，作者在随笔中的立场时有变化，有时候是一精神化的人，把世界仅仅提纯为一种美丽的梦幻；有时候则成了一个物质化的人，连眼中的任何情人也只剩下视觉性的外表有时候是一位个人化的人，对任何人际交往和群体行动都满腹狐疑；有时候则成了一个社会化的人，连一只一晃而过的衣领都向他展示复杂的社会生产过程。有时候是一个贵族化的人，时常流露出对高雅上流社会乃至显赫王宫的神往；有时候则成为了一个贫民化的人，任何一个小人物的离别或死去都能让他深深地惊恐和悲伤。有时候是一个科学化的人，甚至梦想着要发现有关心灵的化学反应公式；有时候则成了一个信仰化的人，一次次冒犯科学而对上帝在当代的废弃感到忧心忡忡……在这里，两个“索阿”没有向我们提供任何终极结论，只是一次次<strong>把自己逼向思维绝境</strong>，以亲证<strong>人类心灵自救一个个可能性。</strong></p><p><img src="http://p0.ifengimg.com/pmop/2018/1103/8DA4A752755C59F13B2E1DCFD93AED2A30F26198_size96_w800_h911.jpeg"/></p><p>画| 陈雨</p><p>如果说这本书不过是自相矛盾，不知所云，当然是一种无谓的大惊小怪。优秀的作家常常像一些高级的笨伯，一些不凡的痴人。较之于执着定规，<strong>他们的自相矛盾常常是智者的犹疑</strong>；较之于滔滔确论，<strong>他们的不知所云常常是诚者的坦白</strong>。其惊心动魄的自我紧张和对峙，不是每一个人都能轻易得到的内心奇观，更不是每一个人都敢于面对的精神挑战。身为公司小职员的佩索阿，就人生经历而言乏善可陈，用他自己的话来说，他不过是一个“不动的旅行者”，除了深夜的独自幻想之外，连里斯本以外的地方都很少去过。但他以位卑之躯处蜗居之室，竟一个人担当了全人类的精神责任，在通常悖逆的不同视角里，始终如一地贯彻着他独立的勇敢、诘究的智慧以及对人世万物的深深关切。这是变中有恒，异中有同，是自相矛盾中的坚定，是不知所云的明确。正是这一种精神气质，正是这种一个人面向全世界的顽强突围，使佩索阿被当代的评论家们誉为“欧洲现代主义的核心人物(威廉·博伊德语，见1991年《图书年鉴》)”，以及“杰出的经典作家”、“最为动人的”、“最能深化人们心灵”的写作者等等。即便他也有<strong>难以避免的迷失和局限</strong>，但他<strong>不无苦行意味的思想风格与对世界任何一丝动静的心血倾注</strong>，与时下商业消费主义潮流里诸多显赫而热闹的“先锋”和“前卫”，还是拉开了足够的距离，形成了耐人寻味的参照。</p><p>《惶然录》是佩索阿的代表作之一，是一部曾经长时间散佚的作品，后来由众多佩索阿的研究专家们收集整理而成。在这本中译本里，除圆括号中的文字为译者注解以外，方括号里空缺及其造成的文理中断，均为原作的原貌。而各个章节的小标题，除一部分来源于原作，其余则为译者代拟，以求体例的统一以及读者的目录查检。考虑到原著的某些片断之间内容上稍有交叉和重复之处，这个中文译本对原作稍稍作了一些选择，所选章节约为全书的百分之八十—这是考虑到大多数作者也许同我一样，是对佩索阿感兴趣，而不是对有关他的版本研究更有兴趣。在此一并说明。</p><p><img src="http://p0.ifengimg.com/pmop/2018/1103/494B5E14EFB7BC8A88BE1E447D30C6B6303D5EE6_size30_w640_h341.jpeg"/></p><p>最后，我要说的是，翻译非我所长，有时候心血来潮译一点东西，纯粹是读书的副业，是拾译家的遗漏，是为了让更多的人能分享我阅读的快乐，如此而已。故这个初版译本肯定还存有好些可以改进之处。数年前，我与韩刚女士合作翻译长篇小说《生命中不能承受之轻》的时候，曾希望将来有人直接从法语中译出该书，可惜终无法语译者响应。同样可惜的是，那本书初版后不久，中国就加入了国际版权条约，于是意在修补某些错译和错印(包括恢复当初某些删节部分)的修订本因版权障碍一拖七八年，至今无法在大陆面世，仅有台湾版进入部分海外市场，真是让人干着急。这使我觉得对很多大陆读者还有一大笔欠债。我希望，这一次的《惶然录》在读者和专家们的指教帮助下，译本的逐步完善不会再遇到什么问题。如果将来有人从葡语中直接译出该书以取代眼下这个版本，则会更有益于读者，当然更好。</p><p>一九九八年四月于海口<span class="ifengLogo"><a href="http://www.ifeng.com/" target="_blank"><img src="http://p2.ifengimg.com/a/2016/0810/204c433878d5cf9size1_w16_h16.png"/></a></span></p>
+<h2 id="13">莫言读《旱魃》杂感：朱先生是我真正的先驱</h2><p>原标题:莫言：朱先生是我真正的先驱</p><p>10月29日，朱西甯小说经典《铁浆》、《旱魃》大陆首发式在北京举行。这是朱西甯先生的著作首次在大陆与读者见面。1949年他随军赴台，一生专注写作，培养台湾文学青年，作家朱天文、朱天心、朱天衣即是他的女儿。阿城说：“朱家一门两代三人都是好作家，这在世界上是少见的。”</p><p>诗人痖弦说：“他们的家庭成为文坛著名的文学巴哈（巴赫）家庭，成为文坛的美谈。朱西甯更以古代书院的授徒方式，培养了更多的文艺幼苗，他这方面的贡献极大。”</p><p>事实上，他的影响远不止于台湾。朱西甯先生的小说大多发生在山东地区，莫言在文章中谈这位老乡前辈：“我上世纪八十年代那些在大陆引起轰动的作品，无论在思想上和艺术上，都没有超过朱先生早我二十多年写的那批作品。朱先生是我真正的先驱”。</p><p>今天，分享莫言先生的采访视频及《旱魃》一书序言，随莫言走进朱西甯先生的文学世界。</p><p><strong>我的先驱</strong></p><p><strong>——读《旱魃》杂感</strong></p><p>（本文为朱西甯小说集《旱魃》序）</p><p><strong>文| 莫言</strong></p><p>上个世纪八十年代中，我的小说《红高粱》发表后不久，有一次遇到阿城，他对我说：“你一定要读读朱西甯。”我听了，也没太往心里去。过了两年，我的小说《白狗秋千架》获得联合报小说奖，那奖座上刻着的决选委员的名字，第一位就是朱西甯先生。但我还是没有读他的书。后来，在新加坡见到天心小姐，温良恭俭让，有大家闺秀风范，又知祖籍是山东临朐，与我的故乡高密百里之距，于是更感亲切。后数次赴台，均见过天心小姐，但我一直没敢提出见见朱先生或是讨要一本朱先生著作的请求，这是一个巨大的遗憾。</p><p>二〇〇二年冬，应台北国际艺术村的邀请做驻市作家一个月，期间又见天心，并见天文，得其赠送朱先生大作三本，一为《铁浆》，一为《旱魃》，一为《华太平家传》。当晚就读了《铁浆》，颇为震撼，也就明白了阿城让我读朱西甯的原因。在台的数次演讲中，都提到读朱先生作品引发我的深切感慨。</p><p>回北京后曾接受《诚品好读》编者电话采访，让我谈谈对朱先生小说的看法。我说：<strong>“《铁浆》虽是短篇，但内涵的能量足可以扩展成波澜壮阔的长篇巨著。小说中两家人为争夺盐槽对身体的伤害和铁路这个西方怪物对乡村自然经济的破坏让我震惊。而《华太平家传》则是编年史式的浩瀚巨制，小说中的故事、传说、风俗习惯以及富有地方色彩的语言，都让我备感亲切……朱先生上个世纪六十年代就写出来这样优秀的作品，可惜我读得太晚。若能早些读到他这几本书，我的《檀香刑》将更加丰富，甚至会是另外一番气象……”</strong></p><p>在台期间因为忙乱，没来得及读《旱魃》。二〇〇三年春天，天文小姐来信，问我能不能为新版《旱魃》作序。为朱西甯先生作序？诚惶诚恐。我上世纪八十年代那些在大陆引起轰动的作品，无论在思想上和艺术上，都没有超过朱先生早我二十多年写的那批作品。<strong>朱先生是我真正的先驱。</strong>作序不敢，但写一些读后的感想还是可以的。于是就读《旱魃》。当我刚读到三三丛刊版《旱魃》的第十八页，小儿八福对他的母亲说“林爷爷还讲，哪家坟土要是湿的话，坟里就有旱魃……”时，我就猜到了这小说的结局。</p><p>这并不是说我高明，而是说明我与朱先生使用的小说资源是那样相同。我在家乡听说过的故事，朱先生早我几十年就听说了。我使用的素材，朱先生早我几十年就使用过了。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p0.ifengimg.com/pmop/2018/1101/7593A65E66A239792B2088496EE03641D43A723B_size62_w740_h534.jpeg"/></p><p>旱魃，中国古老传说中的女性旱神，所到之处天不降雨。《山海经》中将之描述为青衣天女，而在后世的传说中，则转变为眼睛生于头顶的矮小秃头女子、浑身长白毛的僵尸等丑怪形象。</p><p>上世纪七十年代，我在故乡务农，连续十几年大旱，春播秋种，都要挖井、担水、浇灌，美其名曰“抗旱”。在艰苦的劳动间隙里，我们像朱先生《旱魃》中的老农那样仰望着播火的太阳，传播着某地出了旱魃的谣言。说得有鼻子有眼，不由你不信。我曾经动过把旱魃写成小说的念头，现在看来，幸亏没写，因为我还没听到这些传说的时候，朱先生的《旱魃》已经像一座丰碑，屹立在那里了。</p><p>《旱魃》是一部洋溢着现代精神的伟大小说，至今读来，依然是那样地朝气蓬勃，那样地活力充沛，那样地震撼灵魂。作者使用的素材虽然是乡土的，但作者注入到小说中的思想，却大大地超越了乡土。小说着力塑造的人物尽管是上个世纪初叶的人，但他们的精神，至今值得我们敬仰。作者使用的语言，尽管具有故乡的方言色彩，但由于精雕细琢，剪裁得当，并不会造成异地读者阅读时的障碍。</p><p>我看到一些台湾的论者注意到了《华太平家传》中的宗教思想，其实，早在《旱魃》中，朱先生的宗教思想已经表现得淋漓尽致。这个问题激起我很大的兴趣。在大陆五十多年的小说中，一直没有宗教信仰。近年来有西北地区的少数作家开始在小说中贯注他们的宗教，为此我多次表示赞赏。我认为没有宗教精神的小说，很难成为经典。上世纪九十年代中，我在《丰乳肥臀》中，曾经写了一个瑞典籍传教士和一个中国女子的深挚爱情，并借此宣扬了基督教的救赎精神。对此我颇为得意，但看了《华太平家传》和《旱魃》后，我只能感叹自己的肤浅。</p><p>基督教对于我，是传说和资料，但对于朱先生，则是家传，是亲历。差距之远，何异天壤。写成小说，又怎可同日而语。</p><p>《旱魃》这部小说，从表面上看是一个土匪头子和一个女人的故事，但从深层里看，却是基督拯救两个迷途羔羊的神迹。朱先生想用这部书，传播基督的精神，也彰显信仰着基督精神的他的先人们在那个愚昧黑暗的时代里建立的功勋。这样的书写不好就成了赤裸裸地说教，这是大陆文学几十年的痼疾。但朱先生的生活积累实在是深厚无比，对他所要描写的人物和事件感同身受。</p><p>我想朱先生对他笔下的每棵树木、每块石头都怀有深情。形象牢牢地控制着他，人物按照自己的逻辑发展。朱先生就像一个高明的骑手，顺着他的人物走。因此，他的思想就不是说出来的，而是人物表现出来的。因此他就避免了借小说说教，而是让小说自己表现出来原本就包含着的宗教精神。</p><p>世界上所有的宗教都是圆满的，但都不是完美的。因此对宗教的质疑就成了小说现代性的重要表现。这有时候并非是作家的本意。我猜想朱先生作为一个虔诚的基督徒，是不会对他的宗教提出质问的，但因为他顺从了小说中的人物，顺从了小说的根本定律，所以他的小说中也就出现了尖锐的质疑。当皈依了基督、散尽了财宝、收束了身心、勤恳地劳动着的唐铁脸被他的仇家打死在油坊的榨槽上时，他的妻子佟秋香，撕毁了那幅“宽窄路途”的立轴中堂，<strong>“好像撕毁了半个天，把上帝的裤子撕了下来”</strong>。然后，对着她们的引路人金长老大发雷霆：<strong>“难道说，主就不长眼睛？人也悔改了，什么都舍掉不要了。做了多少好事，行了多少善，还要他怎么样？天哪，作恶不得恶报，行善倒得了恶报。哪里还有天理！就这么个公道吗？教人寒心哪……”</strong></p><p>当然，笃信基督的朱先生让金长老把佟秋香说服，并让她为自己与主讨价还价的行为感到了羞愧。但她在激愤之时喊出的质问，并不因此而失去意义。一般的读者，也不会轻易地被金长老说服。这大概是朱先生料想不到的。<strong>这是一个基督徒与一个小说家的矛盾，而这矛盾，恰也是小说的福音。</strong></p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p0.ifengimg.com/pmop/2018/1101/FE90747C36DB9869BD228E9B3E561A61DCE0ECED_size149_w844_h1234.jpeg"/></p><p>《旱魃》是朱西甯先生的长篇小说经典，以遥远世界里的华北老黄河为背景，讲述乡里闹旱灾，到处缺水，唯独唐家油坊的那口水井源源不绝地涌着清泉，村里传言出了旱魃怪物……</p><p>《旱魃》之所以能如窖藏的美酒，历久弥香，还在于小说中塑造的人物，几乎个个鲜活地表现出来自己鲜明的个性。那个寄托了朱先生全部理想的金长老，那杀人如麻而又能迷途知返的土匪头子唐铁脸，那勇敢泼辣、有胆有识的佟秋香，那虽然穷困落魄但依然顽强地保持着自己的尊严的杂耍班主佟老爹，连杂耍班子里的皮二爷和油坊里的把式林爷爷、强老宋这样的次要人物，也是栩栩如生、呼之欲出。</p><p>从塑造人物的功力上看，<strong>《旱魃》又是一部继承了中国古典小说宝贵的白描传统的杰作。</strong>人物的话语，都是闻其声如见其人。这样的功力，不是那些所谓的“先锋派”作家具备的。这样的功力，建立在饱经沧桑的人生阅历的基础上，建立在对生活的丰富占有上，建立在对所写人物极端熟悉的基础上。</p><p><strong>《旱魃》还展示了朱先生强悍、饱满、意象丰富犹如激流飞瀑的语言风格。</strong>我大概地可以想象出朱先生用这样的语言，在上个世纪六十年代的台湾文坛上造成的震荡。他的语言犹如乱石砌成的墙壁，布满了尖锐的锋芒。他的语言如光滑的卵石投掷到铜盘上发出铿锵的回声。这样的语言需要奔跑着阅读，这样的语言扔到水中会沉底。朱先生善用比喻，而且是他独创的比喻，别人无法重复。他异想天开，视万物皆有灵。正像加西亚·马尔克斯所说：“所有的事物皆有生命，问题是如何唤起它们的灵性。”</p><blockquote><p><strong>“饕餮了整一个长夏的馋老阳，仍然不知还有多渴，所有的绿都被咂尽了，一直就是这么嗞嗞嗞嗞地吮吸着弥河两岸被上天丢开不要了的这片土地。”</strong></p><p><strong><br/></strong></p><p><strong>“唐家宅子前的大水塘，已涸得板硬。黑深的裂缝，该已裂进阴间去了。塘底上卷翘起干鱼鳞一样的土皮。那里残留着冬腊天里暖鱼的枯辣椒秧子，草草乱乱，团团的狼藉，脏黑里翘起白骨一样嶙嶙的老茎子，倒像整堆子糜烂的鱼尸骨。”</strong></p><p><strong><br/></strong></p><p><strong>“屋草缮得切糕样整齐，叫春的猫子都不曾到那上面踢蹬过。”</strong></p><p><strong><br/></strong></p><p><strong>“那一对松当当的眼皮，不知断了哪根吊筋，低垂着，脸要仰得很高，才看得到天。”</strong></p><p><strong><br/></strong></p><p><strong>“可天是死了。天是石女，生不出一朵云，一滴水，决计不给人一点点回生的指望。庄稼户认命地一再退让，一直退让出一百个火毒的太阳。”</strong></p><p><strong><br/></strong></p><p><strong>“坚韧的盼望是一根愈缫愈细的生丝，临到不曾断绝的边口儿上……”</strong></p><p>不需例举了，这样的语言在书中比比皆是。这样的语言是诸多小说家梦寐以求的，这样的语言与温文尔雅的朱先生形成了多么巨大的反差啊，由此可见，朱先生的内心世界是多么瑰丽而丰富。我感到朱先生的语言是从李长吉那些“石破天惊逗秋雨”的诗里化出来的。对一个少小离家、浪迹天涯的小说家来说，他用语言寻找故乡，他用语言创造故乡，语言就是他的故乡。</p><p>《旱魃》的结构，也显示了朱先生不愿意按部就班地、轻车熟路地讲述一个故事的艺术雄心。多少惊心动魄的事件，镶嵌在一个线性发展的故事当中。<strong>这样的结构，也正是我的《红高粱》的结构。我庆幸现在才看到《旱魃》，否则我将失去写作《红高粱》的勇气。</strong>正因为我至今才读朱先生，所以我才能在不知不觉地沿着朱先生开辟的道路前进的同时，因为与朱先生个性、学养等方面的差异，而使自己的作品具有了一些个人的特质。</p><p>前面我说，很遗憾没有见过朱先生，其实何需见，书在犹人在，读他的书，犹如聆听他的教诲。朱先生的道路，是一条正确的道路，我以前是无意识地走在了这条道路上，今后就应该自觉地沿着这条道路义无反顾地前进了。</p><p>二〇〇三年八月三日<span class="ifengLogo"><a href="http://www.ifeng.com/" target="_blank"><img src="http://p2.ifengimg.com/a/2016/0810/204c433878d5cf9size1_w16_h16.png"/></a></span></p>
+<h2 id="14">古代名媛是如何做到脚底生香的 从画中找证据</h2><p>自然界有很多芳香植物，人们在香气中感受到了愉悦。人们采集、栽培芳香植物，把香气带进了日常生活里，包括饮食、医疗、服饰、妆容、居所、宗教、绘画、文学等方面。经过历史长河的演变，“香”已形成了一种独特的文化，我们称之为“香文化”。&nbsp;　　</p><p>由广东省博物馆主办、广东青洲文化有限公司协办的原创展览《鼻尖上的喜悦——嗅觉的秘密与香文化》，于2018年9月27日至2019年3月3日在广东省博物馆三楼临时展厅二举行。通过展览告诉你：香气如何让我们感知？香气从哪里来？香气如何使用？</p><p><strong>亲身体验“古代名香”</strong>&nbsp;　　</p><p>香文化发源于春秋战国时期，是中华民族在长期的历史进程中，围绕各种香品的制作、炮制、配伍与使用而逐步形成的能够体现出中华的精神气质、民族传统、美学观念、价值观念、思维模式与世界观之独特性的一系列物品、技术、方法、习惯、制度与观念。&nbsp;　　此次展览，围绕“香气如何被感知”、“香气从哪里来”、“香气如何使用”等等这些问题，设计了三个部分的内容：第一部分“揭秘嗅觉”，展出了自然界不同环境下生存的动物的标本，探索动物独特的嗅觉功能；第二部分“众里寻香”，参考了宋代《香谱》、明代《香乘》等古代香文化大成之作，选取了珍贵香料沉香、檀香、降香、麝香、龙涎香，也收集了常见香料，把自然界香气的动植物来源呈现给观众；第三部分“鼻尖喜悦”，依托馆藏80多件文物，阐述了香气在人们日常生活中的作用，包括饮食、医疗、服饰、妆容、居所、宗教、绘画、文学等方面，展现人与香独特的关系。&nbsp;　　与此同时，为了充分调动观众的嗅觉，展览特别设置了气味体验区，让观众不仅能闻到传统意义上的常见香料的气味，还能体验“古代名香”的芬芳。&nbsp;　　</p><p><strong>古代名媛“脚底生香”</strong>&nbsp;　　</p><p>“人们采集、栽培芳香植物，把香气带进了日常生活里——饮食、医疗、服饰、妆容、居所、宗教、绘画、文学等等方面。”策展人章俊霞告诉记者，香是嗅闻后的一种主观感受，每个人都有自己最喜欢的气味：“爱美之心人皆有之。古代的名媛在美容护肤方面也下足功夫，她们会在头发、面部、身体上使用不同的香料美化自己。除了在口脂、眉粉、面脂、胭脂里面添加香料，也会炼制香丸、香饼口含服用，保持口气清新。与现代人相比，古代名媛更是香风雅致。”&nbsp;　　</p><p>芳香养鼻，香气调动着人们的感官！记者在展览现场看到一双紫色的丝绸绣花“马蹄底”女鞋，据说这双女鞋内藏乾坤，能够营造“脚底生香”之美妙！如何做到？皆因其以高级香木来制作鞋底。据了解，明清时期，女性的鞋底不仅流行用高级香木制作，甚至还会把高底鞋跟中间挖空，内置香粉。此外，古代人或聚会或独处，或欢腾或寂静，都喜爱点燃袅袅幽香来颐养身心。&nbsp;　　</p><p>“食物总是跟香气结合在一起，嗅觉帮助人体全方面地体验食物的味道，食物散发的香气让食物本身更加秀色可餐。”此外，章俊霞介绍，香料除了给我们带来嗅觉上的享受，它还具有药用功能，所以又被广泛用于治疗疾病。</p><p><strong>知识分享</strong></p><p><strong>动物的嗅觉，像一个趋利避害的生存探测器。</strong></p><p>嗅觉是气味刺激生物的嗅细胞而引起的感觉。自然界的动物，不管是游弋于水中，奔跑于陆地，还是翱翔于蓝天，它们的嗅觉功能都很强大。&nbsp;　　</p><p>动物利用嗅觉探测气味，完成获取食物、交流信息、诱惑敌人、组建团队、结识配偶等活动。与人类的嗅觉对比，动物的嗅觉跟它们的生存紧密联系在一起。”策展人章俊霞介绍，脊椎动物是动物界中结构最复杂、进化地位最高的类群。研究表明，大多数的陆生脊椎动物使用两套化学感受器来感知气味：嗅器——感受挥发性的小分子物质，几乎所有脊椎动物都具备；犁鼻器——感受非挥发性的大分子化学物质，如信息素，其在动物的演化中差异明显。&nbsp;　　</p><p>“蜥蜴和蛇的舌尖经常伸出口外来搜集气味物质，当舌尖缩回口腔时，舌尖上的气味分子也被带入犁鼻器。犁鼻器受到刺激而产生一系列神经传导形成嗅觉。”章俊霞告诉记者，1813年，犁鼻器被丹麦解剖学家发现：“有研究表明，犁鼻器从有尾两栖动物（例如大鲵）开始出现，发展到爬行动物蛇类时高度发达。而鱼类、鳄类、鸟类及大多数的蝙蝠和海洋哺乳动物一般没有犁鼻器，人类的犁鼻器也已高度退化。”&nbsp;　　</p><p><strong>兀鹫</strong></p><p>鸟类属于高等脊椎动物，它的感官中以视觉最为发达，听觉次之，嗅觉最为退化。但是少数种类的鸟类嗅觉相当发达，例如吃腐肉的兀鹫。&nbsp;　　</p><p><strong>植物香在自然界广泛存在，动物香数量不多</strong></p><p>空气里的各种气味被我们的嗅觉感受器捕获，而香气总是能让我们产生喜悦，那香气是从何而来？在展览的第二部分“众里寻香”里，生活中的各式各样常见香料为我们作出了解读。&nbsp;　　</p><p>“植物界种类最多的类群是被子植物，被子植物一般可分为根、茎、叶、花、果实和种子六种器官。芳香性物质在植物体存在的部位常随物种的不同而各异，有的全株植物中都含有，有的则集中于根或根茎、叶、花、果实某一器官。”章俊霞介绍，分泌结构存在于维管植物体内的不同器官，它们能分泌特殊物质，如蜜汁、黏液、挥发油、树脂、乳汁等。这些分泌物质可以防止植物组织腐烂，帮助创伤愈合，免受动物啮食，排除或贮积体内废物等，还可以引诱昆虫，以利传粉。&nbsp;　　</p><p>据了解，植物香在自然界广泛存在，既有名贵的沉香、檀香、龙脑香，也有名不见经传的香草。动物香数量不多，其中的麝香、龙涎香也是名贵香料。<span class="ifengLogo"><a href="http://www.ifeng.com/" target="_blank"><img src="http://p2.ifengimg.com/a/2016/0810/204c433878d5cf9size1_w16_h16.png"/></a></span></p>
+<h2 id="15">看钱君匋的书画收藏：从金农到邓石如、伊秉绶、吴昌硕</h2><p>“萃精藏华——钱君匋的艺术品收藏”这些天正在浙江海宁市钱君匋艺术研究馆开幕。“澎湃新闻·古代艺术”从钱君匋艺术研究馆获悉，今年是钱君匋艺术研究馆开馆20周年，故而特举办“萃精藏华——钱君匋的艺术品收藏”展。</p><p>此次展览挑选了钱君匋先生所收藏书画作品30件，其中以书法、绘画作品各15件。书法既有“清代四大书家”之一的刘墉作品，又有如邓石如、伊秉绶、赵之谦、吴昌硕等清代中后期的名家书作，还有如王福厂（读庵）、马公愚、沙孟海等近现代名家的书法真迹。绘画则包含从扬州八怪到“老海派”，再到近现代名家，从金农到赵叔孺、王一亭，再到张大千、谢稚柳、刘海粟、潘天寿。展览将持续至12月2日。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p2.ifengimg.com/2018_45/C4B8E22207DAEFC3C522DAB3F324016837638A6A_w600_h436.jpg" width="600" height="436" alt="" style="border: 0px; vertical-align: middle; padding: 0px; max-width: 100%; height: auto !important;"/></p><p>金农《墨梅》&nbsp;</p><p>钱君匋（1907-1998）浙江桐乡人。原籍浙江海宁，出生于桐乡市贫寒家庭。高小毕业即当乡村小学教师，过了一年，借债到上海艺术师范学校读书，从吴梦非、丰子恺学习西方美术，从刘质平学习西方音乐。后来蒙开明书店创始人章锡琛之邀，到开明书店担任音乐美术编辑。20岁，靠书籍装帧结识了鲁迅、茅盾、郭沫若、巴金、陈望道、郑振铎、叶圣陶、胡愈之等，后致力于中国绘画、书法、篆刻。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p1.ifengimg.com/2018_45/018E36EE0CD1E8E5460D5A0688E6E339AB4AD41C_w600_h600.jpg" width="600" height="600" alt="" style="border: 0px; vertical-align: middle; padding: 0px; max-width: 100%; height: auto !important;"/></p><p>钱君匋（1907-1998）</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p2.ifengimg.com/2018_45/76633DA481C1857FFDE7C8FBA3C937DC10DEF8D0_w494_h1000.jpg" width="494" height="1000" alt="" style="border: 0px; vertical-align: middle; padding: 0px; max-width: 100%; height: auto !important;"/></p><p>邓石如《八言隶书联》</p><p>为了学习，他先是搜集珂罗版画册，进而搜求当时的名人手迹。有点经济能力以后，转为追求古代名迹。最早收藏的有徐渭、陈淳、文徵明、张宏、沈周、陈洪绶、仇英等，随后收藏的有龚贤、石涛、华喦、王翚、王原祁、金农、李方膺、郑燮、伊秉绶、赵之谦、吴让之、吴昌硕、黄士陵、任伯年、虚谷、齐白石等。至上世纪60年代前期，已有古人作品数千件。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p1.ifengimg.com/2018_45/81DAAEEDE4529A5C87C10E5B1E91B6E625375D46_w261_h1000.jpg" width="261" height="1000" alt="" style="border: 0px; vertical-align: middle; padding: 0px; max-width: 100%; height: auto !important;"/></p><p>伊秉绶《草书立轴》</p><p>钱君匋并不厚古薄今或文人相轻，面对师友及同时代优秀艺术家的作品，钱君匋说他曾四处求索，“一旦求得，再付一些装裱费用就可悬诸室内，时刻观摩，作为学习和借鉴”，诸如于右任、谭延闿、谭泽闿、马公愚、张大千、潘天寿、李苦禅、沙孟海、张宗祥等人都使他在书画艺术悟进上大有裨益。</p><p>对于钱君匋先生长达70年余的收藏之路，其中不乏一些有趣而坎坷的收藏故事。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p3.ifengimg.com/2018_45/A20BD7F5DAFC72BD09F4CCE51249EA323E9DB6F3_w267_h800.jpg" width="267" height="800" alt="" style="border: 0px; vertical-align: middle; padding: 0px; max-width: 100%; height: auto !important;"/></p><p>吴让之《金枝芙蓉》</p><p>1955年冬，他得知天津有一批赵之谦印章要卖，和朋友经过北京，不顾五寸厚的雪，急赴天津劝业场，因为价高(好像是2000元)没能谈成。后来经过一段时间的反复协商，年底回到上海后，终于谈成(1500元)。先生知道结果后，尽管印章还没到手，已经是欣喜若狂，酒量陡增，痛饮了5斤花雕。后来挑出6件赝品，这一批共收藏了105件赵之谦原印。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p3.ifengimg.com/2018_45/EC994EB3942D9794A940C2A6B1E5726B1DC75282_w426_h1000.jpg" width="426" height="1000" alt="" style="border: 0px; vertical-align: middle; padding: 0px; max-width: 100%; height: auto !important;"/></p><p>赵之谦《行书五言联》&nbsp;</p><p>钱君匋先生于篆刻，对赵之谦、黄士陵、吴昌硕情有独钟，至上世纪60年代初，共收得赵之谦印100多件、黄士陵印159件、吴昌硕印200件，而且取三人的别号(无闷赵之谦、倦叟黄士陵、苦铁吴昌硕)为自己的书斋命名为“无倦苦斋”。他特喜欢华喦(新罗)，为了筹集巨款，忍痛卖掉了查士标、吴昌硕、徐悲鸿的作品，还用尽了历年的积蓄。后来积多年所得，终于收得华喦书画册页百多幅，为书斋命名“新罗山馆”、“抱华精舍”。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p2.ifengimg.com/2018_45/AE198CD1002971D5049A78587812383C81B8F23D_w600_h477.jpg" width="600" height="477" alt="" style="border: 0px; vertical-align: middle; padding: 0px; max-width: 100%; height: auto !important;"/></p><p>刘海粟《秋山行旅》&nbsp;</p><p>钱君匋先生先生也对金农的作品爱不释手。曾有中介携金农花卉册页5开，每开索价50元，先生见是真迹，不还价就买了。不几天，中介又携来4开，原本是同一册，但这次索价每开100元，不能还价，先生只好再买。过后，又有藏家邀先生去他家看画，其中有1开金农水墨梅花，正是那本册子的最后1开，可是索价150元。无奈，钱君匋先生还是买了。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p0.ifengimg.com/2018_45/CED545549CBE87D13DE3991918B59EEDA126D111_w370_h800.jpg" width="370" height="800" alt="" style="border: 0px; vertical-align: middle; padding: 0px; max-width: 100%; height: auto !important;"/></p><p>林散之《草书诗轴》</p><p>钱君匋先生视艺术为“第二母亲”，他曾真诚地说：“艺术哺育了我，我也有义务为艺术的发展尽一点人子的微力。”他一生以弘扬民族艺术为己任，奖掖后学，不遗余力。晚年将自己毕生节衣缩食所得的收藏无偿捐献给故乡。1985年，经过认真考虑，全家同意，钱君匋先生决定将4000余件珍藏捐献给桐乡人民，其中，一级藏品十几件，桐乡市政府因此新建了君陶艺术院。</p><p>而1996年，钱君匋先生把自己最后收藏的明、清、近现代书画、文物以及自己创作的书画篆刻精品共千余件全部捐赠给故乡海宁，海宁市人民政府特为此建造以钱君匋先生名字命名的艺术研究馆。1998年钱君匋艺术研究馆正式对外开放。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p0.ifengimg.com/2018_45/CE152481522C1D944E073231ADD52274DE25D496_w490_h1000.jpg" width="490" height="1000" alt="" style="border: 0px; vertical-align: middle; padding: 0px; max-width: 100%; height: auto !important;"/></p><p>张大千《设色山水》</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p1.ifengimg.com/2018_45/AA0EF0BC4334476DCA7BAC0B0B07D04E97399F9D_w600_h439.jpg" width="600" height="439" alt="" style="border: 0px; vertical-align: middle; padding: 0px; max-width: 100%; height: auto !important;"/></p><p>展览海报</p><p><strong style="color: rgb(51, 51, 51); font-family: &quot;Hiragino Sans GB&quot;, &quot;Microsoft Yahei&quot;, sans-serif; letter-spacing: 0.5px; white-space: normal; background-color: rgb(255, 255, 255);">展出作品清单</strong></p><p>1 金农墨梅</p><p>2 刘墉行书诗轴</p><p>3 邓石如隶书和气虚怀八言联</p><p>4 伊秉绶草书立轴</p><p>5 陈鸿寿行书彝鼎兰苕七言联</p><p>6 吴让之金枝芙蓉</p><p>7 蒲华行书守口清耳八言联</p><p>8 任伯年桃花渔夫</p><p>9 吴昌硕临石鼓文</p><p>10 赵叔孺焦山周鼎拓本补牡丹</p><p>11 沈曾植草书诗轴</p><p>12 郑孝胥行书立轴</p><p>13 罗振玉篆书经籍诽皆八言联</p><p>14 王一亭归牧图</p><p>15 王福厂篆书一川四壁七言联</p><p>16 余绍宋墨竹</p><p>17 冯超然墨笔山水</p><p>18 马公愚篆书日暮天高七言联</p><p>19 刘海粟秋山行旅图</p><p>20 林散之草书诗轴</p><p>21 潘天寿梅花喜鹊图</p><p>22 李苦禅白菜</p><p>23 张大千设色山水</p><p>24 沙孟海行书书谱句</p><p>25 商承祚篆书安得且问七言联</p><p>26 唐云设色花鸟</p><p>27 谢稚柳青绿山水</p><p>28 程十发羊群少女</p><p>29 赵之谦行书虚舟高酣五言联</p><p>30 陈宝琛楷书层松横藤八言联<span class="ifengLogo"><a href="http://www.ifeng.com/" target="_blank"><img src="http://p2.ifengimg.com/a/2016/0810/204c433878d5cf9size1_w16_h16.png"/></a></span></p>
+<h2 id="16">“成都·蓬皮杜：国际艺术双年展”：期待突破美术馆围墙</h2><p>11月2日，由蓬皮杜国家艺术文化中心、毛继鸿艺术基金会（MJHAF）、成都传媒集团联合主办的“成都•蓬皮杜：‘全球都市’国际艺术双年展”在成都五地同时展开。</p><p>在首届主题“集体智慧”的基础上，“成都•蓬皮杜：‘全球都市’国际艺术双年展”将主题升级为“延展智慧”，在既有研究基础上，致力于探讨生态、科技与公共空间，关注快速的技术变革对现代社会带来的冲击与影响。双年展的另一个研究重点是城乡间与社会关系，深入探讨数字经济和其他技术文化转型相关的社会与生态影响、科技与公共空间等议题，并对如何利用智能技术和生态智能来推动社会发展展开想象。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p2.ifengimg.com/2018_44/716A9AC3B66BF1685CDDA3995559EE276C1FA13C_w600_h800.jpg" width="600" height="800" alt="" style="border: 0px; vertical-align: middle; padding: 0px; max-width: 100%; height: auto !important;"/></p><p>东郊记忆音乐公园</p><p>“澎湃新闻·艺术评论”（www.thepaper.cn）从现场获悉，此届“成都•蓬皮杜：‘全球都市’国际艺术双年展”以“延展智慧”为主题，由蓬皮杜国家艺术文化中心的凯瑟琳•魏尔（Kathryn Weir）女士担任主策展人，伊拉莉亚•康迪（Ilaria Conti）担任副策展人，将呈现来自全球20余个国家和地区的近60位（组）艺术家与小组的百余件作品，包括“全球都市”委约创作的多件作品、互动环境与装置，以及多种形式的研究型艺术创作。</p><p>自2017年在巴黎开始，双年展主策展人凯瑟琳•魏尔与哲学家许煜展开了一场持续的对话，由此启发了“全球都市：延展智慧”的策展思路。凯瑟琳•魏尔表示：“艺术研究和它所产生的跨学科与跨区域知识生产，有助于为艺术、批判理论和科学这些不同思想系统之间的对话提供条件。艺术家带来前所未有的呈现出网络和星丛的影响力、知识和创作的形式，来反抗那种单一的、共时的文化与技术发展模式。”</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p3.ifengimg.com/2018_44/2811A36E2AE2B6218B374ED8F39FF95A6B5FB963_w600_h450.jpg" width="600" height="450" alt="" style="border: 0px; vertical-align: middle; padding: 0px; max-width: 100%; height: auto !important;"/></p><p>展览现场</p><p>在展览开幕前的新闻发布会上，凯瑟琳•魏尔说道，“‘全球都市’关注不同文化下艺术家的对话，比如活跃于非洲、亚洲、南美的艺术家和欧洲艺术家之间的对话。在此次展览上，许多驻地艺术家在新的语境下进行反思和创作，他们的作品表现出现实性、知识性和社会性，侧重人的生活质量的表达。展览将呈现个人所理解的城市化转型，艺术对人的转变，以及科技对生活、环境的影响。”</p><p>在研究艺术实践时，策展人凯瑟琳•魏尔关注全世界，尤其是非西方国家的艺术。“‘全球都市’第一次成功在巴黎发声之后，我和策展人商讨，考虑这个新形态的展览是否可以带到中国，这个想法得到了策展人的认同。”此次展览的项目总执行人宁琤告诉“澎湃新闻·艺术评论”（www.thepaper.cn）。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p2.ifengimg.com/2018_44/6A25A1AD9CEF489F823A1E06A8C8EEFF3E7B28F9_w600_h450.jpg" width="600" height="450" alt="" style="border: 0px; vertical-align: middle; padding: 0px; max-width: 100%; height: auto !important;"/></p><p>展览现场</p><p>“我们关注艺术的多样性，”宁琤说道，“最初我们希望展览落地上海，因为上海有丰富的艺术机构和成熟的艺术观众。但是这次策展的主题是‘去中心化’（De-centralize），就索性远离北京和上海，转而在内地选择一个文化重镇：成都——许可以产生更大的共鸣。” 宁琤认为，成都既有深厚的历史和独特的个性，又有国际性。</p><p>在准备展览的过程中，宁琤感受到，空间、地域和艺术之间的关系是很有趣的。“人和文化接触的时候，一些定量似乎都成了变量，在不断变化。比如有很多艺术家来的时候带了计划书，但是真正到达之后，本土的东西在不断加深，制作计划也在随之调整，这样才能与地域和空间的特点完美契合。” 宁琤告诉澎湃新闻。另一方面，她认为，只有“走出去，到这来”这种在地性，才能产生对话。“这是在去中心化的，全球化的语境里在做的动态项目。艺术家也会收获一些艺术作品和其他艺术家的反馈，甚至明年巴黎发声的时候还可以有一些作品带回去。” 宁琤说道。</p><p>在首届主题“集体智慧”的基础上，“成都•蓬皮杜：‘全球都市’国际艺术双年展”将主题升级为“延展智慧”，在既有研究基础上，致力于探讨生态、科技与公共空间，关注快速的技术变革对现代社会带来的冲击与影响。双年展的另一个研究重点是城乡间与社会关系，深入探讨数字经济和其他技术文化转型相关的社会与生态影响、科技与公共空间等议题，并对如何利用智能技术和生态智能来推动社会发展展开想象。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p3.ifengimg.com/2018_44/C172513F3F1DF0A944E9C10D6E7D93C600F4C46A_w600_h337.jpg" width="600" height="337" alt="" style="border: 0px; vertical-align: middle; padding: 0px; max-width: 100%; height: auto !important;"/></p><p>乐山市夹江县石堰村，图片来源：展览方提供</p><p>不同于一般的艺术展，成都•蓬皮杜：“全球都市”国际艺术双年展”是一场突破了美术馆围墙的跨领域、跨学科、跨文化的展览。</p><p>主题展览“全球都市：延展智慧”主展场所在的东郊记忆由原国营红光电子管厂改建而成。展览探讨了生态、科技与公共空间，以此展望如何利用智能技术以及生态智能来推进社会发展。“这次的主展场，直接落地到工业化改造的文化园区。而且这届‘延展智慧’谈的是技术问题，这个园区厂房又是中国第一个显像管厂，也是中国科技的代表性产物，和策展主题也很契合。”宁琤在接受澎湃新闻专访时表示。</p><p>知名音乐家、作家刘索拉为本届双年展的音乐版块“音乐是认知”策划了一次“无定义当代音乐节”，力图展示在本土发生的有特殊个性的当代音乐，包括中国现代派音乐创作、流行电子音乐以及不同流派和形式融合的新音乐创作。</p><p>与此同时，双年展将在锦城湖等成都市具有代表性的公共场域设立分展场，并在梵木创艺区、方所成都店等多个城市地标以及乐山夹江县同步发声。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p1.ifengimg.com/2018_44/8652247093DEBCEA316E85057FDA43C2C5EF2FE2_w600_h400.jpg" width="600" height="400" alt="" style="border: 0px; vertical-align: middle; padding: 0px; max-width: 100%; height: auto !important;"/></p><p>演出现场;图片来源：展览方提供</p><p>在“水与未来生活”版块中，成都锦城湖上将出现一座漂浮的“群岛”—— “岷江漂浮系统”（MFS IIIx3），由国际知名建筑师昆勒•阿德耶米与NLÉ建筑事务所设计，结合中国在地工程师、设计师的创意，构建了一处让人们思考艺术和水文化，并感受生态之美的“未来场所”。在接受澎湃新闻专访时，阿德耶米表示，这一项目也反映出了展览“集体智慧”的关注，“和世界上许多其他城市一样，成都有丰富的治水经验，能够运用集体智慧和历史智慧来使水变成自己的领地，为人和环境创造空间。”在他看来，湖上的漂浮系统不只是一个临时的公共空间，还是同当地治水文化和历史的一种融合。在展览举行期间，位于锦城湖上的三座A字型的木质结构将围绕中央的漂浮广场，分别构成信息中心、展览空间和音乐厅，为人们创造水上的公共空间。</p><p>在乐山市夹江县石堰村，三组艺术家将与当地社区进行驻地交流。他们发起协作项目，围绕乡村公共空间的共享实验，将以工作坊和当地居民参与形式展开，最终项目结果将利用当地可获得的物质和非物质材料，集体生产出对乡村语境潜力的新认识。“在夹江驻地的艺术家一共有三组：建筑延伸合作社（Arquitectura Expandida），Gudskul小组和亚斯明•史密斯（Yasmin Smith）。” 宁琤在接受澎湃新闻采访时透露道。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p2.ifengimg.com/2018_44/2D5F8EF9B158A6CD73301E3B48F7647F1DDFB97E_w600_h616.jpg" width="600" height="616" alt="" style="border: 0px; vertical-align: middle; padding: 0px; max-width: 100%; height: auto !important;"/></p><p>双年展主展场东郊记忆；图片来源：展览方提供</p><p>其中，建筑延伸合作社会到石堰村驻地三个月，和村民们展开合作和建造长椅、球门、木沙发等，这些合作成为村民们唱歌、跳舞、做饭和踢足球等当地社交活动的传承。“乡村会随着城市化的发展而变化，我们想要强调那些应该留下来的东西，” 建筑延伸合作社表示。印尼艺术家组合Gudskul小组的核心理念在于“搜集记忆”，比如建造简易的电影院，策划地图绘制项目，卡拉OK比赛等等——让每个参与者都可以标记关于他们记忆和故事。亚斯明•史密斯则是一位科学研究型的艺术家，她会邀请夹江当地的工匠、居民一起参与陶瓷的制作，并通过探索釉料背后的化学，提供关于当地的历史、生态、地质和文化的物证。“我喜欢研究科学和竹子、釉料的关系，它们可以将不可见的东西放大，让我们看到不可见的世界。”亚斯明•史密斯说道。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p2.ifengimg.com/2018_44/613003CAF6235B2AB1FB8C7360DB3DF693A2D2A2_w600_h400.jpg" width="600" height="400" alt="" style="border: 0px; vertical-align: middle; padding: 0px; max-width: 100%; height: auto !important;"/></p><p>双年展主展场东郊记忆；图片来源：展览方提供</p><p>从工厂到水上，从公园到书店，从城市到乡村，从视觉艺术展场到音乐节舞台，成都•蓬皮杜：“全球都市”国际艺术双年展提供了一条独特的观看路径，穿行古城内外，给全城带来节日氛围。</p><p>据悉，展览将从2018年11月3日持续至2019年1月6日。展览地点包括东郊记忆、锦城湖、方所成都店、梵木创艺区、夹江县石堰村及相关文创点位。<span class="ifengLogo"><a href="http://www.ifeng.com/" target="_blank"><img src="http://p2.ifengimg.com/a/2016/0810/204c433878d5cf9size1_w16_h16.png"/></a></span></p>
+<h2 id="17">中国“规划政治”的重大转型: 压力、博弈及其前途 </h2><p>原标题:中国“规划政治”的重大转型: 压力、博弈及其前途| 文化纵横</p><p>许晓龙、李里峰/南京大学政府管理学院</p><p>［导读］”十三五“规划从2016年开始，已进行到中间阶段，并将于2020年完成，而眼下又到了谋篇”十四五“规划的时候。作为国家治理的一项基础性安排，中国的“五年计划”经历了从经济发展计划到全面发展规划、从经济指标为主到公共服务指标为主的制度变迁。在作者看来，这种变迁是环境、观念、行动者三者互动的结果：一方面，环境开放诱发了“五年计划”的合法性危机，带来了制度变迁的压力，观念更新为变迁指明了方向，行动者的认知和博弈则是变迁的直接推动力量；另一方面，由于路径依赖的强大约束，“五年计划”制度并未在市场化洪流中退出历史舞台，反而通过适应性改造融入其间，形成了具有一种独特的市场化转型道路。文章仅代表作者观点，特此编发，供诸君思考。</p><p>作为计划经济时代的产物，“五年计划”是中国政府干预和调控经济运行的一项基础性制度安排，经过六十多年的发展演变，这项制度仍然在中国经济运行中扮演着重要角色。目前相关研究大多致力于描述五年计划的历史演变过程，而很少关注该制度在不同历史时期发生变迁的动力机制。本文将基于历史制度主义视角，从环境、观念、行动者互动的视角出发，探讨六十多年来五年计划的变迁与延续，以期对深入理解中国政治的运行机制有所助益。</p><p><strong><strong><strong>▍</strong></strong></strong><strong><strong><strong><strong><strong><strong><strong><strong>机构：从“国家计委”到“发改委”</strong></strong></strong></strong></strong></strong></strong></strong>&nbsp;&nbsp;</p><p>建国初期，中央计划管理权属中央人民政府政务院财政经济委员会（简称“中财委”），具体执行机关为其下设的中央计划局。1952年11月，为适应大规模经济建设的需要，单独成立中央人民政府国家计划委员会（简称“国家计委”），与政务院并行，同受中央人民政府委员会的领导。此后，编制长期和年度经济计划的工作即由中财委移交给国家计委。1953年5月，中财委的工作实行“五口通商”，国家计委又兼管了8个工业部的工作，至此，国家计委的业务范畴涵盖了经济计划、基本建设、物资分配、统计工作和工业建设等方面。因国家计委与政务院并行，下属机构及分管业务众多，当时可谓位高权重，被称为“经济内阁”。</p><p>1954年9月，一届人大一次会议撤销政务院，设立国务院，国家计委改为国务院组成部门，主要职责为管理长期和年度国民经济发展计划。同时设立国家建设委员，国家计委遂将基本建设综合计划局、城市建设计划局、设计工作计划局、技术合作事务局和基本建设办公室等机构划归国家建委。1956年，国家经济委员会（简称“国家经委”）成立，负责年度计划、物资分配、物资储备等业务，国家计委遂专门负责长期计划。“大跃进”开始后，年度计划工作重归国家计委。“三五”计划开始后，毛泽东对李富春领导的国家计委不满意，对国家计委进行改组并成立由余秋里挂帅的“小计委”，后由其正式主持了国家计委的工作。文革期间，国家计委机关受到冲击。</p><p>文革结束后，国家计委的工作逐渐恢复正常。1980年2月，国务院通过《国家计委的职责范围和工作方法》，规定国家计委的任务是“集中全力搞好综合平衡，拟定国民经济的长期、中期和年度的计划，并以拟定中期（五年）计划作为工作的重点”。1982年的机构改革中，国家计委兼管了被撤销的国家基本建设委员会的部分业务。同时，为了实现对国家经济活动的统一指挥，此次改革重组了国家经济委员会。但是，改革后的“两委”（国家计委和国家经委）在实际运行中权责交叉严重，1988年机构改革时又将国家经委并入国家计委，新的国家计委成为国务院管理国民经济和社会发展的最大综合部门，并被赋予“宏观管理机构”的属性。此后3年间，国家计委在邹家华的领导下进行了放权改革。</p><p>中共十四大提出建立社会主义市场经济体制的目标后，各界对国家计委的职能定位纷纷提出质疑，国家计委遭遇了合法性危机。“最尖锐的是西部一个省份的全国人大代表，建议撤销国家计委。国家计委机关的工作人员本身也有点思想混乱，对于今后的工作去向无所适从”。尽管如此，1993年的机构改革保留了国家计委，并首次提出“要使国家计划成为宏观调控的重要手段，更好地发挥计划部门在国家宏观调控中的作用，要求国家计委按照适应市场经济体制的目标和要求转变职能”。此轮改革中，国家计委下放、转移和弱化了应由市场调节以及地方和企事业单位管理的职权，原国家经济委员会在此次改革中也以国家经济贸易委员会的形式复活，并承接了国家计委转移出来的部分业务。1998年机构改革时，国家计划委员会更名为国家发展计划委员会，其职责为编制国民经济和社会发展规划，对经济运行进行宏观调控。此轮改革中，国家计委将产业政策制定等方面的业务转移给了国家经贸委，计委的职权继续减弱，国家经贸委的职权继续扩大。</p><p>在计划主管机构的演变过程中，2003年机构改革是一个重要转折点，国家发展计划委员会改组为国家发展和改革委员会（简称“发改委”），“计划”一词彻底从计划主管机构的名称中消失。这次改革将原国务院经济体制改革办公室的职能划入发改委；撤销国家经贸委，其主体业务划归发改委。此次对国家计委、国务院体改办和国家经贸委进行整合，初衷是为了统筹和强化政府的宏观调控职能，最终却变为发改委的扩权。此后，发改委权力过大、与其他部门职责交叉严重等批评不绝如缕。2008年机构改革以探索建立大部制为目标，对发改委进行改革的呼声很高。</p><p>有学者评价道，“发改委聚集了大量资源和拥有庞大职能，堪称‘小国务院’，为了要钱要政策，很多地方官员围着发改委转圈，大至国家战略，小到县域发展，发改委无一不管，其职能边界已经到了让人难以容忍的地步”；时任国家审计署审计长李金华也在当年“两会”上直言“最需要改革的是发改委”。但是，面对金融危机的蔓延，作为经济调控的主要机构，发改委的权力在此次改革中并未削弱，再加上中央政府当年推出4万亿元经济刺激计划，拥有项目审批权的发改委之权力进一步扩张。</p><p>2013年开始的新一轮机构改革以转变政府职能为核心，以行政审批制度改革为突破口和抓手。在此前后，改革发改委的呼声再次高涨。有人建议“让发改委从微观管理中抽身，将其项目审批权、经费审批权等具体权力剥离出来，下放到行业部门”。在各方的呼吁下，随着行政审批制度改革，发改委也开启了新一轮放权改革。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p0.ifengimg.com/pmop/2018/1103/2D0959FEA6C81F5BB4BA87B4D808ACF43CAEEDBD_size88_w780_h509.jpeg"/></p><p><strong><strong><strong>▍</strong></strong></strong><strong><strong><strong><strong><strong><strong><strong><strong>制度：“五年计划”的制定与演化</strong></strong></strong></strong></strong></strong></strong></strong>&nbsp;</p><p>1929年4月，苏共十六大通过了苏联第一个五年计划（1928—1932），标志着五年计划制度的诞生。苏联通过五年计划取得了辉煌的经济建设成就，到1937年二五计划完成时，已经实现了以重工业为中心的工业化，工业总产值迅速跃至当时的欧洲第一，世界第二。苏联五年计划的成功对战后成立的诸多社会主义国家产生了示范效应。中国于1953－1957年实施第一个五年计划。一五计划以过渡时期总路线（“一化三改”）为指导方针，以重工业建设为导向，以苏联援助我国的156个工业项目为中心，到1957年底全面超额完成。在一五计划的编制与实施过程中，五年计划的管理机构、编制程序和指标体系基本确立，中国五年计划制度逐渐形成。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p0.ifengimg.com/pmop/2018/1103/1608AC921B71B1EE4C64793B835C31597F28D6D7_size29_w700_h522.jpeg"/></p><p>二五至五五时期（1958－1980），五年计划受政治运动的冲击较大，经济工作受制于意识形态，这4个五年计划均未编制出正式的文本。中共八大通过的《关于发展国民经济的第二个五年计划（1958—1962）的建议》被高指标的《国家计划委员会党组关于第二个五年计划的意见》取代，这也是造成随后主要经济关系比例失调，国民经济困难的重要因素之一。从1961年开始，国民经济被迫进入长达5年的调整期。1964年5月公布的《第三个五年计划（1966—1970）的初步设想（汇报提纲）》规定三五计划优先发展农业，解决人们的吃、穿、用，国家计委还专门制定了《第三个五年计划（1966—1970）农业发展的初步设想》。但毛泽东提出“三线建设”的战略后，备战成为三五计划的主要内容，重工业尤其是军事工业仍然居于优先发展的地位，四五计划（1971－1975）仍然延续了备战的方针。五五计划（1976－1980）是与《1976－1985年发展国民经济十年规划纲要》（简称《十年规划纲要》）一起编制的，但由于经济指导思想急躁冒进，《十年规划纲要》规定的目标任务严重脱离实际，被称为“新跃进”。</p><p>由于《十年规划纲要》中六五计划的各项指标严重偏高，1980年，国务院重新拟定了六五计划（1981－1985）。从六五计划开始，五年计划增加了社会发展的内容，计划的名称也改为“国民经济与社会发展计划”，这是五年计划内容的重大调整。七五计划（1986－1990）是中国第一个在开局之年就编制完成并公布的五年计划。在编制程序方面，恢复了中共党代会审议和批准五年计划建议的程序；在内容布局方面，首次增加并以独立篇章论述了经济体制改革和民主法制建设。从八五计划开始，中共五年计划的建议由中央全会审议，正式的计划文本名称增加了“纲要”一词。</p><p>九五计划（1996－2000）是市场经济体制改革目标确立后的第一个五年计划。从九五开始，五年计划突出宏观性、战略性、政策性，指标强调预测性、指导性，这是五年计划制度的重大转折。十五计划（2001－2005）进一步突出国家战略意图，强调政府对市场主体和社会行为的引导，社会建设、环境保护、民主法制等内容所占比例有较大提高。尤为重要的是，十五计划取消了主要工农业产品指标，换言之，中共中央此时已经放弃了对工农业产值进行量化规定的做法，这标志着五年计划性质和功能的实质性变化。从十一五（2006－2010）开始，五年计划改称“五年规划”，规划指标体系分为预期性指标和约束性指标，并逐步建立了规划中期评估制度。</p><p><strong><strong><strong>▍</strong></strong></strong><strong><strong><strong><strong><strong><strong><strong><strong>变迁：环境、观念与行动者</strong></strong></strong></strong></strong></strong></strong></strong>&nbsp;</p><p>中国的五年计划制度从建国初期一直延续至今，但在改革开放后也经历了明显的制度变迁，主要表现为“从经济计划为主转向全面的发展规划，从经济指标为主转向公共服务指标为主，从微观领域转向宏观领域，从市场排斥型转向市场友好型”。许多研究者已经注意到这种变迁，但对其发生的逻辑和机制尚未作深入的学理分析。笔者不揣浅陋，尝试从历史制度主义视角对此略作思考。在历史制度主义者看来，制度的存续是以均衡状态为前提的，当这种均衡被打破或发生断裂时，制度就可能发生变迁。笔者认为，中国五年计划制度的变迁是环境、观念、行动者三者互动的结果：环境开放带来了五年计划制度的合法性危机，形成制度变迁的压力；观念更新为制度变迁指出了可能的方向，形成制度变迁的引力；行动者对新观念的认知及行动者之间的力量对比和博弈，则是最终促成制度变迁的推力。</p><p>首先，环境变化是制度变迁的动力。历史制度主义认为，制度的产生、延续和变迁是在与环境的相互作用中发生的，制度变迁的发端往往是环境改变而引发的生存或合法性危机。“在环境封闭、隔离的情况下，盲目模仿和因循守旧的特性会使制度逐渐陷入僵化，制度的变异水平会被削减。当环境的隔离被打破，出于适应新环境的需要，制度变革的压力明显增大，变异程度将显著提高。”</p><p>建国初期，中国选择了相对封闭的发展环境，突出表现为高度意识形态化，讲求“姓资姓社”的区隔，政治集权化、经济指令化、社会政治化。“建国以后，人家封锁我们，在某种程度上我们也还是闭关自守，关起门来搞建设。”在这样的封闭环境下，国家计委形成了一套强势、全能、僵化的制度体系，逐渐演变为经济发展的中枢机构，依靠计划指令配置资源和管控经济；五年计划忽视客观规律，过分追求高速度、高指标和高积累，片面保重点。</p><p>然而，当封闭的环境转为开放时，原来封闭环境下形成的制度功能就难以适应新环境的需要，环境开放的程度越大，旧制度的生存压力也越大。1980年代前期，面对初步开放的环境，五年计划制度开启了与新环境相调适的历程。国家计委开始探索制度功能的转型，计划部门也学习法国、日本等国的经验，将社会发展纳入五年计划的范畴。1990年代，随着环境开放的程度进一步加大，国家计委不适应新环境的功能越来越多，撤销国家计委的呼声屡屡出现，制度存续面临严重危机，国家计委被迫加快职能转型的步伐，五年计划的涵盖内容和指标体系不断调整。</p><p>其次，观念传播是制度变迁的引力。历史制度主义认为，新观念的引入对制度变迁具有重要作用，制度变迁是一个新观念为政治精英和大众所接受并实体化为制度的过程。正如诺思所言，“观念、教义、时尚以及意识形态等形成的心智结构，是制度变迁的重要来源”。建国初期，由于意识形态的束缚和经济恢复的巨大压力，实行计划经济成为当时中共的主导观念。而且在相当长的时期内，中共高层一直坚守只有计划经济与社会主义相匹配的观念，五年计划制度正是为了适应计划经济体制的需要而建立起来的。在计划经济体制下，政府直接管理企业并主导资源分配，企业的生产经营活动完全受制于政府下达的指令性计划。实现计划主要依靠行政手段，计划无所不包，指标繁多。以一五计划为例，其主要工业产品指标对胶鞋、火柴、食用油等，农业产品指标对烤芋、甘蔗、甜菜等，畜牧业产品对马、牛、骡子、驴、绵羊、山羊、猪等都作了详细的量化规定。这种无所不包的计划将社会生产与个体生活完全指令化、“数字化”，导致了经济低效和物资匮乏，人们的生活需求受到极大限制。</p><p>指导制度变革的思想观念往往是一种新生事物，开始为很多人所排斥，最后却广为接受并成为一种主导性观念，市场观念在中国就经历了这样的过程。1980年代，随着市场观念的引入，市场经济体制逐步确立，国家计委被赋予宏观管理机构的属性，职责定位开始发生减少微观干预、加强宏观调控的变化。在市场观念的牵引下，从七五计划开始，五年计划主要是在做好全社会预测和综合平衡的前提下，重点抓骨干项目建设和重要产品的生产，适当缩小了指令性计划的范围，扩大了指导性计划的范围。1992年中共十四大明确提出市场经济体制改革的目标后，“姓社姓资”的僵化观念逐渐退出历史舞台，国家计划成为宏观调控的重要手段，五年计划开始按照适应市场经济体制的目标转变职能。</p><p>再次，行动者是制度变迁的推力。制度一旦形成，会对制度框架中的个人和群体形成强有力的制约；但是制度的实施和变迁，又离不开行动者的认知、策略和行动。“集团和个人并不只是力量的政治平衡中随着条件变化而接受赞扬或处罚的看客，更是策略行动者，他们有能力按转变的背景条件所提供的机会采取行动，以维护或提高自己的地位。”</p><p>在中国特有的政治体制中，领导人的偏好与选择对制度变迁具有重要影响。中共八大通过的较为科学合理的“二五计划建议”最终被废弃，转而实施“高指标”方案，既源于毛泽东对“反冒进”的不满，也源于毛泽东“赶英超美”战略的提出；毛泽东推动成立“小计委”进而提升自己在经济工作中的话语权，既源于他对三五计划指导思想向“三线建设”转变不力的不满，也和大跃进失败后他与刘少奇、周恩来、邓小平等一线领导人在经济调整问题上的分歧很有关系。</p><p>行动者尤其是政治精英对新观念的接受，往往是制度变迁的直接推动因素。改革开放以来五年计划制度的转型与领导层对市场观念的认可密切相关，并且体现了领导者个人的施政理念。1980年代末国家计委的放权改革，是在时任国务院副总理兼计委主任邹家华的推动下进行的。曾长期在国家计委任职的郑新立后来回忆道，“邹家华时期，计委改革的力度最大，核心的改革就是下放权力，重塑计划体系。那时的下放是真正的下放。在这之前，所有的扩大再生产都是由国家计委来管的，地方政府都没有投资权限。从邹家华开始，一批批、不断地下放行政审批权限。”1998年国家发展计划委员会的重组，是在时任国务院总理朱镕基的推动下进行的。朱镕基工作起步于国家计委且长期在计委任职，对国家计委的业务相当熟悉，他在新一届国务院全体会议上指出，“国家计委要尽可能在宏观调控，及时关注国民经济的总量平衡、总的走向等重大问题方面，帮助国务院出主意，少管些具体的事情。”总之，在既有的制度框架下，利益相关者之间的力量对比和权力博弈决定着制度实施的面貌并深刻影响着制度变迁，强势行动者往往会主导制度变迁的方向。</p><p><strong><strong><strong>▍</strong></strong></strong><strong><strong><strong><strong><strong><strong><strong><strong>延续：制度演化中的路径依赖</strong></strong></strong></strong></strong></strong></strong></strong></p><p><strong><strong><strong><strong><strong><strong><strong><strong><br/></strong></strong></strong></strong></strong></strong></strong></strong></p><p>历史制度主义认为，制度一旦形成，就会在一定时期内持续存在并影响其后续制度的选择，这就是制度发展过程中的“路径依赖”，它可以视为制度的自我维持和强化机制。路径依赖的现象是由诸多因素共同促成的，如报酬递增（增进人们对制度的认同感）、不完全市场（降低制度变迁所需的完整信息）、交易费用（帮助无绩效的制度长期延续）、既得利益（削弱人们变革制度的驱动力）等。五年计划制度在改革开放后发生了重大转型，却在市场化目标确立20多年后仍然得以延续，在很大程度上正是由于“路径依赖”确立了制度变迁的方向和限度。</p><p>苏联于1921年成立国家计划委员会，基本职能是编制和实施国民经济计划，而以编制五年计划为主要任务。苏联国家计委发挥的积极作用和五年计划取得的巨大成就，对社会主义国家产生了示范效应，这种示范效应和中国一五计划的“正反馈”作用，强化了五年计划制度的路径选择，使毛泽东更加坚信这一制度对于国家建设的重要性，他在1955年说道：“人类的发展有了几十万年，在中国这个地方，直到现在方才取得按照计划发展自己经济和文化的条件，自从取得了这个条件，我国的经济面貌就将一年一年地起变化。每一个五年将有一个较大的变化，积几个五年将有一个更大的变化。”正因如此，即使在国家政治生活极不正常的情况下，五年计划制度仍能摇摇摆摆地延续下来。</p><p>1980年代后，中国经济体制经历了从“计划经济为主，市场调节为辅”到“有计划商品经济”再到“计划与市场内在统一”的探索，并最终提出了建立社会主义市场经济体制的目标。从计划体制转向市场体制，是1949年以来中国经历的最深刻的制度变革。在理念层面，中国对市场作用的认识已经经历了从“基础性”到起“决定性”的转变。但是在制度层面，计划经济时代的遗产并未退出历史舞台，而是经过改造后继续发挥重要作用，五年计划制度即是如此。例如2003年的机构改革，将短期调控、中长期调控、体制改革、总量控制等各种宏观调控职能都归并到国家发改委，这当然是出于强化宏观调控政策的统筹和部署，但是，发改委的宏观调控角色越是被强调和突出，它就越要依赖众多的微观手段来实现这些宏观目的。</p><p>此外，利益因素也是五年计划制度得以存续的重要原因。计划经济时期，政府通过编制经济计划的形式配置资源，建设资金通过计划分配，建设项目也通过计划审批，而国家计委正是编制计划和分配资源的主要执行者，这样的安排使得政府形成了强大的利益激励。改革开放以来，五年计划制度的功能不断转型，但不论如何转变，建设项目的审批权仍然掌握在政府手中，重大项目的立项与实施仍然是五年计划的重要内容。在此情况下，地方政府总力争本地项目能列入国家计划，国家五年计划编制启动的年份也是地方政府“跑项目”的重要时节。因此，资源分配和项目审批形成的利益激励，在很大程度上强化着五年计划的功能及主管机构的职权。</p><p>历史制度主义特别强调制度变迁中的“关键节点”，所谓关键节点，是指“历史发展中的某一重要转折点，在这一节点上，政治冲突中的主导一方或制度设计者们的某一重要决策直接决定了下一阶段政治发展的方向和道路。”从中国五年计划制度的变迁过程来看，1978年改革开放的启动和1992年市场经济体制改革目标的确立是两个至关重要的转折点。在这两个节点，环境的开放、观念的引入、行动者的博弈密切交织、互动，使五年计划制度发生了实质性变化，从单纯经济计划转型为公共事务治理规划。尽管如此，在路径依赖的强大约束下，制度变迁有其难以逾越的边界，以建设社会主义市场经济体制为目标的改革洪流，并未抛弃借助五年计划制度调控国民经济的传统，而是对其进行适应性改造，以计划与市场的良性结合为目标。从而，中国的市场化改革和国家建设形成了自己的特色，没有也不会走上西方国家或前苏东国家的道路。</p><p><strong><strong><strong>▍结论</strong></strong></strong></p><p>中国的五年计划制度来自苏联，建国后将近30年间，基于封闭的政治、经济和社会环境，形成了一套强势、僵化的制度体系。改革开放后，伴随着整体环境的开放，五年计划制度面临制度生存的合法性危机，制度变迁的压力产生；市场观念在开放的环境中得以引入、传播和深化，制度变迁的引力逐渐加大；中央领导者和主管机构负责人对新观念的认可、主政者的施政理念、利益相关者的力量对比和博弈，则直接推动了制度变迁的发生。苏联五年计划制度的示范效应、中国一五计划的“正反馈”、市场发育的不成熟、强势权力形成的利益激励等因素，又形成了制度演化中的路径依赖，使中国的五年计划制度并未在市场化大潮中退出历史舞台，而是通过适应性改造融入其间，形成了具有中国特色的市场化改革道路。就此而言，中国五年计划制度的变迁与延续，为我们提供了一个计划经济时代的制度遗产如何在市场化环境中存续和新生的典型案例。</p><p><strong>本</strong><strong>文</strong><strong>原载</strong><strong>《浙江学刊》2017年03期，原标题为““五年计划”的变与常：一项历史制度主义的考察”，内容有所编删</strong><strong>。</strong>图片来源于网络，欢迎个人分享，媒体转载请联系版权方。<span class="ifengLogo"><a href="http://www.ifeng.com/" target="_blank"><img src="http://p2.ifengimg.com/a/2016/0810/204c433878d5cf9size1_w16_h16.png"/></a></span></p>
+<h2 id="18">NHK节目揭底：那些贫穷又丧气的普通日本人</h2><p>日本导演是枝裕和的最新作品《小偷家族》中，当临时工勉强营生的“父亲”“母亲”，举目无亲靠养老金度日的“奶奶”，离家出走后做性工作者的“小姨”以及经常去偷窃的“哥哥”和无人问津的“小妹妹”共同组建了一个临时家庭。在《无人知晓》中，是枝裕和只是将镜头对准了被自顾不暇的母亲抛弃掉的四个小孩拮据的生活境况，到《小偷家族》中，是枝裕和则已经不满足于仅揭示社会的一个侧面，而是汇集不同年龄段的为生活而勉强挣扎的人，《小偷家族》影像中，一家人逃跑时刚走出门口就被探照灯明晃晃地照得无处可遁，当这些隐匿在城市中的人越来越多地被照见，原本只是被当作“个案”、被划分为“边缘人士”而认为是无关轻重的人，如今成群地出现，并动摇并颠覆着整个日本的秩序。</p><p>那个我们印象中整饬有序并不断创造着新的文化潮流的日本如今到底怎么了？日本“NHK特别节目录制组”通过采访拍摄挖掘真相，陆续推出了《无缘社会》《女性贫困》与《老后破产》等反映日本社会现实问题的书籍。书中的案例触目惊心：3岁和1岁的两个小孩依偎着饿死在垃圾泛滥的房间；41岁的母亲带着16岁和14岁的两个女儿长期蜗居在网吧；高龄老人在看电视时寂寞地死去，持续播放着电视的声音制造了一种他还活着的假象，被发现时尸体已经高度腐烂……</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p1.ifengimg.com/2018_45/FB47D311B08A29EE86D0775C34C6717A339970D2_w600_h400.jpg" alt="" width="600" height="400" style="border: 0px; vertical-align: middle; padding: 0px; max-width: 100%; height: auto !important;"/></p><p>网吧中的狭小隔间</p><p>“NHK特别节目录制组”在采访中听到很多这样的声音：“能活到三十岁就知足了”“无论对人生还是社会，已经什么也不期待了”“我没有正式工作，没交养老保险也没结婚，势必要老后破产，不想长寿什么的了”“生活中毫无乐趣可言，我每天都在想，什么时候可以一死了之呢？”比起一时困顿更为可怕的就是这种群体性的丧气满满，上一代在向下一代传递着贫穷的因素，产业结构的调整导致的岗位的缩减，整个社会进入老龄化……很多人即使是每天工作累到焦头烂额，却依然无法改变现状。</p><p>我们听了太多“一分耕耘，一分收获”的励志警句，可是现在不得不面对的一个事实却是如果你的出身很糟糕，你可能会带着这种贫穷的因子过着和父辈一样凄惨的一生，无论你在中途怎样挣扎。所以无论是《无人知晓》还是《小偷家族》，我们都没能在最后看到人的命运的改变，这个大概是更让人觉得无望的。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p1.ifengimg.com/2018_45/317081561F7D5B03F09FF1F42E3E7A33AA03C619_w600_h851.jpg" alt="" width="600" height="851" style="border: 0px; vertical-align: middle; padding: 0px; max-width: 100%; height: auto !important;"/></p><p><strong style="color: rgb(51, 51, 51); font-family: &quot;Hiragino Sans GB&quot;, &quot;Microsoft Yahei&quot;, sans-serif; letter-spacing: 0.5px; white-space: normal; background-color: rgb(255, 255, 255);">《女性贫困》：看不见的贫困</strong></p><p>女性贫困被称作是“看不见的贫困”主要有两个方面。首先是这些女性即便生活困顿，但是出于自尊心或者出于职业需要，依然会打扮得光鲜亮丽，看起来似乎与贫困并不沾边。而另一方面是社会的一种普遍论调是她们随着结婚生子，生活状况就会改观，因而认为她们即便有困顿境况，也是暂时的，所以不对这个人群进行讨论。而很多女性的人生转折点却正是因为一段不幸的婚姻或者是意外到来的小孩。</p><p>书中，《妊娠与贫困》和《色情店成为她们的救命稻草》两节就介绍了单身妈妈的困境。日本茨城县的NPO组织“婴儿篮”就是在“不受欢迎的妊娠”和需要小孩的人之间建立联系，女孩们常常孤独地来到这里，像卸下负担一样生下孩子，然后藏起来还没缩回去的肚子回到工作中。而一时心软生下孩子的单身妈妈们则要面临更艰巨的生存困境，这就衍生出一种奇怪的社会现象：卖春店竟成为单身妈妈们的救命稻草。</p><p>在日本，搜索卖春店网页的招聘栏常看到“欢迎单身妈妈”与“宿舍与托儿所设施齐全”的字样，这成为极有诱惑力的“福利”。单身妈妈要面对居住、就业、育儿援助等各种问题，如果寄希望于向政府申请援助，则每个环节都可能碰壁。“性产业形成了一个非常密实的安全网，从工作、住宅到患病儿童的托管无所不及。公共部门能提供如此周全的服务吗？答案是否定的。这可以说是社会保障体系的溃败，事实是性产业接手了社会保障的功能，在支撑着她们。”书中写道。</p><p>“NHK特别节目录制组”的一个观察是：经济状况不稳定家庭里的孩子们正陷入恶性循环的漩涡中，在它背后就是贫困的固化。因为贫困家庭的孩子在面对各种专科学校、短期大学和本科的选项面前都捉襟见肘，而且因为要工作补贴家用，他们也无法全身心投入到学习中。上一辈悲观懈怠的人生态度也会影响他们，家长中更有甚者为了指望孩子的收入过活会故意破坏就业支援人员和孩子们的联系。如果对一代女性的贫困状况置之不理，则最终导致贫困向下一代传递。如现在常被关注到的拖着拉杆箱的“充电少女”和“网吧一族”。</p><p>少女们把全部家当放在拉杆箱中，白天打工，晚上则找可以充电和休息的地方一边玩手机一边熬过漫漫长夜。节目组和十六岁的“充电少女”吉吉聊天时，她说：“我做援交挣钱，现在正在等男人的电话，因为未成年，所以连想打工都没有人雇，也只能这样了。”贫困加上继父的性虐待逼迫吉吉过上这种流浪的生活，而谈到自己的未来，十六岁的少女只是说：“能活到三十岁就知足了。”比流浪街头稍好一点的则是蜗居在网吧的小隔间中，节目组走访时甚至发现了网吧家庭：即母亲带着两个女儿各自蜷缩在一个小隔间中。</p><p>女性贫困的问题一直存在，只是在男性正式员工工作稳定、能够养活妻儿的时代这种问题未被重视。而一旦男性员工失业、生病或者死亡，他们的妻儿则马上陷入困境。女性贫困的问题乃是由于维持生活的雇用、家庭和社会保障这三个支柱的动摇，而改变她们的境况也需要在这三个方面都作出调整。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p3.ifengimg.com/2018_45/9E76F759AA30E19BCA9C963D189D1734A8542499_w600_h851.jpg" alt="" width="600" height="851" style="border: 0px; vertical-align: middle; padding: 0px; max-width: 100%; height: auto !important;"/></p><p><strong style="color: rgb(51, 51, 51); font-family: &quot;Hiragino Sans GB&quot;, &quot;Microsoft Yahei&quot;, sans-serif; letter-spacing: 0.5px; white-space: normal; background-color: rgb(255, 255, 255);">《老后破产：名为长寿的噩梦》：人人可能面对的困局</strong></p><p>比起女性贫困的状况，老后破产则的确称得上是每个人都要面临的一场噩梦。</p><p>老后破产境况的出现和日本超老龄化的社会状况相挂钩。从劳动人口赡养65岁以上老人的人口比重来看，1990年为5.1人赡养一人，2010年为2.6人赡养一人，到2030年，则是1.7人赡养一人。2015年，50岁仍未结婚的人口比例在日本男性中达23.37%，在女性中达14.06%。其实这个比例可以看作是日本的终生未婚比例，也就是说日本男性平均每4人中就有1人、女性平均每7人中就有1人终生未婚。这种境况下涌现的一大批独居的老人，他们膝下无子，未婚或者丧偶，生活的全部重担则都压到他们肩上。</p><p>在走访中可以看到老人们为了省钱想出各种办法，比如田代先生，75岁的他挤在东京的一幢建于50年前的公寓中，他每个月有10万的养老金除去房租和水电煤气等支出再交完保险，他手里只有2万日元的生活费。老人形影相吊，每个月到最后他只剩下几百日元，拿来买凉面，算计着吃。为了省钱，他甚至断掉家里的电，晚上房间里黑漆漆的一片，电扇空调更不要想了，因为闷热，睡觉只能开着门。洗衣粉用完了就用洗洁精洗衣服，没钱吃饭了就饿着。</p><p>对于老人来说最大的变故就是生病了，一旦出现病痛等需要花钱的地方，老人们则直接步入“老后破产”的境况。</p><p>老人们的最后一根救命稻草则是申请生活保护，一旦申请了生活保护，医疗费护理费都可以免除，可以放心去医院，而且每个月也会拿到更多的钱。但是申请生活保护的一个前提是不能有存款或者房产。这条规则让很多老人即使在饿死的边缘还是对申请生活保护望而却步。毕竟一笔用于丧葬费用或者应急的存款和一个充满回忆的、令人安心的住所都是老人们最后的一点心里安慰。这有点悖论的性质，即老年的你或者是每个月花存款和领较少的养老金度日，但是这样你看病或申请护理就要自己承担一部分费用，而或者是你舍弃存款和房子，完全依靠生活保护金。</p><p>在生活拮据之余，书中也呈现了独居的老人们凄惨的晚年境况，在经济方面比较困苦的老人也同样会陷入到“社会联系的贫穷”，因为无力支付参加婚礼葬礼的费用而逐渐失去朋友，无聊时他们只能和花草树木说话或者和乌鸦成为朋友。</p><p>《老后破产》分析这种困局出现的出现一个重要的结构性原因就是支撑“雇用”社会的基础发生了动摇，没有余力为将来储备的劳动者正在增加，而且“日本家庭”的形态也已经发生变化，相互支持的力量在日益薄弱。节目组在走访中就发现很多不工作的年轻人和老人生活在一起，靠着老人原本就很微薄的养老金度日，而稍有不如意就对老人拳打脚踢。还有一个原因则是社会保障制度追不上“超老龄社会”的现实性需要，即整个社会还没有做好准备来迎接自己的暮年。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p2.ifengimg.com/2018_45/68E15AD103180B3A49DEB06FF31F2575DDD818F4_w600_h851.jpg" alt="" width="600" height="851" style="border: 0px; vertical-align: middle; padding: 0px; max-width: 100%; height: auto !important;"/></p><p><strong style="color: rgb(51, 51, 51); font-family: &quot;Hiragino Sans GB&quot;, &quot;Microsoft Yahei&quot;, sans-serif; letter-spacing: 0.5px; white-space: normal; background-color: rgb(255, 255, 255);">《无缘社会》：“无缘死”带来的巨大颠覆</strong></p><p>“无缘社会”这个词汇是从“无缘死”中衍生出来的。日本每年都有许多孤独死去、无人认领的尸体，他们被称作是“无缘死”，“无缘”就是没有亲人、没有关联的意思，这个词直白地点出很多人到了生命最后的悲惨境况：孤身一人、默默地，或许也曾因发病而挣扎过，然后死去。或许死去很久面目全非时才被发现，而他的一生，都被浓缩成《政府公告》中“在途死亡者”（即无缘死者）的一条启示：性别、年龄、随身物品、死亡时间、死亡时的情况……大概他们中很多也没有想到自己的生命会定格在这一个瞬间，而自己的故去又是如此潦草。</p><p>而这些无缘死者们并非一走了之，社会为了应对这种状况孵化出各种职业，比如“特殊清扫业”，他们每天都在为寻找独自生活者死亡的遗体和寻找遗体认领人而忙碌。而找不到领养人或者是亲属拒绝认领尸体的事情也是时有发生，这些无人认领的遗体或者火化后被丢弃或者送到寺庙保管，而或者就被做“捐献遗体”处理了。“特殊清扫业”工作者们最为震惊的不是损毁严重的遗体，而更多的是人情之淡漠，很多人被问及时，都说到“毫无瓜葛”“任凭你们处置”之类的话，这也衍生出“直送火葬”的丧葬形式，即省去守灵和告别仪式，花费十几到二十几万日元就可以把遗体直接从医院运输到火葬场付诸火化。</p><p>与“特殊清扫业”相似，“代亲属”非营利组织也是为应对“无缘死”而产生的，他们代理亲属办理死者的善后手续，而这些故去的人最终会去到“共同坟墓”，和诸多人生境遇不同但是都孤独死去的人长眠在一起。</p><p>而这一系列的改变背后都是日本人意识的巨大变化，他们中的许多人即使有亲属，也“不愿意给别人添麻烦”。而另一方面，也有很多人很在意“共同坟墓”造就的关联：在家庭和地域关联逐渐脆弱的情况下，大家仍旧想跟什么人相互帮衬着生活下去。</p><p>此外，“无缘死”也不仅仅存在于老人中，年轻世代中也不乏年富力强的“家里蹲”：即被公司裁员或者因为人际关系的困扰而辞职后生活一落千丈，抑郁又无奈之余选择躲在家里不见人，而越是逃避就越害怕回到社会，他们有的沉迷网络游戏、漫画等，时间久了他们对自我的认定会越来越产生偏差，会认为自己无用、生活没有意义等，并最终选择了结自己的生命。</p><p>“无缘死”的另一种形态则是老人悄无声息地消失，即在老人故去以后，家人为了继续领老人的养老金而选择藏匿尸体，因为人际关系的淡漠，这种看似荒诞的做法竟往往能够得逞。如东京都足立区曾发现一具只剩下骨头的男子遗体，他在三十年前就已经死亡，他的长女和外孙骗领养老金达三十年之久。也有人将老人遗体藏在背包中、藏在公寓的衣橱里，或堂而皇之地放在二层的阁楼中，老人的亲属和遗体一起生活着。《小偷家族》中也有“奶奶”去世，大家把她埋到院子里继续领取养老金的笔触，乍看时觉得惊悚，而这种情况在日本其实屡见不鲜。<span class="ifengLogo"><a href="http://www.ifeng.com/" target="_blank"><img src="http://p2.ifengimg.com/a/2016/0810/204c433878d5cf9size1_w16_h16.png"/></a></span></p>
+<h2 id="19">刀枪弓剑：台湾高山族人有哪些兵器？</h2><p>【编者按】本文摘自《亚洲古兵器图说》，中国画报出版社，作者周纬生于清光绪年间，是著名的国际法学家，但毕生的最大追求和成就是对中国古兵器和亚洲古兵器的研究，可谓中国古兵器研究的奠基人。他所著《中国兵器史稿》、《亚洲各民族古兵器考》、《亚洲古兵器制造考略》，构成了亚洲古兵器研究的完整体系，堪称经典之作。</p><div style="text-align: center;"><strong><img src="http://p0.ifengimg.com/2018_44/ED02AF36FAE92E8C112D10D4066BEE43FB4E828F_w400_h524.jpg" alt="" width="400" height="524" style="border: 0px; vertical-align: middle; padding: 0px; max-width: 100%; height: auto !important;"/></strong></div><p><strong>一、概述</strong></p><p>台湾兵器者，乃台湾原有少数民族高山族之兵器。台湾高山族旧称番族，其支族有七，即泰雅（Taiyal，旧称太么），赛夏（Saisett，旧称萨衣设特），布农（Bunun，旧称蒲嫩），曹（Tsuou，旧称朱欧）、阿美（Ami，旧称阿眉），排湾（Paiwan，旧称派宛）及雅美（Yami，旧称野眉）是也。各支族之风俗习惯大都相仿，其男子均系战士，须从军作战，自幼即练习登山涉水、跳跃潜伏等技能，故动作均甚敏捷。其长短兵器，昔时均用长矛、标枪、长刀、短刀及锤、斧等器；射远器则用弓箭及掷远之标枪。百余年来，初得汉人之火绳枪铳，后复获新式枪炮，射击极精，占据其地之日人常为所窘。其战术亦颇令人棘手，盖高山族人巧于布置障碍以阻敌军之逼近，或以竹钉插路，或铺毒草于路，更于崖上推落巨石以击敌军，其住屋邻近之高地则暗置炮火突发袭敌，其战士则藏身丛林崖隙之中发枪、发箭或突出以白刃袭敌，敌人颇为所苦。据林惠祥统计，日人侵略台湾后至昭和二年（1927）末止，死者计有6918人，此外伤者10965人，其中死于高山族旧兵器者必甚众。</p><p>台湾高山族殆经历石器时代文化，其出土石锛与山西出土者极相似，又其佩刀极似埃及苏丹族之刀。高山族之文化固有来源，系在蚩尤、黄帝以前自北而南由南中国徙者（越南、泰国、缅甸、马来群岛、马来半岛、菲律宾诸民族均有自北而南由石器文化之南中国迁往之可能），非由南洋移入也。日本学者尾崎秀真氏曾谓，《禹贡》中所言“岛夷卉服，厥篚织贝，厥包橘柚锡贡”即指台湾高山族而言；林惠祥则以为“卉服”即番族麻质之衣，“织贝”即高山族贝衣（图4第3号），是则夏禹时高山族已在台湾发展其文化也。</p><p>台湾出土之石兵，有石刀、石斧、石锛、石锤、石矛、石镞、石锥、三角形石斧等器，有系完全打制者，有系半打半磨者，有系完全磨制者，更有精工细磨者。骨兵及贝蚌兵器亦曾发现多具。图1之1、2、3、4号及图2所示均台湾石器时代之物，但不能断定即台湾高山族之物，盖不知台湾石器时代之人类是否即现在高山族之远祖，抑另系一族业已再南而入南洋群岛也。至于图1之第5号石杵则确系现在高山族之器，因为高山族人至今尚利用此等石器为其家庭常用具，其中颇多石器时代之遗型焉。</p><p>高山族旧兵器至今仍为其主要兵器，计有枪、刀、短剑或匕首及弓箭等器以及防御武器，兹分述其大致于下。</p><p><strong>二、枪</strong></p><p>台湾高山族各部之枪（矛）与中国西南各地少数民族及马来各族之枪同制。就用法而言分为二种：其一为矛枪，以之刺敌而从不脱手掷出，其枪头（刃）大都大而重，柄亦较为粗大沉重；其二为标枪，用以掷远杀敌，其枪头大都小而轻，柄亦较为细小轻便。图3之第1、2、3、7、13、14、15、16、17、18号均矛枪也，其第4、5、6、8、9、10、11、12号则均系标枪。</p><p>就形式而言可分为六种：一为大叶形矛枪（图3之第1、9、13、15号）；二为三角剑尖形之两用枪，可以近刺亦可远掷（图3之第3、9、15号）；三为桃核形或杏仁形矛枪（图3之第7、9、16号）；四为箭镞形标枪，此即古人之长杆箭，可射亦可掷者（图3之第4、8、11、17号）；五为单倒钩及双倒勾形标枪，系原始民族投水叉鱼之鱼枪之变体（图3之第4、6、12、18号）；六为鱼形矛枪，枪头（刃）甚为特别，长大笨重而中部突凸如鱼腹，殊不多见（图3之第2、14号）。</p><p>就质料而言，各种枪头（刃）均系铁制，铜制者山中或有，然甚难见及；柄杆大都木制，有时加裹藤皮，钩形标枪之刃柄衔接处有缨络，竹制枪杆及竹柄藤箍之枪杆亦有，则取其轻而易于掷远，盖脱胎于箭也。此外尚有一种脱头枪，原为该族猎兽或猎大鱼之枪，有时亦在高处用以杀人或擒敌。此种枪之竹柄甚粗大，枪头可以脱离柄首但有绳索牵连之。其用法为先将其绳索盘缠于柄杆之上使枪头牢固，野兽或大鱼中枪后因有倒钩不得挣脱，必负枪奔逃，逃时绳索渐松弛，枪头遂与柄脱离而绳索仍连柄上，如系大鱼可以拖之出水，如系野兽则将柄杆抛弃任其拖逃，因绳索乃系于柄杆之中部，势必横拖于道，兽负行不远将为木石等物所碍，不能再逃而就擒矣。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p3.ifengimg.com/2018_44/7D0897BFBF12DD15E21B313E14BF635E5F925E5B_w464_h608.jpg" alt="" width="464" height="608" style="border: 0px; vertical-align: middle; padding: 0px; max-width: 100%; height: auto !important;"/></p><p>图1 台湾高山族石兵</p><p>1.石锄。2—4.粗制石斧。5.石杵。（采自林惠祥《台湾番族之原始文化》）</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p1.ifengimg.com/2018_44/FA7C04B48E2F81770CB6F5035591BABC8385D2BB_w457_h603.jpg" alt="" width="457" height="603" style="border: 0px; vertical-align: middle; padding: 0px; max-width: 100%; height: auto !important;"/></p><p>图2 台湾高山族石兵</p><p>1—6.石锛。7—8.石铲。9—11.石镞。（采自林惠祥《台湾番族之原始文化》）</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p3.ifengimg.com/2018_44/C71D4E7BA95B0703E80F1691025C25AD080DCE09_w585_h736.jpg" alt="" width="585" height="736" style="border: 0px; vertical-align: middle; padding: 0px; max-width: 100%; height: auto !important;"/></p><p>图3 台湾土著之旧兵器</p><p>1—5.短矛。其中，第2号柄部雕蛇，第4号矛头可脱出。6—9.标枪。10—18.各种矛头之形状。19.大弓。20—24.矢。除21—22为竹箭外，其他均为铁镞。其中，20—21号为四镞，22号为三镞，24号镞有四倒钩。25.雅美人匕首。26—30.刀。其中，26号为北部高山人所用，27号为中部高山人所用，28号为雅美人所用，29—30号为南部高山人所用（29号为细雕刀，30号为银饰刀）。31.鱼骨槊。32.银饰刀鞘。34.雕蛇枪。</p><p><strong>三、弓箭</strong></p><p>台湾高山族各部之弓，其外形与苗瑶诸边族之弓相类，以木杆制成，富弹性。其弦用麻搓成，弦之一端有二扣，张弓时穿入内扣，弛弓时穿入外扣，扣之编制甚精致。战争与狩猎均用此种弓，无甚变体（图3第19号）。</p><p>高山族之箭则不然，形制特别，迥异他族之器，即马来各族与菲律宾各族间亦罕见之。其箭均无羽，如一小型标枪，想系远古遗制。其镞可以分为三种：一为常形铁镞，刃无倒钩，竹制柄杆，镞为一小锐叶形（图3第23号）；二为双倒钩铁链，其镞之制造甚精，工作甚细，足以见台湾高山族固有其悠远之文化也（图3第24号）；三为多镞箭，此种箭镞极为特别，甚属罕见，可细分为多镞铁箭及多镞竹箭两种。普通多镞箭之铁链有四分枝且具小倒钩，寻常用以射鸟，因镞多易于中的且可夹住鸟羽使之坠下也（图3第20号）；多镞竹箭有三镞、四镞之分，其法削竹为箭作三镞或四镞形，寻常用以射鸟，偶然亦可射人，制价极廉而又易制也（图3之第21、22号）。</p><p><strong>四、鱼骨槊</strong></p><p>此系利用特种鳖鱼嘴前向外直伸、两面有锯齿之长骨而为此兵器者。清宫所藏明代兵器中亦有类似之器，饰以木柄，名之为御用鱼骨剑，或系由台湾贡进而改制者。高山族之槊则直用鱼首锯骨，不加装饰（图3之第31号）。此种大鱼，法文名为锯鲨鱼（Requin à Scie），英文名为锯嘴鱼（saw-fish），大洋中均有，太平洋中诸岛民常用之，如新几内亚岛等处土人均用之为兵器。据皮特·里弗斯（Pitt Rivers）之著作，大凡东海岸土人均知利用此种原始兵器。</p><p><strong>五、刀剑</strong></p><p>刀剑为台湾高山族各部之主要兵器，有二特点极值得世界考古家之注意。一即该族刀剑不完全同于中国其他各边疆少数民族（如瑶、苗、戎、羌、彝、西番、回等）之兵器，抑且不与马来诸族及菲律宾诸族之刀剑相似，装饰刻绘亦殊，完全另有来源。二即高山族刀剑与东北非洲邻近红海（与印度洋）诸土族之刀剑极相类似。如雅美人之匕首（图3之第25号），长30.5厘米，极似埃及苏丹族（El Sudani）之匕首，可谓如出一手；雅美人长刀及南部高山人之细雕刀（图3之第29、33号）则类似卡比尔族（Kabyle）、埃塞俄比亚族（Abyssinians）及苏丹族之刀；南部高山人之银饰刀及雕蛇刀（图3之第29、30、32、33号）则类似突尼斯族（E Tunisi）、苏丹族及埃塞俄比亚族刀之雕刻镶嵌艺术，而且南部高山人银饰刀之柄及带尾之鞘（图3之第30号）与苏丹刀极相似，均系直形、大头柄，均于鞘末加尾，显有同源之可能，非如马来诸族刀之柄首加饰人发、鞘末不加尾者也；至于苏丹族之倒钩标枪头亦与高山族之倒钩标枪用意相同。何以台湾高山族之兵器不与南亚邻近诸族之兵器相似，而与远隔印度洋之红海西口东北非诸族之兵器同源。非洲诸族如阿比西尼亚、如埃及苏丹固亦有悠远之文化，且距今数世纪前尚为埃塞俄比亚人之全盛时代，曾出兵东下，越印度洋而侵入印度，战绩颇伟，印度诸族至今尚能述之。另一方面，中国台湾之石兵（如石斧锛）极类似中国山西一带所出土之石器，岂现今之台湾高山族并非石器时代之台湾居民，石器时代后之铜器时代兵器现尚无所发现，以理度之，高山族必有所藏，地下尤必有埋器，特尚无人能往高山族山林中为之发掘耳。在南中国铜器文化时代之遗物中有铜鼓，台湾诸族未闻有铜鼓，殆其俗迥异，故不尚铜鼓抑且不知用铜鼓，此又一种族异源之佐证也。</p><p>台湾高山人各支族之刀剑，就林惠祥氏所采集之标本而言，有以下几类：</p><p><strong>1.北部高山人之刀</strong></p><p>图3之第26号。刀长74.93厘米，鞘长63.5厘米。刃及鞘形弯曲如镰。鞘颇特别</p><p>系在一块木片之一面刳出凹槽，上用铁丝横钉如网格，入鞘后全刃可见，佩时露刀之铁丝一面向外使刀易于出入。鞘上有二绳扣，一扣系带，带围腰间，另一端穿入他一绳扣打结，佩挂时刀平横而不垂。拔刀及入鞘只需一手，但拔时当以拇指按鞘端。刀形曲如钩月，其用全在横斫而不能直刺。战争枭首（即番人割取人头以为武之风尚）或狩猎均用此刀，平时亦佩之不去身。云南彝族之刀亦用此种一面式木鞘，但不用铁丝而用细少线索为横格，故抽拔及归鞘更难，其刀形亦不相同也。</p><p><strong>2.中部高山人之刀</strong></p><p>图3之第27号。刀长40.13厘米，鞘长33.78厘米。此系悬腰小刀，刃直而尖微曲，常佩于身，兼为工作之用。亦有用一面式木鞘者，均以皮为带系于腰。</p><p><strong>3.南部高山人之刀</strong></p><p>银饰刀（图3之第30号）其刀形极直，锋末微削，异于北部高山人之刀形。刀长63.5厘米，鞘长50.8厘米，亦为一面式木鞘，其末端翘起约8厘米。鞘上雕蛇一、人头四及几何形纹饰。蛇眼及蛇身之点、人眼及额上之点、柄上之巨点及直线纹皆以银为之，鞘边以铜条为饰，柄上银点之下衬以贝壳圆片。鞘之末端有一孔，穿以细绳，以系所获人头上割下之发。佩挂时并不将有装饰之鞘面向外，而将露刀之面向外。</p><p>细雕刀（图3之第29号）刀长67.82厘米，鞘长59.7厘米。直刃偏锋，亦用一面式木鞘（曲尾），鞘上近柄处加一三角形长木块。木鞘雕刻精细，鞘之尾段刻三长蛇，三角形附木上刻一小蛇及七个人头，鞘身刻九个人头，均直排，余为几何形饰物，类似图版五十所示东北非洲各土族兵器柄鞘上所雕刻之几何形。蛇身人头之眼额及颏下皆嵌铜或加细长铜条为饰，亦与非洲各族之作法相同。刀之用途及使用法同上。</p><p><strong>4.雅美人之刀</strong></p><p>长刀（图3之第28号）刃长58.42厘米，鞘长41.9厘米。刃形上宽下窄，尖锋微曲，颇似非洲卡比尔族及苏丹族之刀。柄为铁制，与刀身为一体，筒形，上粗下细，柄首加一大铜环。一面式木鞘，上以凹线深雕张腕张脚之人形，大者连贯6个，小者24，此系雅美人之艺术。此种刀与鞘之构造颇奇，因鞘与刀之尾皆弯曲，故不能直拔直插。拔时须先将刀尾举离鞘内，然后抽出鞘口之环；插时则先通过铁环，至刀末与鞘尾齐，方合于鞘内。</p><p>短剑或匕首（图3之第25号）刃长30.48厘米，鞘长31厘米。此器完全与非洲苏丹族之匕首相同。其锋刃宽而短，柄用一块木刳成。鞘虽亦用一块木挖成却系两面鞘，乃从一面开一长隙，由此以刳内部，此为异于以上诸刀之点。鞘上凹线雕刻全体人形，一面8个，一面2个，其状与长刀略异，且作联续形。编藤为圆带以挂肩上。此种短剑或匕首用以近划敌人之胸，亦作渔猎之用。</p><p><strong>六、防御武器</strong></p><p>高山族最喜依林傍岩为战，故无佩带防御武器之必要，但如大队出征远袭敌人，则为避箭射、枪刺及刀劈计，亦有甲、盾、盔、冠、战衣等武器。台湾既然经过石器文化期，想必亦有铜器及铜铁合制等文化期可言，但铜铁制甲胄及其他防御武器或尚安眠台湾土中，与其他铜兵相似，或被高山族酋长藏于深山丛莽之中，从不出示外人，至今亦乏人见及耳。不得已而论其次，姑就林惠祥君冒险搜集之实物而言，计有背心甲、战衣、盔、冠及牌盾等器，试分言之。</p><p><strong>1.甲衣</strong></p><p>背心甲此甲系以椰树皮制成，颇为平泽，有沿边。有二正胸纽扣，上有护肩，后有护背，前有护胸，长43.18厘米。御矢格刃，不亚于古代皮甲也。</p><p>战衣（图4之第3号） 此衣作长背心式，无腕袖，系用6万数千颗贝壳珠制成者，长99.06厘米，可以护膝。《禹贡》中已有“织贝”之言，周秦汉唐以来载籍亦有关于贝胃、贝甲之记载，如《诗·鲁颂· 宫》曰：“公车千乘，朱英绿埶，二矛重弓；公徒三万，贝胄朱，烝徒增增。”疏：“以贝饰胄，其甲以朱绳缀之。”是周代鲁人之贝胄也。近年山东出土石兵中常杂有贝壳编制物，颇类服装残遗零片，然则齐鲁在三代以前即有贝衣之风矣，高山族贝衣当系中国石器或石铜器文化时代之遗型。</p><p><strong>2.战盔</strong></p><p>台湾之铜胄铁盔均不可得而见，不得已而言其次，则有下列诸种：</p><p>北部高山人之藤盔半圆形，径18.8厘米，以藤编制，极坚固，工艺甚精致。下系以绳，扣于颏下。泰雅人无论战时或平时均戴之。</p><p>雅美人藤盔径28厘米，较北部高山人藤盔大且高，厚约3厘米。编藤稀松杂乱，迥不如上盔工艺之精细整密。盔有两层，其内部系用椰子皮为底。外面用藤编为直垠及斜条，编法颇不规则，但求其厚，不求美观。高山族常有投石之战，故其人均戴此盔以御飞石，但亦可防御刀枪及箭也。</p><p>独木盔用木一块刳成，径33厘米，其下沿向外斜凸，颇似欧美、日本之现代新式军盔，可见台湾高山族距今甚早即有作战之常识矣。盔上之钵雕刻几何形而隔以直垠，纹饰下限缀刻齿形圆边，雕工匀整。盔顶有小座，贯一短索，想系悬盔之用者。</p><p>带角鹿头盔高山族通称皮帽为Tarupung。此盔状貌凶猛，颇似殷商人之饕餮虎盔，系以“羌仔”即带角及耳之小鹿头皮制成。前部至口而止，眼缝合，后方添一垂块以蔽颈项。此类冠盔系高山族之珍贵品，南部高山人酋长及勇士往往于祝祭等礼仪时戴之。插羽鹿皮冠此冠亦俨然一军盔也，系将鹿皮一方剪去一角缝合而成，后方加一垂块护颈。冠上插鸟羽并绘红色纹样，其羽出自台湾特产之“帝雉”鸟。此冠为南部高山人之物，饰羽每于盛装炫众时插戴，实战及狩猎时则拔藏。带毛山羊皮帽用山羊皮一块制成，其皮不割不剪，原为平面形，系强压其中部、展延其边部而成为半球形。具有御雨作用，南部高山人喜戴之。</p><p><strong><span style="color: rgb(153, 51, 0);">3.盾牌</span></strong></p><p>台湾铜铁盾及革盾皆不可得而见，所可论者仅有下列二种：</p><p>木盾（图4之第2号） 此为南部高山人之物。通长63厘米，阔41.2厘米。系用长方坚木二块分制合成，形如一块，以藤条扎扣联合之，后面附加一木条贯合。盾上雕刻人头及方、圆、斜方、三角等几何形，皆深刻，刻后涂搽颜料。</p><p>藤盾（图4之第1号） 此系阿美人之物。通长94厘米，阔58.4厘米。系将纵劈成长条之粗藤排列成长方形，用五木条横贴于其后，以细藤皮紧扎而成，另用弯形木扎于后为手提之把。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p1.ifengimg.com/2018_44/E2417381290D6895D3367CC5A6571D1CBB5CA279_w600_h408.jpg" alt="" width="600" height="408" style="border: 0px; vertical-align: middle; padding: 0px; max-width: 100%; height: auto !important;"/></p><p>图4 台湾高山族护身具</p><p>1.藤盾。2.木盾。3.织贝衣（采自林惠祥《台湾番族之原始文化》）<span class="ifengLogo"><a href="http://www.ifeng.com/" target="_blank"><img src="http://p2.ifengimg.com/a/2016/0810/204c433878d5cf9size1_w16_h16.png"/></a></span></p>
+<h2 id="20">《阿拉姜色》好：将信仰袪魅，描摹日常的诗意与苍凉</h2><p>身染重病的藏族妇女俄玛自知不久于人世，决意替已故前夫完成去拉萨朝圣的未尽夙愿。不明就里的现任丈夫罗尔基与乖僻寡言的儿子诺尔吾也先后加入朝圣队伍。俄玛在朝拜途中不幸撒手人寰，剩下一对没有血缘关系又隔阂重重的父子，代她走完了剩余的路途。电影《阿拉姜色》用极为克制舒缓的口吻，讲述了一个哀而不伤的家庭伦理故事。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p0.ifengimg.com/pmop/2018/1104/B6618C302E89E6BBF71A51B58C60D3A65CA3D7D3_size61_w1080_h607.jpeg"/></p><p>信仰、家庭、隔阂与救赎，是导演松太加作品一贯的主题词。这位生于安多藏区的导演，此前曾长期担任万玛才旦电影的美术设计和摄影师。不过与后者在《静静的嘛呢石》《塔洛》等电影中频繁书写的传统与现代的冲突主题不同，松太加始终将目光聚焦于微观家庭中个体情感的疏离与和解。</p><p>处女作《太阳总在左边》中，意外将母亲碾压致死的少年尼玛无法走出悲恸和自责，决意带着掺杂母亲之血的一抔黄土踏上漫长的朝拜路途。救赎路上，他偶遇一位旷达又空虚的老者，在相互慰藉中达成了心灵的救赎。而在电影《河》中，虔诚修行的爷爷拒绝了妻子临终前相见的请求，以至于儿子对他始终无法原宥，并将这种情感隔阂延续到女儿身上。一条河如同一道鸿沟，隔开了世俗与宗教，也隔开了祖孙三代的情与爱。可以说，松太加始终关注个体幽微复杂的内心，关注日常生活里具有普世性的情感价值。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p0.ifengimg.com/pmop/2018/1104/C141FC0FF78538339EB9BE2BE413E289396152F3_size137_w1080_h720.jpeg"/></p><p>电影《阿拉姜色》里，妻子俄玛无法忘怀逝去的前夫，她深藏着两人的旧照片，更始终为自己未完成对他的承诺而心有负疚。丈夫罗尔基体贴入微，却无法接受与继子共同生活，也难掩因妻子恋念旧情而生发的嫉妒和失落。从小与外公外婆生活在一起的儿子诺尔吾独尝寄人篱下的滋味，用缄默结起了层层的保护壳，如同一只浑身是刺的小兽。夫妻、父子与母子之间无法彻底坦诚互见，看似平静的重组家庭表层下滋生着难以言说的秘密与裂痕。而女主角决意完成对前夫的承诺，构成了整部电影的叙事动力，也为弥合情感罅隙提供了契机。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p0.ifengimg.com/pmop/2018/1104/BA88261C5EDF9B8097655C9B206D08553064910E_size52_w1080_h607.jpeg"/></p><p>以公路片方式讲述两代人的情感关系，在世界电影史上可谓屡见不鲜。从《德州巴黎》《中央车站》《菊次郎的夏天》，到《完美的世界》《穿越美国》《野草莓》，旅途总是与成长相关联，一次次的冲突与和解、出走与回归描画着情感嬗变的轨迹。有趣的是，电影《阿拉姜色》以女主角的去世为分界点，呈现出与以往公路片有所不同的两段式结构。</p><p>影片的前半段，女主角俄玛作为核心人物维系着重组家庭的情感关联。影片开始，俄玛因梦见前夫而惊醒，此时画面中找不到出路的飞蛾，暗示了她被围困的人生，以及即将义无反顾扑向火焰的命运。当她去世后，丈夫与儿子成为彼此没有血缘关系、孤独无依的“陌生人”。</p><p>作为影片后半段的核心人物，丈夫罗尔基既承受着丧妻之痛，也为妻子与前夫的死生契阔而心有不甘，还面临着如何与继子诺尔吾相处的棘手问题。当诺尔吾挑衅似的向他裸露脚上鲜血淋漓的伤口时，那是两只孤兽的无声对峙。面对困境，他选择继承妻子的遗志，以身体来丈量前路，用匍匐来救赎自我。影片中，罗尔基的三次落泪让其丈夫与父亲的双重形象饱满而生动。帐篷里的无声落泪，是即将失去妻子的悲恸；水泥墙边的号啕大哭，是爱、嫉妒、隐忍、无助等复杂情感的宣泄；为诺尔吾理发时的落泪，则是父子历经磨难后的百感交集。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p0.ifengimg.com/pmop/2018/1104/985DBC5EA3E42D79977A4760F748D0DE5131EF4D_size42_w1080_h453.jpeg"/></p><p>与罗尔基复杂的情感状态相比，少年诺尔吾表露出的是另一种成长的痕迹。他看上去对于母亲的离去心无波澜，却倔强地反转转经轮试图让母亲重生，还偷偷保留下被罗尔基粘贴在寺庙的父母照片。尤其当他静静地望着失去母亲的小毛驴时，更让人为之泪目。电影里，小毛驴是他内心情感的投射与外化，是他成长的陪伴者，也是父子二人走向和解的见证者。最终，这个曾经套着塑料袋站在马路中间挑战货车的自闭少年，终于卸下心防，对着毛驴做出拎耳朵的亲昵动作，不顾一切地奔向山顶去眺望拉萨。当罗尔基用剪刀为他减去肆意生长的蓬乱头发时，他终于长大成人。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p0.ifengimg.com/pmop/2018/1104/0A9C266B178DD78C1B443D747D4A874C8E5FDD38_size189_w1080_h606.jpeg"/></p><p>观看这部舒缓的散文电影，让人极易联想到《冈仁波齐》。同样的公路片结构，类似的朝拜之旅。然而尽管导演张杨有意以伪纪录片的形式营造一种去神秘化的写实氛围，但后者还是流露出些许猎奇化意味。值得关注的是，近年来涌现出《塔洛》《清水里的刀子》《老兽》《米花之味》等电影，形成了有别于前的少数民族电影风景线。这些电影没有文化猎奇与异域奇观，没有来自他者的凝视目光。如同电影《阿拉姜色》，其中的草木与人物都生长于鲜活的泥土之中。它将信仰祛魅，转而描画日常生活的苍凉、琐碎与平淡，书写生死的沉默、内省和诗意。或许，这才是真正意义上的少数民族电影。</p><p>文| 李宁</p><p>本文刊载于2018年11月02日星期五《北京青年报》B6版<span class="ifengLogo"><a href="http://www.ifeng.com/" target="_blank"><img src="http://p2.ifengimg.com/a/2016/0810/204c433878d5cf9size1_w16_h16.png"/></a></span></p>
+<h2 id="21">林青霞张爱玲三毛： 一首歌唱尽三个女子的传奇一生</h2><p>来源| 美物计（ID：huanqiukanke）</p><p>来易来去难去</p><p>数十载的人世游</p><p>分易分聚难聚</p><p>爱与恨的千古愁</p><p>&nbsp; &nbsp;&nbsp;——《滚滚红尘》</p><p>有没有一首老歌，</p><p>曾在你经历的岁月里，</p><p>让你热泪盈眶？</p><p>1990年11月，</p><p><strong>电影《滚滚红尘》上映，</strong></p><p>罗大佑亲自为它作词作曲，</p><p>并找来陈淑桦一起合唱，</p><p>两人声音一个缠绵，一个沧桑，</p><p><strong>完美诠释出了滚滚红尘中的</strong></p><p><strong>爱恨交织，悲欢离合。</strong></p><p>很多人没看过这部电影，但是一定听过这首歌</p><p>《滚滚红尘》评论里有这样一句话：</p><p><strong>“三毛写的是张爱玲和胡兰成，</strong></p><p><strong>想的是她和荷西，</strong></p><p><strong>演的是林青霞和秦汉，</strong></p><p>滚滚红尘，</p><p>尽然没有一对善终……”</p><p>“起初不经意的你，</p><p>和少年不经事的我”。</p><p>许多故事都是从这里开始的，</p><p>只是谁能想得到，</p><p><strong>这个“不经意”竟牵动了</strong></p><p><strong>三个奇女子的一生？</strong></p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p0.ifengimg.com/pmop/2018/1104/5C3BF4D2D8AD57A094003CD517DB2693EDE1AD32_size35_w600_h437.jpeg"/></p><p>01&nbsp;</p><p><strong><strong>你问我爱你值不值得</strong></strong></p><p><strong>其实你应该知道</strong></p><p><strong>爱就是不问值得不值得</strong></p><p>起初不经意的你</p><p>和少年不经事的我</p><p>红尘中的情缘</p><p>只因那生命匆匆不语的胶着</p><p>起初不经意的你，</p><p>和少年不经事的我，</p><p>造就了红尘中千回百转的尘缘，</p><p><strong>这写的是张爱玲和胡兰成，</strong></p><p><strong>也是《滚滚红尘》的故事原型。</strong></p><p>1943年，23岁的张爱玲</p><p><strong>遇见了年长他14岁的胡兰成，</strong></p><p>倔强高傲的她从此沦陷在爱情的深海里，</p><p>无论别人怎么看待，</p><p>对她而言：自己喜欢最重要。</p><p><strong><img src="http://p0.ifengimg.com/pmop/2018/1104/CC7E3B4FDE093BE7D15D64314C92A07C0670794A_size39_w772_h480.jpeg"/></strong></p><p>正因为对胡兰成的喜欢，</p><p>她才会写下这样的句子：</p><p>“当她见到他，她变得<strong>很低很低，低到尘埃里，</strong></p><p>但心是欢喜的，从尘埃里开出花来”。</p><p>没有婚礼，也没有结婚证，</p><p>他们只有一纸简单至极的婚书：</p><p><strong>“胡兰成与张爱玲签订终身，结为夫妇。</strong></p><p><strong>愿使岁月静好，现世安稳。”</strong></p><p>前两句出自张爱玲，</p><p>后两句出自胡兰成。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p0.ifengimg.com/pmop/2018/1104/AC4B8027451AB54994ED3A0423BA29958AF9FBDB_size26_w500_h679.jpeg" width="100%"/></p><p>然而，与张爱玲结婚不到半年，</p><p>胡兰成就与护士小周开始如胶似漆，</p><p>张爱玲去温州找他，</p><p>要他在自己与小周之间做出选择，</p><p>他决然的拒绝了，</p><p>后来他又爱上了朋友的妻子范秀美，</p><p><strong>张爱玲也在一次次的伤害中</strong></p><p><strong>越发变得坚强</strong>，也越发明白</p><p>美好的爱情，已经走到了尽头</p><p>直到一封绝笔信的寄出——</p><p><strong>“我已经不喜欢你了，你是早已经不喜欢我的了。</strong></p><p>这次的决心，是我经过一年半长时间考虑的。</p><p>彼惟时以小吉故，不欲增加你的困难。</p><p><strong>你不要来寻我，即或写信来，我亦是不看的了。”</strong></p><p>并且随信附送了30万块钱，作为分手费。</p><p>从此，两人天各一方，互不相欠。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p0.ifengimg.com/pmop/2018/1104/1B7E9C487D88F123A07C285CEA0BE84821EEED8F_size39_w1080_h791.jpeg"/></p><p>张爱玲爱上胡兰成，</p><p>所有人都在为她惋惜遇人不淑，</p><p>而她却选择一往无前地去爱一个人，</p><p>哪怕爱错，她也认了。</p><p>有生之年狭路相逢，终不能幸免，</p><p>可就算知晓人生的尽头是无尽的悲凉，</p><p><strong>也甘愿以爱一个人的姿态，</strong></p><p><strong>在滚滚红尘中走一回，</strong></p><p><strong>尝遍人生滋味。</strong></p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p0.ifengimg.com/pmop/2018/1104/8ECB11D471F4E5094D3A49BFE64AFA83758CEDA1_size27_w800_h600.jpeg"/></p><p>02&nbsp;</p><p><strong><strong>每想你一次</strong></strong></p><p><strong>天上飘落一粒沙</strong></p><p><strong>从此形成了撒哈拉</strong></p><p>想是人世间的错</p><p>或前世流传的因果</p><p>终生的所有</p><p>也不惜换取刹那阴阳的交流</p><p>终生的所有，</p><p>也不惜换取刹那阴阳的交流，</p><p><strong>明明相爱却天人永隔，</strong></p><p><strong>这一句，写的是三毛和荷西吧。</strong></p><p>那年三毛26岁，</p><p>在漫长的自我疗伤中流浪着，</p><p>看不到生活的任何色彩，</p><p>直到遇见18岁的少年荷西，</p><p><strong>她比他大8岁，他说可以等他长大，</strong></p><p>待他读完大学，就来娶她。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p0.ifengimg.com/pmop/2018/1104/A1B0B08110C76D6B2FA12F88EDA50971DE42298A_size31_w580_h447.jpeg"/></p><p>人生已经充满了太多变数，</p><p>三毛见识过，她笑着没有当真，</p><p>和少年说了再见，就去了撒哈拉沙漠，</p><p>但令她始料未及的是，</p><p><strong>那个叫荷西的少年真的等了她6年，</strong></p><p>他成长为一个海一般的男人，</p><p>愿意陪着她天涯海角。</p><p>他们在一起7年，</p><p>尽管生活在荒芜的沙漠，</p><p><strong>辛苦谋生，也被病痛所折磨，</strong></p><p><strong>但三毛眼前看到的尽是繁花似锦，</strong></p><p>荷西接受她的一切，爱她的全部，</p><p>跟荷西在一起，她能做最真实的自己，</p><p>只是，那些因缘分而来的东西，</p><p>终有缘尽而别的时候。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p0.ifengimg.com/pmop/2018/1104/8CEF4CD1BC0D2FEFA3CEBCD8D304A7D274EDB763_size152_w732_h1102.jpeg"/></p><p>1979年，</p><p>荷西由于溺水不幸离世，</p><p>他们甚至来不及告别，</p><p>失去荷西的三毛痛不欲生，</p><p><strong>她为爱而生，爱没有了，生亦没有了，</strong></p><p>以前他跟着她飘摇，</p><p>那现在，就让她随他而去。</p><p>在离开之前，</p><p>她留下了一部电影作品<strong>《滚滚红尘》</strong>，</p><p>这是是她第一部中文电影剧本，</p><p>也是最后一部，写的是张爱玲和胡兰成，</p><p>细节处处可见她和荷西的影子，</p><p><strong>有浪漫，有悲欢，</strong></p><p><strong>还有他们缠绵悱恻的故事……</strong></p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p0.ifengimg.com/pmop/2018/1104/3B968E3A01641A9953AE79B64AA503A66FE687ED_size74_w1000_h704.jpeg"/></p><p>钟敲十二响的时候，</p><p>荷西将我抱在手臂里，</p><p>说：“快许十二个愿望。”</p><p>心里重复着十二句同样的话：</p><p><strong>“但愿人长久，但愿人长久，</strong></p><p><strong>但愿人长久，但愿人长久……”</strong></p><p>每想你一次，天上飘落一粒沙，</p><p>从此形成了撒哈拉。</p><p>每想你一次，天上就掉一滴水，</p><p>于是形成了太平洋。</p><p>生活写无可写，生命了无可了，</p><p><strong>1990年《滚滚红尘》上映，</strong></p><p><strong>1991年，她寻荷西而去，</strong></p><p><strong>把人生定格在了48岁。</strong></p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p0.ifengimg.com/pmop/2018/1104/2C26833ED6C81949BE28B1FFAE164E4EC0A1525E_size43_w580_h440.jpeg"/></p><p>03&nbsp;</p><p><strong><strong>从此山水不相逢</strong></strong></p><p><strong>莫道伊人长和短</strong></p><p>本应属于你的心</p><p>它依然护紧我胸口</p><p>为只为那尘世转变的面孔</p><p>后的翻云覆雨手</p><p>为只为那尘世转变的面孔</p><p>后的翻云覆雨手，</p><p><strong>纵使相爱也不敌阴差阳错，</strong></p><p><strong>这句或许唱的是林青霞和秦汉。</strong></p><p>看过这样一句话：</p><p>人间处处有遗憾，</p><p>最憾是--青霞不能嫁秦汉，</p><p><strong>人人都知林青霞爱秦汉，</strong></p><p><strong>爱了他20年，从18岁到38岁。</strong></p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p0.ifengimg.com/pmop/2018/1104/07422281261203A0EECCD28220F4CB7D91F152E7_size53_w892_h838.jpeg"/></p><p><strong>都说人生如戏，戏如人生，</strong></p><p><strong>1973年，18岁的林青霞遇上了秦汉，</strong></p><p>两人是当之无愧的郎才女貌，</p><p>林青霞出尘脱俗，美貌不可方物；</p><p>秦汉高大帅气，文质彬彬。</p><p><strong>《窗外》是他们的第一次合作，</strong></p><p>两人由戏结缘，因戏生情，</p><p>然而秦汉当时已经有了家庭，</p><p>她看不到这份感情的未来，绝望了，</p><p>放下如日中天的事业，去了美国疗伤，</p><p>她想找个港湾停下，</p><p>于是嫁给一直陪伴左右的秦祥林。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p0.ifengimg.com/pmop/2018/1104/7E948B083A2DF0E472EA3B900160318BDBF9FA48_size40_w586_h819.jpeg"/></p><p>可命运就是这么阴差阳错，</p><p>她和他都结婚了，后来竟又都离婚了，</p><p>于是<strong>辗转走到了一起，1985到1994，</strong></p><p><strong>大抵是他们人生最美好的时光，</strong></p><p>两个人一起拍了《滚滚红尘》，</p><p>电影中二人初看是张爱玲与胡兰成，</p><p>但细品，反而更像是</p><p>秦林二人将戏外的爱情带入戏中，</p><p>楼台之上，夕阳之下，</p><p><strong>她站在他脚尖上，轻轻拥抱，</strong></p><p><strong>迈着醉生梦死的舞步，朝朝暮暮，</strong></p><p>是电影中最惊艳的一幕。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p0.ifengimg.com/pmop/2018/1104/9427998BABBB096930893CB5B13B95B45ABF8BB2_size2047_w400_h295.gif"/></p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p0.ifengimg.com/pmop/2018/1104/11DCC5735B049614F991DA10A9FCEA9FE8427C6E_size34_w1080_h792.jpeg"/></p><p>1990年算是林青霞</p><p>爱情、事业双丰收的一年，</p><p><strong>拿上了她最在意的金马奖奖杯，</strong></p><p><strong>最爱的人也在身边，</strong></p><p>本以为这就是故事最幸福的结局了，</p><p>没想到两人最后还是分开了。</p><p>电影中的章能才最终在人群中</p><p>对韶华无声地说出“我爱你”，</p><p>现实中的秦汉却自始至终都没有明确表态，</p><p><strong>一场旷世苦恋，只是一个人的地老天荒，</strong></p><p>红尘滚滚，繁华三千，</p><p>他们的缘尽于此，</p><p>此后她再也没有提起过秦汉，</p><p>也再不和他同台。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p0.ifengimg.com/pmop/2018/1104/0CBC960E6B04140BCEDB98AF1AD5E644B4444959_size32_w824_h726.jpeg"/></p><p>前几年，</p><p>已是花甲的秦汉参加一档综艺节目，</p><p>去了法国尼斯的海边，阳光灿烂，</p><p>他说，<strong>二十多年前曾来过这里，</strong></p><p>节目组追问是和谁一起来的，</p><p><strong>秦汉默默地说，是和一位朋友。</strong></p><p>随即便是《滚滚红尘》音乐响起，</p><p>秦汉陷入思绪，</p><p>似乎已飘向那久远的岁月，</p><p>正是风华正茂的年纪，</p><p><strong>他和她来过这里，</strong></p><p><strong>这里有属于他们的回忆……</strong></p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p0.ifengimg.com/pmop/2018/1104/B0B9F2594344510B8DA9A75629748BD9AB69251D_size85_w888_h1016.jpeg"/></p><p>早年两人在法国的海边度假</p><p>04&nbsp;</p><p><strong><strong>于是不愿走的你</strong></strong></p><p><strong>要告别已不见的我</strong></p><p>至今世间仍有隐约的耳语</p><p>跟随我俩的传说</p><p>滚滚红尘里有隐约的耳语</p><p>跟随我俩的传说</p><p>那段属于港台的流金岁月已逝，</p><p>只有经典的老歌还在传唱，</p><p><strong>滚滚红尘中流传无数的传说，</strong></p><p>曾是相思畔，今已成忘川，</p><p>是多少人的天上人间……</p><p>一首歌，一场戏，</p><p><strong>张爱玲，三毛，林青霞，</strong></p><p>这三个旷世奇女子用各自的人生经历，</p><p>将这一段“滚滚红尘”述说得透彻：</p><p><strong>不愿走的你，</strong></p><p><strong>终究是要告别已不见的我。</strong></p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p0.ifengimg.com/pmop/2018/1104/F41C97E99E9F10EC6DE8AB56E1174A490B2021DA_size92_w1080_h720.jpeg"/></p><p>张爱玲曾说，</p><p>我以为爱情可以填满人生的遗憾，</p><p>然而制造更多遗憾的，却偏偏是爱情。</p><p><strong>这大概就是红尘的寂寞吧。</strong></p><p>人的一生太短暂，</p><p>拗不过这滚滚红尘，</p><p><strong>惟愿相爱的人各得其所，</strong></p><p><strong>放逐的人终获解脱，</strong></p><p>也许，这便是命运最好的安排。</p><p>本文已由微信公众号“美物计”（ID：huanqiukanke）进行授权若需转载请联系“美物计”<span class="ifengLogo"><a href="http://www.ifeng.com/" target="_blank"><img src="http://p2.ifengimg.com/a/2016/0810/204c433878d5cf9size1_w16_h16.png"/></a></span></p>
+<h2 id="22">历史上的“如懿”为什么剪发？</h2><p>《如懿传》播映完毕的那天，微博上很多人都为乾隆剪下自己的一缕白发与如懿的那缕断发放在一起而惆怅不已，煌煌八十七集的电视连续剧，多少明争暗斗、尔虞我诈，最终尘归尘土归土，以并无胜利者的一出大悲剧而告终……从史料看，数百年间，紫禁城里并无几个真正称得上幸福的人，尤其是女人，嫔妃也好，宫婢也罢，终其一生都像牢房内的囚徒一般，用生命为帝国这匹巨大怪兽的心脏做着点缀和牺牲，默默的生，默默的死，默默的废黜，默默的遗弃，就算是如懿这样贵为皇后的人物，也无法摆脱这一结局。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p3.ifengimg.com/2018_45/65E331E7337E30394CC78C51497C2CA5C677B0DA_w600_h332.jpg" width="600" height="332" alt="" style="border: 0px; vertical-align: middle; padding: 0px; max-width: 100%; height: auto !important;"/></p><p>《如懿传》结尾</p><p>众所周知，如懿的人物原型是乾隆的第二位皇后那拉氏，这位皇后命运十分悲惨，因为断发被“不废而废”之后，不仅册宝被乾隆没收，而且实质上是幽禁而死，死后的葬礼简陋到只相当于一个低级嫔妃，就连她的画像都没有留下一幅，极有可能是被刻意销毁——乾隆皇帝对她的怨毒之深，令人瞠目，像《如懿传》的结尾，将两人头发重新放在一起，是绝无可能之事。而由于有清一代在文字上的苛察之深，文人墨客也极少在笔记中详细记载并深入考证此事，以至于成为了一个历史之谜——那拉氏究底为什么用断发的方式和乾隆皇帝彻底决裂呢？</p><p><strong style="color: rgb(51, 51, 51); font-family: &quot;Hiragino Sans GB&quot;, &quot;Microsoft Yahei&quot;, sans-serif; letter-spacing: 0.5px; white-space: normal; background-color: rgb(255, 255, 255);">一、改嫁的寡妇才自剪头发</strong></p><p>事实上，清朝末年，那拉氏的断发事件已经很少为人所知。柴小梵在《梵天庐丛录》一书中记一事，著名学者江叔海于光绪三十二年（1906年）来北京任京师大学堂代理校长，“在清内阁搜检遗书，于密室中得一黄箧”，黄箧落着锁，上面贴有“乾隆某年月日及嘉庆四年御笔”的封条，一看就是不与外人可知的密件。江叔海十分好奇，打开一看，原来是御史阿当阿的一扣奏折，内容是请求恢复某个已逝皇后的位号，而上面有着乾隆皇帝的御笔朱批，写着“无发之人，奚足以母仪天下？所请着无庸议！”此事经江叔海往外一说，引起社会上不小的反响，人们传闻：这是乾隆有个妃子，“在西山某寺为尼，阿当阿请奉复位，有旨不允”，而乾隆帝去世后，仁宗（嘉庆）亲政后，这位妃子还在西山某寺修行，又有大臣上奏给她复位，嘉庆帝“曾宣取此折，见有先朝御批，乃罢”——而这些传闻皆属穿凿附会、异想天开，“不知即废后那拉氏事耳”。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p0.ifengimg.com/2018_45/963FF83E815E639A954B5BE83B208F2C15FD2EFF_w600_h433.jpg" width="600" height="433" alt="" style="border: 0px; vertical-align: middle; padding: 0px; max-width: 100%; height: auto !important;"/></p><p>《梵天庐丛录》</p><p>《梵天庐丛录》接着说：“那拉氏以皇贵妃正孝贤之位，正位中宫十数年，忽犯狂易之疾，尝一日自剪其发。”而清代的风俗对此极为忌讳，只有矢志不再改嫁的寡妇才剪发，“故有夫之妇，以剪发为大忌”，乾隆帝勃然大怒，“未几，（那拉氏）病卒，诏以皇贵妃礼葬寝园，生前固未尝有废黜明文也，阿御史之折，必系请复后位，入洊太庙耳”。这里面需要解释的是，所谓“正孝贤之位”，就是把原来为娴贵妃的那拉氏册封为皇后——而去世的皇后富察氏的谥号是为“孝贤”。</p><p>在柴小梵看来：“后人不知废后有剪发事，故疑以传疑，异论于以纷起，清宫中故多秘事，然此事本末，固是明白，非有他故也。”问题在于他自己对那拉氏剪发的原因也语焉不详，差不多与《梵天庐丛录》同一时期的《清稗类钞》对此事的记载也是点到即止：“高宗继后那拉氏随侍孝圣后南巡，忽自剪发，失其常度，中途送还京师。满俗最忌剪发，高宗谕旨，谓本应废立，以其继位中宫，故优容之。越数年薨，命以皇贵妃礼治丧，不得祔庙。”依然没有说清楚剪发的原因。</p><p>而乾隆三十一年七月十五日，乾隆皇帝在那拉氏去世后发出的上谕中是这样说的：“皇后自册立以来尚无失德。去年春，朕恭奉皇太后巡幸江浙，正承欢洽庆之时，皇后性忽改常，于皇太后前不能恪尽孝道。比至杭州，则举动尤乖正理，迹类疯迷。因令先程回京，在宫调摄。经今一载余，病势日剧，遂尔奄逝……”对于剪发的原因同样犹抱琵琶，这难免令人猜疑：乾隆三十年闰二月十八日那天，到底发生了什么事情，让好端端的那拉氏突然就“迹类疯迷”？</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p2.ifengimg.com/2018_45/6204B9FB80C7FCDCC6269D0CC427103A268FEAE6_w600_h311.jpg" width="600" height="311" alt="" style="border: 0px; vertical-align: middle; padding: 0px; max-width: 100%; height: auto !important;"/></p><p>《如懿传》剧照</p><p><strong style="color: rgb(51, 51, 51); font-family: &quot;Hiragino Sans GB&quot;, &quot;Microsoft Yahei&quot;, sans-serif; letter-spacing: 0.5px; white-space: normal; background-color: rgb(255, 255, 255);">二、立那拉氏为后是“母命难违”</strong></p><p>在从史料笔记中探寻那拉氏剪发的真相前，不妨先看看蔡东藩先生在《清史通俗演义》中对此事的阐释。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p1.ifengimg.com/2018_45/8FE89FF44C5D31FA456FDF542E9ED77C755BBC5E_w500_h500.jpg" width="500" height="500" alt="" style="border: 0px; vertical-align: middle; padding: 0px; max-width: 100%; height: auto !important;"/></p><p>《清史通俗演义》</p><p>许多人对蔡东藩先生的“历朝通俗演义”有误解，认为这套书不过是一部贯穿着各种杂闻传说的“野史”，不具备史料价值，其实这是错误的看法。的确，蔡东藩先生撰写此书，确实是为了将中国史用通俗小说的方式向大众阶层传播，固然为了加强可读性借鉴了不少野史，夹杂了不少纯属杜撰的成分，但从整体上看，该书确实秉承着“以正史为经，务求确凿，以轶闻为纬，不尚虚诬”的原则，应该说远比现在市场上一些通俗史读物要严谨、客观、翔实和全面得多。</p><p>《清史通俗演义》对那拉氏断发之事分于两章记录。首先是第三十六回，写皇后富察氏崩逝后，“乾隆帝至梓宫前亲奠一回。奠毕，慈宁宫传到懿旨，宣召乾隆帝进宫”。乾隆到太后前请过了安，太后说：“现在皇后去世，已满一年，六宫不可无主，须选立一人方好。”乾隆帝不说话，太后说后宫嫔妃哪一个最称你意？乾隆说：“妃嫔虽多，没一个能及富察，奈何？”太后说：“我看娴贵妃那拉氏，人颇端淑，不妨升她为后。”</p><p>接下来的这段描写很耐寻味。首先是乾隆帝沈吟半晌说：“但凭圣母主裁！”太后说：“这也要你自己愿意。”然后蔡东藩写的是：“乾隆帝平日颇尽孝道，至此也不欲违逆母命，没奈何答了一个‘愿’字。”——这里面很明显看出乾隆立那拉氏为后，乃是一个母命难违下的选择，然而性格倔强的乾隆帝并不是这么痛快地就接受一个不符几意的命令的，他“退出慈宁宫，又辗转思想了一番，乃于次日下旨，册封娴妃那拉氏为皇贵妃，摄六宫事。直到孝贤皇后二周年，尚未册立正宫，经太后再三催促，方立那拉氏为皇后”。参商之兆，已萌于此。</p><p>而那拉氏断发的真正原因则记载于第三十八回中，乾隆帝在下江南时，在和珅的安排下寻花问柳，被皇后知道了，在杭州夫妻大吵一架，“皇后自正位后，没有什么恩遇，心中早已郁闷，此次秦淮河事，被宫监泄漏，忍耐不住，便与乾隆帝斗口。乾隆帝本不爱这皇后，自然没有好话，皇后气愤不过，竟把万缕青丝，一齐剪下，满俗最忌翦发，发已剪去，连太后也不便回护”。而乾隆帝更是怒不可遏，命宫监数名将皇后送回京师。自此，乾隆与那拉氏恩断义绝，“皇后忧愤成疾，延了一载，泪尽血枯，临危时候，乾隆帝反奉皇太后，到木兰秋狝去了，皇后闻知此信，痰喘交作，霎时气绝”。</p><p>从上述文字来看，那拉氏和乾隆帝的决裂，乃是因为夫妻长年不睦，那拉氏备受冷落引起的一场突发事件，那么蔡东藩先生这番叙写的可信度如何呢？我们不妨从极具史料价值的《清通鉴》中寻找答案。</p><p><strong style="color: rgb(51, 51, 51); font-family: &quot;Hiragino Sans GB&quot;, &quot;Microsoft Yahei&quot;, sans-serif; letter-spacing: 0.5px; white-space: normal; background-color: rgb(255, 255, 255);">三、“皇上在江南要立一个妃子”</strong></p><p>首先应该强调的一点是，乾隆帝立那拉氏为皇后，确实并非完全出于己意。《清通鉴》中记乾隆十三年七月初一日，“（乾隆）遵奉皇太后懿旨，先行册封娴贵妃那拉氏为皇贵妃，摄行六宫事，二十七月后再即位中宫”，可以看出那拉氏得以为后，实乃皇太后的安排。但在此后相当长的岁月里，夫妻之间并没有发生什么问题，当然由于清代后宫的隐秘性，帝后之间就算是拌个嘴吵个架，也不会为外人所知，但至少此后十几年的时间里，乾隆帝无论是江南巡幸、盛京祭祖还是木兰秋狝，都令皇后伴驾同行，而且此后她还为乾隆皇帝生下了三个孩子，应该说夫妻感情还是不错的。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p2.ifengimg.com/2018_45/5ECB91F241A4CEE754387D2D3AE002CB51E3C517_w600_h434.jpg" width="600" height="434" alt="" style="border: 0px; vertical-align: middle; padding: 0px; max-width: 100%; height: auto !important;"/></p><p>《清通鉴》</p><p>这也就更加显得乾隆三十年闰二月十八日所发之事的诡异和突然。《清通鉴》中对此事正面提及只有一句：“乾隆帝奉皇太后自杭州回銮，在杭州逗留期间，帝后不协，皇后那拉氏愤而自行断发，因令额驸福隆安送皇后先程回京。”从字面上看依然是含混其词，但其后的“考异”条目则深有讲究。</p><p>据曾经在都察院做过书办的严譄于事后十余年缘事被审讯时回忆：“三十年皇上南巡在江南路上，先送皇后回京，我那时在山西本籍，即闻得有此事，人家都说皇上在江南要立一个妃子，那皇后不依，因此挺触，将头发剪去，这个话说得人很多，如今事隔十来年，我哪里记得是谁说的呢？”</p><p>乾隆帝一生有后妃四十余人，据《宫中档乾隆朝奏折》所收有关密折可以断定，其中有两位江南籍的妃嫔，一位是扬州籍的明贵人陈氏，一位是苏州籍的常在陆氏。按《清皇室四谱》、《清列朝后妃传稿》和《清东陵大观》等书所记：常在陆氏是乾隆二十五年受封，显然与那拉氏断发无关，明贵人陈氏是“乾隆三十一年十一月十六日新封常在，四十年晋明贵人”。而乾隆四十三年，有扬州人陈济自称系明贵人陈氏之兄，来京具呈，恳求当差，乾隆帝一面指示内务府适当予以关照，一面又传谕两淮盐政伊龄阿不要任由宫眷的亲属胡来，尤其娘家是南方人的，南巡时“不可令其接驾乞恩”。这一切都说明明贵人陈氏很可能就是那位导致那拉氏不惜以断发来反对的“皇上在江南要立一个妃子”。</p><p>乾隆帝一生风流好色，韵事极多，对于皇后而言，势必造成内心的极大不快与压力，何况乾隆帝远不像影视剧中表现出的那样，对心爱女子温柔优容，就算是对皇后富察氏，今天的人们以为乾隆对她何其眷爱，其实清代笔记中对她的死亡也有令人震惊的记录，比如《清鉴纲目》中说她是在乾隆帝酒后劝他注意节制，被乾隆帝用非常难听的脏话痛骂，“后羞愤返，失足蹈水死”。天嘏所著《满清外史》中更是指当时乾隆帝对富察氏皇后“径捽其发而以足蹴之”，就是抓住富察氏的头发踢她，家暴至此，简直可恶至极。而《扬州画舫录》更记乾隆帝一可笑行径，他乘船过扬州时，在沿河村子广设卡兵，“于应回避时，令男子退出村内，不禁妇女，盖以扬州妇女，素有艳名”——这种假公济私的猎艳行为，恐怕只能用“荒淫”二字来评价了吧。</p><p>跟着这么个丈夫，又要正襟危坐地扮演一国之母，又要一再容忍他的荒淫无度，那拉氏内心的痛苦和愤怒可想而知，细考她剪发时的年龄是47岁，恰是一个女人的更年期，本来就因为生理的原因心烦意乱，加上耳闻目睹乾隆的所作所为，那拉氏选择以断发的方式“爆发”，应该是一个可以理解的行为。反观乾隆，不但没有丝毫的悔意，反而在夫妻反目后，将那拉氏幽囚冷宫，还削减她的用度、开支，将随侍她的宫女减至两人，并在此后的所有谕旨中把一切过错都归之于那拉氏，还说什么“朕仍存其名号，已为格外优容”，真的是令人齿冷。再想想那些一边在微博上动辄大骂渣男一边看着清宫剧幻想嫁入帝王家的女孩子，不由得感慨，何苦自己用着美颜相机，又百分之百相信别人朋友圈里的图片都是没修过的呢？<span class="ifengLogo"><a href="http://www.ifeng.com/" target="_blank"><img src="http://p2.ifengimg.com/a/2016/0810/204c433878d5cf9size1_w16_h16.png"/></a></span></p>
+<h2 id="23">全世界的神话中，人类都是用泥巴捏出来的</h2><p>试问谁在小时候没有光屁股玩过捏泥巴呢？</p><p>就算是现在很多城市里长大的小孩子，没有了去野外玩泥巴的必要条件，也一定都爱玩橡皮泥。</p><p>不管男孩女孩、黑皮肤黄皮肤还是白皮肤，可以说，“玩泥巴”，是每个小孩子的天性。</p><p>可是有没有人思考过：为什么全世界的人都爱玩泥巴？</p><p>事实的真相，可以追溯到long long ago…</p><p>在读世界各国神话的时候，我发现了一个很有趣的现象：人类的神话都是共通的。</p><p>比如说，世界上大部分民族、宗教关于人类起源的讨论，几乎都是神创论，也就是神创造了人类，只有到了19世纪，达尔文的《物种起源》横空出世，用进化论的观点向神创论发起猛烈进攻，撼动了欧洲乃至整个世界的神权统治根基。</p><p>然而，随着科学技术的发展，进化论的缺陷也越来越多地暴露出来，现有的科学理论很难完全解释进化论的漏洞。</p><p>于是，关于人类起源的话题又重新回到众说纷纭的迷雾阶段。</p><p>当然，生物科学不是本文要讨论的范畴，我们今天要聊的是依然是神话。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p0.ifengimg.com/pmop/2018/1105/CF5B65D6A526259F45FF90555F35C54EA8F8FA99_size243_w500_h707.jpeg"/></p><p>01</p><p>世界各地、各民族关于神创造人的传说非常多，我们最为熟悉的中国古代神话里，主要就是女娲造人说。</p><p>盘古开天地后，身躯化为日月星辰、山川生物，可就是没有人，女娲用泥土仿照自己的形象捏出人，她造了一批又一批的人，觉得进度太慢，于是将藤条搅入泥浆，一点一点的泥浆洒在地上，都变成了人。</p><p>为了让人类繁衍生息，自己“造人”，女娲又将人区分男女，创造了嫁娶之礼。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p0.ifengimg.com/pmop/2018/1105/BF1EA7C17D88896BF4DCFB8E9CB25A1B9F194BE8_size850_w667_h1000.jpeg"/></p><p>02</p><p>古代埃及传说里，世界最初是混沌无秩序的，一个叫哈奴姆的神从嘴里吐出一个儿子舒——空气之神，然后又吐出了一个女儿特夫努特——湿气女神，负责改变混沌的秩序，并创造了土地之神和天空之神。</p><p>哈奴姆则在陶器场里用陶土塑造出了人类，后来新的世界秩序建立了起来，但是舒和特夫努特却消失在黑暗之中，哈奴姆挖出了眼睛来寻找儿子女儿，当他们重回自己身边时，他落下的眼泪滴到地上，也变成了人。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p0.ifengimg.com/pmop/2018/1105/8F0B61755B4D19499408A5554EF2B130AA922A79_size206_w320_h706.jpeg"/></p><p>03</p><p>日本创世神话中，众天神昭示伊耶那岐和伊耶那美两兄妹到世间去修复被洪水毁灭的土地。</p><p>两位神在世间结合，他们用“天之琼矛”搅动“乳海”，溅出的泥浆形成日本的各个岛屿，这些岛屿都是他们的孩子，岛屿又生出更多的小岛屿，繁衍下去便产生了人类。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p0.ifengimg.com/pmop/2018/1105/800D17965B45222B7929245C1596F166D4D7AAE7_size104_w533_h300.jpeg"/></p><p>04</p><p>古希腊神话里，普罗米修斯来到大地上，看到地上有各种各样的动物，却没有统治地球的生物。</p><p>于是，他来到一条河边，从河岸抓起一大团泥土，根据神的形象捏出了一个人。这个小泥人儿很招他喜爱，于是他又满心欢喜地捏出了许多相同的泥人。</p><p>他从各种动物身上摄取了善的或恶的特性，比如狮子的勇猛、狗的忠诚和聪明、马的勤劳、鹰的远见、熊的强壮、鸽子的温顺、狐狸的狡猾、兔子的胆怯和狼的贪婪，然后把这些特性揉合在一起，往每一个人的胸膛里注入属于他的那一部分。</p><p>这样一来，泥人便能像动物一样可以活动了。他又请来雅典娜赋予这些人类灵魂，就成了现在的我们。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p0.ifengimg.com/pmop/2018/1105/892E4587A193A4F2352C28BE5F85DB2710B284B9_size129_w500_h500.jpeg"/></p><p>05</p><p>纽西兰神话说人是天神TIKI用红土和自己的血制成；</p><p>北美洲西部的迈都族印第安人认为当初大地开创者创造树木鸟兽之后，说：“我要造人了。”</p><p>便取些暗红色泥土搀水，做成一男一女。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p0.ifengimg.com/pmop/2018/1105/22721445ACA99D9B53D98C09BFDB4F62B635CDF9_size170_w392_h508.jpeg"/></p><p>06</p><p>基督教和犹太教的创世神话中，上帝用泥土创造了亚当，又从他的身上抽出一根肋骨造了夏娃，并使他们成为夫妻。</p><p>后来亚当夏娃由于偷吃禁果被赶出伊甸园，开始在人间繁衍后代。</p><p>从上面这些神话可以看到，尽管世界各地的文明产生时间不同、地域上也处于分隔状态，但大多数关于人类起源的神话，都围绕着“人是神用泥土捏的”。</p><p>人类文明从产生之初，便与泥土脱不了关系。</p><p>泰戈尔的《飞鸟集》中有一句话：“神从创造中找到他自己。”</p><p>今天的我们，当然知道，人类并不是神创造的，恰恰相反，神是由人创造的，</p><p>并不是人类长得像神，而是神长得像人类。</p><p>但这么多神话里都出现了泥土造人说，这真的是巧合吗？</p><p>为什么不能是树叶造人、石头造人、河水造人？</p><p>不仅仅是人类起源的传说具有相似性，上古时期人类和神所经历的事情竟然也非常像，比如，那一场毁天灭地的人类大洪水。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p0.ifengimg.com/pmop/2018/1105/307F2F2065402F187DFF9F8BC11D992A76BC1D75_size282_w690_h514.jpeg"/></p><p>基督教神话里，人类惹怒了上帝，上帝用洪水淹没世间，只留下一艘诺亚方舟；</p><p>中国神话里，共工怒触不周山，于是天倾西北、地陷东南，爆发了一场史无前例的大洪水，直到大禹时期，治水方得成功；</p><p>印第安神话里，人们为了争夺地盘和猎物争吵不休，一些先知梦到洪水将淹没世界，造了一个巨大的木排，得以幸存，而不信梦的人都被淹死；</p><p>马来西亚土著部落认为，大地是一块盖在茫茫大水之上的外壳，大神Pirman打破了这块外壳，世界被大洪水淹灭。</p><p>但Pirman创造了一个男人和一个女人，将他们放在一条以Pulai木做成的船上，得以幸存，并繁衍后嗣。</p><p>此外，地中海地区、印度、东南亚、北欧、澳大利亚，甚至是一向干旱的中部非洲地区，都流传着大同小异的洪水传说。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p0.ifengimg.com/pmop/2018/1105/9281B38B3BF0870C05DD2DFF5337DF14D3BB6BEC_size222_w767_h378.jpeg"/></p><p>这些真的是巧合吗？</p><p>或许一些专家提出的人类单地起源说可以解释这些神话的共通性，但单地起源说本身却存在着不能解释的致命缺陷。</p><p>或许，随着人类文明的进一步发展，随着越来越多的化石遗存被发现，这些现象终将可以被解释。</p><p>但科学应该永远没有办法解释，为什么老王写完这篇文章以后，突然想去玩泥巴了…<span class="ifengLogo"><a href="http://www.ifeng.com/" target="_blank"><img src="http://p2.ifengimg.com/a/2016/0810/204c433878d5cf9size1_w16_h16.png"/></a></span></p>
+<h2 id="24">这个穿旗袍造原子弹的中国女人 世界欠她一个诺贝尔奖</h2><p><strong>这个穿旗袍造原子弹的中国女人</strong>来自读者00:0011:36</p><p>点击收听读者电台本期主播×如初</p><p><strong>文| 国馆君</strong></p><p><strong>来源：国馆（lD：guoguan5000）</strong></p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p0.ifengimg.com/pmop/2018/1104/AE4D25188DD7F77E2436EB5B4DB6A8545BBAACA4_size0_w640_h12.jpeg" title="1431316505675053465.jpg" width="auto"/></p><p>真正厉害的人，能够在自己热爱的领域里忍受孤独，开疆拓土。</p><p>2018年，诺贝尔奖颁出了历史记录，物理奖和化学奖同时颁给了女性科学家。</p><p>科学界，女性获诺贝尔科学奖的难度非常大。在中国，2015年才出现第一位拿到诺贝奖的女科学家——屠呦呦。</p><p>但大家可能不知道，其实在六十年前，一位中国女性差点就拿了诺贝尔物理学奖。</p><p>她的名字，叫吴健雄。</p><p><strong><img src="http://p0.ifengimg.com/pmop/2018/1104/9352511A598CF86354A15CA0D89E2E5194F60B97_size3_w640_h83.gif"/></strong></p><p><strong>情起胡适</strong></p><p>说起吴健雄，就要讲到她对胡适的感情。</p><p>吴健雄曾说，对她影响最大的人，除了父亲以外，还有另一个人——胡适。</p><p>中学时代，吴健雄最喜欢读的杂志是《新青年》。而《新青年》上最漂亮的文章，都是胡适写的。</p><p>于是，胡适便成了吴健雄心里的偶像。</p><p>在毕业后的一段时间，她跑去胡适当校长的中国公学听课。</p><p>一次考试，原本三个小时考试的内容，吴健雄两个小时就做完交卷了。</p><p>胡适看了她的考卷，欣喜若狂：他从来没见过一个学生对清朝三百年的思想史如此熟悉的，马上给了一百分。&nbsp;</p><p>后来胡适发现，吴健雄不仅天资聪慧，学习刻苦，而且文理兼通，文史哲数理化全部都很出色。</p><p>胡适从此对吴健雄另眼相看，也格外照顾。</p><p>后来，吴健雄去上海工作，胡适曾去探望她；胡适外出游学，看到英国物理学家卢瑟福的书信集，会专门买来寄给她。</p><p>对自己的学生这么好，坊间难免传出绯闻。吴健雄怕胡适不高兴，专门写信给胡适解释：</p><p><strong>她对他的感情，是敬重、是仰慕，而不是爱慕，她是真的怕失去这位谦谦君子似的师长。</strong></p><p>君子坦荡荡，其实胡适根本不介意这些说法。</p><p>胡适曾经给她写信说：</p><blockquote><p>“我一生到处撒花种子，绝大多数都撒在石头上了，其中有一粒撒在膏腴的土地里，长出了一个吴健雄，我也可以万分欣慰了。”</p><p>&nbsp;</p><p><img src="http://p0.ifengimg.com/pmop/2018/1104/A01A1C3CF403B236B110FE4A76A2F7C9A4407A80_size118_w620_h694.jpeg"/></p><p>60年代，吴健雄和胡适在台湾参加酒会，当天晚上胡适摔倒在地猝死，吴健雄当场“悲痛万分，泣不成声”。</p><p>&nbsp;</p><p>她对胡适的感情，一直都清醒而深刻，这个影响她整个人生的良师，就此突然别过，实在令人难以接受。</p><p><img src="http://p0.ifengimg.com/pmop/2018/1104/0BE3DEF9BE87DB659E96B0F409D6D8DE4EC547E6_size8_w640_h83.gif"/></p><p><strong>穿着旗袍做实验</strong></p><p>深受胡适启发的吴健雄，决定去美国追求事业。</p><p>1936年，24岁的吴健雄来到美国，进了加州大学伯克莱分校读博士，导师是核物理学家塞格雷。</p><p>当时，很多人从贫困落后的中国去到先进自由的美国，都会很快拥抱新事物，让自己看上去不那么落后。</p><p>但吴健雄却一直坚持一件事：<strong>穿旗袍。</strong></p><p><strong>无论在家还是出外，她永远都是一身旗袍，优雅自信。</strong></p><p>在伯克莱的校园里，每天都可以看到这样一个景象：</p><p>吴健雄穿着开边叉、高龄素色旗袍，缓缓走过，走进实验大楼。</p><p><img src="http://p0.ifengimg.com/pmop/2018/1104/745450F8FDD37D8C6F0B8B2FAC431CC28F9E4B1C_size138_w640_h690.jpeg"/></p><p>这个无论在哪都穿着旗袍的中国女人，用一口流利的英语讲述最艰深的物理知识，令所有人叹服。</p><p>吴健雄唯一一次不穿旗袍，是结婚的时候。她穿着一袭白纱，嫁给了生命中的真命天子。</p><p>吴健雄的丈夫袁家骝也是物理学家，他出身世家，但后来家道中落，到美国留学的时候身上甚至只剩下了40美元。因此，袁家骝并没有一般公子哥儿的坏习性，反倒勤劳朴实，脚踏实地。</p><p>两人结婚之后，袁家骝主动担下了洗衣服、做饭、打扫房间、带孩子的职责，而且坚决不让妻子做家务，只是为了让吴健雄更多地享受科学的快乐。</p><p>袁家骝曾说：</p><blockquote><p>夫妻如同一个机关，需要合作，婚前要有承诺，婚后要有责任。</p><p><img src="http://p0.ifengimg.com/pmop/2018/1104/30326B554BF337C1A2DF9F325A6169666A415DC9_size3_w640_h83.gif"/></p><p><strong>参与制造原子弹的女人</strong></p><p>有了袁家骝的付出，吴健雄全身心的投入到科研当中。</p><p>1944年，哥伦比亚大学参与了制造原子弹的“曼哈顿计划”，他们把吴健雄召了过去，要她参加负责伽马射线探测器。</p><p>“曼哈顿计划”是美国主导的计划，所有关键人物中只有一位非美国人，那就是吴健雄。</p><p>吴健雄对自己的实验要求非常高，经常通宵达旦工作，她的实验，从来没有出过错误，被“曼哈顿计划”的大boss奥本海默盛赞。</p><p>原子弹的反应堆建好以后，出现了一个严重问题，那就是原子炉里的连锁反应开始几小时以后停止了。</p><p>当时所有人都想不明白这一点，直到吴健雄拿出她的博士论文来参考。</p><p>原来吴健雄的博士论文，研究的就是铀原子核分裂时产生的稀有气体。</p><p>把她的博士论文拿来和实验一对比，物理学家马上发现：原子炉连锁反应的中止，就是吴健雄发现的稀有气体在搞鬼。</p><p>原因找到了，问题马上被解决，原子炉又开工了，人类第一颗原子弹顺利炸响。</p><p><img src="http://p0.ifengimg.com/pmop/2018/1104/1AB93A2CE7150377F5FB8A79C15F1055315CAC06_size40_w630_h736.jpeg"/></p><p>如果没有吴健雄的研究，原子弹可能要推迟十年才能发明。</p><p>因此，她也被称为<strong>“原子弹之母”</strong>。</p><p><img src="http://p0.ifengimg.com/pmop/2018/1104/537597A37713AA8FFFB730C44CCF3D3362925885_size3_w640_h83.gif"/></p><p><strong>是女人又怎样？</strong></p><p>其实，在事业上女性的身份，也给吴健雄带去了很多阻碍。</p><p>比如说，吴健雄博士毕业后，全美国顶尖的20所高校没有一个给她提供职位，原因只有一个：她是女人。</p><p>好不容易普林斯顿给她一个讲师的身份，薪水又特别低。</p><p>直到参加完“曼哈顿计划”，哥伦比亚大学才给她提供一个实验员的身份，实验室的环境也很恶劣。</p><p>这些，吴健雄都没有任何抱怨，因为她一心只想要做研究。</p><p><strong>当你不追逐名利的时候，名利反而来追逐你了。</strong></p><p>后来，同在哥伦比亚大学的任教的李政道先生，认可吴健雄的科研水平，在教授会议上主张把吴健雄升为正教授，结果所有人都反对。</p><p>李政道说：“好，你们反对的，一个一个说出理由来，说不出来的不准离开！”</p><p>结果会议从两点钟开到五点钟，李政道舌战群愚，终于促成了吴健雄的升职，成为哥伦比亚大学建校两百年来第一位女教授。</p><p><img src="http://p0.ifengimg.com/pmop/2018/1104/D57BBFC077FD72F9E3DB7590FDC8793C7B947370_size34_w500_h528.jpeg"/></p><p>同一年，普林斯顿大学授予吴健雄荣誉博士，也是普林斯顿两百年历史上第一个女性荣誉博士。</p><p>七年以后，在美国物理学家年会上，吴健雄当选美国物理学会会长，领导着这个世界上第二大物理学家群体，前无古人。</p><p>除了诺贝尔奖，吴健雄几乎拿遍了一个物理学家可以拿到的所有荣誉。</p><p>一百年前，清华大学校长梅贻琦先生曾有名言：<strong>“所谓大学者，非谓有大楼之谓也，有大师之谓也。”</strong></p><p>所谓大师，就是能够在自己所热爱的领域里忍受孤独，开疆拓土。</p><p>1990年，国际小行星中心批准一颗编号为2752的小行星命名为“吴健雄星”。<span class="ifengLogo"><a href="http://www.ifeng.com/" target="_blank"><img src="http://p2.ifengimg.com/a/2016/0810/204c433878d5cf9size1_w16_h16.png"/></a></span></p>
+<h2 id="25">希腊各城邦之首斯巴达 不可不谓希腊的奇葩</h2><p>希腊历史中，雅典和斯巴达这些城邦国家的时代叫“古典希腊”。在此之前叫“古代希腊”，也叫“希腊的中世”。</p><p>所谓中世，是一个“即使没有开花也布满根茎”的时代，各城邦纷纷向海外发展。与其他城邦相反，斯巴达并没有多少热情参与海外拓展活动。深居内陆的斯巴达人似乎更倾向于优先强化自身实力。因此，在送走“古代希腊”，迎来“古典希腊”的这一时期，走在前面的不是雅典，而是斯巴达。希腊各城邦之首的斯巴达，不可不谓希腊的奇葩。</p><p><strong style="color: rgb(51, 51, 51); font-family: &quot;Hiragino Sans GB&quot;, &quot;Microsoft Yahei&quot;, sans-serif; letter-spacing: 0.5px; white-space: normal; background-color: rgb(255, 255, 255);">斯巴达人的“国父”</strong></p><p>公元前8 世纪接近末尾的时候，斯巴达出现了一位名叫吕库古的男子。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p3.ifengimg.com/2018_45/D8C77A245B117BBCFA42E44742199DCD68CAF644_w600_h800.jpg" width="600" height="800" alt="" style="border: 0px; vertical-align: middle; padding: 0px; max-width: 100%; height: auto !important;"/></p><p>吕库古</p><p>此人不是国王，但比国王还要尊贵。这源于来自阿波罗神殿的神谕。女祭司告诉斯巴达人，阿波罗神说吕库古是“诸神所钟爱的人”。这位神的宠儿，奠定了斯巴达之后几个世纪的制度与社会生活，甚至很大程度上影响了斯巴达的最终命运。</p><p>吕库古周游列国之后，为斯巴达制订了为数众多的法令，开启了“吕库古改革”。吕库古之前的斯巴达只有惯例，没有可称之为法律的东西。吕库古的改革实质上为斯巴达制定了“宪法”，不仅明确了斯巴达的国体，还规定了斯巴达人的生活方式。吕库古没有改变斯巴达特有的社会阶层，反而让这种社会阶层进一步固化。关于吕库古改革以后的斯巴达，后世的评价是：“一个建立在武器之上的国家”。可以说，整个斯巴达就是个尚武的大军营。</p><p><strong style="color: rgb(51, 51, 51); font-family: &quot;Hiragino Sans GB&quot;, &quot;Microsoft Yahei&quot;, sans-serif; letter-spacing: 0.5px; white-space: normal; background-color: rgb(255, 255, 255);">斯巴达人的童年</strong></p><p>孩子一生下来，就要在5位监察官的监督下接受体能测试。只有身体健全的婴儿才能通过检测，被当作斯巴达人培养。他们认为，身体健全的孩子才可以被培养成一个合格的斯巴达战士，否则会给斯巴达人丢脸。如果婴儿有残疾，马上就会遭淘汰。轻者被降为庇里阿西人或希洛人；如果是重度残障，则直接扔下悬崖，活活摔死。</p><p>通过体能测试的婴儿由母亲抚养至7岁，然后开始过集体生活。除了学习简单的文化知识以外，他们每天都要进行体能锻炼，学习武艺。所谓的宿舍只是简易的帐篷，仅用来睡觉。孩子们自己动手做垫子，在中间塞一些干草，直接铺在地面上，这就是他们的床。他们没有餐厅，吃饭时端着铁盆直接坐在地上吃。铁盆里装的是用肉块和蔬菜熬成的汤，黑乎乎的，很浑浊。漂浮在上面的肉块硬邦邦的，没有味道。就连斯巴达人自己也承认这种食物难吃至极，这就是著名的“斯巴达大杂烩”。但是，要成为一名响当当的男子汉，岂能追求美食？孩子们的主食是黑面包，同样难吃，坚硬如石，饮料只有水。</p><p>“国父”吕库古认为，只有可以忍受恶劣的环境、经受无异于实战的严酷训练、接受劣质食物的人，才能成为真正的斯巴达战士。也正是因为斯巴达死守吕库古法，甚至将其当作信仰，斯巴达战士才能成为令东方帝国波斯胆寒的最强劲的对手。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p0.ifengimg.com/2018_45/D668A9662FD1C8E6B342C040A0D4ECD01C53C495_w600_h571.jpg" width="600" height="571" alt="" style="border: 0px; vertical-align: middle; padding: 0px; max-width: 100%; height: auto !important;"/></p><p>斯巴达重装步兵</p><p><strong style="color: rgb(51, 51, 51); font-family: &quot;Hiragino Sans GB&quot;, &quot;Microsoft Yahei&quot;, sans-serif; letter-spacing: 0.5px; white-space: normal; background-color: rgb(255, 255, 255);">斯巴达成人礼</strong></p><p>从7 岁开始到20 岁结束的未成年期完结时，孩子们必须接受“达标仪式”的考验。</p><p>具体规定是这样的：孩子到了20岁就要半裸身体，仅持弓箭、剑、矛和盾走进山林原野，凭自己的本事在那里待上7天。</p><p>没有食物，他们就靠偷窃希洛人的家畜或抓捕野猪等为食。在斯巴达，偷盗希洛人的东西无罪。至于睡觉，只能自己想办法。如果出生在冬季，20岁时接受这一考验应该相当严酷吧。满7天后，年轻人才能回到住处。</p><p>可以说，他们经历的“达标仪式”已经超出了人类极限。然而，在斯巴达人的意识中，从来没有人类极限这种概念。年轻人结束7天的野人生活回到住处时，必须带回一个希洛人的脑袋，以此证明他成功突袭了希洛人。只有完成了这一切，斯巴达男人才能真正进入成年人的行列。</p><p><strong style="color: rgb(51, 51, 51); font-family: &quot;Hiragino Sans GB&quot;, &quot;Microsoft Yahei&quot;, sans-serif; letter-spacing: 0.5px; white-space: normal; background-color: rgb(255, 255, 255);">斯巴达人的日常</strong></p><p>即使已经成年，在30岁以前斯巴达人依然要过集体生活，和之前完全一样。过了30岁他们才可以拥有集体宿舍之外的私宅，才可以娶妻生子，过家庭生活。不过一到晚上，他们还是要回宿舍睡觉。在斯巴达，现役年龄从20岁到60岁。因此，斯巴达男人的大半生是在集体生活中度过的，这里只有男性。</p><p><strong style="color: rgb(51, 51, 51); font-family: &quot;Hiragino Sans GB&quot;, &quot;Microsoft Yahei&quot;, sans-serif; letter-spacing: 0.5px; white-space: normal; background-color: rgb(255, 255, 255);">斯巴达最受欢迎的女性<br/></strong></p><div class="contheight" style="height: 16px; width: 670px;"></div><p>说到古希腊的女性，我们最先想到的可能是这样的。</p><p></p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p3.ifengimg.com/2018_45/2E9173382767783EBB667825F117961519EA1BC0_w600_h800.jpg" width="600" height="800" alt="" style="border: 0px; vertical-align: middle; padding: 0px; max-width: 100%; height: auto !important;"/></p><p>维纳斯雕像</p><p>然而在斯巴达，性情温和、身体柔弱的“女性”是不受欢迎的。原因还要追溯到特洛伊战争的导火索——斯巴达绝世王妃海伦和特洛伊王子帕里斯私奔，尽管这是遥远的往事。肌肉发达、体格健硕的女性最受斯巴达男人的欢迎，因为她们可以生育健全的孩子。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p3.ifengimg.com/2018_45/4D8CC6FFF5E327C63CEBB57D4E314BB7CBCAF86D_w600_h616.jpg" width="600" height="616" alt="" style="border: 0px; vertical-align: middle; padding: 0px; max-width: 100%; height: auto !important;"/></p><p>斯巴达女性</p><p>斯巴达女孩从小在家里不是学习织布做家务，而是要和男孩一样进行体育锻炼，学习和敌人搏斗。斯巴达人认为，只有体格强健的母亲才能生下刚强的战士。斯巴达母亲在送儿子上战场时，不像我们通常认为的那样祈祷他平安归来，而是塞给他一个盾牌：“要么拿着回来，要么躺在上面回来。”</p><p><strong style="color: rgb(51, 51, 51); font-family: &quot;Hiragino Sans GB&quot;, &quot;Microsoft Yahei&quot;, sans-serif; letter-spacing: 0.5px; white-space: normal; background-color: rgb(255, 255, 255);"></strong></p><div style="text-align: center;"><strong style="color: rgb(51, 51, 51); font-family: &quot;Hiragino Sans GB&quot;, &quot;Microsoft Yahei&quot;, sans-serif; letter-spacing: 0.5px; white-space: normal; background-color: rgb(255, 255, 255);"><img src="http://p1.ifengimg.com/2018_45/D2CD896AB40D96726D9BDAC7DBB54C7C4BB8732A_w600_h500.jpg" width="600" height="500" alt="" style="border: 0px; vertical-align: middle; padding: 0px; max-width: 100%; height: auto !important;"/></strong></div><p><strong style="color: rgb(51, 51, 51); font-family: &quot;Hiragino Sans GB&quot;, &quot;Microsoft Yahei&quot;, sans-serif; letter-spacing: 0.5px; white-space: normal; background-color: rgb(255, 255, 255);">斯巴达的经济</strong></p><p></p><p>斯巴达的流通货币是铁币。此时的希腊早已开始流通银币，而斯巴达却逆潮流而行，规定只能使用铁制的货币。铁币自然不受其他国家商人的欢迎。这样一来，国外的商品就不会流入斯巴达。</p><p>吕库古认为，斯巴达完全可以做到自给自足，满足人们的最低需要。斯巴达人的格言是质朴刚健。对于这样的斯巴达人来说，他们根本不在乎是否有来自外国的物品。事实上，斯巴达公民并不富裕，他们对储蓄并没有太大兴趣。不管生活水平多低，反正大家都一样。在没有贫富差距的社会里，没有妒忌，也没有羡慕，甚至没有小偷，也没有权力之争，和雅典大相径庭。</p><p><strong style="color: rgb(51, 51, 51); font-family: &quot;Hiragino Sans GB&quot;, &quot;Microsoft Yahei&quot;, sans-serif; letter-spacing: 0.5px; white-space: normal; background-color: rgb(255, 255, 255);">斯巴达的珍宝</strong></p><p>斯巴达的珍宝便是扬名万里的斯巴达战士。斯巴达人个体足够强大，一旦集体作战，他们的强大即以几何级数增加。只要有同伴在，他们可以变得无比强悍。斯巴达重装步兵团被认为是希腊最强的军队，就是因为他们是集体作战。“绝不让敌人看到自己的脊背。在战场上，不胜即死。”这是斯巴达战士的信条。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p3.ifengimg.com/2018_45/647E0963ADDC5649FC18A0F65D579341DB385039_w600_h398.jpg" width="600" height="398" alt="" style="border: 0px; vertical-align: middle; padding: 0px; max-width: 100%; height: auto !important;"/></p><p>斯巴达战士</p><p>像这样培养起来的斯巴达战士，只有一件事可以自己做主——留长发。他们的同性恋取向是被默许的，当然也不能太过分。但是，留长发是得到正式许可的。头发可以长过肩，人们可以自由决定编多少条辫子。斯巴达战士珍视自己的长发，希波战争中，大战前夜，波斯探子在斯巴达军营看到的竟然是斯巴达战士在精心打理自己的长发。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p3.ifengimg.com/2018_45/0B506064CBB4D0598C69AC5F7CB9C92390AEDB63_w600_h592.jpg" width="600" height="592" alt="" style="border: 0px; vertical-align: middle; padding: 0px; max-width: 100%; height: auto !important;"/></p><p>斯巴达长发战士</p><p>斯巴达的政体</p><p>吕库古制定的城邦国家斯巴达的政体，从形式上看很简单。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p2.ifengimg.com/2018_45/78C815E3C27EB6E16379B6AA5865DA76E4015401_w600_h1393.jpg" width="600" height="1393" alt="" style="border: 0px; vertical-align: middle; padding: 0px; max-width: 100%; height: auto !important;"/></p><p>虽然国王处于国家政治的顶端，但实际手握大权的是5位监察官。斯巴达的监察官为国家“操碎了心”，甚至连国王的婚姻大事都要干涉，而两位国王的权限仅限于军事方面。相当于现在的“下议院”。在斯巴达，公民大会上不会出现热烈讨论的场面，表决也不采用投票或举手的方式，只能听到与会者喊出“哦”的声音，声音高亢，就表示通过。无论什么议题，甚至连是否决定开战，都采用这样的表决方式。</p><p><strong style="color: rgb(51, 51, 51); font-family: &quot;Hiragino Sans GB&quot;, &quot;Microsoft Yahei&quot;, sans-serif; letter-spacing: 0.5px; white-space: normal; background-color: rgb(255, 255, 255);">斯巴达人最引以自豪的事情</strong></p><p>斯巴达人最引以自豪的事情便是虽败犹荣的温泉关之战。斯巴达国王列奥尼达率领300勇士＋底比斯、塞斯比亚800名士兵，抵御波斯帝国18万人军团。可以说“非胜即死”是一种哲学思想。在这场战斗中，斯巴达战士自始至终贯彻了这一思想。</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p2.ifengimg.com/2018_45/550047CF76BA61704A315C24E6E921AB9E489908_w600_h315.jpg" width="600" height="315" alt="" style="border: 0px; vertical-align: middle; padding: 0px; max-width: 100%; height: auto !important;"/></p><p>战后，39岁的波斯国王薛西斯亲自前往战场寻找斯巴达国王列奥尼达的尸体，然后下令砍下他的头颅挂在矛尖上，在全体波斯士兵面前示众。</p><p>希罗多德对此表示：“这位高贵的波斯人对战场上勇敢作战的士兵，不论敌我都会表现出敬意，然而此时，他却做出了极为少见的残忍举动。”或许我们可以理解薛西斯的愤怒。在波斯眼里，希腊不过是“一把小麦”。然而，就是这“一把小麦”让“王中之王”的波斯国王蒙受了如此巨大的羞辱：希腊让自己率领的波斯军队失去了十分之一的士兵、让国王的近卫军“不死军”死伤无数、让国王的两个弟弟惨死在温泉关、让兵力20倍于希腊的波斯军队被困温泉关长达一星期……</p><p><strong style="color: rgb(51, 51, 51); font-family: &quot;Hiragino Sans GB&quot;, &quot;Microsoft Yahei&quot;, sans-serif; letter-spacing: 0.5px; white-space: normal; background-color: rgb(255, 255, 255);">斯巴达人最令人啼笑皆非的事情</strong></p><p>斯巴达人号称希腊最强陆战队，但是他们顽冥不化、凡事慢半拍的性格，实在让全希腊为之“动容”。</p><p>马拉松战役，说好的希腊各城邦联合抗击波斯大军，结果斯巴达来晚了……雅典人苦等援军不来，只好自己解决战斗了。普拉塔亚战役，斯巴达人决心一洗在全体希腊城邦中的形象，怒刷存在感，说要派出一万精兵，全希腊都很振奋。结果，波斯军都到战场列阵了，希腊联军也都集结完毕了，斯巴达人还没到。</p><p>雅典人派去使者一问，斯巴达人说，我们每年夏天都要开运动会，10天之后运动会结束我们再去找你们。雅典人急了，说你们再不来我们就跟波斯好了，不和你玩了。于是斯巴达人这才放下手中举办运动会用的风信子花，在帕萨尼亚斯的率领下赶赴普拉塔亚平原战场……</p><p>吕库古为斯巴达制定的“宪法”将斯巴达人严格地限制在条条框框之中，而生性顽固的斯巴达人又不肯探索框架之外的可能。这种束缚，在一定时期和一定程度上保护了斯巴达人，并使之立于希腊各城邦之颠峰。然而，只要探索和创新的意识被斩断，就不可能长久地占据领跑者的位置，这也是为什么2500多年来，人们提起希腊，记起的总是雅典的艺术、雅典的哲学、雅典的文学、雅典的政治……</p><p class="detailPic" style="margin:0 auto;text-align:center"><img src="http://p3.ifengimg.com/2018_45/E7A16E79147428EC6BA77B5F33DAF6BF59CF01D8_w600_h600.jpg" width="600" height="600" alt="" style="border: 0px; vertical-align: middle; padding: 0px; max-width: 100%; height: auto !important;"/></p><p>本文摘录自《希腊人的故事》（全三卷），［日］盐野七生著，计丽屏、徐越、田建国译，田建华校。中信出版社·见识城邦。<span class="ifengLogo"><a href="http://www.ifeng.com/" target="_blank"><img src="http://p2.ifengimg.com/a/2016/0810/204c433878d5cf9size1_w16_h16.png"/></a></span></p>
+
+</body>
+</html>

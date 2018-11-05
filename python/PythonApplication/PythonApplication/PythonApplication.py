@@ -2015,8 +2015,7 @@ class myXMlHandler(Dispatcher, ContentHandler):
         if self.passthrough: self.out.write(content)
 
 parse('myfile/myxml.xml', myXMlHandler('myfile/html'))
-"""
-#---------------------------------------------------------------------------
+
 #from nntplib import *
 #s = NNTP('web.aioe.org')
 #(resp, count, first, last, name) = s.group('comp.lang.python')
@@ -2093,6 +2092,7 @@ class NewsAgent:
         items = []
         for source in self.sources:
             items.extend(source.getItems())
+
         for des in self.destinations:
             des.releaseItems(items)
 
@@ -2116,9 +2116,11 @@ class NNTPSource:
 
         for id in ids:
             (resp, artitle) = server.article(id)
-            msg = message_from_string('\n'.join([n.decode() for n in artitle.lines]))
+            # 欧洲语言大多使用此编码方式
+            msg = message_from_string('\n'.join([n.decode('ISO-8859-15') for n in artitle.lines]))
             # 根据subject关键字获取title
             title = msg['subject']
+            print(title)
             body = msg.get_payload()
             # bdoy信息包含多个部分时，只取第一部分
             if msg.is_multipart():
@@ -2134,13 +2136,22 @@ class OtherWebSource:
     def __init__(self, url, titleExp, bodyExp):
         self.url = url
         self.titleExp = titleExp
-        self.bodyExp = bodyExp
+        self.hrefExp = bodyExp
 
     def getItems(self):
         file = urlopen(self.url).read().decode('utf-8')
         titles = self.titleExp.findall(file)
-        print(titles)
-        bodys= self.bodyExp.findall(file)
+        hrefs= self.hrefExp.findall(file)
+
+        bodyExp = re.compile(r'(?s)<!--mainContent begin-->.*?<p>(.*)</p>.*?<!--mainContent end-->')
+        f = urlopen('http://culture.ifeng.com/a/20181104/60143811_0.shtml').read().decode('utf-8')
+
+        bodys = []
+
+        for href in hrefs:
+            f = urlopen(href).read().decode('utf-8')
+            f = bodyExp.findall(f)
+            bodys.append(''.join([str(n) for n in f]))
 
         for title, body in list(zip(titles, bodys)):
             yield NewItems(title, body)
@@ -2164,9 +2175,10 @@ class HtmlDes:
         self.filename = filename
 
     def releaseItems(self, items):
-        f = open(self.filename, 'w')
+        # 以utf-8方式打开，否则报''gbk'' codec can't decode byte，因为文件是以gbk方式保存的
+        f = open(self.filename, 'w', encoding='utf-8')
         print('<html>\n<head>\n<title>News</title>\n</head>\n<body>', file=f)
-        print('<h1>\n', file=f)
+        print('<h2>\n', file=f)
         print('<ul>', file=f)
 
         # 新闻标题列表
@@ -2176,13 +2188,14 @@ class HtmlDes:
             print('<li><a href="#%d">%s</a></li>' % (id, item.title), file=f)
 
         print('</ul>', file=f)
-        print('</h1>', file=f)
+        print('</h2>', file=f)
 
         # 标题及正文
         id = 0;
         for item in items:
             id += 1
             print('<h2 id="%d">%s</h2><p>%s</p>' % (id, item.title, item.body), file=f)
+            #f.write('<h2 id="%d">%s</h2><p>%s</p>' % (id, item.title, item.body))
 
         print('\n</body>\n</html>', file=f)
 
@@ -2201,22 +2214,25 @@ def runDefaultSetup():
 
     # 添加以url方式获取的新闻源
     url = 'http://culture.ifeng.com/'
-    titleExp = re.compile(r'<a href=".*?" target="_blank">[(.*?)]{10}</a>')
-    bodyExp = re.compile(r'<a href="(.*?)" target="_blank">[(.*?)]{10}</a>')
+    # 前瞻：
+    # exp1(?=exp2) 查找exp2前面的exp1
+    # 后顾：
+    # (?<=exp2)exp1 查找exp2后面的exp1
+    # 负前瞻：
+    # exp1(?!exp2) 查找后面不是exp2的exp1
+    # 负后顾：
+    # (?<!=exp2)exp1 查找前面不是exp2的exp1
+    # (?:)分组不会被保存起来
+    titleExp = re.compile(r'(?<=<h2>)\s*<a href=".*?shtml" target="_blank">(.*?)</a>\s*(?=</h2>)')
+    bodyExp = re.compile('(?<=<h2>)\s*<a href="(.*?shtml)" target="_blank">.*?</a>\s*(?=</h2>)')
 
     otherWeb = OtherWebSource(url, titleExp, bodyExp)
 
+    newsAgent.addSource(otherWeb)
+
+    # 添加目标处理对象
     newsAgent.adddes(HtmlDes('myfile/news.html'))
 
     newsAgent.distribute()
 
-#runDefaultSetup()
-
-url = 'http://culture.ifeng.com/'
-titleExp = re.compile(r'(<h2>|<p>)\s*<a href=".*?" target="_blank">(.*?)</a>\s*(</h2>|</p>)')
-bodyExp = re.compile(r'<a href="(.*?)" target="_blank">[(.*?)]{10}</a>')
-
-otherWeb = OtherWebSource(url, titleExp, bodyExp)
-
-for item in otherWeb.getItems():
-    print(item.title)
+runDefaultSetup()
