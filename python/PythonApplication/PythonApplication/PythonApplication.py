@@ -2120,7 +2120,6 @@ class NNTPSource:
             msg = message_from_string('\n'.join([n.decode('ISO-8859-15') for n in artitle.lines]))
             # 根据subject关键字获取title
             title = msg['subject']
-            print(title)
             body = msg.get_payload()
             # bdoy信息包含多个部分时，只取第一部分
             if msg.is_multipart():
