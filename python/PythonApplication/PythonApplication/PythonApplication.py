@@ -2063,8 +2063,6 @@ for id in ids:
     print('-'*len(subject))
     print('\n'.join([b.decode() for b in body]))
     
-"""
-#---------------------------------------------------------------------------
 from nntplib import NNTP
 import datetime
 import re
@@ -2235,3 +2233,7 @@ def runDefaultSetup():
     newsAgent.distribute()
 
 runDefaultSetup()
+# 待扩充1.使用smtplib模块把新闻当作邮件来发送；2.根据命令行参数(getopt,optparse模块)决定新闻格式
+3.发布新闻为xml文件；4.发布为cgi脚本
+"""
+#---------------------------------------------------------------------------
