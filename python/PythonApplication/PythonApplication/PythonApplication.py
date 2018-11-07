@@ -2237,3 +2237,82 @@ runDefaultSetup()
 3.发布新闻为xml文件；4.发布为cgi脚本
 """
 #---------------------------------------------------------------------------
+from asyncore import dispatcher
+from asynchat import async_chat
+import socket, asyncore
+
+# 新建一个回话对象
+class Chatsession(async_chat):
+    def __init__(self, server, sock):
+        async_chat.__init__(self, sock)
+        # 设定读取数据中止字符
+        self.set_terminator('\r\n')
+        self.server = server
+        self.data = []
+        # push方法用于向会话用户推送消息
+        self.push('welcome to %s\r\n' % server.name)
+
+    # 接收到的数据数量到一定程度时，会自动被调用
+    def collect_incoming_data(self, data):
+        self.data.append(data)
+
+    # 读到设定的换行符时自动被调用
+    def found_terminator(self):
+        line = ''.join(self.data)
+        self.data = []
+        self.server.broadcast(line)
+
+    def handle_close(self):
+        async_chat.handle_close(self)
+        self.server.disconnect(self)
+
+port = 1025
+# 会话服务器
+class Chatserver(dispatcher):
+    def __init__(self, port):
+        dispatcher.__init__(self)
+        # 创建套接字
+        self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
+        # 设置重用地址机制，服务器重启后能快速绑定到之前的端口上
+        self.set_reuse_addr()
+        # ''默认绑定本机IP
+        self.bind(('', port))
+        self.listen(5)
+        # 初始化回话列表
+        self.sessions = []
+        self.name = 'Chatserver'
+    def handle_accept(self):
+        conn, clientaddr = self.accept()
+        self.sessions.append(Chatsession(self, conn))
+
+    # 一个会话断开连接后将其从会话列表中删除
+    def disconnect(self, session):
+        self.sessions.remove(session)
+
+    # 将一个会话用户发送给服务器的内容广播给其他会话用户
+    def broadcast(self, line):
+        for session in self.sessions:
+            session.push(line+'\r\n')
+        
+server = Chatserver(port)
+
+try: asyncore.loop()
+# 在命令行按住强制停止键(如ctrl+c)时，会产生异常，在这里手动捕捉，
+# 回收堆栈跟踪垃圾
+except KeyboardInterrupt: pass
+
+# 用户命令处理
+class CommandHandler:
+    def unknown(self, session, cmd):
+        session.push('Unknown command: %s' % cmd)
+    
+    def handle(self, session, line):
+        if not line.strip(): return
+        # 命令格式为 cmd msg，所以使用一个分隔符来区分
+        parts = line.split(' ', 1)
+        cmd = parts[0]
+        try: line = parts[1].strip()
+        except IndexError: line = ''
+        method = getattr(self, 'do_'+cmd, None)
+        try: method(session, line)
+        except TypeError: self.unknown(session, cmd)
