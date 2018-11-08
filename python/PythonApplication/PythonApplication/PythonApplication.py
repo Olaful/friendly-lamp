@@ -2241,31 +2241,6 @@ from asyncore import dispatcher
 from asynchat import async_chat
 import socket, asyncore
 
-# 新建一个回话对象
-class Chatsession(async_chat):
-    def __init__(self, server, sock):
-        async_chat.__init__(self, sock)
-        # 设定读取数据中止字符
-        self.set_terminator('\r\n')
-        self.server = server
-        self.data = []
-        # push方法用于向会话用户推送消息
-        self.push('welcome to %s\r\n' % server.name)
-
-    # 接收到的数据数量到一定程度时，会自动被调用
-    def collect_incoming_data(self, data):
-        self.data.append(data)
-
-    # 读到设定的换行符时自动被调用
-    def found_terminator(self):
-        line = ''.join(self.data)
-        self.data = []
-        self.server.broadcast(line)
-
-    def handle_close(self):
-        async_chat.handle_close(self)
-        self.server.disconnect(self)
-
 port = 1025
 # 会话服务器
 class Chatserver(dispatcher):
@@ -2281,9 +2256,13 @@ class Chatserver(dispatcher):
         # 初始化回话列表
         self.sessions = []
         self.name = 'Chatserver'
+        self.users = {}
+        self.mainroom = ChatRoom(self)
+
     def handle_accept(self):
         conn, clientaddr = self.accept()
-        self.sessions.append(Chatsession(self, conn))
+        #self.sessions.append(Chatsession(self, conn))
+        Chatsession(self, conn)
 
     # 一个会话断开连接后将其从会话列表中删除
     def disconnect(self, session):
@@ -2293,18 +2272,51 @@ class Chatserver(dispatcher):
     def broadcast(self, line):
         for session in self.sessions:
             session.push(line+'\r\n')
-        
-server = Chatserver(port)
 
-try: asyncore.loop()
-# 在命令行按住强制停止键(如ctrl+c)时，会产生异常，在这里手动捕捉，
-# 回收堆栈跟踪垃圾
-except KeyboardInterrupt: pass
+# 新建一个会话对象
+class Chatsession(async_chat):
+    def __init__(self, server, sock):
+        async_chat.__init__(self, sock)
+        # 设定读取数据中止字符
+        self.set_terminator('\r\n')
+        self.server = server
+        self.data = []
+        self.name = None
+        # push方法用于向会话用户推送消息
+        #self.push(bytes('welcome to %s\r\n' % server.name, encoding='utf-8'))
+        self.enter(LogingRoom(server))
+
+    def enter(self, room):
+        # 登录后把登录会话移动到主会话列表中
+        # 因为登录成功后已经不需要保存登录的会话了
+        try: cur = self.room
+        except AttributeError: pass
+        else: cur.remove(self)
+        self.room = room
+        room.add(self)
+
+    # 接收到的数据数量到一定程度时，会自动被调用
+    def collect_incoming_data(self, data):
+        self.data.append(data)
+
+    # 读到设定的换行符时自动被调用
+    def found_terminator(self):
+        line = ''.join(self.data)
+        self.data = []
+        #self.server.broadcast(line)
+        try: self.room.handle(self, line)
+        except EndSession:
+            self.handle_close()
+
+    def handle_close(self):
+        async_chat.handle_close(self)
+        #self.server.disconnect(self)
+        self.enter(LogoutRoom(self.server))
 
 # 用户命令处理
 class CommandHandler:
     def unknown(self, session, cmd):
-        session.push('Unknown command: %s' % cmd)
+        session.push(bytes('Unknown command: %s' % cmd, encoding='utf-8'))
     
     def handle(self, session, line):
         if not line.strip(): return
@@ -2316,3 +2328,84 @@ class CommandHandler:
         method = getattr(self, 'do_'+cmd, None)
         try: method(session, line)
         except TypeError: self.unknown(session, cmd)
+
+# 自定义处理登出
+class EndSession(Exception): pass
+
+# 会话处理 超类
+class Room(CommandHandler):
+    def __init__(self, server):
+        self.server = server
+        self.sessions = []
+
+    def add(self, session):
+        self.sessions.append(session)
+
+    def remove(self, session):
+        self.sessions.remove(session)
+
+    def brocast(self, line):
+        for session in self.sessions:
+            session.push(bytes(line, encoding='utf-8'))
+
+    def do_logout(self, session, line):
+        raise EndSession
+
+# 主会话列表
+class ChatRoom(Room):
+    def add(self, session):
+        # 广播给会话列表中的所有用户，告知当前登录用户
+        self.brocast(bytes(session.name + 'has entered the room.\r\n', encoding='utf-8'))
+        self.server.users[session.name] = session
+        Room.add(self, session)
+
+    def remove(self, sesssion):
+        Room.remove(self, sesssion)
+        self.brocast(bytes(sesssion.name + 'has left the room.\r\n', encoding='utf-8'))
+    
+    def do_say(self, session, line):
+        self.brocast(bytes(session.name + ':' + line + '\r\n', encoding='utf-8'))
+
+    def do_look(self, session):
+        for other in self.sessions:
+            session.push(other.name + '\r\n')
+    
+    def do_who(self, session):
+        for name in self.server.users:
+            session.push(bytes(name + '\r\n', encoding='utf-8'))
+
+# 登录处理
+class LogingRoom(Room):
+    def add(self, session):
+        Room.add(self, session)
+        session.push(bytes('Welcom to %s\r\n' % self.server.name, encoding='utf-8'))
+
+    def unknown(self, session, cmd):
+        session.push(bytes('Please login\nUse "login <nick>"\r\n', encoding='utf-8'))
+
+    def remove(self, sesssion):
+        Room.remove(self, sesssion)
+        
+    def do_login(self, session, line):
+        name = line.strip()
+        if not name:
+            session.push(bytes('Pleases input your name' + '\r\n', encoding='utf-8'))
+        elif name in self.server.users:
+            session.push(bytes('The name "%s" is taken' % name, encoding='utf-8'))
+        else:
+            # 登录成功后将其加入主会话列表
+            session.name = name
+            session.enter(self.server.mainroom)
+
+# 登出处理
+class LogoutRoom(Room):
+    def add(self, session):
+        try: del self.server.users[session.name]
+        except KeyError: pass
+
+server = Chatserver(port)
+
+try: asyncore.loop()
+# 在命令行按住强制停止键(如ctrl+c)时，会产生异常，在这里手动捕捉，
+# 回收堆栈跟踪垃圾
+except KeyboardInterrupt: pass
