@@ -2235,8 +2235,7 @@ def runDefaultSetup():
 runDefaultSetup()
 # 待扩充1.使用smtplib模块把新闻当作邮件来发送；2.根据命令行参数(getopt,optparse模块)决定新闻格式
 3.发布新闻为xml文件；4.发布为cgi脚本
-"""
-#---------------------------------------------------------------------------
+
 from asyncore import dispatcher
 from asynchat import async_chat
 import socket, asyncore
@@ -2409,3 +2408,12 @@ try: asyncore.loop()
 # 在命令行按住强制停止键(如ctrl+c)时，会产生异常，在这里手动捕捉，
 # 回收堆栈跟踪垃圾
 except KeyboardInterrupt: pass
+"""
+#---------------------------------------------------------------------------
+import psycopg2
+conn = psycopg2.connect('user=tbq dbname=mypgdb')
+cursor = conn.cursor()
+cursor.execute('select * from messages')
+names = [d[0] for d in cursor.description]
+rows = [dict(zip(names, row)) for row in cursor.fetchall()]
+print(rows)
