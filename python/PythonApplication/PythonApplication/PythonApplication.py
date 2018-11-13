@@ -2514,4 +2514,3 @@ class Node:
 url, directory, secret = sys.argv[1:]
 node = Node(url, directory, secret)
 node._start()
-
