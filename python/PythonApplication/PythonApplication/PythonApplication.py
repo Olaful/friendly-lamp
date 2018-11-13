@@ -2408,8 +2408,7 @@ try: asyncore.loop()
 # 在命令行按住强制停止键(如ctrl+c)时，会产生异常，在这里手动捕捉，
 # 回收堆栈跟踪垃圾
 except KeyboardInterrupt: pass
-"""
-#---------------------------------------------------------------------------
+
 import psycopg2
 conn = psycopg2.connect('user=tbq dbname=mypgdb')
 cursor = conn.cursor()
@@ -2417,3 +2416,102 @@ cursor.execute('select * from messages')
 names = [d[0] for d in cursor.description]
 rows = [dict(zip(names, row)) for row in cursor.fetchall()]
 print(rows)
+"""
+#---------------------------------------------------------------------------
+from xmlrpc.server import SimpleXMLRPCServer
+from xmlrpc.client import ServerProxy
+import sys
+from os.path import isfile, join
+from urllib.parse import urlparse
+
+# 自定义一些返回值
+OK = 1
+FAIL = 2
+# 由于ServerProxy请求的SimpleXMLRPCServer不能返回None
+EMPTY = ''
+# 定义最多寻找多少个节点，节点中间的联系点一般不超过6个
+MAX_FIND_NODE = 6
+
+# 从命令行参数中提取port
+def getPort(url):
+    ipPort = urlparse(url)[1]
+    ll = ipPort.split(':')
+    return int(ll[-1])
+
+
+# 定义一个P2P网络中的节点，功提供给对外查询的功能并返回数据
+class Node:
+    # 一个节点包含文件存放目录，节点地址，查询文件方法，将请求广播至其它节点的基本要素
+    def __init__(self, url, dirname, secret):
+        self.url = url
+        self.secret = secret
+        self.dirname = dirname
+        self.known = set()
+
+    # 查询文件主功能，查询顺序为本地->网络中的其它已知节点
+    def query(self, query, history = []):
+        # 先从本机开始查询文件
+        code, data = self._handle(query)
+        if code == OK:
+            return OK, data
+        else:
+            history = history + [self.url]
+            # 如果寻找超过最大寻找节点数，则停止查找
+            if len(history) > MAX_FIND_NODE:
+                return FAIL, EMPTY
+            # 请求发送到其它节点
+            return self._brocast(query, history)
+
+    # 把已知节点传播其它节点
+    def hello(self, other):
+        self.known.add(other)
+        return OK
+
+    # 寻找节点文件并写入本地文件
+    def fetch(self, query, secret):
+        # 校验节点密语
+        if secret != self.secret: return FAIL
+        code, data = self.query(query)
+        if code == OK:
+            f = open(join(self.dirname, query), 'w')
+            f.write(data)
+            f.close()
+            return OK
+        else:
+            return FAIL
+
+
+    # 将自身注册为服务器的特性,并开启服务器
+    def _start(self):
+        server = SimpleXMLRPCServer(('', getPort(self.url)))
+        # 注册特性
+        server.register_instance(self)
+        # 注册方法
+        #server.register_function(func)
+        server.serve_forever()
+
+    # 提取内部文件,该方法不对其它节点开放
+    def _handle(self, query):
+        file = join(self.dirname, query)
+        if not isfile(file): return FAIL, EMPTY
+        return OK, open(file).read()
+
+    def _brocast(self, query, history):
+        # 遍历拷贝的副本，由于遍历真实的节点可能会对节点产生不必要的操作
+        for other in self.known.copy():
+            if other in history: continue
+            try:
+                # 获取服务器的实例，这样也就获取了服务器中注册的实例或者方法
+                server = ServerProxy(other)
+                code, data = server.query(query, history)
+                if code == OK:
+                    return code, data
+            # 如果节点不能访问，则不必要记录该节点，避免下一个节点重复该节点
+            except:
+                self.known.remove(other)
+        return FAIL, EMPTY
+
+url, directory, secret = sys.argv[1:]
+node = Node(url, directory, secret)
+node._start()
+
