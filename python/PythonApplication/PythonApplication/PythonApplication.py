@@ -2513,8 +2513,7 @@ class Node:
 url, directory, secret = sys.argv[1:]
 node = Node(url, directory, secret)
 node._start()
-"""
-#---------------------------------------------------------------------------
+
 from xmlrpc.server import SimpleXMLRPCServer
 from xmlrpc.client import ServerProxy, Fault
 import sys
@@ -2701,6 +2700,7 @@ def main():
     client.cmdloop()
 
 if __name__ == '__main__': main()
+"""
 #---------------------------------------------------------------------------
 # 基于wxPython界面的node控制器界面
 from xmlrpc.client import ServerProxy, Fault
@@ -2727,6 +2727,8 @@ def randomStr(length):
 class ListTableNode(Node):
     def list(self):
         return listdir(self.dirname)
+    def listKnownNode(self):
+        return list(self.known)
 
 class Client(wx.App):
     def __init__(self, url, dirname, urlfile):
@@ -2758,25 +2760,35 @@ class Client(wx.App):
     def updateList(self):
         self.files.Set(self.server.list())
 
+    def updateNodelist(self):
+        self.nodes.Set(self.server.listKnownNode())
+
     # 在对象被创建后自动执行
     def OnInit(self):
         win = wx.Frame(None, title="p2p Client", pos = (500, 200), size=(400,300))
         bkg = wx.Panel(win)
 
         self.input = input = wx.TextCtrl(bkg)
-        submit = wx.Button(bkg, label="获取", size=(80,25))
+        self.submit = submit = wx.Button(bkg, label="获取", size=(80,25))
         submit.Bind(wx.EVT_BUTTON, self.fetchHandler)
 
         hbox = wx.BoxSizer()
         hbox.Add(input, proportion=1, flag=wx.ALL|wx.EXPAND, border=10)
         hbox.Add(submit, flag=wx.TOP|wx.BOTTOM|wx.RIGHT, border=10)
-
+        
         self.files = files = wx.ListBox(bkg)
         self.updateList()
 
+        self.nodes = nodes = wx.ListBox(bkg)
+        self.updateNodelist()
+
+        hboxlist = wx.BoxSizer()
+        hboxlist.Add(files, proportion=1, flag=wx.ALL|wx.EXPAND, border=10)
+        hboxlist.Add(nodes, proportion=1, flag=wx.ALL|wx.EXPAND, border=10)
+
         vbox = wx.BoxSizer(wx.VERTICAL)
         vbox.Add(hbox, proportion=0, flag=wx.EXPAND)
-        vbox.Add(files, proportion=1, flag=wx.EXPAND)
+        vbox.Add(hboxlist, proportion=1, flag=wx.EXPAND)
 
         bkg.SetSizer(vbox)
 
@@ -2788,15 +2800,21 @@ class Client(wx.App):
         query = self.input.GetValue()
 
         try:
+            self.submit.SetLabelText('下载中...')
             self.server.fetch(query, self.secret)
+            self.submit.SetLabelText('获取')
             self.updateList()
         except Fault as f:
             if f.faultCode != UNHANDLE: raise
             print("Couldn't find the file: ", query)
 
 def main():
-    urlfile, directory, url = sys.argv[1:]
+    #urlfile, directory, url = sys.argv[1:]
+    url = 'http://127.0.0.1:1025'
+    directory = 'myfile'
+    urlfile = 'myfile/urlfile.txt'
     client = Client(url, directory, urlfile)
     client.MainLoop()
 
-if __name__ == '__main__': main()
+#if __name__ == '__main__': main()
+main()
