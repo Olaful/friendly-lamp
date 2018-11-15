@@ -2700,8 +2700,7 @@ def main():
     client.cmdloop()
 
 if __name__ == '__main__': main()
-"""
-#---------------------------------------------------------------------------
+
 # 基于wxPython界面的node控制器界面
 from xmlrpc.client import ServerProxy, Fault
 import string
@@ -2818,3 +2817,70 @@ def main():
 
 #if __name__ == '__main__': main()
 main()
+"""
+#---------------------------------------------------------------------------
+# SimplePygame
+import sys, pygame
+from pygame.locals import *
+from random import randrange
+
+class Weight(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        # 获取图片的矩形区域
+        self.image = weight_image
+        self.rect = self.image.get_rect()
+        self.rect()
+
+    # 移动到屏幕顶部的随机位置
+    def reset(self):
+        self.rect.top = -self.rect.height
+        self.rect.centerx = randrange(screen_size[0])
+
+    # 使图像移动往下移动
+    def update(self):
+        self.rect.top += 1
+        if self.rect.top > screen_size[1]:
+            self.reset()
+
+pygame.init()
+screen_size = (800, 600)
+pygame.display.set_mode(screen_size, FULLSCREEN)
+pygame.mouse.set_visible(0)
+
+# 载入图像
+weight_image = pygame.image.load('E:/pictures/16t.png')
+# 转换成适应屏幕显示的类型
+weight_image = weight_image.convert()
+
+# 创建一个图像对象组，可以包含多个图像对象
+sprites = pygame.sprite.RenderUpdates()
+sprites.Add(Weight())
+
+# 获取屏幕表面并填充自定义颜色
+screen = pygame.display.get_surface()
+bg = (255, 255, 255)
+screen.fill(bg)
+pygame.display.flip()
+
+# 从屏幕上清除图像，以便显示下一帧(用白色填充)
+def clear_callback(surf, rect):
+    surf.fill(bg, rect)
+
+while True:
+    for event in pygame.event.get():
+        if event.type == QUIT:
+            sys.exit()
+        if event.type == KEYDOWN and event.type == K_ESCAPE:
+            sys.exit()
+
+    # 清除前面的位置
+    sprites.clear(screen, clear_callback)
+
+    # 更新并显示下一帧的图像
+    sprites.update()
+
+    # 获取图形对象组中的绘图信息，以矩形列表返回
+    updates = sprites.draw(screen)
+
+    pygame.display.update(updates)
