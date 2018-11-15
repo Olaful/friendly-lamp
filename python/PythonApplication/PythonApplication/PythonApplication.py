@@ -2820,6 +2820,7 @@ main()
 """
 #---------------------------------------------------------------------------
 # SimplePygame
+# 模块内置的其他功能参考https://www.pygame.org/docs
 import sys, pygame
 from pygame.locals import *
 from random import randrange
@@ -2830,7 +2831,7 @@ class Weight(pygame.sprite.Sprite):
         # 获取图片的矩形区域
         self.image = weight_image
         self.rect = self.image.get_rect()
-        self.rect()
+        self.reset()
 
     # 移动到屏幕顶部的随机位置
     def reset(self):
@@ -2840,22 +2841,23 @@ class Weight(pygame.sprite.Sprite):
     # 使图像移动往下移动
     def update(self):
         self.rect.top += 1
+        # 图像的上部分移动到底部后继续从顶部开始移动
         if self.rect.top > screen_size[1]:
             self.reset()
 
 pygame.init()
 screen_size = (800, 600)
-pygame.display.set_mode(screen_size, FULLSCREEN)
+pygame.display.set_mode(screen_size, RESIZABLE)
 pygame.mouse.set_visible(0)
 
-# 载入图像
-weight_image = pygame.image.load('E:/pictures/16t.png')
+# 载入图像(Surface对象)
+weight_image = pygame.image.load('E:/picture/16tt.png')
 # 转换成适应屏幕显示的类型
 weight_image = weight_image.convert()
 
 # 创建一个图像对象组，可以包含多个图像对象
 sprites = pygame.sprite.RenderUpdates()
-sprites.Add(Weight())
+sprites.add(Weight())
 
 # 获取屏幕表面并填充自定义颜色
 screen = pygame.display.get_surface()
@@ -2871,16 +2873,17 @@ while True:
     for event in pygame.event.get():
         if event.type == QUIT:
             sys.exit()
-        if event.type == KEYDOWN and event.type == K_ESCAPE:
+        if event.type == KEYDOWN and event.key == K_ESCAPE:
             sys.exit()
 
     # 清除前面的位置
     sprites.clear(screen, clear_callback)
 
-    # 更新并显示下一帧的图像
+    # 更新并显示下一帧的图像，会调用组中所有对象的update方法
     sprites.update()
 
     # 获取图形对象组中的绘图信息，以矩形列表返回
     updates = sprites.draw(screen)
 
+    # 更新部分屏幕内容
     pygame.display.update(updates)
