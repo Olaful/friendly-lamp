@@ -2817,8 +2817,7 @@ def main():
 
 #if __name__ == '__main__': main()
 main()
-"""
-#---------------------------------------------------------------------------
+
 # SimplePygame
 # 模块内置的其他功能参考https://www.pygame.org/docs
 import sys, pygame
@@ -2887,3 +2886,239 @@ while True:
 
     # 更新部分屏幕内容
     pygame.display.update(updates)
+"""
+#---------------------------------------------------------------------------
+import pygame, os
+from pygame.locals import *
+from random import randrange
+import sys
+sys.path.append('E:\hexo\source.Olaful.github.io\Olaful.github.io\python\PythonApplication\PythonApplication\myfile')
+import config
+
+# 游戏从开始到结束状态
+# 欢迎界面->游戏信息界面->游戏中界面->静止界面->游戏界面->静止界面
+
+# 所有图形对象的超类
+class SquishSprite(pygame.sprite.Sprite):
+    def __init__(self, image):
+        super().__init__()
+        self.image = pygame.image.load(image)
+        self.rect = self.image.get_rect()
+        screen = pygame.display.get_surface()
+        shrink = -config.margin * 2
+        # 获取填充后的区域，负数表示缩小矩形
+        self.area = screen.get_rect().inflate(shrink, shrink)
+
+# 秤砣对象
+class Weight(SquishSprite):
+    def __init__(self, speed):
+        super().__init__(config.weight_image)
+        self.speed = speed
+        self.reset()
+
+    def reset(self):
+        x = randrange(self.area.left, self.area.right)
+        self.rect.midbottom = x, 0
+
+    def update(self):
+        self.rect.top += self.speed
+        self.landed = self.rect.top > self.area.bottom
+
+# 香蕉对象
+class Banana(SquishSprite):
+    def __init__(self):
+        SquishSprite.__init__(self, config.banana_image)
+        self.rect.bottom = self.area.bottom
+        self.pad_top = config.banana_pad_top
+        self.pad_size = config.banana_pad_size
+    
+    def update(self):
+        # 中心点定位到鼠标指针的坐标
+        self.rect.centerx = pygame.mouse.get_pos()[0]
+        # clamp方法能将一个矩形区域限定在另一个矩形里面，这样图像就不会
+        # 溢出边界
+        self.rect = self.rect.clamp(self.area)
+
+    def touches(self, other):
+            # 判断图形对象是否与其他图形对象有重叠
+            bounds = self.rect.inflate(-self.pad_size, -self.pad_top)
+            bounds.bottom = self.rect.bottom
+            return bounds.colliderect(other.rect)
+
+# 游戏的主要逻辑
+
+# 游戏状态操作
+class State:
+    # 响应事件
+    def handle(self, event):
+        if event.type == QUIT:
+            sys.exit()
+        if event.type == KEYDOWN and event.key == K_ESCAPE:
+            sys.exit()
+
+    def firstDisplay(self, screen):
+        # 第一次的显示状态
+        screen.fill(config.bg_color)
+        # 更新surface到屏幕
+        pygame.display.flip()
+
+    # 用于子类重写
+    def display(self, screen):
+        pass
+
+# 游戏等级，显示游戏图像，及图像的位置变化
+class Level(State):
+    def __init__(self, number = 1):
+        self.number = number
+        self.remaining = config.weights_per_level
+        speed = config.drop_speed
+        # 等级的增加意味着速度的增加
+        speed += (self.number - 1) * config.speed_increase
+        self.weight = Weight(speed)
+        self.banana = Banana()
+        both = self.weight, self.banana
+        self.sprites = pygame.sprite.RenderUpdates(both)
+
+    def update(self, game):
+        # 从前一帧更新游戏对象位置(向下移动)
+        self.sprites.update()
+        # 如果两个游戏对象有重叠，则游戏结束
+        if self.banana.touches(self.weight):
+            game.nextState = GameOver()
+        # 如果秤砣对象落地，则重置状态，剩余要落下的秤砣数量减1
+        # 落完后进入下一等级
+        elif self.weight.landed:
+            self.weight.reset()
+            self.remaining -= 1
+            if self.remaining == 0:
+                game.nextState = LevelCleared(self.number)
+
+    # 根据提供矩形信息列表更新画面(达到更新部分画面的目的
+    def display(self, screen):
+        screen.fill(config.bg_color)
+        updates = self.sprites.draw(screen)
+        pygame.display.update(updates)
+
+# 静止界面
+class Paused(State):
+    finished = 0
+    imge = 'E:/picture/jiaohuang.jpg'
+    text = 'continue(keydown, mousebuttondown)\ngameover(esc)'
+
+    def handle(self, event):
+        # 响应事件，以及设置当前状态是否结束
+        State.handle(self, event)
+        if event.type in [MOUSEBUTTONDOWN, KEYDOWN]:
+            self.finished = 1
+
+    def update(self, game):
+        # 当前状态结束，则切换到下一个状态
+        if self.finished:
+            game.nextState = self.nextState()
+
+    def firstDisplay(self, screen):
+        # 绘制暂停状态的页面
+        # 先使用背景色清空屏幕
+        screen.fill(config.bg_color)
+
+        # 获取字体对象
+        font = pygame.font.Font(None, config.font_size)
+        lines = self.text.strip().splitlines()
+        # 获取文本占用的高度
+        height = len(lines) * font.get_linesize()
+
+        # 放置文本的位置
+        center, top = screen.get_rect().center
+        top -= height // 2
+
+        # 绘制图片
+        if self.imge:
+            image = pygame.image.load(self.imge).convert()
+
+            r = image.get_rect()
+            top += r.height // 2
+            r.midbottom = center, top - 20
+            # 将图片放置在屏幕上确定的位置
+            screen.blit(image, r)
+
+        # 光滑的黑色字体
+        antialias = 1
+        fontcolor = 0, 0, 0
+
+        # 绘制文本
+        for line in lines:
+            tt = font.render(line.strip(), antialias, fontcolor)
+            r = tt.get_rect()
+            r.midtop = center, top
+            screen.blit(tt, r)
+            top += font.get_linesize()
+
+        pygame.display.flip()
+
+# 暂停状态显示的游戏信息
+class Info(Paused):
+    nextState = Level
+    text = 'your should aviod the falling weights '
+
+# 欢迎界面信息
+class Startup(Paused):
+    nextState = Info
+    imge = config.splash_image
+    text = 'Welcome to Game\nthe game of Self-Defense'
+
+# 过关提示信息并切换到下一等级
+class LevelCleared(Paused):
+    def __init__(self, number):
+        self.number = number
+        self.text = 'Level %i Cleared, Click to start next level' % self.number
+
+    def nextState(self):
+        return Level(self.number+1)
+
+# 游戏结束提示信息
+class  GameOver(Paused):
+    # 结束后从第一等级开始
+    nextState = Level
+    text = 'Game Over\nClick to Restart, Esc to Quit'
+
+# 游戏主对象，负责切换游戏状态
+class Game:
+    def __init__(self, *args):
+        #path = os.path.abspath(args[0])
+        #dir = os.path.split(path)[0]
+        # 切换工作环境目录
+        #os.chdir(dir)
+        self.state = None
+        self.nextState = Startup()
+
+    def run(self):
+        # 初始化pygame模块
+        pygame.init()
+        # 窗口模式
+        flag = 0
+
+        if config.full_screen:
+            flag = FULLSCREEN
+
+        screen_size = config.screen_size
+        screen = pygame.display.set_mode(screen_size, flag)
+
+        pygame.display.set_caption('Hello Game')
+        pygame.mouse.set_visible(False)
+
+        while True:
+            # 在不同的状态间进行切换并显示当前状态页面
+            # 各个状态对象是以链表的形式关联在一起的
+            if self.state != self.nextState:
+                self.state = self.nextState
+                self.state.firstDisplay(screen)
+
+            # 监控鼠标键盘事件，用于状态的切换
+            for event in pygame.event.get():
+                self.state.handle(event)
+
+            # 更新显示当前状态
+            self.state.update(self)
+            self.state.display(screen)
+
+Game().run()
