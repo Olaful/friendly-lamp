@@ -34,6 +34,64 @@ print(listNum)
 def myFunc():
     print("hello, myFunc")
 
+# 获取数字对应的ascii码
+chr(98)
+
+def func(x):
+    return x*x
+
+# 对列表中的每一个元素应用func并返回新的列表
+l = map(func, [1,2,3])
+
+def func2(x,y):
+    return x+y
+# 依次提取两个列表中元素并应用函数
+l = map(func2, [1,2,3], [1,5,7])
+
+# 返回(10 // 5, 10 % 5)
+divmod(10, 5)
+
+# 返回局部作用域的字典
+vars()
+
+x=[1,2,3,3]
+# 返回列表中值为3的最小索引
+x.index(3)
+
+# 在列表第二个位置插入3
+x.insert(1,3)
+
+# 在列表第二个位置删除元素并返回该元素
+x.pop(1)
+
+# 原地反转列表
+x.reverse()
+
+x={'h':1}
+# 返回x的副本，这样改变y就不会影响到x了
+y=x.copy()
+
+# 返回{'n':1, 'm':1}
+dict.fromkeys(['n', 'm'], 1)
+
+# 删除指定的key并返回该key值对应的value
+x.pop('h')
+
+# 返回x中(key,value)值组成的可迭代对象
+x.items()
+
+# 删除x中任意项并返回(key,value)值
+x.popitem()
+
+# 返回x中key值组成的可迭代对象
+x.keys()
+
+# 返回x中value值组成的可迭代对象
+x.values()
+
+# 使用另一个dict更新现有的项，有就覆盖，没有就新增
+x.update({'s':1})
+
 # __metaclass__=type表示以下定义的类都是新式类，如没有，则class class():为新式类，class class:为老式类
 # class创建的类可以理解为也是一种对象，所以也可以在函数中建立
 # type('myclass', (parenclass), {'name':setValua})可以创建父类为parenclass的类，并具有属性setValue()
@@ -281,11 +339,14 @@ print(x[2])
 
 class myClass4:
     # 指定该方法为静态方法，可以直接使用类调用
+    # 不需要传入cls参数，对外部可以像普通方法一样调用
     @staticmethod
     def staticFunc(): print("this is a static func")
     
     # 指定该方法为类方法，且cls参数会自动绑定到当前类上，
     # 所以可以直接只用类调用，当然也可以使用类实例调用
+    # 方法内部可以返回cls()，这样就像实例一样了，做到通过
+    # 函数很好地封装对象
     @classmethod
     def classFunc(cls): print("this is a class func")
 
