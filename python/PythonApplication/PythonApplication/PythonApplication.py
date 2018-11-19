@@ -2947,8 +2947,7 @@ while True:
 
     # 更新部分屏幕内容
     pygame.display.update(updates)
-"""
-#---------------------------------------------------------------------------
+
 import pygame, os
 from pygame.locals import *
 from random import randrange
@@ -3183,3 +3182,116 @@ class Game:
             self.state.display(screen)
 
 Game().run()
+"""
+#---------------------------------------------------------------------------
+s = '*Hel Lo*2 world'
+# 返回max(len(s), with)长度使用给定字符(单字符)填充两边的字符串
+ss = s.center(10, '*')
+
+# 搜索指定范围内子字符串出现的次数
+cnt = s.count('ll', 0, len(s))
+
+# 以gbk方式进行编码，错误处理方式为strict
+# 以之对应的是decode
+ss = s.encode('gbk', errors='strict')
+# 指定范围内字符串是否以指定字符结尾，范围不含end，startswith则是是否以以指定字符开头
+b = s.endswith('e', 0, 2)
+
+# 返回子字符串出现的位置，找不到返回-1, index方法则引发ValueError异常
+i = s.find('el', 0, 3)
+# 检查字符串是否由数字或字母构成
+c = s.isalnum()
+# 检查字符串是否全部由字母组成
+c = s.isalpha()
+# 检查字符串是否全部由数字组成
+c = s.isdigit()
+# 检查字符串是否全部由小写组成
+c = s.islower()
+# 检查字符串是否全部由大写组成
+c = s.isupper()
+# 检查字符串是否全部由空格组成
+c = s.isspace()
+# 检查字符串中的单词是否全部由大写字母开头组成
+c = s.istitle()
+# 返回max(len(s), with)长度使用给定字符(单字符)填充右边的字符串, rjust则填充左边
+ss = s.ljust(10, '*')
+# 字符串全部变成小写后返回，upper则相反
+ss = s.lower()
+# 返回删除左边的所有指定字符后的字符串，rstrip则是删除右边，strip则删除两边
+ss = s.lstrip('*')
+# 搜索指定子字符串并且返回指定字符串与其左边与其右边组成的列表，rpartition则从左边开始搜索
+ss = s.partition('Lo')
+# 替换指定内容后返回
+ss = s.replace(r'*', '!')
+# 返回子字符串出现的位置，找不到返回-1, rindex方法则引发ValueError异常
+f = s.rfind('*', 0, len(s))
+# 从右边开始以指定字符分割max个部分并以列表返回
+l = s.rsplit('*', 1)
+# 以行分隔符分割字符串并以列表返回
+l = s.splitlines()
+# 字符串中所有字母大小写反转后返回
+ss = s.swapcase()
+# 字符串中所有单词首字母变成大写后返回
+ss = s.title()
+# 左边填充width - len(s)个0
+ss = s.zfill(20)
+
+# 断言，为假则抛错
+#assert 1 > 2,'error info'
+
+x=2
+y=3
+# 三元表达式，如果条件成立则'hello', 否则'world'
+z = 'hello' if x > y else 'world'
+
+# 实现抽象类的模块
+import abc
+
+# 抽象类：子类必须实现超类中的所有方法，否则抛NotImplementedError异常
+class parClass(abc.ABC):
+    # 声明元类为ABCMeta类,
+    #__metaclass__ = abc.ABCMeta
+
+    @abc.abstractmethod
+    def func1(self):
+        return
+
+    @abc.abstractmethod
+    def func2(self):
+        return
+
+class subcls1(parClass):
+    def func1(self):
+        return '1'
+
+    def func2(self):
+        return '2'
+
+class subcls2(parClass):
+    def func1(self):
+        return '1'
+
+c1 = subcls1()
+# 由于subcls2没有实现func2方法，无法实例化
+#c2 = subcls2()
+
+g = 1
+def func():
+    # 指出其为全局变量后方可修改，访问则不需要指出
+    global g
+    # 定义全局变量，函数退出后不销毁
+    global gg
+    g += 1
+    print(g)
+
+    l = 0
+    ll = 0
+
+    def funcc():
+        # 指出引用外层变量，前提是外层变量存在，否则不可以引用
+        nonlocal l
+        # 指出为全局变量的话外层必需有定义
+        global ll
+
+        l += 1
+func()
