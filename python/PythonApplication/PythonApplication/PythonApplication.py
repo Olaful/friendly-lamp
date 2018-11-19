@@ -3294,4 +3294,30 @@ def func():
         global ll
 
         l += 1
-func()
+#func()
+
+# *b会收集剩下的内容
+a,*b,c,d = [1,2,3,4,5]
+# 字典推导式
+d = {i:i for i in range(5)}
+
+# 按key来升序排序，key也可以是自定义外部函数
+l = [(4,'a'), (4,'b'), (8,'b')]
+l.sort(key = lambda l: l[0], reverse = False)
+
+from operator import itemgetter
+# 多级排序
+l.sort(key = itemgetter(0,1))
+
+s = 'hello\n world'
+# 字符串原样表示
+repr(s)
+# 对特殊字符会进行转义，如\n转义为换行符
+str(s)
+
+# 字符串缓存，操作方法基本和open一样，有read,readlines等
+from io import StringIO
+s = StringIO()
+s.write('hello world')
+s = s.getvalue()
+print(s)
