@@ -3377,7 +3377,7 @@ def download(url, user_agent = 'wswp', proxy = None, num_retries=3):
 #html = download('http://www.meetup.com')
 
 import re
-# 获取全部网站链接的内容
+# 获取站点地图链接的内容
 def craw_sitemap(url):
     sitemap = download(url).decode('utf-8')
 
@@ -3431,13 +3431,13 @@ class Throttle:
 
 from urllib.parse import urljoin
 
+# 获取网站中所有符合要求的链接信息
 def link_crawler(seed_url, link_regex, max_depth=2):
     craw_queue = [seed_url]
-    seen = set(craw_queue)
+    #seen = set(craw_queue)
+    seen = {seed_url:0}
     throttle = Throttle(2)
-    depth = 0
 
-    # 获取所有需要的界面信息
     while craw_queue:
         url = craw_queue.pop()
 
@@ -3446,20 +3446,25 @@ def link_crawler(seed_url, link_regex, max_depth=2):
         html = download(url)
         if html is not None: html = html.decode('utf-8')
 
-        for link in get_links(html):
-            if re.search(link_regex, link):
-                # 获取网页绝对路径，link中可能含有/page/类似的相对路径
-                link = urljoin(seed_url, link)
-                # 已经抓取过的不再抓取，也可以避免在互相有各自连接的两个页面之间反复跳跃
-                if link not in seen:
-                    seen.add(link)
-                    craw_queue.append(link)
+        depth = seen[url]
+        # 判断是否爬取到了最大深度，有些网站其中的链接会无限循环，
+        # 导致爬取出现死循环
+        if depth != max_depth:
+            for link in get_links(html):
+                if re.search(link_regex, link):
+                    # 获取网页绝对路径，link中可能含有/page/类似的相对路径
+                    link = urljoin(seed_url, link)
+                    # 已经抓取过的不再抓取，也可以避免在互相有各自连接的两个页面之间反复跳跃
+                    if link not in seen:
+                        seen[link] = depth + 1
+                        craw_queue.append(link)
 
+# 获取html页面中的所有链接
 def get_links(html):
     links_regex = re.compile(r'<a[^>]+href=["\'](.*?)["\']')
     return links_regex.findall(html)
 
-# 只获取index或者view页的内容
+# 过滤链接
 link_crawler('http://example.webscraping.com', '/(index|view)/')
 
 from urllib import robotparser
