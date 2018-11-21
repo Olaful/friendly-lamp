@@ -3182,8 +3182,7 @@ class Game:
             self.state.display(screen)
 
 Game().run()
-"""
-#---------------------------------------------------------------------------
+
 s = '*Hel Lo*2 world'
 # 返回max(len(s), with)长度使用给定字符(单字符)填充两边的字符串
 ss = s.center(10, '*')
@@ -3321,3 +3320,153 @@ s = StringIO()
 s.write('hello world')
 s = s.getvalue()
 print(s)
+"""
+#---------------------------------------------------------------------------
+# web scrap
+# robots.txt可以察看网站允许的访问方式
+# sitemap可以察看网站地图
+import builtwith
+# 解析网站使用的框架等
+result = ''
+#result = builtwith.parse('http://example.webscraping.com/')
+
+import whois
+# 察看网站所有者
+#result = whois.whois('http://example.webscraping.com/')
+
+from urllib.request import urlopen
+import urllib.request
+from urllib.request import build_opener
+from urllib.request import urlparse
+from urllib.request import ProxyHandler
+
+# 下载html数据
+def download(url, user_agent = 'wswp', proxy = None, num_retries=3):
+    print('Downloading:',url)
+    # 设置用户代理
+    header = {'User-agent': user_agent}
+    request = urllib.request.Request(url, headers = header)
+    # 这个支持代理
+    opener = build_opener()
+
+    if proxy:
+        # 设置代理服务器，请求将会发送到该服务器
+        proxy_params = {urlparse(url).scheme: proxy}
+        opener.add_handler(ProxyHandler(proxy_params))
+
+    try:
+        # 由于服务器等原因可能会返回不同的错误信息
+        # urlopen使用的是Python-urllib的用户代理
+        # 有些网站可能会封禁这个代理
+        #html = urlopen(url).read()
+        #html = urlopen(request).read()
+
+        html = opener.open(request).read()
+    except urllib.request.URLError as e:
+        print('Download error:',e.reason)
+
+        if num_retries > 0:
+            print(e.code)
+            # 5xx为服务器错误码，4xx为客户端错误码
+            if hasattr(e, 'code') and 500 <= e.code < 600:
+                download(url, user_agent, num_retries - 1)
+        html = None
+    return html
+
+#html = download('http://httpstat.us/500')
+#html = download('http://www.meetup.com')
+
+import re
+# 获取全部网站链接的内容
+def craw_sitemap(url):
+    sitemap = download(url).decode('utf-8')
+
+    # 链接存在于<loc>标签内
+    links = re.findall(r'<loc>(.*?)</loc>', sitemap)
+
+    for link in links:
+        html = download(link)
+
+#craw_sitemap('http://example.webscraping.com/sitemap.xml')
+
+import itertools
+
+#error_nunm = 0
+#max_error = 5
+# for page in itertools.count(1):
+#
+#     # 如url中的Aland-Islands-2 可以使用 2来 代替，Aland-Islands只是为搜索优化的，数字2
+#     # 才是网站查询数据库所需要的，这种靠ID来访问只是针对简单的id情况，有些id很长则不适用
+#     url = 'http://example.webscraping.com/places/default/view/{}'.format(page)
+#
+#     html = download(url)
+#
+#     if html is None:
+#         error_nunm += 1
+#         # ID 可能不连续，连接不成功后尝试指定次数
+#         if error_nunm > max_error:
+#             break
+#     else:
+#         error_nunm = 0
+
+import datetime
+from time import sleep
+
+# 较短间隔时间连续获取某个网站的信息可能会被禁IP，所以限时访问
+class Throttle:
+    def __init__(self, delay):
+        self.delay = delay
+        self.domain = {}
+
+    def wait(self, url):
+        domain = urlparse(url).netloc
+        last_accessed = self.domain.get(domain)
+
+        if self.delay > 0 and last_accessed is not None:
+            # 访问时间间隔如果小于指定间隔，则取差值进行休眠
+            sleep_secs = self.delay - (datetime.datetime.now() - self.domain[domain]).seconds
+            if sleep_secs > 0:
+                sleep(sleep_secs)
+        self.domain[domain] = datetime.datetime.now()
+
+from urllib.parse import urljoin
+
+def link_crawler(seed_url, link_regex, max_depth=2):
+    craw_queue = [seed_url]
+    seen = set(craw_queue)
+    throttle = Throttle(2)
+    depth = 0
+
+    # 获取所有需要的界面信息
+    while craw_queue:
+        url = craw_queue.pop()
+
+        throttle.wait(url)
+
+        html = download(url)
+        if html is not None: html = html.decode('utf-8')
+
+        for link in get_links(html):
+            if re.search(link_regex, link):
+                # 获取网页绝对路径，link中可能含有/page/类似的相对路径
+                link = urljoin(seed_url, link)
+                # 已经抓取过的不再抓取，也可以避免在互相有各自连接的两个页面之间反复跳跃
+                if link not in seen:
+                    seen.add(link)
+                    craw_queue.append(link)
+
+def get_links(html):
+    links_regex = re.compile(r'<a[^>]+href=["\'](.*?)["\']')
+    return links_regex.findall(html)
+
+# 只获取index或者view页的内容
+link_crawler('http://example.webscraping.com', '/(index|view)/')
+
+from urllib import robotparser
+
+rp = robotparser.RobotFileParser()
+rp.set_url('http://example.webscraping.com/robots.txt')
+user_agent = 'BadCrawler'
+user_agent = 'GooddCrawler'
+# 检查是否可以指定代理访问网站
+r = rp.can_fetch(user_agent, 'http://example.webscraping.com/')
