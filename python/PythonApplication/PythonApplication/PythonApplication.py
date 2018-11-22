@@ -3320,7 +3320,8 @@ s = StringIO()
 s.write('hello world')
 s = s.getvalue()
 print(s)
-
+"""
+#---------------------------------------------------------------------------
 # web scrap
 # robots.txt可以察看网站允许的访问方式
 # sitemap可以察看网站地图
@@ -3431,11 +3432,13 @@ class Throttle:
 from urllib.parse import urljoin
 
 # 获取网站中所有符合要求的链接信息
-def link_crawler(seed_url, link_regex, max_depth=2):
+def link_crawler(seed_url, link_regex, max_depth=3, scrape_callback = None):
+    'max_depth：最多爬取多少网页链接，scrape_callback自定义处理函数，如把'
+    '网站数据保存至本地文件'
     craw_queue = [seed_url]
     #seen = set(craw_queue)
     seen = {seed_url:0}
-    throttle = Throttle(2)
+    throttle = Throttle(0)
 
     while craw_queue:
         url = craw_queue.pop()
@@ -3443,6 +3446,10 @@ def link_crawler(seed_url, link_regex, max_depth=2):
         throttle.wait(url)
 
         html = download(url)
+
+        if scrape_callback:
+            scrape_callback(url, html)
+
         if html is not None: html = html.decode('utf-8')
 
         depth = seen[url]
@@ -3464,7 +3471,7 @@ def get_links(html):
     return links_regex.findall(html)
 
 # 过滤链接
-link_crawler('http://example.webscraping.com', '/(index|view)/')
+#link_crawler('http://example.webscraping.com', '/(index|view)/')
 
 from urllib import robotparser
 
@@ -3474,8 +3481,7 @@ user_agent = 'BadCrawler'
 user_agent = 'GooddCrawler'
 # 检查是否可以指定代理访问网站
 r = rp.can_fetch(user_agent, 'http://example.webscraping.com/')
-"""
-#---------------------------------------------------------------------------
+
 # 正则可以很快提取html页面所需数据，但页面发生改变时，正则可能失效
 #html = download('http://example.webscraping.com/places/default/view/American-Samoa-5')
 html = None
@@ -3580,16 +3586,40 @@ ll = [('Regular_expressions', re_scraper), ('BeautifulSoup', bs_scraper), ('Lxml
 # lxml会把数据解析为内部格式，花费一定开销，所以较正则慢点
 # 总的来说，正则语法难但速度快，bs速度慢但语法简单，lxml综合两者优点
 import time
-for name, scraper in ll:
-    start = time.time()
-    for i in range(NUM_ITERATIONS):
-        if name == 'Regular_expressions':
-            # 由于正则会把结果缓存，速度会更快(大约14倍)，所以为了公平对比，先清缓存
-            re.purge()
-            ''
-        result = scraper(html)
+if 1 > 2:
+    for name, scraper in ll:
+        start = time.time()
+        for i in range(NUM_ITERATIONS):
+            if name == 'Regular_expressions':
+                # 由于正则会把结果缓存，速度会更快(大约14倍)，所以为了公平对比，先清缓存
+                re.purge()
+                ''
+            result = scraper(html)
+    
+            assert result['area'] == '199 square kilometres'
+        end = time.time()
+    
+        print('{0}:{1:.2f}'.format(name, start-end))
 
-        assert result['area'] == '199 square kilometres'
-    end = time.time()
+import csv
+class ScrapeCallback:
+    def __init__(self):
+        # 写数据入csv文件
+        self.writer = csv.writer(open('myfile/mycsv.csv', 'w'))
+        self.fields = FIELDS
+        self.writer.writerow(self.fields)
 
-    print('{0}:{1:.2f}'.format(name, start-end))
+    # 特殊方法，scrape_callback() 的时候会被自动调用,其中scrape_callback是实例化的对象
+    def __call__(self, url, html):
+        if re.search('/view/', url):
+            row = []
+            tree = lxml.html.fromstring(html)
+            for field in self.fields:
+                try:
+                    row.append(tree.cssselect('table > tr#places_{0}__row > td.w2p_fw'.format(field))[0].text_content())
+                except IndexError: pass
+            self.writer.writerow(row)
+
+link_crawler('http://example.webscraping.com/places/default/view/American-Samoa-5', '/(index|view)/', scrape_callback=ScrapeCallback())
+
+print('program end')
