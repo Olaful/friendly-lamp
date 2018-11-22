@@ -3320,8 +3320,7 @@ s = StringIO()
 s.write('hello world')
 s = s.getvalue()
 print(s)
-"""
-#---------------------------------------------------------------------------
+
 # web scrap
 # robots.txt可以察看网站允许的访问方式
 # sitemap可以察看网站地图
@@ -3475,3 +3474,122 @@ user_agent = 'BadCrawler'
 user_agent = 'GooddCrawler'
 # 检查是否可以指定代理访问网站
 r = rp.can_fetch(user_agent, 'http://example.webscraping.com/')
+"""
+#---------------------------------------------------------------------------
+# 正则可以很快提取html页面所需数据，但页面发生改变时，正则可能失效
+#html = download('http://example.webscraping.com/places/default/view/American-Samoa-5')
+html = None
+if html is not None:
+    html = html.decode('utf-8')
+    area_regex = re.compile('<tr id="places_area__row">.*?<td\s*class=["\']w2p_fw["\']>(.*?)</td>')
+    result = area_regex.findall(html)
+    print(result)
+
+# BeautifulSoup能根据标签提取内容，即使标签中的属性发生变化，只需改下
+# 匹配的属性就可以了
+from bs4 import BeautifulSoup
+
+broken_html = '<ul class=country><li>Area<li>Population</ul>'
+# html.parser可能无法正常修复html标签
+soup = BeautifulSoup(broken_html, 'html.parser')
+# 修复不规整的html内容
+fixed_html = soup.prettify()
+# 查找指定标签
+ul = soup.find('ul', attrs={'class':'country'})
+# 查找所有指定内容并以列表返回
+li = soup.find_all('li')
+
+html = download('http://example.webscraping.com/places/default/view/American-Samoa-5')
+soup = BeautifulSoup(html, 'html.parser')
+tr = soup.find(attrs={'id':'places_area__row'})
+td = tr.find(attrs={'class':'w2p_fw'})
+# 获取标签文本内容
+text = td.text
+
+# lxml由C语言编程，解析速度更快
+import lxml.html
+
+tree = lxml.html.fromstring(broken_html)
+# 修复后的html
+fixed_html = lxml.html.tostring(tree, pretty_print=True)
+
+tree = lxml.html.fromstring(html)
+# 先根据指定标签的id再根据另一个标签的class属性(css选择)去查找
+td = tree.cssselect('tr#places_area__row > td.w2p_fw')[0]
+text = td.text_content()
+
+# 查询父标签为tr的td标签
+td = tree.cssselect('tr > td')[0]
+text = td.text_content()
+
+# 查询标签tr中所有的td标签
+td = tree.cssselect('tr td')[0]
+text = td.text_content()
+
+# 查询class为w2p_fl的所有标签
+td = tree.cssselect('.w2p_fl')[0]
+text = td.text_content()
+
+# 查询指定标签
+td = tree.cssselect('tr')[0]
+text = td.text_content()
+
+# 查询拥有指定属性的标签
+td = tree.cssselect('label[for=places_population]')[0]
+text = td.text_content()
+
+id_regex = re.compile('<tr id=["\']places_(.*?)__row["\']>.*?</tr>')
+l = id_regex.findall(html.decode('utf-8'))
+
+# 需要获取的信息
+FIELDS = tuple(l)
+
+# 正则爬取
+def re_scraper(html):
+    html = html.decode('utf-8')
+    result = {}
+    for field in FIELDS:
+        result[field] = re.findall('<tr id=["\']places_{0}__row["\']>.*?<td class="w2p_fw">(.*?)</td>'.format(field), html)[0]
+
+    return result
+
+# bs4爬取
+def bs_scraper(html):
+    result = {}
+    soup = BeautifulSoup(html, 'html.parser')
+    for field in FIELDS:
+        result[field] = soup.find('table').find('tr', id='places_{0}__row'.format(field)).find('td', class_='w2p_fw').text
+
+    return result
+
+# lxml爬取
+def lxml_scraper(html):
+    tree = lxml.html.fromstring(html)
+    result = {}
+    for field in FIELDS:
+        result[field] = tree.cssselect('table > tr#places_{0}__row > td.w2p_fw'.format(field))[0].text_content()
+
+    return result
+
+NUM_ITERATIONS = 1000
+
+ll = [('Regular_expressions', re_scraper), ('BeautifulSoup', bs_scraper), ('Lxml', lxml_scraper)]
+
+# 对比正则，bs4,lxml的速度，速度对比大约为1:7:1.2
+# 由于正则与lxml都是由C语言写的，所以比由python写的bs速度会快很多
+# lxml会把数据解析为内部格式，花费一定开销，所以较正则慢点
+# 总的来说，正则语法难但速度快，bs速度慢但语法简单，lxml综合两者优点
+import time
+for name, scraper in ll:
+    start = time.time()
+    for i in range(NUM_ITERATIONS):
+        if name == 'Regular_expressions':
+            # 由于正则会把结果缓存，速度会更快(大约14倍)，所以为了公平对比，先清缓存
+            re.purge()
+            ''
+        result = scraper(html)
+
+        assert result['area'] == '199 square kilometres'
+    end = time.time()
+
+    print('{0}:{1:.2f}'.format(name, start-end))
