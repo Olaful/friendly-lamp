@@ -3366,7 +3366,6 @@ def download(url, user_agent = 'wswp', proxy = None, num_retries=3):
         print('Download error:',e.reason)
 
         if num_retries > 0:
-            print(e.code)
             # 5xx为服务器错误码，4xx为客户端错误码
             if hasattr(e, 'code') and 500 <= e.code < 600:
                 download(url, user_agent, num_retries - 1)
@@ -3375,6 +3374,64 @@ def download(url, user_agent = 'wswp', proxy = None, num_retries=3):
 
 #html = download('http://httpstat.us/500')
 #html = download('http://www.meetup.com')
+
+import socket
+# downloadler类，先读取缓存的内容，没有再从网络上获取后再写入缓存
+class Downloader:
+    def __init__(self, delay=1, user_agent='wswp', timeout=1000, proxies=None, num_retries=3, cache=None):
+        # 对整个socket设置连接的超时时间, urlopen的read会调用socket接口
+        socket.setdefaulttimeout(timeout)
+        self.throttle = Throttle(delay)
+        self.user_agent = user_agent
+        self.proxies = proxies
+        self.num_retries = num_retries
+        self.cache = cache
+
+    def __call__(self, url):
+        result = None
+        if self.cache:
+            try:
+                result = self.cache[url]
+            except KeyError:
+                pass
+            else:
+                if self.num_retries > 0 and 500 <= result['code'] < 600:
+                    result = None
+        if result is None:
+            self.throttle.wait(url)
+            proxy = random.choice(self.proxies) if self.proxies else None
+            headers = {'User-agent': self.user_agent}
+            result = self.download(url, headers, proxy=proxy, num_retries=self.num_retries)
+            if self.cache:
+                self.cache[url] = result
+        return result['html']
+
+    def download(self, url, headers, proxy, num_retries, data = None):
+        print('Downloading:',url)
+        request = urllib.request.Request(url, data, headers = headers)
+        opener = build_opener()
+
+        if proxy:
+            proxy_params = {urlparse(url).scheme: proxy}
+            opener.add_handler(ProxyHandler(proxy_params))
+
+        try:
+            html = None
+            code =None
+            html = opener.open(request).read()
+            code = opener.open(request).code
+        except urllib.request.URLError as e:
+            print('Download error:',e.reason)
+
+            if hasattr(e, 'code') > 0:
+                print(e.code)
+                if num_retries > 0 and 500 <= e.code < 600:
+                    code = e.code
+                    self.download(url, headers, proxy, num_retries - 1, data = None)
+                else:
+                    code =None
+
+        return {'html': html, 'code': code}
 
 import re
 # 获取站点地图链接的内容
@@ -3430,45 +3487,182 @@ class Throttle:
         self.domain[domain] = datetime.datetime.now()
 
 from urllib.parse import urljoin
+from urllib.request import urlsplit
+
+import zlib,os
+import shutil
+try:
+    # cPickle为C语言写的版本，速度会更快
+    import cPickle as pickle
+except ImportError:
+    import pickle
+
+# 磁盘缓存读取类
+class DiskCache:
+    # compress选择是否压缩文件以节省磁盘空间，但读写文件时速度会变慢点
+    def __init__(self, cache_dir='myfile\cache', expires=datetime.timedelta(days=30), compress=False):
+        self.cache_dir = cache_dir
+        self.expires = expires
+        self.compress = compress
+        
+    # 设置文件内容
+    def __setitem__(self, url, result):
+        path = self.url_to_path(url)
+        folder = os.path.dirname(path)
+        if not os.path.exists(folder):
+            os.makedirs(folder)
+        # 序列化数据与存取的时间, 
+        data = pickle.dumps((result, datetime.datetime.utcnow()))
+        if self.compress:
+            data = zlib.compress(data)
+        with open(path, 'wb') as f:
+            f.write(data)
+
+    # 获取文件内容
+    def __getitem__(self, url):
+        path = self.url_to_path(url)
+        if os.path.exists(path):
+            print('get from:',path)
+            with open(path, 'rb') as f:
+                data = f.read()
+                if self.compress:
+                    data = zlib.decompress(data)
+                    # 序列化数据后获取
+                result, timestamp = pickle.loads(data)
+                if self.has_expired(timestamp):
+                    self.clear()
+                    raise KeyError(url + 'has expired')
+                return result
+        else:
+            raise KeyError(url + 'dose not exist')
+
+    def __delitem__(self, url):
+        path = self.url_to_path(url)
+        try:
+            # 删除文件与目录
+            os.remove(path)
+            os.removedirs(os.path.dirname(path))
+        except OSError:
+            pass
+
+    # 把url字符串转换成路径格式的字符串
+    # 但在处理相似的url路径时可能会出现问题
+    # 如/a*b与/a!b在实际中指向不同路径，
+    # 但处理后就指向同一个磁盘路径了，而且文件名很多时
+    # 会受到存储的限制，如ext4系统只允许同一个目录建立
+    # 65535个文件
+    def url_to_path(self, url):
+        compents = urlsplit(url)
+        path = compents.path
+        # url目录路径如.com/后面可能是空的
+        if not path:
+            path = '/index.html'
+        elif path.endswith('/'):
+            path += 'index.html'
+
+        filename = compents.netloc + path + compents.query
+        # 文件名可能包含系统不支持的字符，如* >等符号，需替换掉
+        filename = re.sub('[^0-9a-zA-Z\-.,;_]', '_', filename)
+        return os.path.join(self.cache_dir, filename)
+
+    # 判断文件数据是否过期
+    def has_expired(self, timestamp):
+        return datetime.datetime.utcnow() > timestamp + self.expires
+
+    def clear(self):
+        if os.path.exists(self.cache_dir):
+            # 删除当前底下的所有子目录
+            shutil.rmtree(self.cache_dir)
+
+from pymongo import MongoClient
+from bson.binary import Binary
+
+# 使用mongo数据库实现的缓存
+class MongoCache:
+    def __init__(self, client=None, expires=datetime.timedelta(days=30), compress=False):
+        self.client = MongoClient('localhost', 27017) if client is None else client
+        self.db = self.client.cache
+        # 创建索引，记录会在指定的时间后过期,过期后会被删除
+        #self.db.webpage.create_index('timestamp', expiresAfterSeconds=expires.total_seconds())
+        self.compress = compress
+        
+    def __setitem__(self, url, result):
+        if self.compress:
+            # pickle序列化后压缩
+            result = Binary(zlib.compress(pickle.dumps(result)))
+        record = {'result': result, 'timestamp': datetime.datetime.utcnow()}
+        self.db.webpage.update({'_id': url}, {'$set':record}, upsert=True)
+
+    def __getitem__(self, url):
+        record = self.db.webpage.find_one({'_id':url})
+        if record:
+            print('get from mongodb:',url)
+            if self.compress:
+                return pickle.loads(zlib.decompress(record['result']))
+            return record['result']
+        else:
+            raise KeyError(url + 'dose not exist')
+
+    def clear(self):
+        self.db.webpage.drop()
+
+#cache = MongoCache(expires = datetime.timedelta())
+#cache['url'] = {'j':1, 'k':2}
+## mongodb会每分钟检查一次过期记录, 所以即使设置过期时间为0，也要等到一分钟后才能看到效果
+#print(cache['url'])
+#cache.clear()
+
+# 获取html页面中的所有链接
+def get_links(html):
+    links_regex = re.compile(r'<a[^>]+href=["\'](.*?)["\']')
+    return links_regex.findall(html)
 
 # 获取网站中所有符合要求的链接信息
-def link_crawler(seed_url, link_regex, max_depth=3, scrape_callback = None):
+def link_crawler(seed_url, link_regex, delay=3, timeout=1000, max_urls=10, max_depth=3, user_agent='wswp', proxies=None, num_retries=1, scrape_callback = None, cache=None):
     'max_depth：最多爬取多少网页链接，scrape_callback自定义处理函数，如把'
     '网站数据保存至本地文件'
     craw_queue = [seed_url]
     #seen = set(craw_queue)
     seen = {seed_url:0}
-    throttle = Throttle(0)
+    #throttle = Throttle(0)
+    # 最大爬取网页数目
+    num_urls = 0
+    downloader = Downloader(delay=delay, user_agent=user_agent, timeout=timeout, proxies=proxies, num_retries=num_retries, cache=cache)
 
     while craw_queue:
         url = craw_queue.pop()
 
-        throttle.wait(url)
+        #throttle.wait(url)
 
-        html = download(url)
+        html = downloader(url)
+
+        if html is not None: html = html.decode('utf-8')
 
         if scrape_callback:
             scrape_callback(url, html)
-
-        if html is not None: html = html.decode('utf-8')
 
         depth = seen[url]
         # 判断是否爬取到了最大深度，有些网站其中的链接会无限循环，
         # 导致爬取出现死循环
         if depth != max_depth:
             for link in get_links(html):
+                # 只获取特定网页的链接
                 if re.search(link_regex, link):
                     # 获取网页绝对路径，link中可能含有/page/类似的相对路径
-                    link = urljoin(seed_url, link)
+                    link = urljoin(url, link)
                     # 已经抓取过的不再抓取，也可以避免在互相有各自连接的两个页面之间反复跳跃
                     if link not in seen:
                         seen[link] = depth + 1
                         craw_queue.append(link)
+        num_urls += 1
+        if num_urls == max_urls:
+            break
 
-# 获取html页面中的所有链接
-def get_links(html):
-    links_regex = re.compile(r'<a[^>]+href=["\'](.*?)["\']')
-    return links_regex.findall(html)
+# 缓存加载时间比大约为2:1
+# 加入缓存机制(磁盘缓存)
+#link_crawler('http://example.webscraping.com', '/(index|view)/', delay=0, max_depth=3, user_agent='wswp', proxies=None, num_retries=1, scrape_callback = None, cache=DiskCache())
+# 加入缓存机制(Mongodb缓存)
+#link_crawler('http://example.webscraping.com/places/default/view/Albania-3', '/(index|view)/', delay=3, max_depth=3, user_agent='wswp', proxies=None, num_retries=1, scrape_callback = None, cache=MongoCache())
 
 # 过滤链接
 #link_crawler('http://example.webscraping.com', '/(index|view)/')
@@ -3505,12 +3699,14 @@ ul = soup.find('ul', attrs={'class':'country'})
 # 查找所有指定内容并以列表返回
 li = soup.find_all('li')
 
-html = download('http://example.webscraping.com/places/default/view/American-Samoa-5')
+#html = download('http://example.webscraping.com/places/default/view/American-Samoa-5')
+html = 'hello'.encode()
 soup = BeautifulSoup(html, 'html.parser')
 tr = soup.find(attrs={'id':'places_area__row'})
-td = tr.find(attrs={'class':'w2p_fw'})
-# 获取标签文本内容
-text = td.text
+if tr is not None:
+    td = tr.find(attrs={'class':'w2p_fw'})
+    # 获取标签文本内容
+    text = td.text
 
 # lxml由C语言编程，解析速度更快
 import lxml.html
@@ -3521,28 +3717,29 @@ fixed_html = lxml.html.tostring(tree, pretty_print=True)
 
 tree = lxml.html.fromstring(html)
 # 先根据指定标签的id再根据另一个标签的class属性(css选择)去查找
-td = tree.cssselect('tr#places_area__row > td.w2p_fw')[0]
-text = td.text_content()
+if len(tree) != 0:
+    td = tree.cssselect('tr#places_area__row > td.w2p_fw')[0]
+    text = td.text_content()
 
-# 查询父标签为tr的td标签
-td = tree.cssselect('tr > td')[0]
-text = td.text_content()
-
-# 查询标签tr中所有的td标签
-td = tree.cssselect('tr td')[0]
-text = td.text_content()
-
-# 查询class为w2p_fl的所有标签
-td = tree.cssselect('.w2p_fl')[0]
-text = td.text_content()
-
-# 查询指定标签
-td = tree.cssselect('tr')[0]
-text = td.text_content()
-
-# 查询拥有指定属性的标签
-td = tree.cssselect('label[for=places_population]')[0]
-text = td.text_content()
+    # 查询父标签为tr的td标签
+    td = tree.cssselect('tr > td')[0]
+    text = td.text_content()
+    
+    # 查询标签tr中所有的td标签
+    td = tree.cssselect('tr td')[0]
+    text = td.text_content()
+    
+    # 查询class为w2p_fl的所有标签
+    td = tree.cssselect('.w2p_fl')[0]
+    text = td.text_content()
+    
+    # 查询指定标签
+    td = tree.cssselect('tr')[0]
+    text = td.text_content()
+    
+    # 查询拥有指定属性的标签
+    td = tree.cssselect('label[for=places_population]')[0]
+    text = td.text_content()
 
 id_regex = re.compile('<tr id=["\']places_(.*?)__row["\']>.*?</tr>')
 l = id_regex.findall(html.decode('utf-8'))
@@ -3581,7 +3778,7 @@ NUM_ITERATIONS = 1000
 
 ll = [('Regular_expressions', re_scraper), ('BeautifulSoup', bs_scraper), ('Lxml', lxml_scraper)]
 
-# 对比正则，bs4,lxml的速度，速度对比大约为1:7:1.2
+# 对比正则，bs4,lxml的速度，时间对比大约为1:7:1.2
 # 由于正则与lxml都是由C语言写的，所以比由python写的bs速度会快很多
 # lxml会把数据解析为内部格式，花费一定开销，所以较正则慢点
 # 总的来说，正则语法难但速度快，bs速度慢但语法简单，lxml综合两者优点
@@ -3620,6 +3817,116 @@ class ScrapeCallback:
                 except IndexError: pass
             self.writer.writerow(row)
 
-link_crawler('http://example.webscraping.com/places/default/view/American-Samoa-5', '/(index|view)/', scrape_callback=ScrapeCallback())
+#link_crawler('http://example.webscraping.com/places/default/view/American-Samoa-5', '/(index|view)/', scrape_callback=ScrapeCallback())
+
+from pymongo import MongoClient
+# 端口需与mongodb启动时显示的端口号一致
+if 1 > 2:
+    client = MongoClient('localhost', 27017)
+    db = client.cache
+    html = 'hello American-Samoa'
+    url = 'http://example.webscraping.com/places/default/view/American-Samoa-5'
+    #db.webpage.insert({'url':url, 'html':html})
+    
+    # 即使插入相同的数据，但在数据实际上是另插入了一条新的记录
+    #db.webpage.insert({'url':url, 'html':'hello American-Samoa'})
+    result = db.webpage.find_one({'url':url})
+    result = db.webpage.find({'url':url}).count()
+    
+    # 查询_id字段值为url，如果不存在则插入$set
+    db.webpage.update({'_id': url}, {'$set':{'html':'old_html'}}, upsert=True)
+    db.webpage.update({'_id': url}, {'$set':{'html':'new_html'}}, upsert=True)
+    result = db.webpage.find_one({'_id':url})
+
+# ^((?!gov).)*$ 会匹配不含gov字符串的字符串，*代表匹配多次，?!为否定式查找，
+# 类似gov的网站禁止爬取
+# 也可以写成^(?!.*gov)
+# 不包含pdf和gov和javascript等的链接(^(?!.*gov))(^(?!.*pdf))(^(?!.*javascript))
+regstr = '(^(?!.*gov))(^(?!.*pdf))(^(?!.*javascript))(^(?!.*site.baidu.com))(^(?!.*mailto))'
+
+class MyScrapeCallback:
+    def __init__(self):
+        # 写数据入csv文件
+        os.chdir(r'E:\hexo\source.Olaful.github.io\Olaful.github.io\python\PythonApplication\PythonApplication')
+        self.writer = csv.writer(open('myfile/mysites.csv', 'w'))
+        self.fields = ('id', 'site')
+        self.writer.writerow(self.fields)
+        self.href_regex = re.compile(r'<li>.*?<a.*?href="(.*?)".*?</a></li>')
+        self.siteid = 1
+
+    # 特殊方法，scrape_callback() 的时候会被自动调用,其中scrape_callback是实例化的对象
+    def __call__(self, url, html):
+        tmplist = self.href_regex.findall(html)
+        sitelist = []
+        for link in tmplist:
+            if re.search(regstr, link):
+                link = urljoin(url, link)
+                sitelist.append(link)
+
+        if len(sitelist) > 0 :
+            ids = [id for id in range(self.siteid, self.siteid + len(sitelist))]
+            self.siteid = self.siteid + len(sitelist)
+
+            rowinfo = zip(ids,sitelist)
+
+            for row in rowinfo:
+                self.writer.writerow(row)
+        
+#link_crawler('http://site.baidu.com/', link_regex=regstr, delay=0, max_urls=200, max_depth=5, timeout=20000, user_agent='wswp', proxies=None, num_retries=1, scrape_callback = MyScrapeCallback(), cache=MongoCache())
+#import timeit
+#t = timeit.Timer("link_crawler('http://site.baidu.com/', link_regex=regstr, delay=0, max_urls=200, max_depth=5, timeout=20000, user_agent='wswp', proxies=None, num_retries=1, scrape_callback = MyScrapeCallback(), cache=MongoCache())",
+#                      setup="from __main__ import link_crawler, regstr, MyScrapeCallback, MongoCache")
+#ti = t.timeit(1)
+#import profile
+#profile.run("link_crawler('http://site.baidu.com/', link_regex=regstr, delay=0, max_urls=200, max_depth=5, timeout=20000, user_agent='wswp', proxies=None, num_retries=1, scrape_callback = MyScrapeCallback(), cache=MongoCache())")
+
+
+#data = []
+#os.chdir(r'E:\hexo\source.Olaful.github.io\Olaful.github.io\python\PythonApplication\PythonApplication')
+#with open('myfile/mysites.csv', 'r') as f:
+#    render = csv.reader(f)
+#    for row in render:
+#        print(row)
+#        data.append(data)
+#print(data)
+
+from zipfile import ZipFile
+from io import StringIO
+
+downloader = Downloader()
+
+ #ZipFile需要一个类似文件的接口
+#with ZipFile(zipdata) as zf:
+#    name = zf.namelist()[0]
+#    print(name)
+
+#zipdata = downloader('http://localhost/html/myzip.zip')
+# 保存zipdata文件至本地
+#with open('myfile/myzip.zip', 'wb') as zf:
+#    zf.write(zipdata)
+
+urls = []
+# 从
+with ZipFile('myfile/myzip.zip') as zf:
+    # 获取zip文件中的文件列表
+    filelist = zf.namelist()
+    csv_file = filelist[0]
+
+    # 由于读取到的是而bytes形式，需要转换成unicode的形式
+    sitelist = list(map(lambda x: x.decode(), zf.open(csv_file, mode="r").readlines()))
+    # csv.reader会处理掉空行\r\r\n
+    data = csv.reader(sitelist)
+    # 去掉表头
+    next(data)
+    for _,site in data:
+        urls.append(site)
+    #for site in sitelist:
+    #    urls.append(site.split(',')[1])
+
+    #with zf.open(csv_file, mode='r') as cf:
+    #    data = cf.readlines()
+    #    print(data)
+    #    for _,line in data:
+    #        urls.append(line)
 
 print('program end')
