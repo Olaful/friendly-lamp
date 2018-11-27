@@ -3430,6 +3430,8 @@ class Downloader:
                     self.download(url, headers, proxy, num_retries - 1, data = None)
                 else:
                     code =None
+        except Exception:
+                ''
 
         return {'html': html, 'code': code}
 
@@ -3905,28 +3907,85 @@ downloader = Downloader()
 #with open('myfile/myzip.zip', 'wb') as zf:
 #    zf.write(zipdata)
 
-urls = []
-# 从
-with ZipFile('myfile/myzip.zip') as zf:
-    # 获取zip文件中的文件列表
-    filelist = zf.namelist()
-    csv_file = filelist[0]
+class GetUrlCallback:
+    def __call__(self):
+        urls = []
+        zipdata = downloader('http://localhost/html/myzip.zip')
+        # 保存zipdata文件至本地
+        os.chdir(r'E:\hexo\source.Olaful.github.io\Olaful.github.io\python\PythonApplication\PythonApplication')
+        with open('myfile/myzip.zip', 'wb') as zf:
+            zf.write(zipdata)
+        with ZipFile('myfile/myzip.zip') as zf:
+            # 获取zip文件中的文件列表
+            filelist = zf.namelist()
+            csv_file = filelist[0]
+        
+            # 由于读取到的是而bytes形式，需要转换成unicode的形式
+            sitelist = list(map(lambda x: x.decode(), zf.open(csv_file, mode="r").readlines()))
+            # csv.reader会处理掉空行\r\r\n
+            data = csv.reader(sitelist)
+            # 去掉表头
+            next(data)
+            for _,site in data:
+                urls.append(site)
+            #for site in sitelist:
+            #    urls.append(site.split(',')[1])
+        
+            #with zf.open(csv_file, mode='r') as cf:
+            #    data = cf.readlines()
+            #    print(data)
+            #    for _,line in data:
+            #        urls.append(line)
+        return urls
 
-    # 由于读取到的是而bytes形式，需要转换成unicode的形式
-    sitelist = list(map(lambda x: x.decode(), zf.open(csv_file, mode="r").readlines()))
-    # csv.reader会处理掉空行\r\r\n
-    data = csv.reader(sitelist)
-    # 去掉表头
-    next(data)
-    for _,site in data:
-        urls.append(site)
-    #for site in sitelist:
-    #    urls.append(site.split(',')[1])
+from threading import Thread
 
-    #with zf.open(csv_file, mode='r') as cf:
-    #    data = cf.readlines()
-    #    print(data)
-    #    for _,line in data:
-    #        urls.append(line)
+TIME_SLEEP = 1
+# 多线程同时爬取网站信息
+def thread_link_crawler(seed_url, delay=3, timeout=1000, user_agent='wswp', max_threads=5, proxies=None, num_retries=1, scrape_callback = None, cache=None):
+    craw_queue = scrape_callback()
+    downloader = Downloader(delay=delay, user_agent=user_agent, timeout=timeout, proxies=proxies, num_retries=num_retries, cache=cache)
+
+    def process_queue():
+        while craw_queue:
+            url = craw_queue.pop()
+            html = downloader(url)
+
+    threads = []
+    while threads or craw_queue:
+        for thread in threads:
+            if not thread.is_alive():
+                threads.remove(thread)
+
+        while len(threads) < max_threads and craw_queue:
+            # 将爬取函数放在线程中执行
+            thread = Thread(target=process_queue)
+            thread.setDaemon(True)
+            thread.start()
+            threads.append(thread)
+        sleep(TIME_SLEEP)
+
+def simple_link_crawler(seed_url, delay=3, timeout=1000, user_agent='wswp', max_threads=5, proxies=None, num_retries=1, scrape_callback = None, cache=None):
+    craw_queue = scrape_callback()
+    downloader = Downloader(delay=delay, user_agent=user_agent, timeout=timeout, proxies=proxies, num_retries=num_retries, cache=cache)
+
+    def process_queue():
+        while craw_queue:
+            url = craw_queue.pop()
+            html = downloader(url)
+
+    process_queue()
+
+#thread_link_crawler('', delay=0, timeout=1000, user_agent='wswp', max_threads=5, proxies=None, num_retries=1, scrape_callback = GetUrlCallback(), cache=None)
+
+import timeit
+# 时间比大约为1:count(max_threads)
+# 112sec
+t = timeit.Timer("thread_link_crawler('', delay=0, timeout=20, user_agent='wswp', max_threads=5, proxies=None, num_retries=1, scrape_callback = GetUrlCallback(), cache=None)",
+                 setup="from __main__ import thread_link_crawler, GetUrlCallback").timeit(1)
+# 368sec
+#t = timeit.Timer("simple_link_crawler('', delay=0, timeout=20, user_agent='wswp', max_threads=5, proxies=None, num_retries=1, scrape_callback = GetUrlCallback(), cache=None)",
+#                 setup="from __main__ import simple_link_crawler, GetUrlCallback").timeit(1)
+print(t)
 
 print('program end')
