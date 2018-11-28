@@ -3605,6 +3605,15 @@ class MongoCache:
         else:
             raise KeyError(url + 'dose not exist')
 
+    # 特殊方法，使用 in 迭代类实例时，会自动调用
+    def __contains__(self, url):
+        try:
+            self[url]
+        except KeyError:
+            return False
+        else:
+            return True
+
     def clear(self):
         self.db.webpage.drop()
 
@@ -3976,16 +3985,80 @@ def simple_link_crawler(seed_url, delay=3, timeout=1000, user_agent='wswp', max_
 
     process_queue()
 
-#thread_link_crawler('', delay=0, timeout=1000, user_agent='wswp', max_threads=5, proxies=None, num_retries=1, scrape_callback = GetUrlCallback(), cache=None)
+thread_link_crawler('', delay=0, timeout=1000, user_agent='wswp', max_threads=5, proxies=None, num_retries=1, scrape_callback = GetUrlCallback(), cache=None)
 
 import timeit
 # 时间比大约为1:count(max_threads)
 # 112sec
-t = timeit.Timer("thread_link_crawler('', delay=0, timeout=20, user_agent='wswp', max_threads=5, proxies=None, num_retries=1, scrape_callback = GetUrlCallback(), cache=None)",
-                 setup="from __main__ import thread_link_crawler, GetUrlCallback").timeit(1)
+#t = timeit.Timer("thread_link_crawler('', delay=0, timeout=20, user_agent='wswp', max_threads=5, proxies=None, num_retries=1, scrape_callback = GetUrlCallback(), cache=None)",
+#                 setup="from __main__ import thread_link_crawler, GetUrlCallback").timeit(1)
 # 368sec
 #t = timeit.Timer("simple_link_crawler('', delay=0, timeout=20, user_agent='wswp', max_threads=5, proxies=None, num_retries=1, scrape_callback = GetUrlCallback(), cache=None)",
 #                 setup="from __main__ import simple_link_crawler, GetUrlCallback").timeit(1)
-print(t)
+
+# 从MongoDB获取数据队列的类
+from pymongo import errors
+class MongoQueue:
+    # url记录状态 0|待处理 1|处理中 2|已完成
+    OUTSTANDING, PROCESSING, COMELETE = range(3)
+
+    def __init__(self, client=None, timeout=300):
+        self.client = MongoClient if client is None else client
+        self.db = self.client.cache
+        self.timeout = timeout
+
+    # 特殊方法，当用类实例进行判断时(如 if MongoQueue() bool(MongoQueue()))
+    # 会自动调用，python2.x中的写法为__nonzero__
+    # 判断是否所有url都已完成处理
+    def __bool__(self):
+        record =  self.db.crawl_queue.find_one({'status': {'$ne', self.COMELETE}})
+        return True if record else False
+
+    # 把一条url入库，把置状态为待处理
+    def push(self, url):
+        try:
+            self.db.crawl_queue.insert({'_id': url, 'status': self.OUTSTANDING})
+        # 重复记录处理
+        except errors.DuplicateKeyError as e:
+            print(url, 'already exist in the database')
+            pass
+
+    # 取一条处于待处理状态的url，并置其状态为处理中，并加上开始处理的时间
+    # 补充'set'待设置的集合，相当于一条记录，'$lt'小于，'$ne'不等于，还有'gt'大于
+    def pop(self):
+        record =  self.db.crawl_queue.find_and_modify(
+            query = {'status': self.OUTSTANDING},
+            update = {'$set':{'status': self.PROCESSING, 'timestamp': datetime.datetime.now()}}
+            )
+        if record:
+            return record['_id']
+        else:
+            self.repair()
+            raise KeyError
+
+    # 取一条处于待获取状态的url，但不改变其状态
+    def peek(self):
+        record = self.db.crawl_queue.find_one({'status': self.OUTSTANDING})
+        if record:
+            return record['_id']
+
+    # 把已经处理过的url状态置为已完成
+    def complete(self, url):
+        self.db.crawl_queue.update({'_id': url}, {'$set': {'status': self.COMELETE}})
+
+    # 当一条url处理超时并且其状态没有被置为已完成时，
+    # 这条url应该当作还没有处理，此时修改其状态为待处理
+    def repair(self):
+        record = self.db.crawl_queue.find_and_modify(
+            query = {'timestamp': {'$lt': datetime.datetime.now()-self.timeout}, 'status': {'$ne': self.COMELETE}},
+            update = {'$set': {'status': self.OUTSTANDING}}
+            )
+        if record:
+            print('Released', record['_id'])
+
+    # 清空队列
+    def clear(self):
+        self.db.crawl_queue.drop()
+    
 
 print('program end')
