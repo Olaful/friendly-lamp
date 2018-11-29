@@ -144,6 +144,11 @@ def myfunc2(*args):
 # 可以先对函数的返回值进行操作后再赋值给变量
 y = myfunc2()[0:2]
 # 组装成元组形式的入参
+# 补充：由于python中函数的参数是可变的
+# 并且能接收不同类型的实参，所以函数重载没有
+# 必要，需要函数重载的情况就是同一个函数接口，
+# 参数类型，个数不一样，但却实现相同的功能
+# 这点python函数的可变形参就可以做到
 y = myfunc2(*(1,2,3))
 # 组装成字典形式的入参
 y = myfunc2(**{'a':1, 'b':2})
@@ -212,6 +217,8 @@ class myClass11:
     # 特殊方法中实现特性的赋值，所以类似于x.name = value
     # 这样的特性操作就得先经过__setattr__方法，而不是直接的赋值
     # 特殊方法就是在特定操作下自动被调用的方法，如=赋值操作
+    # 其他常用特殊方法还有__sub__（调用-减号时调用，加号则是__add__，__iadd__为实地相加）
+    # __lt(<号)，等等使用这些方法，能实现类似于C++中的运算符重载机制
     def __setattr__(self, name, value):
         if name == 'size':
             self.width, self.height = value
@@ -3855,9 +3862,9 @@ if 1 > 2:
 # 不包含pdf和gov和javascript等的链接(^(?!.*gov))(^(?!.*pdf))(^(?!.*javascript))
 regstr = '(^(?!.*gov))(^(?!.*pdf))(^(?!.*javascript))(^(?!.*site.baidu.com))(^(?!.*mailto))'
 
+# 写数据入csv文件
 class MyScrapeCallback:
     def __init__(self):
-        # 写数据入csv文件
         os.chdir(r'E:\hexo\source.Olaful.github.io\Olaful.github.io\python\PythonApplication\PythonApplication')
         self.writer = csv.writer(open('myfile/mysites.csv', 'w'))
         self.fields = ('id', 'site')
@@ -3916,42 +3923,44 @@ downloader = Downloader()
 #with open('myfile/myzip.zip', 'wb') as zf:
 #    zf.write(zipdata)
 
+# 从zip文件中获取url列表
 class GetUrlCallback:
-    def __call__(self):
-        urls = []
-        zipdata = downloader('http://localhost/html/myzip.zip')
-        # 保存zipdata文件至本地
-        os.chdir(r'E:\hexo\source.Olaful.github.io\Olaful.github.io\python\PythonApplication\PythonApplication')
-        with open('myfile/myzip.zip', 'wb') as zf:
-            zf.write(zipdata)
-        with ZipFile('myfile/myzip.zip') as zf:
-            # 获取zip文件中的文件列表
-            filelist = zf.namelist()
-            csv_file = filelist[0]
-        
-            # 由于读取到的是而bytes形式，需要转换成unicode的形式
-            sitelist = list(map(lambda x: x.decode(), zf.open(csv_file, mode="r").readlines()))
-            # csv.reader会处理掉空行\r\r\n
-            data = csv.reader(sitelist)
-            # 去掉表头
-            next(data)
-            for _,site in data:
-                urls.append(site)
-            #for site in sitelist:
-            #    urls.append(site.split(',')[1])
-        
-            #with zf.open(csv_file, mode='r') as cf:
-            #    data = cf.readlines()
-            #    print(data)
-            #    for _,line in data:
-            #        urls.append(line)
-        return urls
+    def __call__(self, url):
+        if url == 'http://localhost/html/myzip.zip':
+            urls = []
+            zipdata = downloader('http://localhost/html/myzip.zip')
+            # 保存zipdata文件至本地
+            os.chdir(r'E:\hexo\source.Olaful.github.io\Olaful.github.io\python\PythonApplication\PythonApplication')
+            with open('myfile/myzip.zip', 'wb') as zf:
+                zf.write(zipdata)
+            with ZipFile('myfile/myzip.zip') as zf:
+                # 获取zip文件中的文件列表
+                filelist = zf.namelist()
+                csv_file = filelist[0]
+            
+                # 由于读取到的是而bytes形式，需要转换成unicode的形式
+                sitelist = list(map(lambda x: x.decode(), zf.open(csv_file, mode="r").readlines()))
+                # csv.reader会处理掉空行\r\r\n
+                data = csv.reader(sitelist)
+                # 去掉表头
+                next(data)
+                for _,site in data:
+                    urls.append(site)
+                #for site in sitelist:
+                #    urls.append(site.split(',')[1])
+            
+                #with zf.open(csv_file, mode='r') as cf:
+                #    data = cf.readlines()
+                #    print(data)
+                #    for _,line in data:
+                #        urls.append(line)
+            return urls
 
 from threading import Thread
 
 TIME_SLEEP = 1
 # 多线程同时爬取网站信息
-def thread_link_crawler(seed_url, delay=3, timeout=1000, user_agent='wswp', max_threads=5, proxies=None, num_retries=1, scrape_callback = None, cache=None):
+def thread_link_crawler_tmp(seed_url, delay=3, timeout=1000, user_agent='wswp', max_threads=5, proxies=None, num_retries=1, scrape_callback = None, cache=None):
     craw_queue = scrape_callback()
     downloader = Downloader(delay=delay, user_agent=user_agent, timeout=timeout, proxies=proxies, num_retries=num_retries, cache=cache)
 
@@ -3974,6 +3983,7 @@ def thread_link_crawler(seed_url, delay=3, timeout=1000, user_agent='wswp', max_
             threads.append(thread)
         sleep(TIME_SLEEP)
 
+# 单线程
 def simple_link_crawler(seed_url, delay=3, timeout=1000, user_agent='wswp', max_threads=5, proxies=None, num_retries=1, scrape_callback = None, cache=None):
     craw_queue = scrape_callback()
     downloader = Downloader(delay=delay, user_agent=user_agent, timeout=timeout, proxies=proxies, num_retries=num_retries, cache=cache)
@@ -3985,7 +3995,7 @@ def simple_link_crawler(seed_url, delay=3, timeout=1000, user_agent='wswp', max_
 
     process_queue()
 
-thread_link_crawler('', delay=0, timeout=1000, user_agent='wswp', max_threads=5, proxies=None, num_retries=1, scrape_callback = GetUrlCallback(), cache=None)
+#thread_link_crawler('', delay=0, timeout=1000, user_agent='wswp', max_threads=5, proxies=None, num_retries=1, scrape_callback = GetUrlCallback(), cache=None)
 
 import timeit
 # 时间比大约为1:count(max_threads)
@@ -4003,7 +4013,7 @@ class MongoQueue:
     OUTSTANDING, PROCESSING, COMELETE = range(3)
 
     def __init__(self, client=None, timeout=300):
-        self.client = MongoClient if client is None else client
+        self.client = MongoClient() if client is None else client
         self.db = self.client.cache
         self.timeout = timeout
 
@@ -4011,7 +4021,11 @@ class MongoQueue:
     # 会自动调用，python2.x中的写法为__nonzero__
     # 判断是否所有url都已完成处理
     def __bool__(self):
-        record =  self.db.crawl_queue.find_one({'status': {'$ne', self.COMELETE}})
+        try: 
+            record = None
+            record =  self.db.crawl_queue.find_one({'status': {'$ne': self.COMELETE}})
+        except Exception as e:
+            print(e)
         return True if record else False
 
     # 把一条url入库，把置状态为待处理
@@ -4050,7 +4064,7 @@ class MongoQueue:
     # 这条url应该当作还没有处理，此时修改其状态为待处理
     def repair(self):
         record = self.db.crawl_queue.find_and_modify(
-            query = {'timestamp': {'$lt': datetime.datetime.now()-self.timeout}, 'status': {'$ne': self.COMELETE}},
+            query = {'timestamp': {'$lt': datetime.datetime.now()-datetime.timedelta(seconds=-self.timeout)}, 'status': {'$ne': self.COMELETE}},
             update = {'$set': {'status': self.OUTSTANDING}}
             )
         if record:
@@ -4062,6 +4076,7 @@ class MongoQueue:
         
 # 多线程同时爬取网站信息，爬取队列从mongodb中获取
 def thread_link_crawler(seed_url, delay=3, timeout=1000, user_agent='wswp', max_threads=5, proxies=None, num_retries=1, scrape_callback=None, cache=None):
+    print('pid is : {}'.format(os.getpid()))
     craw_queue = MongoQueue()
     craw_queue.clear()
     # 存入mongodb中
@@ -4072,7 +4087,7 @@ def thread_link_crawler(seed_url, delay=3, timeout=1000, user_agent='wswp', max_
         # 首先从从网址大全中获取所有url,依次存入mongodb中，再逐个url抓取
         while True:
             try:
-                craw_queue.pop()
+                url = craw_queue.pop()
             except KeyError:
                 break
             else:
@@ -4088,6 +4103,7 @@ def thread_link_crawler(seed_url, delay=3, timeout=1000, user_agent='wswp', max_
             craw_queue.complete(url)
 
     threads = []
+    # craw_queue用于判断时会调用其特殊方法__bool__
     while threads or craw_queue:
         for thread in threads:
             if not thread.is_alive():
@@ -4103,6 +4119,8 @@ def thread_link_crawler(seed_url, delay=3, timeout=1000, user_agent='wswp', max_
 
 import multiprocessing
 # 多进程爬取，每个进程中包含了多线程爬取函数
+# 本机为四个进程，每个进程开始五个线程，相当于
+# 总共开启20个线程
 def process_crawler(args, **kwargs):
     # cpu核数决定能开多少个相同的进程
     nums_cpus = multiprocessing.cpu_count()
@@ -4123,4 +4141,12 @@ def process_crawler(args, **kwargs):
     for p in processes:
         p.join()
 
+# 当要开启子进程时，一定要在__main__最高命名空间内执行
+# 不然当子进程会重复读取不在__main__空间内的代码，读取到
+# Process时又再次开启进程，这相当于开启自己的子进程，而在Process
+# 的处理中这是不可以的
+if __name__ == '__main__':
+    process_crawler('http://localhost/html/myzip.zip', delay=3, timeout=20, user_agent='wswp', max_threads=5, proxies=None, num_retries=1, scrape_callback=None, cache=None)
+    sleep(5)
+# 子进程会首先打印出这句话，因为其不在__main__命令空间中
 print('program end')
