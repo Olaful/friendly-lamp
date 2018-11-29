@@ -4059,6 +4059,68 @@ class MongoQueue:
     # 清空队列
     def clear(self):
         self.db.crawl_queue.drop()
-    
+        
+# 多线程同时爬取网站信息，爬取队列从mongodb中获取
+def thread_link_crawler(seed_url, delay=3, timeout=1000, user_agent='wswp', max_threads=5, proxies=None, num_retries=1, scrape_callback=None, cache=None):
+    craw_queue = MongoQueue()
+    craw_queue.clear()
+    # 存入mongodb中
+    craw_queue.push(seed_url)
+    downloader = Downloader(delay=delay, user_agent=user_agent, timeout=timeout, proxies=proxies, num_retries=num_retries, cache=cache)
+
+    def process_queue():
+        # 首先从从网址大全中获取所有url,依次存入mongodb中，再逐个url抓取
+        while True:
+            try:
+                craw_queue.pop()
+            except KeyError:
+                break
+            else:
+                html = downloader(url)
+                if scrape_callback:
+                    try:
+                        links = scrape_callback(url) or []
+                    except Exception as e:
+                        print('Error in Callback for {}:{}'.format(url, e))
+                    else:
+                        for link in links:
+                            craw_queue.push(link)
+            craw_queue.complete(url)
+
+    threads = []
+    while threads or craw_queue:
+        for thread in threads:
+            if not thread.is_alive():
+                threads.remove(thread)
+
+        while len(threads) < max_threads and craw_queue:
+            # 将爬取函数放在线程中执行
+            thread = Thread(target=process_queue)
+            thread.setDaemon(True)
+            thread.start()
+            threads.append(thread)
+        sleep(TIME_SLEEP)
+
+import multiprocessing
+# 多进程爬取，每个进程中包含了多线程爬取函数
+def process_crawler(args, **kwargs):
+    # cpu核数决定能开多少个相同的进程
+    nums_cpus = multiprocessing.cpu_count()
+    print('Starting {} processes'.format(nums_cpus))
+    processes = []
+    for i in range(nums_cpus):
+        # args参数会传递给没有赋初始值的thread_link_crawler函数的形参
+        # kwargs参数会传递给赋了初始值的thread_link_crawler函数的形参
+        p = multiprocessing.Process(target=thread_link_crawler, args=[args], kwargs=kwargs)
+        # 开启进程
+        p.start()
+        processes.append(p)
+    # join方法调用的时候会阻塞当前进程(main)，直到调用join方法的进程(p)执行
+    # 完，才会继续往下执行，如果某个进程没有执行join方法，主进程则不会等待其
+    # 执行完，会继续往下执行，而遇到了join方法的进程后，又会继续阻塞，
+    # 如进程1先start,再join,而进程2等待进程1join之后才start,则主进程会等待
+    # 进程1执行完后再执行完自身，最后才执行进程2
+    for p in processes:
+        p.join()
 
 print('program end')
