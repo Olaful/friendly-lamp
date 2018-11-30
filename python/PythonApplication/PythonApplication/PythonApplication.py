@@ -163,7 +163,7 @@ class subClass(myclass):
     # 新式类构造函数中调用super方法，可以使用超类中的特性__init__
     def __init__(seft):
         super(myclass, seft).__init__()
-    
+
     # 直接调用父类的构造函数初始化，支持老式类
     #def __init__():
     #    myclass.__init__()
@@ -283,7 +283,7 @@ class myclass3:
         except (ZeroDivisionError) as e:
             print("catch the Exeption")
             print(e)
-    
+
             # 重新抛出异常
             raise
         except TypeError: pass
@@ -312,14 +312,14 @@ class myList:
         self.start = start
         self.step = step
         self.changed = {}
-    
+
     def __getitem__(seft, key):
         checkIndex(key)
 
         try: return seft.changed[key]
         except KeyError:
             return seft.start + key*seft.step
-    
+
     def __setitem__(seft, key, value):
         checkIndex(key)
 
@@ -349,7 +349,7 @@ class myClass4:
     # 不需要传入cls参数，对外部可以像普通方法一样调用
     @staticmethod
     def staticFunc(): print("this is a static func")
-    
+
     # 指定该方法为类方法，且cls参数会自动绑定到当前类上，
     # 所以可以直接只用类调用，当然也可以使用类实例调用
     # 方法内部可以返回cls()，这样就像实例一样了，做到通过
@@ -391,7 +391,7 @@ iter2 = iter([1, 2, 3])
 next(iter2)
 
 class myIter2:
-    value = 0    
+    value = 0
     def __next__(self):
         self.value += 1
         if self.value > 10: raise StopIteration
@@ -455,7 +455,7 @@ def myGenerator3(listParam):
         except TypeError: pass
         else: raise TypeError
         for sublist in listParam:
-            # 试图迭代一个非序列对象时，引发异常，捕捉并产生元素 
+            # 试图迭代一个非序列对象时，引发异常，捕捉并产生元素
             for element in myGenerator3(sublist):
                 yield element
     except TypeError:
@@ -748,7 +748,7 @@ print(sum)
 
 # 建立 一副扑克牌并随机打乱顺序
 digital = list(range(2,11)) + 'J Q K A'.split()
-shape = "♠ ♥ ♣ ♦".split()  
+shape = "♠ ♥ ♣ ♦".split()
 
 poker = ['%s%s' % (s, d) for s in shape for d in digital]
 #poker.append('♔ ♕'.split())
@@ -963,7 +963,7 @@ f.close()
 #for char in f.read():
 #    process(char)
 #f.close()
- 
+
 # 每次只读取一行如readline函数，这种叫做懒惰行迭代，只读取需要的行
 import fileinput
 for line in fileinput.input(r'myfile\template.txt'):
@@ -972,7 +972,7 @@ for line in fileinput.input(r'myfile\template.txt'):
 # 可以直接对文件流进行迭代，但在程序关闭的时候才能close文件
 for line in open(r'myfile\template.txt'):
     process(line)
- 
+
 # 对标准输入进行迭代
 #import sys
 #for line in sys.stdin:
@@ -1006,7 +1006,7 @@ def load(event):
      f = open(textInput.GetValue())
      contextText.SetValue(f.read())
      f.close()
-        
+
 def save(event):
     f = open(textInput.GetValue(), 'w')
     f.write(contextText.GetValue())
@@ -1104,7 +1104,7 @@ while True:
     print('Got connection from ',addrClt)
     client.send(b'Thanks for connecting')
     client.close()
-    
+
 #client = socket.socket()
 #host  = socket.gethostname()
 #port = 1025
@@ -1648,7 +1648,7 @@ class Handler:
             if result is None: return match.group(0)
             return result
         return substitution
-    
+
 class HTMLRenderer(Handler):
   #
   #给文本添加html标记的处理类，可通过超类中的
@@ -1754,7 +1754,7 @@ class HeadingRule(Rule):
 # 题目规则，继承于标题规则类，因为标题规则依然适用于题目规则
 class TitleRule(HeadingRule):
     #文本第一个标题当作题目来对待
-   
+
     type = 'title'
     first = True
     def condition(self, block):
@@ -2130,7 +2130,7 @@ for id in ids:
     print(subject)
     print('-'*len(subject))
     print('\n'.join([b.decode() for b in body]))
-    
+
 from nntplib import NNTP
 import datetime
 import re
@@ -2384,7 +2384,7 @@ class Chatsession(async_chat):
 class CommandHandler:
     def unknown(self, session, cmd):
         session.push(bytes('Unknown command: %s' % cmd, encoding='utf-8'))
-    
+
     def handle(self, session, line):
         if not line.strip(): return
         # 命令格式为 cmd msg，所以使用一个分隔符来区分
@@ -2429,14 +2429,14 @@ class ChatRoom(Room):
     def remove(self, sesssion):
         Room.remove(self, sesssion)
         self.brocast(bytes(sesssion.name + 'has left the room.\r\n', encoding='utf-8'))
-    
+
     def do_say(self, session, line):
         self.brocast(bytes(session.name + ':' + line + '\r\n', encoding='utf-8'))
 
     def do_look(self, session):
         for other in self.sessions:
             session.push(other.name + '\r\n')
-    
+
     def do_who(self, session):
         for name in self.server.users:
             session.push(bytes(name + '\r\n', encoding='utf-8'))
@@ -2452,7 +2452,7 @@ class LogingRoom(Room):
 
     def remove(self, sesssion):
         Room.remove(self, sesssion)
-        
+
     def do_login(self, session, line):
         name = line.strip()
         if not name:
@@ -2842,7 +2842,7 @@ class Client(wx.App):
         hbox = wx.BoxSizer()
         hbox.Add(input, proportion=1, flag=wx.ALL|wx.EXPAND, border=10)
         hbox.Add(submit, flag=wx.TOP|wx.BOTTOM|wx.RIGHT, border=10)
-        
+
         self.files = files = wx.ListBox(bkg)
         self.updateList()
 
@@ -2998,7 +2998,7 @@ class Banana(SquishSprite):
         self.rect.bottom = self.area.bottom
         self.pad_top = config.banana_pad_top
         self.pad_size = config.banana_pad_size
-    
+
     def update(self):
         # 中心点定位到鼠标指针的坐标
         self.rect.centerx = pygame.mouse.get_pos()[0]
@@ -3402,8 +3402,11 @@ class Downloader:
             except KeyError:
                 pass
             else:
-                if self.num_retries > 0 and 500 <= result['code'] < 600:
-                    result = None
+                try:
+                    if self.num_retries > 0 and 500 <= result['code'] < 600:
+                        result = None
+                except TypeError:
+                    pass
         if result is None:
             self.throttle.wait(url)
             proxy = random.choice(self.proxies) if self.proxies else None
@@ -3438,7 +3441,7 @@ class Downloader:
                 else:
                     code =None
         except Exception:
-                ''
+            ''
 
         return {'html': html, 'code': code}
 
@@ -3513,14 +3516,14 @@ class DiskCache:
         self.cache_dir = cache_dir
         self.expires = expires
         self.compress = compress
-        
+
     # 设置文件内容
     def __setitem__(self, url, result):
         path = self.url_to_path(url)
         folder = os.path.dirname(path)
         if not os.path.exists(folder):
             os.makedirs(folder)
-        # 序列化数据与存取的时间, 
+        # 序列化数据与存取的时间,
         data = pickle.dumps((result, datetime.datetime.utcnow()))
         if self.compress:
             data = zlib.compress(data)
@@ -3591,10 +3594,11 @@ class MongoCache:
     def __init__(self, client=None, expires=datetime.timedelta(days=30), compress=False):
         self.client = MongoClient('localhost', 27017) if client is None else client
         self.db = self.client.cache
-        # 创建索引，记录会在指定的时间后过期,过期后会被删除
+        # 在某字段上建立索引(字段类型为date)，记录会在指定的时间后过期,过期后会被删除
+        # 只能在单个字段上建立索引
         #self.db.webpage.create_index('timestamp', expiresAfterSeconds=expires.total_seconds())
         self.compress = compress
-        
+
     def __setitem__(self, url, result):
         if self.compress:
             # pickle序列化后压缩
@@ -3742,19 +3746,19 @@ if len(tree) != 0:
     # 查询父标签为tr的td标签
     td = tree.cssselect('tr > td')[0]
     text = td.text_content()
-    
+
     # 查询标签tr中所有的td标签
     td = tree.cssselect('tr td')[0]
     text = td.text_content()
-    
+
     # 查询class为w2p_fl的所有标签
     td = tree.cssselect('.w2p_fl')[0]
     text = td.text_content()
-    
+
     # 查询指定标签
     td = tree.cssselect('tr')[0]
     text = td.text_content()
-    
+
     # 查询拥有指定属性的标签
     td = tree.cssselect('label[for=places_population]')[0]
     text = td.text_content()
@@ -3810,10 +3814,10 @@ if 1 > 2:
                 re.purge()
                 ''
             result = scraper(html)
-    
+
             assert result['area'] == '199 square kilometres'
         end = time.time()
-    
+
         print('{0}:{1:.2f}'.format(name, start-end))
 
 import csv
@@ -3845,12 +3849,12 @@ if 1 > 2:
     html = 'hello American-Samoa'
     url = 'http://example.webscraping.com/places/default/view/American-Samoa-5'
     #db.webpage.insert({'url':url, 'html':html})
-    
+
     # 即使插入相同的数据，但在数据实际上是另插入了一条新的记录
     #db.webpage.insert({'url':url, 'html':'hello American-Samoa'})
     result = db.webpage.find_one({'url':url})
     result = db.webpage.find({'url':url}).count()
-    
+
     # 查询_id字段值为url，如果不存在则插入$set
     db.webpage.update({'_id': url}, {'$set':{'html':'old_html'}}, upsert=True)
     db.webpage.update({'_id': url}, {'$set':{'html':'new_html'}}, upsert=True)
@@ -3865,7 +3869,7 @@ regstr = '(^(?!.*gov))(^(?!.*pdf))(^(?!.*javascript))(^(?!.*site.baidu.com))(^(?
 # 写数据入csv文件
 class MyScrapeCallback:
     def __init__(self):
-        os.chdir(r'E:\hexo\source.Olaful.github.io\Olaful.github.io\python\PythonApplication\PythonApplication')
+        #os.chdir(r'E:\hexo\source.Olaful.github.io\Olaful.github.io\python\PythonApplication\PythonApplication')
         self.writer = csv.writer(open('myfile/mysites.csv', 'w'))
         self.fields = ('id', 'site')
         self.writer.writerow(self.fields)
@@ -3874,7 +3878,10 @@ class MyScrapeCallback:
 
     # 特殊方法，scrape_callback() 的时候会被自动调用,其中scrape_callback是实例化的对象
     def __call__(self, url, html):
-        tmplist = self.href_regex.findall(html)
+        try:
+            tmplist = self.href_regex.findall(html)
+        except TypeError:
+            tmplist = self.href_regex.findall(str(html))
         sitelist = []
         for link in tmplist:
             if re.search(regstr, link):
@@ -3889,8 +3896,8 @@ class MyScrapeCallback:
 
             for row in rowinfo:
                 self.writer.writerow(row)
-        
-#link_crawler('http://site.baidu.com/', link_regex=regstr, delay=0, max_urls=200, max_depth=5, timeout=20000, user_agent='wswp', proxies=None, num_retries=1, scrape_callback = MyScrapeCallback(), cache=MongoCache())
+
+#link_crawler('http://site.baidu.com/', link_regex=regstr, delay=0, max_urls=200, max_depth=5, timeout=20, user_agent='wswp', proxies=None, num_retries=1, scrape_callback = MyScrapeCallback(), cache=MongoCache())
 #import timeit
 #t = timeit.Timer("link_crawler('http://site.baidu.com/', link_regex=regstr, delay=0, max_urls=200, max_depth=5, timeout=20000, user_agent='wswp', proxies=None, num_retries=1, scrape_callback = MyScrapeCallback(), cache=MongoCache())",
 #                      setup="from __main__ import link_crawler, regstr, MyScrapeCallback, MongoCache")
@@ -3913,7 +3920,7 @@ from io import StringIO
 
 downloader = Downloader()
 
- #ZipFile需要一个类似文件的接口
+#ZipFile需要一个类似文件的接口
 #with ZipFile(zipdata) as zf:
 #    name = zf.namelist()[0]
 #    print(name)
@@ -3928,16 +3935,16 @@ class GetUrlCallback:
     def __call__(self, url):
         if url == 'http://localhost/html/myzip.zip':
             urls = []
-            zipdata = downloader('http://localhost/html/myzip.zip')
+            zipdata = downloader(url)
             # 保存zipdata文件至本地
-            os.chdir(r'E:\hexo\source.Olaful.github.io\Olaful.github.io\python\PythonApplication\PythonApplication')
+            #os.chdir(r'E:\hexo\source.Olaful.github.io\Olaful.github.io\python\PythonApplication\PythonApplication')
             with open('myfile/myzip.zip', 'wb') as zf:
                 zf.write(zipdata)
             with ZipFile('myfile/myzip.zip') as zf:
                 # 获取zip文件中的文件列表
                 filelist = zf.namelist()
                 csv_file = filelist[0]
-            
+
                 # 由于读取到的是而bytes形式，需要转换成unicode的形式
                 sitelist = list(map(lambda x: x.decode(), zf.open(csv_file, mode="r").readlines()))
                 # csv.reader会处理掉空行\r\r\n
@@ -3946,14 +3953,14 @@ class GetUrlCallback:
                 next(data)
                 for _,site in data:
                     urls.append(site)
-                #for site in sitelist:
-                #    urls.append(site.split(',')[1])
-            
-                #with zf.open(csv_file, mode='r') as cf:
-                #    data = cf.readlines()
-                #    print(data)
-                #    for _,line in data:
-                #        urls.append(line)
+                    #for site in sitelist:
+                    #    urls.append(site.split(',')[1])
+
+                    #with zf.open(csv_file, mode='r') as cf:
+                    #    data = cf.readlines()
+                    #    print(data)
+                    #    for _,line in data:
+                    #        urls.append(line)
             return urls
 
 from threading import Thread
@@ -4021,7 +4028,7 @@ class MongoQueue:
     # 会自动调用，python2.x中的写法为__nonzero__
     # 判断是否所有url都已完成处理
     def __bool__(self):
-        try: 
+        try:
             record = None
             record =  self.db.crawl_queue.find_one({'status': {'$ne': self.COMELETE}})
         except Exception as e:
@@ -4041,9 +4048,9 @@ class MongoQueue:
     # 补充'set'待设置的集合，相当于一条记录，'$lt'小于，'$ne'不等于，还有'gt'大于
     def pop(self):
         record =  self.db.crawl_queue.find_and_modify(
-            query = {'status': self.OUTSTANDING},
-            update = {'$set':{'status': self.PROCESSING, 'timestamp': datetime.datetime.now()}}
-            )
+                query = {'status': self.OUTSTANDING},
+                update = {'$set':{'status': self.PROCESSING, 'timestamp': datetime.datetime.now()}}
+        )
         if record:
             return record['_id']
         else:
@@ -4064,16 +4071,16 @@ class MongoQueue:
     # 这条url应该当作还没有处理，此时修改其状态为待处理
     def repair(self):
         record = self.db.crawl_queue.find_and_modify(
-            query = {'timestamp': {'$lt': datetime.datetime.now()-datetime.timedelta(seconds=-self.timeout)}, 'status': {'$ne': self.COMELETE}},
-            update = {'$set': {'status': self.OUTSTANDING}}
-            )
+                query = {'timestamp': {'$lt': datetime.datetime.now()-datetime.timedelta(seconds=-self.timeout)}, 'status': {'$ne': self.COMELETE}},
+                update = {'$set': {'status': self.OUTSTANDING}}
+        )
         if record:
             print('Released', record['_id'])
 
     # 清空队列
     def clear(self):
         self.db.crawl_queue.drop()
-        
+
 # 多线程同时爬取网站信息，爬取队列从mongodb中获取
 def thread_link_crawler(seed_url, delay=3, timeout=1000, user_agent='wswp', max_threads=5, proxies=None, num_retries=1, scrape_callback=None, cache=None):
     print('pid is : {}'.format(os.getpid()))
@@ -4146,7 +4153,6 @@ def process_crawler(args, **kwargs):
 # Process时又再次开启进程，这相当于开启自己的子进程，而在Process
 # 的处理中这是不可以的
 if __name__ == '__main__':
-    process_crawler('http://localhost/html/myzip.zip', delay=3, timeout=20, user_agent='wswp', max_threads=5, proxies=None, num_retries=1, scrape_callback=None, cache=None)
-    sleep(5)
+    process_crawler('http://localhost/html/myzip.zip', delay=3, timeout=20, user_agent='wswp', max_threads=5, proxies=None, num_retries=1, scrape_callback=GetUrlCallback(), cache=None)
 # 子进程会首先打印出这句话，因为其不在__main__命令空间中
 print('program end')
