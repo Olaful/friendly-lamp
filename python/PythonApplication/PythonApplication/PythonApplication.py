@@ -113,12 +113,14 @@ class myclass:
     def getValue(seft):
         return seft.name
     # __双下划线开头的方法外部无法访问
+    # 仅能被类对象访问(不包括子类对象)
     def  __privateFunc(seft):
         print("this is private func")
         type("type")
     def getSomeMsg(seft):
         seft. __privateFunc()
     # 单下划线开头的函数不会被import导入
+    # 仅能被类对象及子类对象访问
     def  _noImportFunc():
         print("this func can't imported")
 
@@ -127,6 +129,8 @@ x.name = 'hello'
 print (x.name)
 print (x.getValue())
 print (myclass.getValue(x))
+# 调用其特殊方法__str__()
+print(x)
 
 y = myFunc
 y()
@@ -3428,8 +3432,8 @@ class Downloader:
         try:
             html = None
             code =None
-            html = opener.open(request).read()
-            code = opener.open(request).code
+            html = opener.open(request, timeout=20).read()
+            code = opener.open(request, timeout=20).code
         except urllib.request.URLError as e:
             print('Download error:',e.reason)
 
@@ -4122,12 +4126,15 @@ def thread_link_crawler(seed_url, delay=3, timeout=1000, user_agent='wswp', max_
             thread.setDaemon(True)
             thread.start()
             threads.append(thread)
+        # 等待上一个进程开启完后再开启下一个进程
         sleep(TIME_SLEEP)
 
 import multiprocessing
 # 多进程爬取，每个进程中包含了多线程爬取函数
 # 本机为四个进程，每个进程开始五个线程，相当于
-# 总共开启20个线程
+# 总共开启20个线程，但进程的的线性增加并不意味着速度
+# 的线性增加，因为一部分时间得花在线程的切换上，此外还会
+# 受到网络宽带的限制
 def process_crawler(args, **kwargs):
     # cpu核数决定能开多少个相同的进程
     nums_cpus = multiprocessing.cpu_count()
@@ -4153,6 +4160,227 @@ def process_crawler(args, **kwargs):
 # Process时又再次开启进程，这相当于开启自己的子进程，而在Process
 # 的处理中这是不可以的
 if __name__ == '__main__':
-    process_crawler('http://localhost/html/myzip.zip', delay=3, timeout=20, user_agent='wswp', max_threads=5, proxies=None, num_retries=1, scrape_callback=GetUrlCallback(), cache=None)
+    ''
+#    process_crawler('http://localhost/html/myzip.zip', delay=3, timeout=20, user_agent='wswp', max_threads=5, proxies=None, num_retries=1, scrape_callback=GetUrlCallback(), cache=None)
 # 子进程会首先打印出这句话，因为其不在__main__命令空间中
-print('program end')
+#print('enter pro')
+
+import json, string
+countries = set()
+def getInfoByJson(max_urls = 50):
+    downloader = Downloader(timeout=20)
+    valid_urls = 0
+    def getCountry():
+        nonlocal max_urls
+        nonlocal valid_urls
+        for letter in string.ascii_lowercase:
+            if valid_urls >= max_urls:
+                break
+            page = 0
+            while True:
+                # 会返回json格式的内容，该url的请求相当于点击界面某个按钮后会通过javascript的ajax方法请求数据，因此html界面的数据是动态生成的
+                # 构造不同的search_term与page参数获取不同的结果
+                # 模拟点击某个按钮时发生的js调用过程也称为js逆向工程
+                html = downloader('http://example.webscraping.com/places/ajax/search.json?&search_term={}&page_size=10&page={}'.format(letter, page))
+                try:
+                    ajax = json.loads(html)
+                # 类似'{"key1":"values", "key2":"values2"}'这样的包含字典的字符串才能解析成字典返回
+                except json.decoder.JSONDecodeError as e:
+                    print(e)
+                    ajax = None
+                except TypeError as e:
+                    print(e)
+                    ajax = None
+                else:
+                    for record in ajax['records']:
+                        countries.add(record['country'])
+                    valid_urls += 1
+                page += 1
+                if ajax is None or page >= ajax['num_pages']:
+                    break
+    for i in range(10):
+        thread = Thread(target=getCountry)
+        thread.setDaemon(True)
+        thread.start()
+        sleep(2)
+
+if 1 > 2:
+    # getInfoByJson()
+    #FIELDS = ('area', 'population', 'iso', 'country', 'capital', 'continent', 'tld', 'currency_code', 'currencyname', 'phone', 'postal_code_format', 'postal_c', 'de_regex', 'languages', 'neighbours')
+    FIELDS = ('country',)
+    downloader = Downloader(timeout=20)
+    # .用作search_term参数的通配符，page_size设置为查找1000页，page_size参数网站一般不会检查
+    html = downloader('http://example.webscraping.com/places/ajax/search.json?&search_term=.&page_size=1000&page=0')
+    ajax = json.loads(html)
+
+    os.chdir(r'E:\hexo\source.Olaful.github.io\Olaful.github.io\python\PythonApplication\PythonApplication')
+    f = open('myfile/countries.csv', 'w')
+    writer = csv.writer(f)
+    writer.writerow(FIELDS)
+
+    for record in ajax['records']:
+        row = (record['country'],)
+        writer.writerow(row)
+
+    f.close()
+
+# 可以解析html，并生成类似于浏览器的桌面APP
+#from PyQt5.QtWebEngineWidgets import QWebEnginePage, QWebEngineView
+#from PyQt5.QtWidgets import QApplication
+#from PyQt5.QtCore import QUrl, QEventLoop
+#from PyQt5.QtGui import  *
+
+#class Page(QWebEngineView):
+#    def __init__(self, url, mode='normal'):
+#        self.app = QApplication([])
+#        QWebEngineView.__init__(self)
+#        # 本地事件循环
+#        loop = QEventLoop()
+#        # html页面加载完成后调用的方法
+#        # 网页视图加载完成后调用loop.quit方法，停止事件循环
+#        self.loadFinished.connect(loop.quit)
+#        # 该方法为异步加载，因此需要在事件循环中等待网页的内容加载完毕
+#        # 打开url并获得其html内容，如果html中有js，会被执行
+#        self.load(QUrl(url))
+#        # 启动事件循环
+#        loop.exec_()
+#        if mode == 'normal':
+#            self.execJsAndGetHtml()
+#        else:
+#            self.execActionAndGetHtml()
+
+#        # 显示窗口
+#        self.show()
+#        self.app.exec_()
+
+#    def execJsAndGetHtml(self):
+#        # toHtml位于超类中，因此该方法只能在类中使用，会把html的内容作为getHtml方法的入参
+#        # page返回QWebEnginePage
+#        self.page().toHtml(self.getHtml)
+
+#    def execActionAndGetHtml(self):
+#        self.page().toHtml(self.getHtml)
+
+#    def getHtml(self, html_str):
+#        self.html = html_str
+#        #self.app.quit()
+
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
+from PyQt4.QtWebKit import QWebView
+
+# QWebKit实现的浏览器
+class BrowserRender(QWebView):
+    def __init__(self, show=True):
+        self.app = QApplication([])
+        QWebView.__init__(self)
+        if show:
+            self.show()
+
+    def download(self, url, timeout=60):
+        loop = QEventLoop()
+        timer = QTimer()
+        # 设置定时器超时会执行函数
+        timer.setSingleShot(True)
+        # 定时器超时或者页面加载完成都会触发事件循环退出
+        # 如果页面一直没有响应则用定时器终止循环
+        timer.timeout.connect(loop.quit)
+        self.loadFinished.connect(loop.quit)
+        self.load(QUrl(url))
+        timer.start(timeout*1000)
+        # 一直循环直到loop.quit被调用，之后才继续后面的部分
+        loop.exec_()
+
+        # 如果循环结束后，定时器还没有超时，则页面下载完成
+        if timer.isActive():
+            timer.stop()
+            return self.getHtml()
+        else:
+            print('Request time out:', url)
+
+    def getHtml(self):
+        return self.page().mainFrame().toHtml()
+
+    def find(self, pattern):
+        # css选择器，通过标签名或者class等选择
+        return self.page().mainFrame().findAllElements(pattern)
+
+    # 设置html页面元素的值
+    def attr(self, pattern, name, value):
+        for e in self.find(pattern):
+            e.setAttribute(name, value)
+
+    def text(self, pattern, value):
+        for e in self.find(pattern):
+            e.setPlainText(value)
+
+    # 模拟html页面元素的点击事件，调用相关javascript方法
+    def click(self, pattern):
+        for e in self.find(pattern):
+            e.evaluateJavaScript('this.click()')
+   
+    # 在定时内反复查找页面返回的信息，因为ajax调用在规定时间内可能不能及时返回数据
+    def wait_load(self, pattern, timeout=60):
+        dealine = time.time() + timeout
+        while time.time() < dealine:
+            # processEvents调用之后就能响应后面的页面事件，app.exec_内部就是调用这个方法
+            self.app.processEvents()
+            matches = self.find(pattern)
+            if matches:
+                return matches
+        print('Wait load time out')
+
+    # 保持当前窗口
+    def keepWindow(self):
+        self.app.exec_()
+
+from selenium import webdriver
+def webDeriver():
+    # webdriver能使用响应浏览器的驱动打开浏览器
+    driver = webdriver.Chrome(executable_path=r'C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe')
+    driver.get('http://example.webscraping.com/places/default/search')
+    # 向页面中的元素填充内容
+    driver.find_element_by_id('search_term').send_keys('.')
+    # 自定义js语句
+    js = 'document.getElementById("page_size").options[1].text="1000"'
+    # 执行自定义js语句
+    driver.execute_script(js);
+
+    driver.find_element_by_id('search').click()
+
+    # 查找的元素如果超过这个时间出现，则抛出异常
+    driver.implicitly_wait(30)
+
+    # 通过css选择器查找元素
+    links = driver.find_elements_by_css_selector('#results a')
+    countries = [link.text for link in links]
+    print(countries)
+    # 关闭浏览器驱动器
+    driver.close()
+        
+
+def main(url):
+    br = BrowserRender(show=True)
+    br.download('http://example.webscraping.com/places/default/search')
+    # 模拟界面点击过程: 填写值->点击按钮
+    br.attr( '#search_term', 'value', '.')
+    br.text( '#page_size option', '1000')
+    br.click('#search')
+    elements = br.wait_load('#results a')
+    countries = [e.toPlainText().strip() for e in elements]
+    print(countries)
+    br.keepWindow();
+
+if __name__ == '__main__':
+    #---------------------------------------------------start
+    tupletime = time.localtime()
+    print('program start:', '{0}/{1}/{2} {3}:{4}:{5}'.format(tupletime.tm_year, tupletime.tm_mon, tupletime.tm_mday, tupletime.tm_hour, tupletime.tm_min, tupletime.tm_sec))
+    starttime = time.time()
+
+    webDeriver()
+
+    #---------------------------------------------------end
+    endtime = time.time()
+    tupletime = time.localtime()
+    print('program end:', '{0}/{1}/{2} {3}:{4}:{5}'.format(tupletime.tm_year, tupletime.tm_mon, tupletime.tm_mday, tupletime.tm_hour, tupletime.tm_min, tupletime.tm_sec))
+    print('total time:{0:10.2f}seconds'.format(endtime-starttime))
