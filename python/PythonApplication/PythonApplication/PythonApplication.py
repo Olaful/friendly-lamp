@@ -555,6 +555,19 @@ import sys
 # os也是标准库中常用的模块
 import os
 
+from os import *
+
+# 结合生成器与os模块与递归实现列出指定目录下所有文件
+def getFileList(dir):
+    try:
+        dirs = listdir(dir)
+    except Exception:
+        yield path.abspath(dir)
+    else:
+        for d in dirs:
+            for dd in getFileList(path.abspath(d)):
+                yield dd
+
 # environ获取环境变量
 print(os.environ["USERNAME"])
 
