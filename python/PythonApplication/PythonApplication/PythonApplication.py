@@ -4390,7 +4390,20 @@ if __name__ == '__main__':
     print('program start:', '{0}/{1}/{2} {3}:{4}:{5}'.format(tupletime.tm_year, tupletime.tm_mon, tupletime.tm_mday, tupletime.tm_hour, tupletime.tm_min, tupletime.tm_sec))
     starttime = time.time()
 
-    webDeriver()
+    from urllib.parse import urlencode
+    url = 'http://example.webscraping.com/places/default/user/login?_next=/places/default/index'
+    email = 'test123@test.com'
+    pwd = 'test'
+    data = {'email': email, 'password': pwd}
+    encode_data = urlencode(data)
+    # 经过编码后的表单数据，通过post方式进行提交，但表单中可能还有其他隐藏的input输入框
+    # 这些input的值也得获取并随其他可见input值一起提交
+    request = urllib.request.Request(url, data=encode_data, headers = {'User-agent': 'wswp'})
+    print(request)
+    opener = build_opener()
+    response = opener.open(request)
+    rls = response.geturl()
+    print(rls)
 
     #---------------------------------------------------end
     endtime = time.time()
