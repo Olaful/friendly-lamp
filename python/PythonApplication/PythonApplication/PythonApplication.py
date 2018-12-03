@@ -560,13 +560,13 @@ from os import *
 # 结合生成器与os模块与递归实现列出指定目录下所有文件
 def getFileList(dir):
     try:
-        dirs = listdir(dir)
-    except Exception:
-        yield path.abspath(dir)
-    else:
-        for d in dirs:
-            for dd in getFileList(path.abspath(d)):
+        files = os.listdir(dir)
+        fullfile = [os.path.join(dir, name) for name in files]
+        for d in fullfile:
+            for dd in getFileList(d):
                 yield dd
+    except Exception:
+        yield dir
 
 # environ获取环境变量
 print(os.environ["USERNAME"])
