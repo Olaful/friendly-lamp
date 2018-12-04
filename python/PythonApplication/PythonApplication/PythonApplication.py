@@ -1587,6 +1587,36 @@ print(ll.printList())
 ll.delList(2)
 print(ll.printList())
 
+# but python can deal the largest num that depend on the ram, so func below is  a addtional implement
+def addBigNum(num1=999999999, num2=99999998):
+    result = []
+    # 数字切割成列表
+    listNum1 = list(reversed(list(map(int, re.findall('\w{1}', str(num1))))))
+    listNum2 = list(reversed(list(map(int, re.findall('\w{1}', str(num2))))))
+    listNum1.append(0)
+    listNum1.append(0)
+
+    maxlen = len(listNum1) if len(listNum1) > len(listNum2) else len(listNum2)
+
+    if len(listNum1) > len(listNum2):
+        listNum2.extend([0 for i in  range(maxlen - len(listNum2))])
+    else:
+        listNum1.extend([0 for i in  range(maxlen - len(listNum1))])
+
+    for i in range(maxlen):
+       tmpNum = listNum1[i] + listNum2[i]
+
+       if tmpNum >= 10:
+           tmpNum = tmpNum - 10
+           listNum1[i+1] += 1
+
+       result.append(tmpNum)
+
+    return int(''.join(list(map(str,reversed(result)))))
+
+sum = addBigNum(9999993495693493495695, 98934994589569569435783459345)
+print(sum)
+
 import logging
 # 指定输出日志信息的文件，输入提示信息级别
 logging.basicConfig(level=logging.INFO, filename='myfile/mylog.log')
@@ -4399,11 +4429,10 @@ if __name__ == '__main__':
     # 经过编码后的表单数据，通过post方式进行提交，但表单中可能还有其他隐藏的input输入框
     # 这些input的值也得获取并随其他可见input值一起提交
     request = urllib.request.Request(url, data=encode_data, headers = {'User-agent': 'wswp'})
-    print(request)
     opener = build_opener()
-    response = opener.open(request)
-    rls = response.geturl()
-    print(rls)
+    #response = opener.open(request)
+    #rls = response.geturl()
+    #print(rls)
 
     #---------------------------------------------------end
     endtime = time.time()
