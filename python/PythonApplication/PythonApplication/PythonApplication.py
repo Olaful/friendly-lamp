@@ -4412,7 +4412,72 @@ def main(url):
     elements = br.wait_load('#results a')
     countries = [e.toPlainText().strip() for e in elements]
     print(countries)
-    br.keepWindow();
+    br.keepWindow()
+
+# 基于cookie实现的表单登录
+def autoLogin():
+    from urllib.parse import urlencode
+    import http.cookiejar
+
+    url = 'http://example.webscraping.com/places/default/user/login?_next=/places/default/index'
+    email = 'test123@test.com'
+    pwd = 'test'
+
+    # 获取需要提交的表单的元素
+    def getInputData(html):
+        tree = lxml.html.fromstring(html)
+        data = {}
+        for e in tree.cssselect('form input'):
+            if e.get('name'):
+                data[e.get('name')] = e.get('value')
+        return data
+
+    # 处理与cookie的交互
+    cj = http.cookiejar.CookieJar()
+    opener = build_opener(urllib.request.HTTPCookieProcessor(cj))
+
+    # 服务器会获取表单元素中name所指的字段的值
+    html = opener.open(url).read()
+    data = getInputData(html)
+    data['email'] = email
+    data['password'] = pwd
+    encode_data = urlencode(data).encode(encoding='utf-8')
+
+    # 构造请求数据
+    # 经过编码后的表单数据，通过post方式进行提交，但表单中可能还有其他隐藏的input输入框
+    # 这些input的值可能也得获取并随其他可见input值一起提交
+    # _formkey表单元素用来检查是否重复提交，刷新页面重新进去后会发生改变
+    # _formkey的ID值会存储在浏览器cookie中，登录的时候会拿出来与提交的登录的表单的_formkey进行对比
+    # 在http的相应头中会包含Set-Cookie类似的字段，用以保存设置的数据，如果后续再次访问该网站时会从浏览器
+    # 中获取到这些cookie数据，就不用重复登录了，保持了会话的持久性
+    request = urllib.request.Request(url, data=encode_data, headers = {'User-agent': 'wswp'})
+
+    response = opener.open(request)
+    # 获取返回的url信息，获取到主页信息证明登录成功
+    rls = response.geturl()
+    print(rls)
+
+    # 该url需要登录后才能访问，所以得调用设置了登录信息的opener
+    urlEdit = 'http://example.webscraping.com/places/default/edit/Afghanistan-1#'
+    requestEdit = urllib.request.Request(urlEdit, data=encode_data, headers = {'User-agent': 'wswp'})
+
+    html = opener.open(requestEdit).read()
+    tree = lxml.html.fromstring(html)
+
+    data = {}
+    for e in tree.cssselect('form input'):
+        if e.get('name'):
+            data[e.get('name')] = e.get('value')
+
+    # 修改数据后并向网站提交数据
+    data['population'] = int(data['population']) + 1
+    encode_data = urlencode(data).encode()
+
+    requestCommit = urllib.request.Request(urlEdit, data=encode_data, headers = {'User-agent': 'wswp'})
+    resp = opener.open(requestCommit)
+    print(resp.geturl())
+
+
 
 if __name__ == '__main__':
     #---------------------------------------------------start
@@ -4420,22 +4485,11 @@ if __name__ == '__main__':
     print('program start:', '{0}/{1}/{2} {3}:{4}:{5}'.format(tupletime.tm_year, tupletime.tm_mon, tupletime.tm_mday, tupletime.tm_hour, tupletime.tm_min, tupletime.tm_sec))
     starttime = time.time()
 
-    from urllib.parse import urlencode
-    url = 'http://example.webscraping.com/places/default/user/login?_next=/places/default/index'
-    email = 'test123@test.com'
-    pwd = 'test'
-    data = {'email': email, 'password': pwd}
-    encode_data = urlencode(data)
-    # 经过编码后的表单数据，通过post方式进行提交，但表单中可能还有其他隐藏的input输入框
-    # 这些input的值也得获取并随其他可见input值一起提交
-    request = urllib.request.Request(url, data=encode_data, headers = {'User-agent': 'wswp'})
-    opener = build_opener()
-    #response = opener.open(request)
-    #rls = response.geturl()
-    #print(rls)
+    autoLogin()
 
     #---------------------------------------------------end
     endtime = time.time()
     tupletime = time.localtime()
     print('program end:', '{0}/{1}/{2} {3}:{4}:{5}'.format(tupletime.tm_year, tupletime.tm_mon, tupletime.tm_mday, tupletime.tm_hour, tupletime.tm_min, tupletime.tm_sec))
     print('total time:{0:10.2f}seconds'.format(endtime-starttime))
+
