@@ -4471,13 +4471,29 @@ def autoLogin():
 
     # 修改数据后并向网站提交数据
     data['population'] = int(data['population']) + 1
-    encode_data = urlencode(data).encode()
+    encode_data_up = urlencode(data).encode()
 
-    requestCommit = urllib.request.Request(urlEdit, data=encode_data, headers = {'User-agent': 'wswp'})
-    resp = opener.open(requestCommit)
-    print(resp.geturl())
+    requestCommit = urllib.request.Request(urlEdit, data=encode_data_up, headers = {'User-agent': 'wswp'})
+    #resp = opener.open(requestCommit)
+    #print(resp.geturl())
 
-
+    # 获取存在在本地的cookie
+    import requests, sqlite3
+    from win32.win32crypt import CryptUnprotectData
+    def getCookieFromChrome(host_key):
+         cookiepath = os.environ['LOCALAPPDATA'] +r'\Google\Chrome\User Data\Default\Cookies'
+         print(cookiepath)
+         # Chrome的cookie存储在sqlite数据库中，name:value 其中的value值是经过CryptprotectData加密的
+         # 需要使用windows的CryptUnprotectData解密函数进行解密
+         with sqlite3.connect(cookiepath) as conn:
+             cursor = conn.cursor()
+             querySql = 'select host_key,name,encrypted_value from cookies where host_key="{}"'.format(host_key)
+             cookieData = {name:CryptUnprotectData(encrypted_value)[1].decode() for host_key, name, encrypted_value in cursor.execute(querySql).fetchall()}
+             print(cookieData)
+             return cookieData
+    print(encode_data_up)
+    # 该方法没有成功修改网站数据，所以用来登录
+    resp = requests.post(urlEdit, headers = {'User-agent': 'wswp'}, data=encode_data_up, cookies=getCookieFromChrome('example.webscraping.com'))
 
 if __name__ == '__main__':
     #---------------------------------------------------start
