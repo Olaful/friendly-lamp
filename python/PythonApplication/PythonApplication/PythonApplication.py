@@ -4495,6 +4495,19 @@ def autoLogin():
     # 该方法没有成功修改网站数据，所以用来登录
     resp = requests.post(urlEdit, headers = {'User-agent': 'wswp'}, data=encode_data_up, cookies=getCookieFromChrome('example.webscraping.com'))
 
+# 使用mechanize获取表单内容自动登录
+def useMechLogin():
+    import mechanicalsoup
+    browser = mechanicalsoup.StatefulBrowser()
+    urlLogin = 'http://example.webscraping.com/places/default/user/login?_next=/places/default/index'
+    browser.open(urlLogin)
+    # nr=0选择匹配到的第一个form
+    browser.select_form(nr=0)
+    browser['email'] = 'test123@test.com'
+    browser['password'] = 'test'
+    # 提交所选择的表单的内容
+    browser.submit_selected()
+    
 if __name__ == '__main__':
     #---------------------------------------------------start
     tupletime = time.localtime()
@@ -4502,6 +4515,28 @@ if __name__ == '__main__':
     starttime = time.time()
 
     autoLogin()
+    from PIL import Image
+    from io import BytesIO
+    import base64
+    import pytesseract
+
+    def get_captcha(html):
+        tree = lxml.html.fromstring(html)
+        img_data = tree.cssselect('div#recaptcha img')[0].get('src')
+        img_data = img_data.partition(',')[-1]
+        # 由于该图片使用base64编码二进制格式的文件(转换成ascii字符)，所以相应的使用base64解码
+        binary_data = base64.b64decode(img_data)
+        # 把二进制文件封装成类文件接口,普通的图片文件如.jpg,png文件可以直接用Image打开
+        file_like = BytesIO(binary_data)
+        img = Image.open(file_like)
+        return img
+
+    html = urlopen('http://example.webscraping.com/places/default/user/register?_next=/places/default/index').read().decode()
+    img = get_captcha(html)
+    # 从图像文件中抽取文字，其中用到tesseract工具及其训练数据集
+    # 但抽取的准确度跟图片背景纯度有关
+    rls = pytesseract.image_to_string(img)
+    print(rls)
 
     #---------------------------------------------------end
     endtime = time.time()
