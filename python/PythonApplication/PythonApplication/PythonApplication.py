@@ -4514,7 +4514,7 @@ if __name__ == '__main__':
     print('program start:', '{0}/{1}/{2} {3}:{4}:{5}'.format(tupletime.tm_year, tupletime.tm_mon, tupletime.tm_mday, tupletime.tm_hour, tupletime.tm_min, tupletime.tm_sec))
     starttime = time.time()
 
-    autoLogin()
+    #autoLogin()
     from PIL import Image
     from io import BytesIO
     import base64
@@ -4529,6 +4529,16 @@ if __name__ == '__main__':
         # 把二进制文件封装成类文件接口,普通的图片文件如.jpg,png文件可以直接用Image打开
         file_like = BytesIO(binary_data)
         img = Image.open(file_like)
+
+        # 保存原始图像
+        img.save('myfile/captcha_ori.png')
+        # 保存灰度图像
+        gray = img.convert('L')
+        gray.save('myfile/captcha_gray.png')
+        # (0~1：由白至黑过度)，对每一个像素阈值化处理，只保留纯黑纯白部分
+        # 这样背景与前景就能很好地区分开来
+        bw = gray.point(lambda x: 0 if x < 1 else 255, '1')
+        bw.save('myfile/captcha_thresholded.png')
         return img
 
     html = urlopen('http://example.webscraping.com/places/default/user/register?_next=/places/default/index').read().decode()
