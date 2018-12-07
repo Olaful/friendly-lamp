@@ -4361,7 +4361,7 @@ class BrowserRender(QWebView):
     def click(self, pattern):
         for e in self.find(pattern):
             e.evaluateJavaScript('this.click()')
-   
+
     # 在定时内反复查找页面返回的信息，因为ajax调用在规定时间内可能不能及时返回数据
     def wait_load(self, pattern, timeout=60):
         dealine = time.time() + timeout
@@ -4400,7 +4400,7 @@ def webDeriver():
     print(countries)
     # 关闭浏览器驱动器
     driver.close()
-        
+
 
 def main(url):
     br = BrowserRender(show=True)
@@ -4414,6 +4414,15 @@ def main(url):
     print(countries)
     br.keepWindow()
 
+# 获取需要提交的表单的元素
+def getFormData(html):
+    tree = lxml.html.fromstring(html)
+    data = {}
+    for e in tree.cssselect('form input'):
+        if e.get('name'):
+            data[e.get('name')] = e.get('value')
+    return data
+
 # 基于cookie实现的表单登录
 def autoLogin():
     from urllib.parse import urlencode
@@ -4423,22 +4432,13 @@ def autoLogin():
     email = 'test123@test.com'
     pwd = 'test'
 
-    # 获取需要提交的表单的元素
-    def getInputData(html):
-        tree = lxml.html.fromstring(html)
-        data = {}
-        for e in tree.cssselect('form input'):
-            if e.get('name'):
-                data[e.get('name')] = e.get('value')
-        return data
-
     # 处理与cookie的交互
     cj = http.cookiejar.CookieJar()
     opener = build_opener(urllib.request.HTTPCookieProcessor(cj))
 
     # 服务器会获取表单元素中name所指的字段的值
     html = opener.open(url).read()
-    data = getInputData(html)
+    data = getFormData(html)
     data['email'] = email
     data['password'] = pwd
     encode_data = urlencode(data).encode(encoding='utf-8')
@@ -4448,8 +4448,9 @@ def autoLogin():
     # 这些input的值可能也得获取并随其他可见input值一起提交
     # _formkey表单元素用来检查是否重复提交，刷新页面重新进去后会发生改变
     # _formkey的ID值会存储在浏览器cookie中，登录的时候会拿出来与提交的登录的表单的_formkey进行对比
-    # 在http的相应头中会包含Set-Cookie类似的字段，用以保存设置的数据，如果后续再次访问该网站时会从浏览器
+    # 在http的响应头中会包含Set-Cookie类似的字段，用以保存设置的数据，如果后续再次访问该网站时会从浏览器
     # 中获取到这些cookie数据，就不用重复登录了，保持了会话的持久性
+    # 这个表单action是'#'，表示提交表单到当前页面
     request = urllib.request.Request(url, data=encode_data, headers = {'User-agent': 'wswp'})
 
     response = opener.open(request)
@@ -4471,9 +4472,9 @@ def autoLogin():
 
     # 修改数据后并向网站提交数据
     data['population'] = int(data['population']) + 1
-    encode_data_up = urlencode(data).encode()
+    encode_data_upd = urlencode(data).encode()
 
-    requestCommit = urllib.request.Request(urlEdit, data=encode_data_up, headers = {'User-agent': 'wswp'})
+    requestCommit = urllib.request.Request(urlEdit, data=encode_data_upd, headers = {'User-agent': 'wswp'})
     #resp = opener.open(requestCommit)
     #print(resp.geturl())
 
@@ -4481,19 +4482,19 @@ def autoLogin():
     import requests, sqlite3
     from win32.win32crypt import CryptUnprotectData
     def getCookieFromChrome(host_key):
-         cookiepath = os.environ['LOCALAPPDATA'] +r'\Google\Chrome\User Data\Default\Cookies'
-         print(cookiepath)
-         # Chrome的cookie存储在sqlite数据库中，name:value 其中的value值是经过CryptprotectData加密的
-         # 需要使用windows的CryptUnprotectData解密函数进行解密
-         with sqlite3.connect(cookiepath) as conn:
-             cursor = conn.cursor()
-             querySql = 'select host_key,name,encrypted_value from cookies where host_key="{}"'.format(host_key)
-             cookieData = {name:CryptUnprotectData(encrypted_value)[1].decode() for host_key, name, encrypted_value in cursor.execute(querySql).fetchall()}
-             print(cookieData)
-             return cookieData
-    print(encode_data_up)
+        cookiepath = os.environ['LOCALAPPDATA'] +r'\Google\Chrome\User Data\Default\Cookies'
+        print(cookiepath)
+        # Chrome的cookie存储在sqlite数据库中，name:value 其中的value值是经过CryptprotectData加密的
+        # 需要使用windows的CryptUnprotectData解密函数进行解密
+        with sqlite3.connect(cookiepath) as conn:
+            cursor = conn.cursor()
+            querySql = 'select host_key, name, encrypted_value from cookies where host_key="{}"'.format(host_key)
+            cookieData = {name:CryptUnprotectData(encrypted_value)[1].decode() for host_key, name, encrypted_value in cursor.execute(querySql).fetchall()}
+            print(cookieData)
+            return cookieData
+    print(encode_data_upd)
     # 该方法没有成功修改网站数据，所以用来登录
-    resp = requests.post(urlEdit, headers = {'User-agent': 'wswp'}, data=encode_data_up, cookies=getCookieFromChrome('example.webscraping.com'))
+    resp = requests.post(urlEdit, headers = {'User-agent': 'wswp'}, data=encode_data_upd, cookies=getCookieFromChrome('example.webscraping.com'))
 
 # 使用mechanize获取表单内容自动登录
 def useMechLogin():
@@ -4507,50 +4508,168 @@ def useMechLogin():
     browser['password'] = 'test'
     # 提交所选择的表单的内容
     browser.submit_selected()
-    
+
+from PIL import Image
+from io import BytesIO
+import base64
+import pytesseract
+from urllib.parse import urlencode
+import http.cookiejar
+import time
+
+def get_captchaImg(html):
+    tree = lxml.html.fromstring(html)
+    img_data = tree.cssselect('div#recaptcha img')[0].get('src')
+    img_data = img_data.partition(',')[-1]
+    # 由于该图片使用base64编码二进制格式的文件(转换成ascii字符)，所以相应的使用base64解码
+    binary_data = base64.b64decode(img_data)
+    # 把二进制文件封装成类文件接口,普通的图片文件如.jpg,png文件可以直接用Image打开
+    file_like = BytesIO(binary_data)
+    img = Image.open(file_like)
+    # 保存原始图像
+    img.save('myfile/captcha_ori.png')
+    # 保存灰度图像
+    gray = img.convert('L')
+    gray.save('myfile/captcha_gray.png')
+    # (0~1：由白至黑过度)，对每一个像素阈值化处理，只保留纯黑纯白部分
+    # 这样背景与前景就能很好地区分开来
+    bw = gray.point(lambda x: 0 if x < 1 else 255, '1')
+    bw.save('myfile/captcha_thresholded.png')
+    return bw
+
+REGISTER_URL = 'http://example.webscraping.com/places/default/user/register?_next=/places/default/index'
+def register(first_name, last_name, email, pwd, captcha_fn=None):
+    cj = http.cookiejar.CookieJar()
+    opener = build_opener(urllib.request.HTTPCookieProcessor(cj))
+    html = opener.open(REGISTER_URL).read()
+
+    img = get_captchaImg(html)
+
+    # 从其他API中获取验证码文字
+    if captcha_fn is not None:
+        captcha = captcha_fn()
+    else:
+        # 从图像文件中抽取文字，其中用到tesseract光学字符识别工具及其训练数据集
+        # 但抽取的准确度跟图片背景纯度有关
+        captcha = pytesseract.image_to_string(img)
+        # 由于填写验证码都是小写，再次刷选
+        captcha = ''.join(c for c in captcha if c in string.ascii_letters).lower()
+
+    form = getFormData(html)
+
+    # 表单处理
+    form['first_name'] = first_name
+    form['last_name'] = last_name
+    form['email'] = email
+    form['password'] = form['password_two'] = pwd
+    form['recaptcha_response_field'] = captcha
+
+    encoded_data = urlencode(form).encode()
+    request = urllib.request.Request(url=REGISTER_URL, data=encoded_data)
+    resp = opener.open(request)
+    # 判断是否注册成功
+    success = 'user/register' not in resp.geturl()
+    return success
+
+class CaptChaAPI:
+    "根据已知的apikey和本地的验证码图像数据发送请求到9kw，获取返回的captchaid，根据captchaid"
+    "请求9kw，获取验证码处理的结果文字"
+    "9kw其实是由各个用户进行人工检查验证码的"
+    "如果发送相同的图像数据，9kw服务器会从缓存读取数据"
+    "可以帮别人验证验证码，获取积分"
+    "注：9kw帐户:176..@qq.com/6ZJ34BHNXT8P6XT"
+
+    def __init__(self, api_key=None, timeout=60):
+        self.api_key = api_key if api_key is not None else 'X8BOZF05VI5GZGCGH1'
+        self.timeout = timeout
+        self.url = 'https://www.9kw.eu/index.cgi'
+
+    # 获取9kw的API处理后的图片验证码的结果
+    def solve(self, imgdata):
+        # 数据编码为base64
+        byte_buffer = BytesIO()
+        imgdata.save(byte_buffer, format='PNG')
+        data = byte_buffer.getvalue()
+        base64Data = base64.b64encode(data)
+
+        captcha_id = self.send(base64Data)
+        start_time = time.time()
+
+        while time.time() < start_time + self.timeout:
+            try:
+                text = self.get(captcha_id)
+            except CaptchaError:
+                pass
+            else:
+                if text != 'NO DATA':
+                    if text == 'ERROR NO USER':
+                        raise CaptchaError('Error: no user avalible to solve CAPTCHA')
+                    else:
+                        print('CAPTCHA solved!')
+                    return text
+            print('Waiting for Captcha...')
+        print('Error: API timeout!')
+
+    def send(self, imgdata):
+        print("Submmiting Captcha...")
+        data = {
+            "apikey": self.api_key,
+            "action": "usercaptchaupload",
+            "file-upload-01": imgdata,
+            "base64": "1",
+            "maxtimeout": str(self.timeout),
+            # 如果为1表示自己处理，为0让他人处理，不过会消耗积分
+            "selfsolve": "0"
+        }
+        encoded_data = urlencode(data).encode()
+        request = urllib.request.Request(self.url, data=encoded_data)
+        resp = urlopen(request)
+        rls = resp.read().decode()
+        self.check(rls)
+        return rls
+
+    def get(self, captcha_id):
+        data = {
+            "apikey": self.api_key,
+            "action": "usercaptchacorrectdata",
+            "id": captcha_id,
+            # 没有得到结果时返回NO DATA
+            "info": 1
+        }
+        encoded_data = urlencode(data)
+        resp = urlopen(self.url + '?' + encoded_data)
+        rls = resp.read().decode()
+        self.check(rls)
+        return rls
+
+    def check(self, result):
+        # apikey错误
+        if re.match('00\d\d \w+', result):
+            raise CaptchaError('API error:', result)
+
+class CaptchaError(Exception):
+    pass
+
+def main():
+    API_KEY = 'X8BOZF05VI5GZGCGH1'
+    captcha = CaptChaAPI(API_KEY)
+    img = Image.open('myfile/captcha_ori.png')
+    text = captcha.solve(img)
+    print('receive the text:', text)
+
 if __name__ == '__main__':
     #---------------------------------------------------start
     tupletime = time.localtime()
     print('program start:', '{0}/{1}/{2} {3}:{4}:{5}'.format(tupletime.tm_year, tupletime.tm_mon, tupletime.tm_mday, tupletime.tm_hour, tupletime.tm_min, tupletime.tm_sec))
+    print()
     starttime = time.time()
 
-    #autoLogin()
-    from PIL import Image
-    from io import BytesIO
-    import base64
-    import pytesseract
-
-    def get_captcha(html):
-        tree = lxml.html.fromstring(html)
-        img_data = tree.cssselect('div#recaptcha img')[0].get('src')
-        img_data = img_data.partition(',')[-1]
-        # 由于该图片使用base64编码二进制格式的文件(转换成ascii字符)，所以相应的使用base64解码
-        binary_data = base64.b64decode(img_data)
-        # 把二进制文件封装成类文件接口,普通的图片文件如.jpg,png文件可以直接用Image打开
-        file_like = BytesIO(binary_data)
-        img = Image.open(file_like)
-
-        # 保存原始图像
-        img.save('myfile/captcha_ori.png')
-        # 保存灰度图像
-        gray = img.convert('L')
-        gray.save('myfile/captcha_gray.png')
-        # (0~1：由白至黑过度)，对每一个像素阈值化处理，只保留纯黑纯白部分
-        # 这样背景与前景就能很好地区分开来
-        bw = gray.point(lambda x: 0 if x < 1 else 255, '1')
-        bw.save('myfile/captcha_thresholded.png')
-        return img
-
-    html = urlopen('http://example.webscraping.com/places/default/user/register?_next=/places/default/index').read().decode()
-    img = get_captcha(html)
-    # 从图像文件中抽取文字，其中用到tesseract工具及其训练数据集
-    # 但抽取的准确度跟图片背景纯度有关
-    rls = pytesseract.image_to_string(img)
-    print(rls)
+    main()
 
     #---------------------------------------------------end
     endtime = time.time()
     tupletime = time.localtime()
-    print('program end:', '{0}/{1}/{2} {3}:{4}:{5}'.format(tupletime.tm_year, tupletime.tm_mon, tupletime.tm_mday, tupletime.tm_hour, tupletime.tm_min, tupletime.tm_sec))
-    print('total time:{0:10.2f}seconds'.format(endtime-starttime))
+    print()
+    print('program   end:', '{0}/{1}/{2} {3}:{4}:{5}'.format(tupletime.tm_year, tupletime.tm_mon, tupletime.tm_mday, tupletime.tm_hour, tupletime.tm_min, tupletime.tm_sec))
+    print('total time: {0:5.2f}seconds'.format(endtime-starttime))
 
