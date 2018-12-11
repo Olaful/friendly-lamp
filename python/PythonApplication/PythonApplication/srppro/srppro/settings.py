@@ -19,7 +19,7 @@ NEWSPIDER_MODULE = 'srppro.spiders'
 #USER_AGENT = 'srppro (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
-ROBOTSTXT_OBEY = True
+ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
@@ -57,6 +57,11 @@ CONCURRENT_REQUESTS_PER_DOMAIN = 1
 #DOWNLOADER_MIDDLEWARES = {
 #    'srppro.middlewares.SrpproDownloaderMiddleware': 543,
 #}
+
+DOWNLOADER_MIDDLEWARES = {
+    'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': 127,
+    'srppro.middlewares.UAPOOLS': 126,
+}
 
 # Enable or disable extensions
 # See https://doc.scrapy.org/en/latest/topics/extensions.html

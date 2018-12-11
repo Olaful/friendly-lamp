@@ -22,6 +22,32 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="PythonApplication.py" />
+    <Compile Include="srppro\srppro\items.py" />
+    <Compile Include="srppro\srppro\middlewares.py" />
+    <Compile Include="srppro\srppro\pipelines.py" />
+    <Compile Include="srppro\srppro\settings.py" />
+    <Compile Include="srppro\srppro\spiders\country.py" />
+    <Compile Include="srppro\srppro\spiders\movie.py" />
+    <Compile Include="srppro\srppro\spiders\__init__.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="srppro\" />
+    <Folder Include="srppro\crawl\" />
+    <Folder Include="srppro\crawl\country\" />
+    <Folder Include="srppro\srppro\" />
+    <Folder Include="srppro\srppro\spiders\" />
+    <Folder Include="srppro\srppro\spiders\__pycache__\" />
+    <Folder Include="srppro\srppro\__pycache__\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="srppro\crawl\country\requests.seen" />
+    <Content Include="srppro\crawl\country\spider.state" />
+    <Content Include="srppro\scrapy.cfg" />
+    <Content Include="srppro\srppro\spiders\__pycache__\country.cpython-36.pyc" />
+    <Content Include="srppro\srppro\spiders\__pycache__\__init__.cpython-36.pyc" />
+    <Content Include="srppro\srppro\__pycache__\items.cpython-36.pyc" />
+    <Content Include="srppro\srppro\__pycache__\settings.cpython-36.pyc" />
+    <Content Include="srppro\srppro\__pycache__\__init__.cpython-36.pyc" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

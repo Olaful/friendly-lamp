@@ -4664,7 +4664,15 @@ if __name__ == '__main__':
     print()
     starttime = time.time()
 
-    main()
+    #main()
+    downloader = Downloader()
+    html = downloader(url='http://movie.douban.com/')
+    tree = lxml.html.fromstring(html)
+    rls = tree.cssselect('div.article div.gaia.gaia-lite.gaia-tv.slide-mode')
+    print(rls)
+    soup = BeautifulSoup(html, 'html.parser')
+    rls = soup.select('div.gaia.gaia-lite.gaia-tv.slide-mode')
+    print(rls)
 
     #---------------------------------------------------end
     endtime = time.time()

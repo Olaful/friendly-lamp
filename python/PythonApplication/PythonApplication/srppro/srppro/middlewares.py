@@ -7,6 +7,7 @@
 
 from scrapy import signals
 
+from scrapy.downloadermiddlewares.useragent import UserAgentMiddleware
 
 class SrpproSpiderMiddleware(object):
     # Not all methods need to be defined. If a method is not defined,
@@ -101,3 +102,7 @@ class SrpproDownloaderMiddleware(object):
 
     def spider_opened(self, spider):
         spider.logger.info('Spider opened: %s' % spider.name)
+
+class UAPOOLS(UserAgentMiddleware):
+        def __init__(self, user_agent=''):
+            self.user_agent = 'Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1062.0 Safari/536.3'
