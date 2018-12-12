@@ -1,0 +1,2 @@
+1,apple,taste a little sour
+2,watermelon,contain a lot of moisture

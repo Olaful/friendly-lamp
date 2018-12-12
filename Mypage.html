@@ -1,0 +1,499 @@
+<html>
+<head>
+	<title>我的QQ空间</title>
+	<!--每五秒自动刷新-->
+	<!--<meta http-equiv="refresh" content="5">-->
+
+	<!--样式-->
+	<style>
+		<!--是用ID定义样式 -->
+		#img4{
+			position: absolute;
+			left: 630px;
+			top: 15px;
+		}
+	</style>
+
+	<!--引用外部css样式-->
+	<link rel = "stylesheet" href="mystyle.css" type="text/css">
+
+	<!--从cdn引入jquery库-->
+	<!--<script src="https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>-->
+
+	<script src="js/jquery.min.js"></script>
+	<script src="js/vue.min.js"></script>
+
+	<!--ajax请求异步调用 获取txt文本内容-->
+	<script language="JavaScript" type="text/javascript">
+		function loadXMLDoc() {
+			var objXmlHttp;
+			if (window.XMLHttpRequest)
+			{
+			    // 主流浏览器支持的对象
+				objXmlHttp = new XMLHttpRequest();
+			}
+			else
+			{
+			    // IE5,IE6支持的对象
+				objXmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			objXmlHttp.onreadystatechange = function()
+			{
+			    // readyState: 0: 请求未初始化 1: 服务器连接已建立 2: 请求已接收 3: 请求处理中 4: 请求已完成，且响应已就绪
+				if (objXmlHttp.readyState == 4 && objXmlHttp.status == 200)
+				{
+					document.getElementById("myDiv").innerHTML = objXmlHttp.responseText;
+				}
+            }
+			objXmlHttp.open("GET", "mytext.txt", true); // true异步调用
+			objXmlHttp.send();
+        }
+	</script>
+
+	<!--ajax asp页面请求-->
+	<script language="JavaScript" type="text/javascript">
+		function ShowHint(str) {
+		    if (str.length == 0)
+			{
+			    document.getElementById("textHint").innerHTML = "";
+			    return;
+			}
+
+			var objXmlHttp;
+			if (window.XMLHttpRequest)
+			{
+			    // 主流浏览器支持的对象
+				objXmlHttp = new XMLHttpRequest();
+			}
+			else
+			{
+			    // IE5,IE6支持的对象
+				objXmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			objXmlHttp.onreadystatechange = function()
+			{
+			    // readyState: 0: 请求未初始化 1: 服务器连接已建立 2: 请求已接收 3: 请求处理中 4: 请求已完成，且响应已就绪
+				if (objXmlHttp.readyState == 4 && objXmlHttp.status == 200)
+				{
+					document.getElementById("textHint").innerHTML = objXmlHttp.responseText;
+				}
+            }
+			objXmlHttp.open("GET", "hint.asp?q="+str, true); // true异步调用
+			objXmlHttp.send();
+        }
+	</script>
+
+	<!--ajax asp页面请求 获取提示信息-->
+	<script language="JavaScript" type="text/javascript">
+		function showCustomer(str) {
+		    if (str.length == 0)
+			{
+			    document.getElementById("cutomerInfo").innerHTML = "";
+			    return;
+			}
+
+			var objXmlHttp;
+			if (window.XMLHttpRequest)
+			{
+			    // 主流浏览器支持的对象
+				objXmlHttp = new XMLHttpRequest();
+			}
+			else
+			{
+			    // IE5,IE6支持的对象
+				objXmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			objXmlHttp.onreadystatechange = function()
+			{
+			    // readyState: 0: 请求未初始化 1: 服务器连接已建立 2: 请求已接收 3: 请求处理中 4: 请求已完成，且响应已就绪
+				if (objXmlHttp.readyState == 4 && objXmlHttp.status == 200)
+				{
+					document.getElementById("cutomerInfo").innerHTML = objXmlHttp.responseText;
+				}
+            }
+			objXmlHttp.open("GET", "cutomerInfo.asp?q="+str, true); // true异步调用
+			objXmlHttp.send();
+        }
+	</script>
+
+	<!--ajax XML请求 解析xml并获取内容-->
+	<script language="JavaScript" type="text/javascript">
+		function GetSongList() {
+		    //alert("hello");
+		    var table, firNode, secondNode;
+			var objXmlHttp;
+			if (window.XMLHttpRequest)
+			{
+			    // 主流浏览器支持的对象
+				objXmlHttp = new XMLHttpRequest();
+			}
+			else
+			{
+			    // IE5,IE6支持的对象
+				objXmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			objXmlHttp.onreadystatechange = function()
+			{
+			    // readyState: 0: 请求未初始化 1: 服务器连接已建立 2: 请求已接收 3: 请求处理中 4: 请求已完成，且响应已就绪
+				if (objXmlHttp.readyState == 4 && objXmlHttp.status == 200)
+				{
+				    table = "<table border='1'><tr><th>歌名</th><th>歌手</th></tr>";
+					firNode = objXmlHttp.responseXML.documentElement.getElementsByTagName("SONG");	// 获取第一个节点
+					for (var i = 0; i < firNode.length; i++)
+					{
+					    table = table + "<tr>";
+						secondNode = firNode[i].getElementsByTagName("TITLE"); // 获取第二个节点
+						{
+							try
+							{
+							    table = table + "<td>" + secondNode[0].firstChild.nodeValue + "</td>";
+							}
+							catch (e) {
+								table = table + "<td> </td>"
+                            }
+						}
+
+						secondNode = firNode[i].getElementsByTagName("ARTIST");
+						{
+							try
+							{
+							    table = table + "<td>" + secondNode[0].firstChild.nodeValue + "</td>";
+							}
+							catch (e) {
+								table = table + "<td> </td>"
+                            }
+						}
+						table = table + "</tr>";
+					}
+				}
+				table = table + "</table>";
+				document.getElementById("songInfo").innerHTML = table;
+            }
+			objXmlHttp.open("GET", "songlist.xml", true); // true异步调用
+			objXmlHttp.send();
+        }
+	</script>
+
+	<!--ajax 得到response头部信息-->
+	<script language="JavaScript" type="text/javascript">
+		function GetReshead(str) {
+			var objXmlHttp;
+			if (window.XMLHttpRequest)
+			{
+			    // 主流浏览器支持的对象
+				objXmlHttp = new XMLHttpRequest();
+			}
+			else
+			{
+			    // IE5,IE6支持的对象
+				objXmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			objXmlHttp.onreadystatechange = function()
+			{
+			    // readyState: 0: 请求未初始化 1: 服务器连接已建立 2: 请求已接收 3: 请求处理中 4: 请求已完成，且响应已就绪
+				if (objXmlHttp.readyState == 4 && objXmlHttp.status == 200)
+				{
+				    if (str == "head")
+					{
+					 	document.getElementById("headinfo").innerHTML = objXmlHttp.getAllResponseHeaders();
+					}
+					else if (str == "time")
+					{
+					    document.getElementById("headinfo").innerHTML = "File last modified time is:" + objXmlHttp.getResponseHeader("Last-Modified");
+					}
+				}
+            }
+			objXmlHttp.open("GET", "songlist.xml", true); // true异步调用
+			objXmlHttp.send();
+        }
+	</script>
+
+	<!--加载html元素-->
+	<script type="text/javascript">
+		function GetFlower()
+		{
+		    var strFlower = "";
+		    var szCon = document.getElementById("flower").innerHTML;
+
+		    if (szCon == "")
+			{
+			    strFlower = document.getElementById("flower")	.innerHTML = "<img border = \"1\" src=\"flower1.jpg\"  width=\"100\" height=\"100\">";
+		 		strFlower = strFlower + "<img border = \"1\" src=\"flower2.jpg\"  width=\"100\" height=\"100\">";
+		 		strFlower = strFlower + "<img border = \"1\" src=\"flower3.jpg\"  width=\"100\" height=\"100\">";
+			    document.getElementById("flower")	.innerHTML = strFlower;
+			}
+			else
+			{
+			    document.getElementById("flower")	.innerHTML = "";
+			}
+        }
+	</script>
+
+	 <!--加法计算器-->
+	<script type="text/javascript">
+		function  Add()
+		{
+		    if (event.keyCode == 13)
+			{
+			    var nSum;
+			    //document.getElementById("plus1").;
+				nSum = Number($("#plus1").val()) + Number($("#plus2").val());
+				if (nSum != undefined)
+				{
+				    $("#sum").val(nSum);
+				}
+			}
+		}
+	</script>
+
+	<!--使用canvas标签绘制图形-->
+	<script type="text/javascript">
+		$(function () {
+			//document.write($("#myCanvas").width() + ":"+ $("#myCanvas").height());
+			var canvas=document.getElementById('myCanvas');
+			// 2d表示2D绘图
+/*			var ctx=canvas.getContext('2d');
+			ctx.fillStyle='#5f9ea0';
+			ctx.fillRect(0,0,80,100);*/
+
+			// 绘制一个园
+			var ctx1=canvas.getContext('2d');
+			ctx1.fillStyle='#5f9ea0';
+			ctx1.beginPath();
+			ctx1.arc(100, 75, 50, 0, Math.PI * 2, false);
+			ctx1.fill();
+			// stroke() 方法会实际地绘制出通过 moveTo() 和 lineTo() 方法定义的路径。默认颜色是黑色。
+			ctx1.strokeStyle = "#aab843";
+			ctx1.stroke();
+
+			// 绘制线
+			var ctx2=canvas.getContext('2d');
+			ctx2.beginPath();
+			ctx2.moveTo(0,100);
+			// stroke() 方法会实际地绘制出通过 moveTo() 和 lineTo() 方法定义的路径。默认颜色是黑色。
+			ctx2.lineTo(0,120);
+			ctx2.lineTo(50,120);
+			ctx2.strokeStyle = "#b8a888";
+			ctx2.stroke();
+
+			// 绘制渐变
+			var ctx3=canvas.getContext('2d');
+			var grd = ctx3.createLinearGradient(0, 10, 0, 20);
+			grd.addColorStop(0, "hsla(210, 80%, 5%, 0.5)");
+			grd.addColorStop(0.7, "hsla(210, 80%, 5%, 0.8)");
+			grd.addColorStop(1, "hsla(210, 80%, 5%, 1)");
+			ctx3.fillStyle=grd;
+			ctx3.fillRect(0,10,50,50);
+        })
+	</script>
+
+	<!--单双选择-->
+	<script type="text/javascript">
+		var sdChoice = "";
+		function sdClick(arg) {
+			if (arg == "single")
+			{
+			    if (document.getElementById("single").style.cssText != "") // jquery中没有.style.cssText的功能
+				{
+					$("#single").removeAttr("style");
+				}
+				else
+				{
+					$("#single").css("background-color", "#b85859");
+			    	$("#double").removeAttr("style"); // 清除样式
+				}
+			}
+			else
+			{
+			    if (document.getElementById("double").style.cssText != "")
+				{
+					$("#double").removeAttr("style");
+				}
+				else
+				{
+					$("#double").css("background-color", "#b85859");
+					$("#single").removeAttr("style");
+				}
+			}
+        }
+
+        var timer;
+        function setTimer(flag)
+		{
+			if (flag == "start")
+			{
+			    if (timer == undefined)
+				{
+					timer = setInterval("calc()", 10000);
+				}
+			}
+			else
+			{
+			    if (timer != undefined)
+				{
+					clearInterval(timer);	// 清空定时器
+					timer = undefined;
+				}
+			}
+		}
+
+/*		$(function () {
+			var timer = setInterval("calc()", 3000);
+		})*/
+
+		function calc() {
+			var nNum1 = Math.round(Math.random()*9); // 四舍五入取整
+			var nNum2 = Math.round(Math.random()*9);
+			var nNum3 = Math.round(Math.random()*9);
+
+			$("#result1").val(nNum1);
+			$("#result2").val(nNum2);
+			$("#result3").val(nNum3);
+			$("#total").val(nNum1+nNum2+nNum3);
+
+			document.getElementById("sdresult").innerHTML = $("#total").val() + "<br>" + document.getElementById("sdresult").innerHTML;
+		}
+	</script>
+
+</head>
+<body>
+	<div>	<!--div标签会新起一行-->
+		<tr>
+			<td><img border = "1" src="sticker.jpg" usermap = "#mymap" style="position: absolute; left: 228px; top: 8px" width="100" height="100" id = "img4"></td>
+			<td width = "100" height = "100" align = "left">
+				<p>
+				<map name = "mymap">
+					<area href="second.html" shape = "rect" coords="500,500,1000,1000">
+				</map>
+					<img border = "1" src="tree.jpg" usermap = "#mymap" width="100" height="100" id="img1" onclick="IntoSecond()">
+					<img border = "1" src="cat.gif" usermap = "#mymap" width="100" height="100" id="img2">
+					<img border = "1" src="xueyou.jpg" usermap = "#mymap" width="100" height="100" id = "img3">
+			</td>
+			<td width = "50" height = "50" align = "left" rowspan="2">
+				<br>
+				<font face="方正兰亭超细黑简体" size="6" color="#5f9ea0">
+					天<br>
+					道<br>
+					酬<br>
+					勤<br>
+				</font>
+			</td>
+			<p><a href = "index.html">fountain</a></p>
+			<td align="left">
+				<span id="T" style="color: hsla(120,80%,50%,0.5)">Thanks for watching</span>
+				<span id="rd"></span>
+				<br>
+				<script language="JavaScript" type="text/javascript">
+					var obj = T.innerHTML;
+					document.write(obj+"<br>");
+					document.write("windowsize: ");
+					document.write($(window).width() + " ");
+					document.write($(window).height());
+					$(window).on("resize", T.innerHTML = "it is a joke");
+					//setInterval("Random()", 1000);
+
+					function Random() {
+						rd.innerHTML = Math.random()*10;
+                    }
+					// 跳转界面
+					function IntoSecond()
+					{
+					    // 页面跳转1
+					    window.location.href="second.html";
+
+					    // 页面跳转2
+/*					    var objImp = document.getElementById("img1");
+					    var objTmp = document.createElement("a");
+						objImp.parentNode.replaceChild(objTmp,objImp);
+					    objTmp.href = "second.html";
+					    objTmp.appendChild(objImp);*/
+					}
+
+					// $为jquery库别名 ready为页面加载后执行
+					$(document).ready(function(){
+  						$("#img3").click(function(){
+							$(this).hide();
+							$("#img4").attr({width: 50, height: 50});
+							$("#img4").show();
+  						});
+					});
+					// click() 回调函数 函数a有一个参数，这个参数是个函数b，当函数a执行完以后执行函数b
+					$(document).ready(function(){
+  						$("#img4").click(function(){
+							$(this).hide();
+							$("#img3").show();
+  						});
+					});
+				</script></p>
+			</td>
+		</tr>
+	</div>
+	<span>calc:</span><input type="number" id="plus1" style="width: 80px" onkeydown="Add()"/><span> + </span><input type="number" id="plus2" style="width: 80px" onkeydown="Add()"/>
+	<span> = </span><input type="number" id="sum" style="width: 80px" />
+	<br>
+	<br>
+	<span>Choice:</span><button id="single" value="single" onclick="sdClick(this.value)">single</button><span>   </span><button id="double" value="double" onclick="sdClick(this.value)">double</button>
+	<br>
+	<br>
+	<span>Result:</span><input type="number" id="result1" style="width: 50px"/><span> + </span><input type="number" id="result2" style="width: 50px"/>
+	<span> + </span><input type="number" id="result3" style="width: 50px"/><span> = </span><input type="number" id="total" style="width: 50px" />
+	<br>
+	<br>
+	<button type="button" value="start" onclick="setTimer(this.value)">start</button>
+	<button type="button" value="stop" onclick="setTimer(this.value)">stop</button>
+	<br>
+	<br>
+	<div id="sdresult" style="overflow: scroll; width: 100px; height: 200px"></div>
+	<br>
+	<br>
+
+	<button type="button" style="width: 60px" onclick="loadXMLDoc()">ajaxreq</button><span id="myDiv">	ready for change</span>
+	<br><br>
+	<form action="">
+		<span>showhint:</span><input type="text" id = "mytext" onkeyup="ShowHint(this.value)" />
+	</form>
+	<p><span id = "textHint"></span></p>
+	<p></p>
+
+	<form action="">
+		<label>
+			select:
+			<select name="customer" onchange="showCustomer(this.value)" style="font-family: Verdana">
+				<option></option>
+				<option value="baoan">宝安</option>
+				<option value="longgang">龙岗</option>
+				<option value="nanshan">南山</option>
+			</select>
+		</label>
+	</form>
+	<div id="cutomerInfo">Info</div>
+
+	<button type="button" style="width: 60px; height: 20px" onclick="GetSongList()">song</button>
+	<div id = "songInfo"></div>
+	<br>
+	<button type="button" style="width: 60px; height: 20px" onclick="GetReshead(this.innerHTML)">time</button>
+	<div id = "headinfo"></div>
+	<br>
+	<button type="button" style="width: 60px; height: 20px" onclick="GetFlower()">flower</button>
+	<div id = "flower"></div>
+	<br>
+
+	<div id = "mystyle">use the css file style</div>
+
+	<div id = "vuemsg">{{ message }}</div>
+	<script type = "text/javascript">
+		new Vue({
+			el: '#vuemsg',
+			data:{
+			 message: 'Hello vue.js'
+			}
+		})
+	</script>
+
+	<!--HTML5中的新的canvas标签-->
+	<canvas id="myCanvas"></canvas>
+
+</body>
+<html>
+
+<!--js获取样式丢失问题-->

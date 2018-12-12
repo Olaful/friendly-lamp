@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2042
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "PythonApplication", "PythonApplication\PythonApplication.pyproj", "{5AE9BBEC-A6F4-4C0E-8BBA-8B388FB3F2EA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
+		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5AE9BBEC-A6F4-4C0E-8BBA-8B388FB3F2EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AE9BBEC-A6F4-4C0E-8BBA-8B388FB3F2EA}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{5AE9BBEC-A6F4-4C0E-8BBA-8B388FB3F2EA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5AE9BBEC-A6F4-4C0E-8BBA-8B388FB3F2EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AE9BBEC-A6F4-4C0E-8BBA-8B388FB3F2EA}.Release|Win32.ActiveCfg = Release|Any CPU
+		{5AE9BBEC-A6F4-4C0E-8BBA-8B388FB3F2EA}.Release|x64.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BDC819C6-09FC-4DC4-AC17-D0B881ABDF00}
+	EndGlobalSection
+EndGlobal
