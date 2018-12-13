@@ -4397,6 +4397,7 @@ def webDeriver():
     # 通过css选择器查找元素
     links = driver.find_elements_by_css_selector('#results a')
     countries = [link.text for link in links]
+    hrefs = [link.get_attribute('href') for link in links]
     print(countries)
     # 关闭浏览器驱动器
     driver.close()
@@ -4650,12 +4651,32 @@ class CaptChaAPI:
 class CaptchaError(Exception):
     pass
 
+# 使用渲染引擎获取百度搜索页面
+def getBaiduData(*args):
+    "args[0]搜索的关键字 args[1]获取的页数"
+    def parseHref(x):
+        if not x.startswith('http'):
+            x = 'http://' + x
+        else:
+            x = x
+        return x
+
+    pn = [i*10 for i in range(args[1])]
+    br = BrowserRender(show=False)
+
+    for page in pn:
+        html = br.download(url='https://www.baidu.com/s?wd={0}&pn={1}'.format(args[0], page))
+
+        tree = lxml.html.fromstring(html)
+        elements = tree.cssselect('a.c-showurl')
+        hrefs = [element.text_content() for element in elements]
+        hrefs = list(map(parseHref, hrefs))
+        domains = [urlparse(href).scheme+'://'+urlparse(href).netloc for href in hrefs]
+        print(hrefs)
+        print(domains)
+
 def main():
-    API_KEY = 'X8BOZF05VI5GZGCGH1'
-    captcha = CaptChaAPI(API_KEY)
-    img = Image.open('myfile/captcha_ori.png')
-    text = captcha.solve(img)
-    print('receive the text:', text)
+    getBaiduData('风景', 2)
 
 if __name__ == '__main__':
     #---------------------------------------------------start
@@ -4664,15 +4685,7 @@ if __name__ == '__main__':
     print()
     starttime = time.time()
 
-    #main()
-    downloader = Downloader()
-    html = downloader(url='http://movie.douban.com/')
-    tree = lxml.html.fromstring(html)
-    rls = tree.cssselect('div.article div.gaia.gaia-lite.gaia-tv.slide-mode')
-    print(rls)
-    soup = BeautifulSoup(html, 'html.parser')
-    rls = soup.select('div.gaia.gaia-lite.gaia-tv.slide-mode')
-    print(rls)
+    main()
 
     #---------------------------------------------------end
     endtime = time.time()
