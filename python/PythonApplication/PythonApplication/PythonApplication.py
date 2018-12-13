@@ -3652,6 +3652,8 @@ class MongoCache:
         if self.compress:
             # pickle序列化后压缩
             result = Binary(zlib.compress(pickle.dumps(result)))
+        else:
+            result = Binary(pickle.dumps(result))
         record = {'result': result, 'timestamp': datetime.datetime.utcnow()}
         self.db.webpage.update({'_id': url}, {'$set':record}, upsert=True)
 
@@ -3661,7 +3663,7 @@ class MongoCache:
             print('get from mongodb:',url)
             if self.compress:
                 return pickle.loads(zlib.decompress(record['result']))
-            return record['result']
+            return pickle.loads(record['result'])
         else:
             raise KeyError(url + 'dose not exist')
 
@@ -3724,7 +3726,9 @@ def link_crawler(seed_url, link_regex, delay=3, timeout=1000, max_urls=10, max_d
                     # 已经抓取过的不再抓取，也可以避免在互相有各自连接的两个页面之间反复跳跃
                     if link not in seen:
                         seen[link] = depth + 1
-                        craw_queue.append(link)
+                        # 只抓取同一domain的链接
+                        if urlparse(seed_url).netloc == urlparse(link).netloc:
+                            craw_queue.append(link)
         num_urls += 1
         if num_urls == max_urls:
             break
@@ -3742,6 +3746,7 @@ from urllib import robotparser
 
 rp = robotparser.RobotFileParser()
 rp.set_url('http://example.webscraping.com/robots.txt')
+rp.read()
 user_agent = 'BadCrawler'
 user_agent = 'GooddCrawler'
 # 检查是否可以指定代理访问网站
@@ -4664,7 +4669,7 @@ def getBaiduData(*args):
         return x
 
     pn = [i*10 for i in range(args[1])]
-    br = BrowserRender(show=False)
+    br = BrowserRender(show=True)
 
     for page in pn:
         html = br.download(url='https://www.baidu.com/s?wd={0}&pn={1}'.format(args[0], page))
@@ -4677,6 +4682,7 @@ def getBaiduData(*args):
         print(hrefs)
         print(domains)
 
+    br.keepWindow()
 def main():
     getBaiduData('风景', 2)
 
