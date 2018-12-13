@@ -3571,6 +3571,7 @@ class DiskCache:
         if not os.path.exists(folder):
             os.makedirs(folder)
         # 序列化数据与存取的时间,
+        # 将数据通过特殊的形式转换为只有python语言认识的字符串
         data = pickle.dumps((result, datetime.datetime.utcnow()))
         if self.compress:
             data = zlib.compress(data)
@@ -3587,6 +3588,7 @@ class DiskCache:
                 if self.compress:
                     data = zlib.decompress(data)
                     # 序列化数据后获取
+                    # 将pickle数据转换为python的数据结构
                 result, timestamp = pickle.loads(data)
                 if self.has_expired(timestamp):
                     self.clear()
