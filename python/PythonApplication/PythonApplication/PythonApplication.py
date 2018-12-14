@@ -4042,7 +4042,7 @@ def thread_link_crawler_tmp(seed_url, delay=3, timeout=1000, user_agent='wswp', 
             thread.setDaemon(True)
             thread.start()
             threads.append(thread)
-        sleep(TIME_SLEEP)
+            sleep(TIME_SLEEP)
 
 # 单线程
 def simple_link_crawler(seed_url, delay=3, timeout=1000, user_agent='wswp', max_threads=5, proxies=None, num_retries=1, scrape_callback = None, cache=None):
@@ -4059,7 +4059,7 @@ def simple_link_crawler(seed_url, delay=3, timeout=1000, user_agent='wswp', max_
 #thread_link_crawler('', delay=0, timeout=1000, user_agent='wswp', max_threads=5, proxies=None, num_retries=1, scrape_callback = GetUrlCallback(), cache=None)
 
 import timeit
-# 时间比大约为1:count(max_threads)
+# 时间比大约为1:max_threads
 # 112sec
 #t = timeit.Timer("thread_link_crawler('', delay=0, timeout=20, user_agent='wswp', max_threads=5, proxies=None, num_retries=1, scrape_callback = GetUrlCallback(), cache=None)",
 #                 setup="from __main__ import thread_link_crawler, GetUrlCallback").timeit(1)
@@ -4096,7 +4096,6 @@ class MongoQueue:
         # 重复记录处理
         except errors.DuplicateKeyError as e:
             print(url, 'already exist in the database')
-            pass
 
     # 取一条处于待处理状态的url，并置其状态为处理中，并加上开始处理的时间
     # 补充'set'待设置的集合，相当于一条记录，'$lt'小于，'$ne'不等于，还有'gt'大于
@@ -4176,8 +4175,8 @@ def thread_link_crawler(seed_url, delay=3, timeout=1000, user_agent='wswp', max_
             thread.setDaemon(True)
             thread.start()
             threads.append(thread)
-        # 等待上一个进程开启完后再开启下一个进程
-        sleep(TIME_SLEEP)
+            # 等待上一个进程开启完后再开启下一个进程
+            sleep(TIME_SLEEP)
 
 import multiprocessing
 # 多进程爬取，每个进程中包含了多线程爬取函数
@@ -4235,6 +4234,7 @@ def getInfoByJson(max_urls = 50):
                 try:
                     ajax = json.loads(html)
                 # 类似'{"key1":"values", "key2":"values2"}'这样的包含字典的字符串才能解析成字典返回
+                # key,value以双引号包围
                 except json.decoder.JSONDecodeError as e:
                     print(e)
                     ajax = None
