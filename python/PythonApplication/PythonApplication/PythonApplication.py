@@ -21,12 +21,15 @@ j = 0
 temp = 0
 print(time.time())
 while i < nLen:
+    swap = False
     while j < nLen - i - 1:
         if listNum[j] > listNum[j+1]:
             temp = listNum[j+1]
             listNum[j+1] = listNum[j]
             listNum[j] = temp
+            swap = True
         j = j + 1
+    if !swap: break
     i = i + 1
 print(time.time())
 print(listNum)
@@ -4387,7 +4390,10 @@ class BrowserRender(QWebView):
 from selenium import webdriver
 def webDeriver():
     # webdriver能使用响应浏览器的驱动打开浏览器
-    driver = webdriver.Chrome(executable_path=r'C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe')
+    chrome_options = webdriver.ChromeOptions()
+    # 隐藏浏览器窗口
+    chrome_options.add_argument('--headless')
+    driver = webdriver.Chrome(executable_path=r'C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe', chrome_options=chrome_options)
     driver.get('http://example.webscraping.com/places/default/search')
     # 向页面中的元素填充内容
     driver.find_element_by_id('search_term').send_keys('.')
@@ -4401,16 +4407,16 @@ def webDeriver():
     # 查找的元素如果超过这个时间出现，则抛出异常
     driver.implicitly_wait(30)
 
-    # 通过css选择器查找元素
+    # 通过css选择器查找元素，其他匹配模式例如，通过属性匹配：div[name="value"]，正则匹配div[name^="value"]
     links = driver.find_elements_by_css_selector('#results a')
     countries = [link.text for link in links]
     hrefs = [link.get_attribute('href') for link in links]
     print(countries)
-    # 关闭浏览器驱动器
+    # 关闭浏览器驱动器，关闭后，对象的session状态也会被取消
     driver.close()
 
 
-def main(url):
+def main_webkit(url):
     br = BrowserRender(show=True)
     br.download('http://example.webscraping.com/places/default/search')
     # 模拟界面点击过程: 填写值->点击按钮
@@ -4435,6 +4441,7 @@ def getFormData(html):
 def autoLogin():
     from urllib.parse import urlencode
     import http.cookiejar
+    import ssl
 
     url = 'http://example.webscraping.com/places/default/user/login?_next=/places/default/index'
     email = 'test123@test.com'
@@ -4443,6 +4450,10 @@ def autoLogin():
     # 处理与cookie的交互
     cj = http.cookiejar.CookieJar()
     opener = build_opener(urllib.request.HTTPCookieProcessor(cj))
+
+    # 如果访问https页面，可能会进行ssl认证，这时可以手动取消认证
+    #cxt = ssl._create_unverified_context()
+    #opener = build_opener(urllib.request.HTTPCookieProcessor(cj)，urllib.request.HTTPSHandler(context=cxt))
 
     # 服务器会获取表单元素中name所指的字段的值
     html = opener.open(url).read()
@@ -4507,7 +4518,7 @@ def autoLogin():
 # 使用mechanize获取表单内容自动登录
 def useMechLogin():
     import mechanicalsoup
-    browser = mechanicalsoup.StatefulBrowser()
+    browser = mechanicalsoup.StatefulBrowser(soup_config={'features': 'lxml'})
     urlLogin = 'http://example.webscraping.com/places/default/user/login?_next=/places/default/index'
     browser.open(urlLogin)
     # nr=0选择匹配到的第一个form
@@ -4516,6 +4527,7 @@ def useMechLogin():
     browser['password'] = 'test'
     # 提交所选择的表单的内容
     browser.submit_selected()
+    browser.close()
 
 from PIL import Image
 from io import BytesIO
@@ -4658,7 +4670,7 @@ class CaptChaAPI:
 class CaptchaError(Exception):
     pass
 
-# 使用渲染引擎获取百度搜索页面
+# 使用渲染引擎获取百度搜索页面链接
 def getBaiduData(*args):
     "args[0]搜索的关键字 args[1]获取的页数"
     def parseHref(x):
@@ -4679,12 +4691,11 @@ def getBaiduData(*args):
         hrefs = [element.text_content() for element in elements]
         hrefs = list(map(parseHref, hrefs))
         domains = [urlparse(href).scheme+'://'+urlparse(href).netloc for href in hrefs]
-        print(hrefs)
         print(domains)
 
     br.keepWindow()
 def main():
-    getBaiduData('风景', 2)
+    getBaiduData('风景', 10)
 
 if __name__ == '__main__':
     #---------------------------------------------------start
