@@ -75,6 +75,11 @@ DOWNLOADER_MIDDLEWARES = {
 #    'srppro.pipelines.SrpproPipeline': 300,
 #}
 
+ITEM_PIPELINES = {
+   'srppro.pipelines.SrpproPipeline': 300,
+   #'srppro.pipelines.MongoPipeline': 301,
+}
+
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://doc.scrapy.org/en/latest/topics/autothrottle.html
 #AUTOTHROTTLE_ENABLED = True
@@ -95,3 +100,6 @@ DOWNLOADER_MIDDLEWARES = {
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+
+MONGO_URI = 'localhost'
+MONGO_DATABASE = 'CSDN'
