@@ -7,6 +7,10 @@
 
 from scrapy.exceptions import DropItem
 
+import scrapy
+
+from scrapy.pipelines.images import ImagesPipeline
+
 import json
 
 import pymongo
@@ -15,13 +19,13 @@ import pymongo
 # 需要在setting文件中配置ITEM_PIPELINES使其生效
 class SrpproPipeline(object):
     def __init__(self):
-        self.file = open('myfile/item.json', 'wb')
+        self.file = open('myfile/item.json', 'w', encoding='utf-8')
 
     def process_item(self, item, spider):
         if item['title']:
             # json序列化
-            line = json.dumps(dict(item)) + '\n'
-            self.file.write(line.encode())
+            line = json.dumps(dict(item), ensure_ascii=False) + '\n'
+            self.file.write(line)
             # process_item方法要返回item，否则item无法传递给其他方法处理
             return item
         else:
@@ -61,3 +65,20 @@ class DuplicatesPipeline(object):
             raise DropItem('Duplicate item found:{}'.format(item))
         else: 
             return item
+
+class CSDNImagesPipeline(ImagesPipeline):
+    # image_urls组中的图片将会被下载，获取所有图片的url,完成后把结果将会以元组的形式传给item_completed方法
+    # 元组形式:[(True, {'checksum':'md5 hash', 'path':‘full/sha1 hash', 'url':'image url'}), (XX),..]
+    # 保存的图片文件名是经过hash处理过的，也可以重写file_path方法自定义文件名，True下载成功，否则失败
+    # 文件没有过期的话不会被重新下载
+    def get_media_requests(self, item, info):
+        for image_url in item["image_urls"]:
+            yield scrapy.Request(image_url)
+    
+    # 获取成功的image路径信息
+    def item_completed(self, results, item, info):
+        image_paths = [x['path'] for ok, x in results if ok]
+        if not image_paths:
+            raise DropItem('Item contains no images')
+        item['images'] = image_paths
+        return item

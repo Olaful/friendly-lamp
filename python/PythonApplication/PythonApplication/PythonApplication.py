@@ -4694,8 +4694,31 @@ def getBaiduData(*args):
         print(domains)
 
     br.keepWindow()
+
+def runCrwal():
+    from subprocess import Popen, PIPE
+    os.chdir(r'srppro')
+
+    # scrapy命令
+    run_crawl_dmoz = 'scrapy crawl dmoz'
+    run_crawl_csimage = 'scrapy crawl csimage'
+    run_crawl_shell = 'scrapy shell "https://www.csdn.net"'
+    run_crawl_o_json = 'scrapy crawl dmoz -o myfile/item.json'
+    run_crawl_o_csv = 'scrapy crawl dmoz -o myfile/item.csv'
+    run_crawl_o_xml = 'scrapy crawl dmoz -o myfile/item.xml'
+    run_crawl_o_localfile = 'scrapy crawl dmoz -o file:///e:/git/Olaful/Olaful.github.io/python/PythonApplication/PythonApplication/srppro/myfile/file.csv'
+    
+    auth_info = ('ta', 'qweasd', '192.168.123.175')
+    run_crawl_o_ftp = 'scrapy crawl dmoz -o ftp://{0}:{1}@{2}/ftpitem.csv'.format(*auth_info)
+    # name会被spider名称所覆盖,time被timestamp覆盖
+    run_crawl_o_ftp_autoname = 'scrapy crawl dmoz -o ftp://{0}:{1}@{2}/%(name)s_%(time)s.csv'.format(*auth_info)
+    # file_name会被spider的属性file_name所覆盖
+    run_crawl_o_ftp_autoproname = 'scrapy crawl dmoz -o ftp://{0}:{1}@{2}/%(file_name)s.csv'.format(*auth_info)
+
+    Popen(run_crawl_csimage, stdout=None, stderr=None)
+
 def main():
-    getBaiduData('风景', 10)
+    runCrwal()
 
 if __name__ == '__main__':
     #---------------------------------------------------start

@@ -76,8 +76,9 @@ DOWNLOADER_MIDDLEWARES = {
 #}
 
 ITEM_PIPELINES = {
-   'srppro.pipelines.SrpproPipeline': 300,
+   #'srppro.pipelines.SrpproPipeline': 300,
    #'srppro.pipelines.MongoPipeline': 301,
+   'srppro.pipelines.CSDNImagesPipeline': 302,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -101,5 +102,18 @@ ITEM_PIPELINES = {
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
+# mongodb数据库
 MONGO_URI = 'localhost'
 MONGO_DATABASE = 'CSDN'
+
+# 图片参数
+IMAGES_STORE = "myfile/image"
+IMAGES_EXPIRES = 2
+# 缩略尺寸
+IMAGES_THUMBS = {
+    'small':(50, 50),
+    'big':(250, 250),
+}
+# 根据大小限制图片下载
+IMAGES_MIN_HEIGHT = 50
+IMAGES_MIN_WIDTH = 50

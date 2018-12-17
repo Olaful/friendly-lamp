@@ -16,5 +16,10 @@ class SrpproItem(scrapy.Item):
 class DmozItem(scrapy.Item):
     title = scrapy.Field()
     link = scrapy.Field()
-    desc = scrapy.Field()
-    date = scrapy.Field()
+    #desc = scrapy.Field()
+    #date = scrapy.Field()
+
+# 图片组
+class CSDNItemImg(scrapy.Item):
+    image_urls = scrapy.Field()
+    images = scrapy.Field()
