@@ -8,6 +8,7 @@ from urllib.parse import urljoin
 
 # 处理过程：1.spider的parse函数产生item; 2.到setting文件中查找ITEM_PIPELINES
 # 3.从 ITEM_PIPELINES中找出pipeline来处理
+# 开启爬虫会调用Spider的spider_opened方法
 class DmozSpider(scrapy.spiders.Spider):
     name = 'dmoz'
     file_name = 'csdn'

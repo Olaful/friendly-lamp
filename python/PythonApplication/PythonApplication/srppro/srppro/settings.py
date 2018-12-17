@@ -38,7 +38,7 @@ CONCURRENT_REQUESTS_PER_DOMAIN = 1
 #COOKIES_ENABLED = False
 
 # Disable Telnet Console (enabled by default)
-#TELNETCONSOLE_ENABLED = False
+TELNETCONSOLE_ENABLED = True
 
 # Override the default request headers:
 #DEFAULT_REQUEST_HEADERS = {
@@ -65,9 +65,12 @@ DOWNLOADER_MIDDLEWARES = {
 
 # Enable or disable extensions
 # See https://doc.scrapy.org/en/latest/topics/extensions.html
-#EXTENSIONS = {
-#    'scrapy.extensions.telnet.TelnetConsole': None,
-#}
+# 通用扩展，其他通用扩展还有logstats基本统计信息扩展，发送邮件，内存调试扩展等，
+# None不启用，但扩展可能也会受到其他设置的影响，导致扩展不生效
+# 如以下TelnetConsole扩展依赖TELNETCONSOLE_ENABLED
+EXTENSIONS = {
+    'scrapy.extensions.telnet.TelnetConsole': 1,
+}
 
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
