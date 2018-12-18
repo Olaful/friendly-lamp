@@ -16,24 +16,27 @@ import re
 # 3.从 ITEM_PIPELINES中找出pipeline来处理
 # 开启爬虫会调用Spider的spider_opened方法
 class DmozSpider(scrapy.spiders.Spider):
-    name = 'dmoz'
+    name = 'csdn_article'
     file_name = 'csdn'
     allowed_domains = ["csdn.net"]
-
-    linkslist = []
-    reg_links = re.compile(r'<a[\s]+href="(.*?)".*?</a>')
-    get_links(url='https://www.csdn.net', reg_links=reg_links, max_link=10)
     # 每个url绑定一个scrapy的request对象，request对象将返回结果
     # 作为参数调用parse函数
-    start_urls = ["https://www.csdn.net"]
+    start_urls = ['https://www.csdn.net']
+
+    def __init__(self):
+        super().__init__(self)
+        # 获取网站中指定数量的链接
+        self.get_links(url='https://www.csdn.net', reg_link=re.compile(r'<a[\s]+href="(.*?)".*?</a>'), max_link=20)
 
     def parse(self, response):
         # filename = response.url.split("/")[-2]
         # with open('myfile/'+filename, 'wb') as f:
         #     f.write(response.body)
 
+        xpath_div = '//div[@class="nav_com"]/ul/li'
+        xpath_main = '//main/ul/li/*/*/*/a'
         # 返回xpath selector列表，response.css：选择css选择器，response.selector.xpath：选择xpath选择器
-        for sel in response.xpath('//div[@class="nav_com"]/ul/li'):
+        for sel in response.xpath(xpath_main):
             # 基于上层xpath使用绝对路径,也可以使用sel.xpath(.//div)指定
             # title = sel.xpath('/div/div/h2/a/text()').extract()
             # 选择h2下第一个a标签
@@ -63,8 +66,8 @@ class DmozSpider(scrapy.spiders.Spider):
             #item = DmozItem(title="", link="")
 
             # unicode编码为utf-8
-            item['title'] = sel.xpath('a/text()')[0].extract()
-            item['link'] = urljoin(response.url, sel.xpath('a/@href')[0].extract())
+            item['title'] = sel.xpath('text()')[0].extract().replace('\n','').strip()
+            item['link'] = urljoin(response.url, sel.xpath('@href')[0].extract())
 
             # 保存后的item可以用于存储，1:在scrapy 命令指定-o选项，2:在pippeline中自定义处理
             yield item
@@ -82,12 +85,12 @@ class DmozSpider(scrapy.spiders.Spider):
 
     def get_links(self, url=None, reg_link=None, max_link=10):
         html = urlopen(url).read().decode()
-        reg_links = re.compile('<a[\s]+href="(.*?)".*?</a>')
         links = reg_link.findall(html)
         links = [urljoin(url, link) for link in links]
         links = [link for link in links if urlparse(link).netloc.find('csdn') != 0]
-        self.linkslist.extend(links)
-        if max_link <= len(self.linkslist): return
+        self.start_urls.extend(links)
+
+        if max_link <= len(self.start_urls): return
         for link in links:
             self.get_links(link, max_link)
 

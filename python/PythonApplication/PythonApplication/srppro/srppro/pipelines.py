@@ -47,14 +47,20 @@ class MongoPipeline(object):
         'spider 开启后调用'
         self.client = pymongo.MongoClient(self.mongo_uri)
         self.db = self.client[self.mongo_db]
+        collection_name = spider.__class__.__name__
+        self.db[collection_name].drop()
 
     def close_spider(self, spider):
         'spider 关闭后调用'
         self.client.close()
 
     def process_item(self, item, spider):
-        collection_name = item.__class__.__name__
-        self.db[collection_name].insert(dict(item))
+        collection_name = spider.__class__.__name__
+        data_insert = {'_id':item["link"], 'title':item['title']}
+        try:
+            self.db[collection_name].insert(dict(data_insert))
+        except pymongo.errors.DuplicateKeyError:
+            pass
 
 # 简单去重
 class DuplicatesPipeline(object):

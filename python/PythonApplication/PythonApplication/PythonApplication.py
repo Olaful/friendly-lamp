@@ -3911,6 +3911,8 @@ if 1 > 2:
     #db.webpage.insert({'url':url, 'html':'hello American-Samoa'})
     result = db.webpage.find_one({'url':url})
     result = db.webpage.find({'url':url}).count()
+    # 正则模糊查询
+    result = db.webpage.find({'url':{'$regex':'xx'}}).count()
 
     # 查询_id字段值为url，如果不存在则插入$set
     db.webpage.update({'_id': url}, {'$set':{'html':'old_html'}}, upsert=True)
@@ -4722,7 +4724,7 @@ def runCrwal():
     crawl_benchmark = 'scrapy bench'
     create_crawler_pro = 'scrapy startproject test'
     create_spider = 'scrapy genspider myspider XX.com'
-    run_crawl_dmoz = 'scrapy crawl dmoz'
+    run_crawl_dmoz = 'scrapy crawl csdn_article'
     run_crawl_csimage = 'scrapy crawl csimage'
     run_crawl_shell = 'scrapy shell "https://www.csdn.net"'
     # 导出item
@@ -4738,7 +4740,7 @@ def runCrwal():
     # file_name会被spider的属性file_name所覆盖
     run_crawl_o_ftp_autoproname = 'scrapy crawl dmoz -o ftp://{0}:{1}@{2}/%(file_name)s.csv'.format(*auth_info)
 
-    Popen(crawl_check2, stdout=None, stderr=None)
+    Popen(run_crawl_dmoz, stdout=None, stderr=None)
 
 def main():
     runCrwal()

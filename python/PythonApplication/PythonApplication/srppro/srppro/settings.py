@@ -87,7 +87,7 @@ EXTENSIONS = {
 
 ITEM_PIPELINES = {
    #'srppro.pipelines.SrpproPipeline': 300,
-   #'srppro.pipelines.MongoPipeline': 301,
+   'srppro.pipelines.MongoPipeline': 301,
    #'srppro.pipelines.CSDNImagesPipeline': 302,
 }
 
