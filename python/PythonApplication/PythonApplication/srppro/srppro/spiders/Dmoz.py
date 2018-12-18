@@ -4,7 +4,13 @@ from srppro.items import DmozItem, CSDNItemImg
 
 from scrapy.loader import ItemLoader
 
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlparse
+
+import time
+
+from urllib.request import urlopen
+
+import re
 
 # 处理过程：1.spider的parse函数产生item; 2.到setting文件中查找ITEM_PIPELINES
 # 3.从 ITEM_PIPELINES中找出pipeline来处理
@@ -13,6 +19,10 @@ class DmozSpider(scrapy.spiders.Spider):
     name = 'dmoz'
     file_name = 'csdn'
     allowed_domains = ["csdn.net"]
+
+    linkslist = []
+    reg_links = re.compile(r'<a[\s]+href="(.*?)".*?</a>')
+    get_links(url='https://www.csdn.net', reg_links=reg_links, max_link=10)
     # 每个url绑定一个scrapy的request对象，request对象将返回结果
     # 作为参数调用parse函数
     start_urls = ["https://www.csdn.net"]
@@ -47,7 +57,11 @@ class DmozSpider(scrapy.spiders.Spider):
             # link = sel.xpath('/div[contains(@class,'list_con')]/div/h2/a/@href').extract()
             #print('mylog---:',title, link)
 
+            # 返回类字典对象，可以使用常用的dict API方法
             item = DmozItem()
+            # 赋初始值
+            #item = DmozItem(title="", link="")
+
             # unicode编码为utf-8
             item['title'] = sel.xpath('a/text()')[0].extract()
             item['link'] = urljoin(response.url, sel.xpath('a/@href')[0].extract())
@@ -65,6 +79,17 @@ class DmozSpider(scrapy.spiders.Spider):
         # l.add_value('date', 'today')
 
         # return l.load_item()
+
+    def get_links(self, url=None, reg_link=None, max_link=10):
+        html = urlopen(url).read().decode()
+        reg_links = re.compile('<a[\s]+href="(.*?)".*?</a>')
+        links = reg_link.findall(html)
+        links = [urljoin(url, link) for link in links]
+        links = [link for link in links if urlparse(link).netloc.find('csdn') != 0]
+        self.linkslist.extend(links)
+        if max_link <= len(self.linkslist): return
+        for link in links:
+            self.get_links(link, max_link)
 
 class CSDNImageSpider(scrapy.spiders.Spider):
     name = 'csimage'

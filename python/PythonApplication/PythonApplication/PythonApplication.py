@@ -4700,9 +4700,32 @@ def runCrwal():
     os.chdir(r'srppro')
 
     # scrapy命令
+    crawl_check = 'scrapy check -l'
+    crawl_check2 = 'scrapy check'
+    crawl_list = 'scrapy list'
+    crawl_edit = 'scrapy edit dmoz'
+    # 下载页面
+    crawl_fetch = 'scrapy fetch --nolog https://www.csdn.net'
+    crawl_fetch2 = 'scrapy fetch --nolog --headers https://www.csdn.net'
+    # 在浏览器中打开url
+    crawl_view = 'scrapy view https://www.csdn.net'
+    # 使用给定的spider的parse函数进行处理
+    crawl_parse = 'scrapy parse https://www.csdn.net --spider=dmoz'
+    # 指定spider的函数
+    crawl_parse1 = 'scrapy parse https://www.csdn.net --spider=dmoz -c parse'
+    crawl_parse2 = 'scrapy parse https://www.csdn.net --spider=dmoz --noitems'
+    crawl_parse3 = 'scrapy parse https://www.csdn.net --spider=dmoz --nolinks'
+    crawl_parse4 = 'scrapy parse https://www.csdn.net --spider=dmoz -v'
+    crawl_settings = 'scrapy settings --get BOT_NAME'
+    crawl_runspider = 'scrapy runspider PythonApplication.py'
+    crawl_v = 'scrapy version -v'
+    crawl_benchmark = 'scrapy bench'
+    create_crawler_pro = 'scrapy startproject test'
+    create_spider = 'scrapy genspider myspider XX.com'
     run_crawl_dmoz = 'scrapy crawl dmoz'
     run_crawl_csimage = 'scrapy crawl csimage'
     run_crawl_shell = 'scrapy shell "https://www.csdn.net"'
+    # 导出item
     run_crawl_o_json = 'scrapy crawl dmoz -o myfile/item.json'
     run_crawl_o_csv = 'scrapy crawl dmoz -o myfile/item.csv'
     run_crawl_o_xml = 'scrapy crawl dmoz -o myfile/item.xml'
@@ -4715,7 +4738,7 @@ def runCrwal():
     # file_name会被spider的属性file_name所覆盖
     run_crawl_o_ftp_autoproname = 'scrapy crawl dmoz -o ftp://{0}:{1}@{2}/%(file_name)s.csv'.format(*auth_info)
 
-    Popen(run_crawl_csimage, stdout=None, stderr=None)
+    Popen(crawl_check2, stdout=None, stderr=None)
 
 def main():
     runCrwal()

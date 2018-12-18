@@ -29,7 +29,7 @@ ROBOTSTXT_OBEY = False
 # See also autothrottle settings and docs
 # 延时并不是精确的，因为精确的请求同样会被反爬虫检测到，
 # 所以在每个延时中间添加随机的偏移量
-DOWNLOAD_DELAY = 3
+DOWNLOAD_DELAY = 1
 # The download delay setting will honor only one of:
 CONCURRENT_REQUESTS_PER_DOMAIN = 1
 #CONCURRENT_REQUESTS_PER_IP = 16
@@ -38,7 +38,11 @@ CONCURRENT_REQUESTS_PER_DOMAIN = 1
 #COOKIES_ENABLED = False
 
 # Disable Telnet Console (enabled by default)
-TELNETCONSOLE_ENABLED = True
+TELNETCONSOLE_ENABLED = False
+
+# telnet配置
+TELNETCONSOLE_PORT = [6023, 6073]
+TELNETCONSOLE_HOST = '127.0.0.1'
 
 # Override the default request headers:
 #DEFAULT_REQUEST_HEADERS = {
@@ -68,8 +72,11 @@ DOWNLOADER_MIDDLEWARES = {
 # 通用扩展，其他通用扩展还有logstats基本统计信息扩展，发送邮件，内存调试扩展等，
 # None不启用，但扩展可能也会受到其他设置的影响，导致扩展不生效
 # 如以下TelnetConsole扩展依赖TELNETCONSOLE_ENABLED
+# 有些扩展如果依赖项设置了，则会默认开启
 EXTENSIONS = {
-    'scrapy.extensions.telnet.TelnetConsole': 1,
+    #'scrapy.extensions.telnet.TelnetConsole': 1,
+    #'scrapy.extensions.closespider.CloseSpider': 1,
+    #'scrapy.extensions.statsmailer.StatsMailer': 1,
 }
 
 # Configure item pipelines
@@ -81,7 +88,7 @@ EXTENSIONS = {
 ITEM_PIPELINES = {
    #'srppro.pipelines.SrpproPipeline': 300,
    #'srppro.pipelines.MongoPipeline': 301,
-   'srppro.pipelines.CSDNImagesPipeline': 302,
+   #'srppro.pipelines.CSDNImagesPipeline': 302,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -120,3 +127,22 @@ IMAGES_THUMBS = {
 # 根据大小限制图片下载
 IMAGES_MIN_HEIGHT = 50
 IMAGES_MIN_WIDTH = 50
+
+# closespider扩展配置
+#CLOSESPIDER_ITEMCOUNT = 5
+# CLOSESPIDER_TIMEOUT = 30
+# CLOSESPIDER_PAGECOUNT = 5
+# CLOSESPIDER_ERRORCOUNT = 10
+
+# 邮件扩展配置
+STATSMAILER_RCPTS = '1764740905@qq.com'
+
+# 发送邮件的服务器
+MAIL_HOST = 'smtp.qq.com'
+# 邮件发送者
+MAIL_FROM = '1764740905@qq.com'
+# 发送端口号
+MAIL_PORT = 25
+# 登录到stmp服务需要的验证信息
+MAIL_PASS = ""
+MAIL_USER = "1764740905@qq.com"
