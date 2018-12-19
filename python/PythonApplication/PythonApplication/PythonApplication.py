@@ -4726,6 +4726,7 @@ def runCrwal():
     create_spider = 'scrapy genspider myspider XX.com'
     run_crawl_dmoz = 'scrapy crawl csdn_article'
     run_crawl_csimage = 'scrapy crawl csimage'
+    run_crawl_example = 'scrapy crawl example.com'
     run_crawl_shell = 'scrapy shell "https://www.csdn.net"'
     # 导出item
     run_crawl_o_json = 'scrapy crawl dmoz -o myfile/item.json'
@@ -4740,7 +4741,7 @@ def runCrwal():
     # file_name会被spider的属性file_name所覆盖
     run_crawl_o_ftp_autoproname = 'scrapy crawl dmoz -o ftp://{0}:{1}@{2}/%(file_name)s.csv'.format(*auth_info)
 
-    Popen(run_crawl_dmoz, stdout=None, stderr=None)
+    Popen(run_crawl_example, stdout=None, stderr=None)
 
 def main():
     runCrwal()

@@ -12,6 +12,8 @@ from urllib.request import urlopen
 
 import re
 
+import lxml.html
+
 # 处理过程：1.spider的parse函数产生item; 2.到setting文件中查找ITEM_PIPELINES
 # 3.从 ITEM_PIPELINES中找出pipeline来处理
 # 开启爬虫会调用Spider的spider_opened方法
@@ -105,18 +107,33 @@ class CSDNImageSpider(scrapy.spiders.Spider):
             item['image_urls'] = sel.xpath('@src').extract()
             yield item
 
+# 实现表单的登录，如果表单需要与cookie数据对比，则在setting中开启cookie
 class LoginSpider(scrapy.spiders.Spider):
     name = 'example.com'
     allowed_domains = ['example.webscraping.com']
     start_urls = ["http://example.webscraping.com/places/default/user/login"]
 
     def parse(self, response):
+        formdata = self.getFormData(response.body)
+        formdata['email'] = 'test123@test.com'
+        formdata['password'] = 'test'
         return scrapy.FormRequest.from_response(
             response,
-            formdata={'auth_user_email':'test123@test.com', 'auth_user_password__row':'test'},
-            callback=''
+            formdata=formdata,
+            callback=self.afterlogin
         )
 
+    def getFormData(self, html):
+        tree = lxml.html.fromstring(html.decode())
+        data = {}
+        for e in tree.cssselect('form input'):
+            if e.get('name'):
+                data[e.get('name')] = e.get('value')
+        return data
+
     def afterlogin(self, response):
+        if "user/login" in response.url:
+            self.logger.info('Login failed:')
+            return
         
         

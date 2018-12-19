@@ -35,10 +35,10 @@ CONCURRENT_REQUESTS_PER_DOMAIN = 1
 #CONCURRENT_REQUESTS_PER_IP = 16
 
 # Disable cookies (enabled by default)
-#COOKIES_ENABLED = False
+COOKIES_ENABLED = True
 
 # Disable Telnet Console (enabled by default)
-TELNETCONSOLE_ENABLED = False
+TELNETCONSOLE_ENABLED = True
 
 # telnet配置
 TELNETCONSOLE_PORT = [6023, 6073]
@@ -87,7 +87,7 @@ EXTENSIONS = {
 
 ITEM_PIPELINES = {
    #'srppro.pipelines.SrpproPipeline': 300,
-   'srppro.pipelines.MongoPipeline': 301,
+   #'srppro.pipelines.MongoPipeline': 301,
    #'srppro.pipelines.CSDNImagesPipeline': 302,
 }
 
@@ -146,3 +146,8 @@ MAIL_PORT = 25
 # 登录到stmp服务需要的验证信息
 MAIL_PASS = ""
 MAIL_USER = "1764740905@qq.com"
+
+# 网站连接广度优先爬取设定，默认是深度优先
+# DEPTH_PRIORITY = 1
+# SCHEDULER_DISK_QUEUE = 'scrapy.squeue.PickleFifoDiskQueue'
+# SCHEDULER_MEMORY_QUEUE = 'scrapy.squeue.FifoMemoryQueue'
