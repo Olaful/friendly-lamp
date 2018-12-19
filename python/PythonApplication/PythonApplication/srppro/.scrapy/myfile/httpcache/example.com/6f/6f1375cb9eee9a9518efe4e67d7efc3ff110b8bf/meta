@@ -1,0 +1,1 @@
+{'url': 'http://example.webscraping.com/places/default/user/login', 'method': 'POST', 'status': 303, 'response_url': 'http://example.webscraping.com/places/default/user/login', 'timestamp': 1545229389.2546}

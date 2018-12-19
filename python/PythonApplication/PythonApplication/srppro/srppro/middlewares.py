@@ -69,6 +69,8 @@ class SrpproDownloaderMiddleware(object):
         crawler.signals.connect(s.spider_opened, signal=signals.spider_opened)
         return s
 
+    # 如果返回response，则scrapy引擎不会调用其他process_request方法，执行process_response方法
+    # 所以可在此返回自己本地的response，这样就不用再请求网络了
     def process_request(self, request, spider):
         # Called for each request that goes through the downloader
         # middleware.

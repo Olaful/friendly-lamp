@@ -1,0 +1,11 @@
+Server: nginx
+Date: Wed, 19 Dec 2018 14:25:37 GMT
+Content-Type: text/html; charset=utf-8
+Vary: Accept-Encoding
+X-Powered-By: web2py
+Set-Cookie: session_id_places=True; httponly; Path=/
+Set-Cookie: session_data_places="97bda09e658c1ee74c20205464fa82ca:1oJCq9fyt0EwAxoWaGSLcDBNmrlo2sanbOCLX9H1E3mKjk3ukbA337hlv9hj2qo0o0hp2pyIeZUPB8qJ2ngBRyBN28se0qlrhuWQrQwi4SMOwGgqc64jpYG4wmxs5-WA1-FM_GOyEBo8qV4q01TAsg894uHg0xGSqx-JG-iQPQySS5MyrmmN1OMtG2IAKYMg4Gos9v9HEYDkZgkucFn305JDW0cpBWtmqgNTrG5fvNk2PU2nDmChhHKVYf9kdOEslnFTKuDB2woHvu9FCs-1rHKb9BooTi7E9GzaOSU6cL0kEPJYd0f1uq9O9b7A5eMabGHDneUTddqoRoh2BkuLP5GRee3WSnm56pI0eCrBqIO0oRuKTXgRS-rqn62O6it2ziv8uNcmd_SA3hLr_ORxpg=="; Path=/
+Expires: Wed, 19 Dec 2018 14:25:37 GMT
+Pragma: no-cache
+Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+Content-Encoding: gzip

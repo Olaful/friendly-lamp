@@ -30,6 +30,7 @@ class DmozSpider(scrapy.spiders.Spider):
         # 获取网站中指定数量的链接
         self.get_links(url='https://www.csdn.net', reg_link=re.compile(r'<a[\s]+href="(.*?)".*?</a>'), max_link=20)
 
+    # parse方法中如果返回request，则会继续调用downloader handler处理该request
     def parse(self, response):
         # filename = response.url.split("/")[-2]
         # with open('myfile/'+filename, 'wb') as f:

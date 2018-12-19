@@ -63,7 +63,7 @@ TELNETCONSOLE_HOST = '127.0.0.1'
 #}
 
 DOWNLOADER_MIDDLEWARES = {
-    'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': 127,
+    #'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': 127,
     'srppro.middlewares.UAPOOLS': 126,
 }
 
@@ -106,11 +106,16 @@ ITEM_PIPELINES = {
 
 # Enable and configure HTTP caching (disabled by default)
 # See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html#httpcache-middleware-settings
-#HTTPCACHE_ENABLED = True
+HTTPCACHE_ENABLED = True
 #HTTPCACHE_EXPIRATION_SECS = 0
-#HTTPCACHE_DIR = 'httpcache'
+HTTPCACHE_DIR = 'myfile/httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
-#HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+# http缓存放入本地文件中
+HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+# 使用Dummy缓存策略，每次都从缓存读取
+HTTPCACHE_POLICY = 'scrapy.extensions.httpcache.DummyPolicy'
+# 使用Dummy缓存策略，根据响应头数据设置缓存
+#HTTPCACHE_POLICY = 'scrapy.extensions.httpcache.RFC2616Policy'
 
 # mongodb数据库
 MONGO_URI = 'localhost'
