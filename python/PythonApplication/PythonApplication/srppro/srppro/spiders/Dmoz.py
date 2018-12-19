@@ -104,4 +104,19 @@ class CSDNImageSpider(scrapy.spiders.Spider):
         for sel in response.xpath('//img'):
             item['image_urls'] = sel.xpath('@src').extract()
             yield item
+
+class LoginSpider(scrapy.spiders.Spider):
+    name = 'example.com'
+    allowed_domains = ['example.webscraping.com']
+    start_urls = ["http://example.webscraping.com/places/default/user/login"]
+
+    def parse(self, response):
+        return scrapy.FormRequest.from_response(
+            response,
+            formdata={'auth_user_email':'test123@test.com', 'auth_user_password__row':'test'},
+            callback=''
+        )
+
+    def afterlogin(self, response):
+        
         
