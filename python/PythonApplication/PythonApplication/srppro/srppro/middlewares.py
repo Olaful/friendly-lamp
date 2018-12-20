@@ -9,6 +9,10 @@ from scrapy import signals
 
 from scrapy.downloadermiddlewares.useragent import UserAgentMiddleware
 
+import base64
+
+# 中间件负责处理request与response,如果不启用，requesr将不会经过中间件的处理
+
 class SrpproSpiderMiddleware(object):
     # Not all methods need to be defined. If a method is not defined,
     # scrapy acts as if the spider middleware does not modify the
@@ -81,6 +85,14 @@ class SrpproDownloaderMiddleware(object):
         # - or return a Request object
         # - or raise IgnoreRequest: process_exception() methods of
         #   installed downloader middleware will be called
+        # 重定向
+        request.meta['dont_redirect'] = True
+        # 重试
+        request.meta['dont_retry'] = True
+        # 过滤出不在spider的allowed_domains的url
+        request.meta['dont_filter'] = True
+        # 重定向的url
+        request.meta['redirect_urls'] = ['https://www.baidu.com', 'https://www.douban.com/']
         return None
 
     def process_response(self, request, response, spider):
@@ -105,6 +117,16 @@ class SrpproDownloaderMiddleware(object):
     def spider_opened(self, spider):
         spider.logger.info('Spider opened: %s' % spider.name)
 
+# UserAgent设置中间件
 class UAPOOLS(UserAgentMiddleware):
         def __init__(self, user_agent=''):
             self.user_agent = 'Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1062.0 Safari/536.3'
+
+# 用户代理设置中间件
+class ProxyMiddleware(object):
+    def process_request(self, request, spider):
+        request.meta['proxy'] = "http://YOUR_PROXY_IP:PORT"
+        proxy_user_pass = "USERNAME:PASSWORD"
+        encoded_user_pass = base64.encodestring(proxy_user_pass)
+        encoded_user_pass = base64.b64encode(proxy_user_pass.encode()).decode("ascii")
+        request.headers['Proxy-Authorization'] = 'Basic ' + encoded_user_pass

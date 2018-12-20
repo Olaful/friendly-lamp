@@ -14,21 +14,32 @@ import re
 
 import lxml.html
 
-# 处理过程：1.spider的parse函数产生item; 2.到setting文件中查找ITEM_PIPELINES
-# 3.从 ITEM_PIPELINES中找出pipeline来处理
+from scrapy.exceptions import CloseSpider
+
+
+# 1.获取spider的url列表
+# 2.由url初始化的request经过middleware的处理,产生reponse,则到步骤4
+# 3.request经过下载器返回reponse
+# 4.reponse传递给spider的parse函数，产生item则步骤5，产生resquest则步骤3
+# 5.item传递给pipeline与扩展方法进行处理
+
 # 开启爬虫会调用Spider的spider_opened方法
 class DmozSpider(scrapy.spiders.Spider):
-    name = 'csdn_article'
+    name = 'csdnarticle'
     file_name = 'csdn'
     allowed_domains = ["csdn.net"]
     # 每个url绑定一个scrapy的request对象，request对象将返回结果
     # 作为参数调用parse函数
     start_urls = ['https://www.csdn.net']
 
+    # 某些网站可能需要http认证
+    # http_user = 'user'
+    # http_pass = 'pass'
+
     def __init__(self):
         super().__init__(self)
         # 获取网站中指定数量的链接
-        self.get_links(url='https://www.csdn.net', reg_link=re.compile(r'<a[\s]+href="(.*?)".*?</a>'), max_link=20)
+        self.get_links(url='https://www.csdn.net', reg_link=re.compile(r'<a[\s]+href="(.*?)".*?</a>'), max_link=1)
 
     # parse方法中如果返回request，则会继续调用downloader handler处理该request
     def parse(self, response):
@@ -39,6 +50,9 @@ class DmozSpider(scrapy.spiders.Spider):
         xpath_div = '//div[@class="nav_com"]/ul/li'
         xpath_main = '//main/ul/li/*/*/*/a'
         # 返回xpath selector列表，response.css：选择css选择器，response.selector.xpath：选择xpath选择器
+        # selector其实是一个根据xml节点生成的生成器( scrapy.utils.iterators.xmliter)，
+        # 而普通的xpath会建立整个dom文档树，对于大数据量的html来说，由于是一级一级往下找，速度慢且消耗很大的内存
+        # 类似的大数据量文件如csv，也可以以行为单位存进生成器中，遍历时可以优化内存
         for sel in response.xpath(xpath_main):
             # 基于上层xpath使用绝对路径,也可以使用sel.xpath(.//div)指定
             # title = sel.xpath('/div/div/h2/a/text()').extract()
@@ -104,6 +118,9 @@ class CSDNImageSpider(scrapy.spiders.Spider):
 
     def parse(self, response):
         item = CSDNItemImg()
+        # 在shell终端调试，会屏蔽scrapy引擎，所以不能使用fetch命令
+        # from scrapy.shell import inspect_response
+        # inspect_response(response, self)
         for sel in response.xpath('//img'):
             item['image_urls'] = sel.xpath('@src').extract()
             yield item
@@ -134,7 +151,9 @@ class LoginSpider(scrapy.spiders.Spider):
 
     def afterlogin(self, response):
         if "user/login" in response.url:
-            self.logger.info('Login failed:')
-            return
+            self.logger.info('Login failed')
+            # 此异常抛出后，spider会close掉
+            raise CloseSpider('Login failed')
+            #return
         
         
