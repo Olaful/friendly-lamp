@@ -416,7 +416,8 @@ nested = [[1,2], [3,4], [5,6,7]]
 
 # 函数中包含有yield语句的则该函数称为生成器，
 # yield语句会使函数冻结暂停，返回一个迭代器等待被激活后从暂停
-# 点开始继续执行
+# 点开始继续执行，生成器每遍历一次才把数据放入内存中，所以可以
+# 处理很大的数据
 def myGenerator(listParam):
     for sublist in listParam:
         for element in sublist:
@@ -3400,14 +3401,14 @@ from urllib.request import ProxyHandler
 # 下载html数据
 def download(url, user_agent = 'wswp', proxy = None, num_retries=3):
     print('Downloading:',url)
-    # 设置用户代理
+    # 设置用户代理,伪装成浏览器访问
     header = {'User-agent': user_agent}
     request = urllib.request.Request(url, headers = header)
     # 这个支持代理
     opener = build_opener()
 
     if proxy:
-        # 设置代理服务器，请求将会发送到该服务器
+        # 设置代理服务器，通过该代理IP进行访问
         proxy_params = {urlparse(url).scheme: proxy}
         opener.add_handler(ProxyHandler(proxy_params))
 
@@ -3434,6 +3435,8 @@ def download(url, user_agent = 'wswp', proxy = None, num_retries=3):
 
 import socket
 # downloadler类，先读取缓存的内容，没有再从网络上获取后再写入缓存
+# ps: 避免爬取被禁方法: 1.设置UA;2.设置proxy代理;3.下载之间延迟;4.禁止cookie
+# 5.如果可能，访问cache获取;6.分布式下载
 class Downloader:
     def __init__(self, delay=1, user_agent='wswp', timeout=1000, proxies=None, num_retries=3, cache=None):
         # 对整个socket设置连接的超时时间, urlopen的read会调用socket接口
@@ -4724,11 +4727,12 @@ def runCrwal():
     crawl_benchmark = 'scrapy bench'
     create_crawler_pro = 'scrapy startproject test'
     create_spider = 'scrapy genspider myspider XX.com'
-    run_crawl_dmoz = 'scrapy crawl csdn_article'
+    run_crawl_dmoz = 'scrapy crawl csdnarticle'
     run_crawl_csimage = 'scrapy crawl csimage'
     run_crawl_example = 'scrapy crawl example.com'
     run_crawl_shell = 'scrapy shell "https://www.csdn.net"'
-    # 导出item
+    # 导出item, 导出为jsonline格式，即[{'k1':'v1'},{'k2','v2'}]=>{'k1':'v1'}\n{'k2','v2'}
+    # 所以支持大量数据导入，[]形式的话会把整个对象写入内存，内存压力较大
     run_crawl_o_json = 'scrapy crawl dmoz -o myfile/item.json'
     run_crawl_o_csv = 'scrapy crawl dmoz -o myfile/item.csv'
     run_crawl_o_xml = 'scrapy crawl dmoz -o myfile/item.xml'
@@ -4741,7 +4745,7 @@ def runCrwal():
     # file_name会被spider的属性file_name所覆盖
     run_crawl_o_ftp_autoproname = 'scrapy crawl dmoz -o ftp://{0}:{1}@{2}/%(file_name)s.csv'.format(*auth_info)
 
-    Popen(run_crawl_example, stdout=None, stderr=None)
+    Popen(run_crawl_csimage, stdout=None, stderr=None)
 
 def main():
     runCrwal()

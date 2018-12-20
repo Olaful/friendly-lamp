@@ -24,7 +24,7 @@ class SrpproPipeline(object):
         self.file = open('myfile/item.json', 'w', encoding='utf-8')
 
     def process_item(self, item, spider):
-        if item['title']:
+        if item['image_urls']:
             # json序列化
             line = json.dumps(dict(item), ensure_ascii=False) + '\n'
             self.file.write(line)

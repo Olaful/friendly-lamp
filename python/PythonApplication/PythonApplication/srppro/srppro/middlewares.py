@@ -9,7 +9,13 @@ from scrapy import signals
 
 from scrapy.downloadermiddlewares.useragent import UserAgentMiddleware
 
+<<<<<<< HEAD
 import random
+=======
+import base64
+
+# 中间件负责处理request与response,如果不启用，requesr将不会经过中间件的处理
+>>>>>>> c7bcd92185e412231991e48acdf08fb8605c1abc
 
 class SrpproSpiderMiddleware(object):
     # Not all methods need to be defined. If a method is not defined,
@@ -83,6 +89,14 @@ class SrpproDownloaderMiddleware(object):
         # - or return a Request object
         # - or raise IgnoreRequest: process_exception() methods of
         #   installed downloader middleware will be called
+        # 重定向
+        request.meta['dont_redirect'] = True
+        # 重试
+        request.meta['dont_retry'] = True
+        # 过滤出不在spider的allowed_domains的url
+        request.meta['dont_filter'] = True
+        # 重定向的url
+        request.meta['redirect_urls'] = ['https://www.baidu.com', 'https://www.douban.com/']
         return None
 
     def process_response(self, request, response, spider):
@@ -107,6 +121,7 @@ class SrpproDownloaderMiddleware(object):
     def spider_opened(self, spider):
         spider.logger.info('Spider opened: %s' % spider.name)
 
+# UserAgent设置中间件
 class UAPOOLS(UserAgentMiddleware):
         def __init__(self, user_agent=''):
             self.user_agent = random.choice(['Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1062.0 Safari/536.3',
@@ -120,3 +135,12 @@ class UAPOOLS(UserAgentMiddleware):
                             'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-us) AppleWebKit/534.50 (KHTML, like Gecko) Version/5.1 Safari/534.50',
                             'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0; Trident/4.0)',
                             'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_8; en-us) AppleWebKit/534.50 (KHTML, like Gecko) Version/5.1 Safari/534.50'])
+
+# 用户代理设置中间件
+class ProxyMiddleware(object):
+    def process_request(self, request, spider):
+        request.meta['proxy'] = "http://YOUR_PROXY_IP:PORT"
+        proxy_user_pass = "USERNAME:PASSWORD"
+        encoded_user_pass = base64.encodestring(proxy_user_pass)
+        encoded_user_pass = base64.b64encode(proxy_user_pass.encode()).decode("ascii")
+        request.headers['Proxy-Authorization'] = 'Basic ' + encoded_user_pass
