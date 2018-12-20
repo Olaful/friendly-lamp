@@ -9,6 +9,8 @@ from scrapy import signals
 
 from scrapy.downloadermiddlewares.useragent import UserAgentMiddleware
 
+import random
+
 class SrpproSpiderMiddleware(object):
     # Not all methods need to be defined. If a method is not defined,
     # scrapy acts as if the spider middleware does not modify the
@@ -107,4 +109,14 @@ class SrpproDownloaderMiddleware(object):
 
 class UAPOOLS(UserAgentMiddleware):
         def __init__(self, user_agent=''):
-            self.user_agent = 'Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1062.0 Safari/536.3'
+            self.user_agent = random.choice(['Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1062.0 Safari/536.3',
+                            'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36',
+                            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.6; rv:2.0.1) Gecko/20100101 Firefox/4.0.1',
+                            'Mozilla/5.0 (Windows NT 6.1; rv:2.0.1) Gecko/20100101 Firefox/4.0.1',
+                            'Opera/9.80 (Macintosh; Intel Mac OS X 10.6.8; U; en) Presto/2.8.131 Version/11.11',
+                            'Opera/9.80 (Windows NT 6.1; U; en) Presto/2.8.131 Version/11.11',
+                            'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)',
+                            'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)',
+                            'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-us) AppleWebKit/534.50 (KHTML, like Gecko) Version/5.1 Safari/534.50',
+                            'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0; Trident/4.0)',
+                            'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_8; en-us) AppleWebKit/534.50 (KHTML, like Gecko) Version/5.1 Safari/534.50'])
