@@ -9,13 +9,10 @@ from scrapy import signals
 
 from scrapy.downloadermiddlewares.useragent import UserAgentMiddleware
 
-<<<<<<< HEAD
 import random
-=======
 import base64
 
 # 中间件负责处理request与response,如果不启用，requesr将不会经过中间件的处理
->>>>>>> c7bcd92185e412231991e48acdf08fb8605c1abc
 
 class SrpproSpiderMiddleware(object):
     # Not all methods need to be defined. If a method is not defined,
@@ -124,7 +121,8 @@ class SrpproDownloaderMiddleware(object):
 # UserAgent设置中间件
 class UAPOOLS(UserAgentMiddleware):
         def __init__(self, user_agent=''):
-            self.user_agent = random.choice(['Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1062.0 Safari/536.3',
+            self.user_agent = random.choice([
+                            'Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1062.0 Safari/536.3',
                             'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36',
                             'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.6; rv:2.0.1) Gecko/20100101 Firefox/4.0.1',
                             'Mozilla/5.0 (Windows NT 6.1; rv:2.0.1) Gecko/20100101 Firefox/4.0.1',

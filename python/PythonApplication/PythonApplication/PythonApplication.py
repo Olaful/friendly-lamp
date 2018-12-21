@@ -856,11 +856,13 @@ x = re.search('(ar.)', text)
 # 返回匹配模式对象中的第1个匹配组
 # 位于匹配模式中()内的内容就是匹配组的内容
 # 如果没有()，默认匹配到的所有字符就是组的内容，即组0
-print(x.group(1))
 # 返回第一个匹配组匹配项的开始索引
 print(x.start(1))
 # 返回第一个匹配组匹配项的结束索引
 print(x.end(1))
+# (?P<groupname>he) ?P<name>可以指定组名,之后
+# 可以通过gourp(name)进行访问
+print(re.search('(?P<name>he)', 'hello'))
 # 有了re.VERBOSE参数，就可以在匹配模式中添加注释了，这样不会当作
 # 匹配模式的一部分去匹配
 print(re.search('\- # 转义"-"符号', text, re.VERBOSE))
