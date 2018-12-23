@@ -7,14 +7,17 @@
 
 import scrapy
 
+def serialize_population(value):
+    return 'num %s' % str(value)
 
 class SrpproItem(scrapy.Item):
     # define the fields for your item here like:
     name = scrapy.Field()
-    population = scrapy.Field()
+    # 使用自定义的函数对item进行序列化
+    population = scrapy.Field(serializer=serialize_population)
 
 class DmozItem(scrapy.Item):
-    title = scrapy.Field()
+    title = scrapy.Field(default=None)
     link = scrapy.Field()
     #desc = scrapy.Field()
     #date = scrapy.Field()

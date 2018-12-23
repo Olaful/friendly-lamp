@@ -67,11 +67,18 @@ class SrpproDownloaderMiddleware(object):
     # scrapy acts as if the downloader middleware does not modify the
     # passed objects.
 
+    # crawler可以访问scrapy的核心组件，其要使用spider与spider的settings进行实例化
     @classmethod
     def from_crawler(cls, crawler):
         # This method is used by Scrapy to create your spiders.
         s = cls()
         crawler.signals.connect(s.spider_opened, signal=signals.spider_opened)
+        # 解除信号与函数的关联
+        #crawler.signals.disconnect(s.spider_opened, signal=signals.spider_opened)
+        # 取消该信号的所有关联
+        #crawler.signals.disconnect_all(s.spider_opened)
+        # 发送一个信号，kwargs参数会传递给connect中的处理函数
+        #crawler.signals.send_catch_log(signals.spider_opened, *kwargs)
         return s
 
     # 如果返回response，则scrapy引擎不会调用其他process_request方法，执行process_response方法
@@ -122,17 +129,17 @@ class SrpproDownloaderMiddleware(object):
 class UAPOOLS(UserAgentMiddleware):
         def __init__(self, user_agent=''):
             self.user_agent = random.choice([
-                            'Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1062.0 Safari/536.3',
-                            'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36',
-                            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.6; rv:2.0.1) Gecko/20100101 Firefox/4.0.1',
-                            'Mozilla/5.0 (Windows NT 6.1; rv:2.0.1) Gecko/20100101 Firefox/4.0.1',
-                            'Opera/9.80 (Macintosh; Intel Mac OS X 10.6.8; U; en) Presto/2.8.131 Version/11.11',
-                            'Opera/9.80 (Windows NT 6.1; U; en) Presto/2.8.131 Version/11.11',
-                            'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)',
-                            'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)',
-                            'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-us) AppleWebKit/534.50 (KHTML, like Gecko) Version/5.1 Safari/534.50',
-                            'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0; Trident/4.0)',
-                            'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_8; en-us) AppleWebKit/534.50 (KHTML, like Gecko) Version/5.1 Safari/534.50'])
+                            'Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1062.0 Safari/536.3'])
+                            # 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36',
+                            # 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.6; rv:2.0.1) Gecko/20100101 Firefox/4.0.1',
+                            # 'Mozilla/5.0 (Windows NT 6.1; rv:2.0.1) Gecko/20100101 Firefox/4.0.1',
+                            # 'Opera/9.80 (Macintosh; Intel Mac OS X 10.6.8; U; en) Presto/2.8.131 Version/11.11',
+                            # 'Opera/9.80 (Windows NT 6.1; U; en) Presto/2.8.131 Version/11.11',
+                            # 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)',
+                            # 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)',
+                            # 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-us) AppleWebKit/534.50 (KHTML, like Gecko) Version/5.1 Safari/534.50',
+                            # 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0; Trident/4.0)',
+                            # 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_8; en-us) AppleWebKit/534.50 (KHTML, like Gecko) Version/5.1 Safari/534.50'])
 
 # 用户代理设置中间件
 class ProxyMiddleware(object):

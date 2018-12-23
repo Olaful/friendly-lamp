@@ -34,6 +34,7 @@ ROBOTSTXT_OBEY = False
 # 也可以单独设置某个spider的download_delay属性
 DOWNLOAD_DELAY = 1
 # The download delay setting will honor only one of:
+# 同一时刻对同一domain发起的请求数
 CONCURRENT_REQUESTS_PER_DOMAIN = 1
 #CONCURRENT_REQUESTS_PER_IP = 16
 
@@ -44,7 +45,7 @@ COOKIES_ENABLED = False
 COOKIES_DEBUG = False
 
 # 日志级别
-LOG_LEVEL = 'INFO'
+LOG_LEVEL = 'DEBUG'
 
 # Disable Telnet Console (enabled by default)
 TELNETCONSOLE_ENABLED = True
@@ -85,10 +86,12 @@ DOWNLOADER_MIDDLEWARES = {
 # None不启用，但扩展可能也会受到其他设置的影响，导致扩展不生效
 # 如以下TelnetConsole扩展依赖TELNETCONSOLE_ENABLED
 # 有些扩展如果依赖项设置了，则会默认开启
+# 扩展在scrapy启动时被初始化
 EXTENSIONS = {
     #'scrapy.extensions.telnet.TelnetConsole': 1,
     #'scrapy.extensions.closespider.CloseSpider': 1,
     #'scrapy.extensions.statsmailer.StatsMailer': 1,
+    #'srppro.extensions.RedisSpiderSmartIdleClosedExensions':1,
 }
 
 # Configure item pipelines
@@ -101,10 +104,18 @@ ITEM_PIPELINES = {
    #'srppro.pipelines.SrpproPipeline': 300,
    #'srppro.pipelines.MongoPipeline': 301,
    #'srppro.pipelines.CSDNImagesPipeline': 302,
+   # 使用redis存储
+   #'scrapy_redis.pipelines.RedisPipeline': 303,
+   'srppro.pipelines.XmlExportPipeline': 304,
+}
+
+SPIDER_CONTRACTS = {
+    'srppro.contracts.HeaderCheck':10,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://doc.scrapy.org/en/latest/topics/autothrottle.html
+# 根据爬取的网站的负载自动限制爬取速度。
 #AUTOTHROTTLE_ENABLED = True
 # The initial download delay
 #AUTOTHROTTLE_START_DELAY = 5
@@ -114,7 +125,7 @@ ITEM_PIPELINES = {
 # each remote server
 #AUTOTHROTTLE_TARGET_CONCURRENCY = 1.0
 # Enable showing throttling stats for every response received:
-#AUTOTHROTTLE_DEBUG = False
+#AUTOTHROTTLE_DEBUG = True
 
 # Enable and configure HTTP caching (disabled by default)
 # See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html#httpcache-middleware-settings
@@ -178,12 +189,12 @@ MAIL_USER = "1764740905@qq.com"
 # SCHEDULER_DISK_QUEUE = 'scrapy.squeue.PickleFifoDiskQueue'
 # SCHEDULER_MEMORY_QUEUE = 'scrapy.squeue.FifoMemoryQueue'
 
-# 根据response返回码进行网页重定向，重定向会浪费一定之间
+# 根据response返回码进行网页重定向，重定向会浪费一定时间
 REDIRECT_ENABLED = False
 # REDIRECT_MAX_TIMES = 5
 
 # 根据meta-refresh html标签重定向
-REDIRECT_MAX_METAREFRESH_DELAY = 100
+METAREFRESH_MAXDELAY = 100
 
 # 在所有正常url被抓取完后对超时的url请求或者500错误的request进行重试
 RETRY_ENABLED = False
@@ -195,4 +206,41 @@ RETRY_HTTP_CODES = [500, 502, 503, 504, 400, 408]
 AJAXCRAWL_ENABLED = False
 
 # 下载超时
-DOWNLOAD_TIMEOUT = 10
+DOWNLOAD_TIMEOUT = 100
+
+# # 使用scrapy_redis的调度队列，默认是使用scrapy自身的scheduler
+# # SCHEDULER = "scrapy_redis.scheduler.Scheduler"
+# # 去重
+# DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
+
+# # 配置服务器地址及密码
+# REDIS_HOST = '127.0.0.1'
+# REDIS_PORT = 6379
+# REDIS_PARAMS = {
+#     'password':'123456'
+# }
+# REDIS_ENCODING = "utf-8"
+
+# # 优先级高于REDIS_HOST
+# REDIS_URL = 'redis://@localhost:6379'
+
+# # 去调度器中获取数据时，如果为空，最多等待时间
+# SCHEDULER_IDLE_BEFORE_CLOSE = 5
+# # 去重规则，在redis中保存时对应的key
+# SCHEDULER_DUPEFILTER_KEY = '%(spider)s:dupefilter'
+# # 调度器中请求存放在redis中的key  chouti:requests 
+# # SCHEDULER_QUEUE_KEY = '%(spider)s:requests'
+# # 对保存到redis中的数据进行序列化，默认使用pickle
+# SCHEDULER_SERIALIZER = 'scrapy_redis.picklecompat'
+#  # 是否在关闭时候保留原来的调度器和去重记录，True=保留，False=清空
+# SCHEDULER_PERSIST = True
+# # 调度器中请求存放在redis中的key  chouti:requests
+# #SCHEDULER_QUEUE_KEY = '%(spider)s:requests'
+# # 使用FIFO队列
+# SCHEDULER_QUEUE_CLASS = 'scrapy_redis.queue.SpiderQueue'
+
+# # 如果为True，则使用redis的'spop'进行操作，避免起始网址列表重复
+# REDIS_START_URLS_AS_SET = False
+
+# # 自定义判断队列是否为空的扩展
+# REDISEMPTY_EXT_ENABLED = True

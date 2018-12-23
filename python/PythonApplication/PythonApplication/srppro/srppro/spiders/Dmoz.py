@@ -16,6 +16,7 @@ import lxml.html
 
 from scrapy.exceptions import CloseSpider
 
+from scrapy_redis.spiders import RedisSpider 
 
 # 1.获取spider的url列表
 # 2.由url初始化的request经过middleware的处理,产生reponse,则到步骤4
@@ -27,6 +28,7 @@ from scrapy.exceptions import CloseSpider
 class DmozSpider(scrapy.spiders.Spider):
     name = 'csdnarticle'
     file_name = 'csdn'
+    state = {"item_cnt":0}
     allowed_domains = ["csdn.net"]
     # 每个url绑定一个scrapy的request对象，request对象将返回结果
     # 作为参数调用parse函数
@@ -43,10 +45,16 @@ class DmozSpider(scrapy.spiders.Spider):
         self.start_urls = list(set(self.start_urls))
 
     # parse方法中如果返回request，则会继续调用downloader handler处理该request
+    # response被传递给其他parse处理时，应该能被序列化，在lambda函数中就不能被序列化
+    # 所以Request的的callback参数应该直接指向回调函数，而不是lambda
     def parse(self, response):
         # filename = response.url.split("/")[-2]
         # with open('myfile/'+filename, 'wb') as f:
         #     f.write(response.body)
+
+        # 自定义属性，如果指定了JOBDIR，则保存spider状态的时候
+        # spider的自定义属性也会保存进去
+        self.state['item_cnt'] = self.state.get('item_cnt', 0) + 1
 
         xpath_div = '//div[@class="nav_com"]/ul/li'
         xpath_main = '//main/ul/li/*/*/*/a'
@@ -57,6 +65,8 @@ class DmozSpider(scrapy.spiders.Spider):
         for sel in response.xpath(xpath_main):
             # 基于上层xpath使用绝对路径,也可以使用sel.xpath(.//div)指定
             # title = sel.xpath('/div/div/h2/a/text()').extract()
+            # descendant指示子孙标签，根据子孙标签查找父标签
+            # title = sel.xpath('/div[descendant::div[contains(@class, 'title')]]/div/h2/a/text()').extract()
             # 选择h2下第一个a标签
             # title = sel.xpath('/div/div/h2/a[1]/text()').extract()
             # 选择/div/div/h2/a下第一个a标签
@@ -114,16 +124,20 @@ class DmozSpider(scrapy.spiders.Spider):
 
 class CSDNImageSpider(scrapy.spiders.Spider):
     name = 'csimage'
-    allowed_domains = ['csdn.net']
-    start_urls = ["https://www.csdn.net"]
+    allowed_domains = ['www.douban.com']
+    start_urls = ["https://www.douban.com/"]
 
     def parse(self, response):
         item = CSDNItemImg()
+        # 根据response在浏览器中打开url
+        # from scrapy.utils.response import open_in_browser
+        # open_in_browser(response)
         # 在shell终端调试，会屏蔽scrapy引擎，所以不能使用fetch命令
         # from scrapy.shell import inspect_response
         # inspect_response(response, self)
         for sel in response.xpath('//img'):
             item['image_urls'] = sel.xpath('@src').extract()
+            print(item['image_urls'])
             yield item
 
 # 实现表单的登录，如果表单需要与cookie数据对比，则在setting中开启cookie
@@ -157,4 +171,18 @@ class LoginSpider(scrapy.spiders.Spider):
             raise CloseSpider('Login failed')
             #return
         
-        
+# 基于redis的的分布式爬虫
+class CDSNRedisSpider(RedisSpider):
+    name = 'csdnredis'
+    allowed_domains = ['www.douban.com']
+
+    # 对应redis数据库的key,指定从redis数据库哪个keys中获取
+    # url,如果redis_key队列为空，爬虫会一直处于空跑状态
+    # 可在自定义扩展方法中判断是否退出爬虫
+    redis_key = 'csdnredis:start_urls'
+
+    def parse(self, response):
+        item = CSDNItemImg()
+        for sel in response.xpath('//img'):
+            item['image_urls'] = sel.xpath('@src').extract()
+            yield item
