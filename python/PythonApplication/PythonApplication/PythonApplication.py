@@ -369,54 +369,6 @@ myClass4.classFunc()
 x = myClass4()
 x.staticFunc()
 
-# 自定义修饰器，修改器被import进来时开始的时候就会被调用
-def decorfunc1(fn):
-    # wraps可以保留原始函数信息，如fn.__name__, fn.__doc__
-    @functools.wraps(fn)
-    def decorInner(*args):
-        print('before exec {}'.format(fn))
-        rls = fn(*args)
-        print('after exec {}'.format(fn))
-        return rls
-    # 修饰器内部要返回一个函数，因为调用原始函数时，即使原始函数被
-    # 修饰器覆盖，但要返回一个可调用的对象
-    return decorInner
-
-# 如果修饰器本身明显指示有自定义参数，则参数变成
-# (selfparam, Fn, paramOfFn)，这三个参数分别按层次
-# 传递给修饰器的各个函数
-def decorfunc2(iswrap=False):
-    def decorInner(fn):
-        if iswrap:
-            @functools.wraps(fn)
-            def new_fn(*args):
-                print('before exec {}'.format(fn))
-                rls = fn(*args)
-                print('after exec {}'.format(fn))
-                return rls
-        else:
-            def new_fn(*args):
-                print('before exec {}'.format(fn))
-                rls = fn(*args)
-                print('after exec {}'.format(fn))
-                return rls
-        return new_fn
-    return decorInner
-    
-
-@decorfunc1
-def ori_func1(name, kind):
-    "this is ori_func1's doc"
-    print('{} is {}'.format(name, kind))
-
-@decorfunc2(iswrap=True)
-def ori_func2(name, kind):
-    "this is ori_func2's doc"
-    print('{} is {}'.format(name, kind))
-
-print(ori_func2)
-ori_func2('flower', 'plant')
-
 # 由于对象中实现了__next__与__iter__方法，所以
 # 该对象可像列表那样在for循环中迭代使用，该对象
 # 也可称为迭代器，当__next__无返回值时，将引发StopIteration异常
@@ -601,6 +553,75 @@ def formatPrint(solution):
 import random
 print(formatPrint(random.choice(list(symbols2(4)))))
 print(formatPrint(random.choice(list(symbols2(8)))))
+
+# 只返回单个实例的类
+class c(object):
+    _instance_lock = threading.Lock()
+    def __init__(self):
+        time.sleep(1)
+        name = 'kk'
+    
+    # 通过类方法返回实例
+    @classmethod
+    def instance(cls, *args, **kwargs):
+        if not hasattr(c, '_instance'):
+            # 加锁是因为如果类的实例化是在线程中实行的
+            # 那么由于一些io操作，资源混乱，导致每个
+            # 实例初始化都不一样
+            with c._instance_lock:
+                if not hasattr(c, '_instance'):
+                    c._instance = c(*args, **kwargs)
+        return c._instance
+
+    # 通过__new__返回实例，通过类创建对象时自动调用
+    def __new__(cls, *args, **kwargs):
+        if not hasattr(c, '_instance'):
+            with c._instance_lock:
+                if not hasattr(c, '_instance'):
+                    c._instance = object.__new__(cls)
+        return c._instance
+    
+        
+def task(arg):
+    obj = c.instance()
+    print(obj)
+
+for i in range(5):
+    t = threading.Thread(target=task, args=[i,])
+    t.start()
+
+class SingletonParent(type):
+    _instance_lock = threading.Lock()
+    def __call__(cls, *args, **kwargs):
+        if not hasattr(cls, "_instance"):
+            with SingletonParent._instance_lock:
+                if not hasattr(cls, "_instance"):
+                    # type的__call__方法中会执行__init__与__new__方法
+                    cls._instance = super(SingletonParent,cls).__call__(*args, **kwargs)
+        return cls._instance
+
+class Singleton(metaclass=SingletonType):
+    def __init__(self,name):
+        self.name = name
+
+# Singleton()会调用元类的__call__方法，
+# 可以在其中返回实例对象
+obj1 = Singleton()
+obj2 = Singleton()
+
+def Singleton(cls):
+    _instance = {}
+    # 多次实例化时，只返回相同的实例对象
+    def _singleton(*args, **kargs):
+        if cls not in _instance:
+            _instance[cls] = cls(*args, **kargs)
+        return _instance[cls]
+
+    return _singleton
+
+@decorSingle
+class A:
+    name = 'kk'
 
 import sys
 
@@ -4373,74 +4394,74 @@ if 1 > 2:
 #        self.html = html_str
 #        #self.app.quit()
 
-# from PyQt4.QtCore import *
-# from PyQt4.QtGui import *
-# from PyQt4.QtWebKit import QWebView
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
+from PyQt4.QtWebKit import QWebView
 
-# # QWebKit实现的浏览器
-# class BrowserRender(QWebView):
-#     def __init__(self, show=True):
-#         self.app = QApplication([])
-#         QWebView.__init__(self)
-#         if show:
-#             self.show()
+# QWebKit实现的浏览器
+class BrowserRender(QWebView):
+    def __init__(self, show=True):
+        self.app = QApplication([])
+        QWebView.__init__(self)
+        if show:
+            self.show()
 
-#     def download(self, url, timeout=60):
-#         loop = QEventLoop()
-#         timer = QTimer()
-#         # 设置定时器超时会执行函数
-#         timer.setSingleShot(True)
-#         # 定时器超时或者页面加载完成都会触发事件循环退出
-#         # 如果页面一直没有响应则用定时器终止循环
-#         timer.timeout.connect(loop.quit)
-#         self.loadFinished.connect(loop.quit)
-#         self.load(QUrl(url))
-#         timer.start(timeout*1000)
-#         # 一直循环直到loop.quit被调用，之后才继续后面的部分
-#         loop.exec_()
+    def download(self, url, timeout=60):
+        loop = QEventLoop()
+        timer = QTimer()
+        # 设置定时器超时会执行函数
+        timer.setSingleShot(True)
+        # 定时器超时或者页面加载完成都会触发事件循环退出
+        # 如果页面一直没有响应则用定时器终止循环
+        timer.timeout.connect(loop.quit)
+        self.loadFinished.connect(loop.quit)
+        self.load(QUrl(url))
+        timer.start(timeout*1000)
+        # 一直循环直到loop.quit被调用，之后才继续后面的部分
+        loop.exec_()
 
-#         # 如果循环结束后，定时器还没有超时，则页面下载完成
-#         if timer.isActive():
-#             timer.stop()
-#             return self.getHtml()
-#         else:
-#             print('Request time out:', url)
+        # 如果循环结束后，定时器还没有超时，则页面下载完成
+        if timer.isActive():
+            timer.stop()
+            return self.getHtml()
+        else:
+            print('Request time out:', url)
 
-#     def getHtml(self):
-#         return self.page().mainFrame().toHtml()
+    def getHtml(self):
+        return self.page().mainFrame().toHtml()
 
-#     def find(self, pattern):
-#         # css选择器，通过标签名或者class等选择
-#         return self.page().mainFrame().findAllElements(pattern)
+    def find(self, pattern):
+        # css选择器，通过标签名或者class等选择
+        return self.page().mainFrame().findAllElements(pattern)
 
-#     # 设置html页面元素的值
-#     def attr(self, pattern, name, value):
-#         for e in self.find(pattern):
-#             e.setAttribute(name, value)
+    # 设置html页面元素的值
+    def attr(self, pattern, name, value):
+        for e in self.find(pattern):
+            e.setAttribute(name, value)
 
-#     def text(self, pattern, value):
-#         for e in self.find(pattern):
-#             e.setPlainText(value)
+    def text(self, pattern, value):
+        for e in self.find(pattern):
+            e.setPlainText(value)
 
-#     # 模拟html页面元素的点击事件，调用相关javascript方法
-#     def click(self, pattern):
-#         for e in self.find(pattern):
-#             e.evaluateJavaScript('this.click()')
+    # 模拟html页面元素的点击事件，调用相关javascript方法
+    def click(self, pattern):
+        for e in self.find(pattern):
+            e.evaluateJavaScript('this.click()')
 
-#     # 在定时内反复查找页面返回的信息，因为ajax调用在规定时间内可能不能及时返回数据
-#     def wait_load(self, pattern, timeout=60):
-#         dealine = time.time() + timeout
-#         while time.time() < dealine:
-#             # processEvents调用之后就能响应后面的页面事件，app.exec_内部就是调用这个方法
-#             self.app.processEvents()
-#             matches = self.find(pattern)
-#             if matches:
-#                 return matches
-#         print('Wait load time out')
+    # 在定时内反复查找页面返回的信息，因为ajax调用在规定时间内可能不能及时返回数据
+    def wait_load(self, pattern, timeout=60):
+        dealine = time.time() + timeout
+        while time.time() < dealine:
+            # processEvents调用之后就能响应后面的页面事件，app.exec_内部就是调用这个方法
+            self.app.processEvents()
+            matches = self.find(pattern)
+            if matches:
+                return matches
+        print('Wait load time out')
 
-#     # 保持当前窗口
-#     def keepWindow(self):
-#         self.app.exec_()
+    # 保持当前窗口
+    def keepWindow(self):
+        self.app.exec_()
 
 from selenium import webdriver
 def webDeriver():
@@ -4754,8 +4775,6 @@ def runCrwal():
     from subprocess import Popen, PIPE
     os.chdir(r'srppro')
 
-    from scrapy.cmdline import execute
-
     # scrapy命令
     crawl_check = 'scrapy check -l'
     crawl_check2 = 'scrapy check'
@@ -4782,13 +4801,7 @@ def runCrwal():
     run_crawl_dmoz = 'scrapy crawl csdnarticle'
     run_crawl_csimage = 'scrapy crawl csimage'
     run_crawl_example = 'scrapy crawl example.com'
-    run_crawl_csdnredis = 'scrapy crawl csdnredis'
     run_crawl_shell = 'scrapy shell "https://www.csdn.net"'
-    # parse方法调试爬虫
-    crawl_parse = 'scrapy parse --spider=csimage -c parse -d 2 -v "https://www.douban.com/"'
-    # 保存spider的状态，以便在暂停后恢复能继续爬取，状态只针对每个spider的每个请求
-    # 如果spider中有cookie，则应该不要隔太长时间才恢复爬虫，因为cookie可能会过期
-    crawl_job = 'scrapy crawl csdnarticle -s JOBDIR=crawls/csdnarticle-1'
     # 导出item, 导出为jsonline格式，即[{'k1':'v1'},{'k2','v2'}]=>{'k1':'v1'}\n{'k2','v2'}
     # 所以支持大量数据导入，[]形式的话会把整个对象写入内存，内存压力较大
     run_crawl_o_json = 'scrapy crawl dmoz -o myfile/item.json'
@@ -4803,64 +4816,9 @@ def runCrwal():
     # file_name会被spider的属性file_name所覆盖
     run_crawl_o_ftp_autoproname = 'scrapy crawl dmoz -o ftp://{0}:{1}@{2}/%(file_name)s.csv'.format(*auth_info)
 
-    Popen(run_crawl_dmoz, stdout=None, stderr=None)
+    run_crawl_other = 'scrapy crawl proxy_youdaili'
 
-    #execute(['scrapy', 'crawl', 'csdnarticle'])
-
-from twisted.internet import reactor,defer
-from scrapy.spiders import Spider
-from scrapy.crawler import CrawlerRunner
-from scrapy.settings import Settings
-from scrapy.utils.project import get_project_settings
-
-class Myspider(Spider):
-    name = 'csimage'
-    allowed_domains = ['csdn.net']
-    start_urls = ["https://www.csdn.net"]
-
-    def parse(self, response):
-        item = {}
-        for sel in response.xpath('//img'):
-            item['image_urls'] = sel.xpath('@src').extract()
-            yield item
-
-# 在Twisted reactor中运行spider,使用自定义设置或者通用设置
-def runSpider1():
-    settings = Settings({'USER_AGENT':'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)'})
-    #runner = CrawlerRunner(settings)
-    runner = CrawlerRunner(get_project_settings())
-    # 自定义spider或者在scrapy已存在的spider
-    d = runner.crawl(Myspider)
-    d.addBoth(lambda _:reactor.stop())
-    # 阻塞，直到spider运行完毕
-    reactor.run()
-
-# 执行多个spider
-def runSpider2():
-    os.chdir(r'srppro')
-    runner = CrawlerRunner(get_project_settings())
-    dfs = set()
-    for domain in ['csdn.net']:
-        # domain会覆盖spider原来的domain
-        d = runner.crawl('csdnarticle', domain=domain)
-        dfs.add(d)
-
-    # 延迟加载
-    defer.DeferredList(dfs).addBoth(lambda _: reactor.stop())
-    reactor.run()
-
-# 通过链接(chaining) deferred来线性运行spider
-def runSpider3():
-    os.chdir(r'srppro')
-    runner = CrawlerRunner(get_project_settings())
-    @defer.inlineCallbacks
-    def crawl():
-        for domain in ['www.douban.com', 'csdn.net']:
-            yield runner.crawl('csimage', domain=domain)
-        reactor.stop()
-
-    crawl()
-    reactor.run()
+    Popen(run_crawl_other, stdout=None, stderr=None)
 
 def main():
     runCrwal()
@@ -4872,7 +4830,7 @@ if __name__ == '__main__':
     print()
     starttime = time.time()
 
-    main()
+    #main()
 
     #---------------------------------------------------end
     endtime = time.time()

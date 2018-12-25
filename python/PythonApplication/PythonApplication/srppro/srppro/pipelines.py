@@ -17,7 +17,7 @@ import pymongo
 
 from scrapy import signals
 
-from scrapy.exporters import XmlItemExporter
+from scrapy.exporters import XmlItemExporter, JsonLinesItemExporter
 
 # item在spider中被收集后会传到pipeline组件，再此可以对item进行自定义处理
 # 需要在setting文件中配置ITEM_PIPELINES使其生效
@@ -172,3 +172,37 @@ class dataXmlExporter(XmlItemExporter):
         if field == 'population':
             return 'num %s' % str(value)
         return super(dataXmlExporter, self).serialize_field(field, name, value)
+
+# jsonline导出
+class JsonLineExportPipeline(object):
+    def __init__(self):
+        self.files = {}
+        file = open('myfile/%s.json' % 'proxy_youdaili', 'w+b')
+        self.files['proxy_youdaili'] = file
+        # 实例化一个XmlItemExporter对象
+        self.exporter = JsonLinesItemExporter(file)
+        self.exporter.start_exporting()
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        pipeline = cls()
+        crawler.signals.connect(pipeline.spider_opened, signals.spider_opened)
+        crawler.signals.connect(pipeline.spider_closed, signals.spider_closed)
+        return pipeline
+
+    def spider_opened(self, spider):
+        file = open('myfile/%s.json' % 'proxy_youdaili', 'w+b')
+        self.files['proxy_youdaili'] = file
+        # 实例化一个XmlItemExporter对象
+        self.exporter = JsonLinesItemExporter(file)
+        self.exporter.start_exporting()
+
+    def spider_closed(self, spider):
+        self.exporter.finish_exporting()
+        file = self.files.pop(spider)
+        file.close()
+
+    def process_item(self, item, spider):
+        # 把item导入到xml文件中
+        self.exporter.export_item(item)
+        return item

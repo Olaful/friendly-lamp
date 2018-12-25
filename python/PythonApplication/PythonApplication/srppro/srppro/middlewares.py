@@ -144,8 +144,8 @@ class UAPOOLS(UserAgentMiddleware):
 # 用户代理设置中间件
 class ProxyMiddleware(object):
     def process_request(self, request, spider):
-        request.meta['proxy'] = "http://YOUR_PROXY_IP:PORT"
+        request.meta['proxy'] = "http://119.254.88.53:8080"
         proxy_user_pass = "USERNAME:PASSWORD"
-        encoded_user_pass = base64.encodestring(proxy_user_pass)
+        #encoded_user_pass = base64.encodestring(proxy_user_pass)
         encoded_user_pass = base64.b64encode(proxy_user_pass.encode()).decode("ascii")
-        request.headers['Proxy-Authorization'] = 'Basic ' + encoded_user_pass
+        #request.headers['Proxy-Authorization'] = 'Basic ' + encoded_user_pass

@@ -78,6 +78,7 @@ TELNETCONSOLE_HOST = '127.0.0.1'
 DOWNLOADER_MIDDLEWARES = {
     #'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': 127,
     'srppro.middlewares.UAPOOLS': 128,
+    #'srppro.middlewares.ProxyMiddleware': 129,
 }
 
 # Enable or disable extensions
@@ -106,7 +107,8 @@ ITEM_PIPELINES = {
    #'srppro.pipelines.CSDNImagesPipeline': 302,
    # 使用redis存储
    #'scrapy_redis.pipelines.RedisPipeline': 303,
-   'srppro.pipelines.XmlExportPipeline': 304,
+   #'srppro.pipelines.XmlExportPipeline': 304,
+   'srppro.pipelines.JsonLineExportPipeline': 305,
 }
 
 SPIDER_CONTRACTS = {
@@ -206,7 +208,7 @@ RETRY_HTTP_CODES = [500, 502, 503, 504, 400, 408]
 AJAXCRAWL_ENABLED = False
 
 # 下载超时
-DOWNLOAD_TIMEOUT = 100
+DOWNLOAD_TIMEOUT = 20
 
 # # 使用scrapy_redis的调度队列，默认是使用scrapy自身的scheduler
 # # SCHEDULER = "scrapy_redis.scheduler.Scheduler"

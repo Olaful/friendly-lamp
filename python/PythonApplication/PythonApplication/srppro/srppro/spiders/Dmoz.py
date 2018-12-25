@@ -1,6 +1,6 @@
 import scrapy
 
-from srppro.items import DmozItem, CSDNItemImg
+from srppro.items import DmozItem, CSDNItemImg, ProxyItem
 
 from scrapy.loader import ItemLoader
 
@@ -185,4 +185,18 @@ class CDSNRedisSpider(RedisSpider):
         item = CSDNItemImg()
         for sel in response.xpath('//img'):
             item['image_urls'] = sel.xpath('@src').extract()
+            yield item
+
+class Proxy_Youdaili_Spider(scrapy.spiders.Spider):
+    name = 'proxy_youdaili'
+    allowed_domains = ['www.youdaili.net']
+    
+    start_urls = ['https://www.youdaili.net/Daili/http/36803.html']
+    
+    def parse(self, response):
+        item = ProxyItem()
+
+        xpath = '//div[@class="content"]/p'
+        for sel in response.xpath(xpath):
+            item['ipport'] = sel.xpath('text()').extract()
             yield item
