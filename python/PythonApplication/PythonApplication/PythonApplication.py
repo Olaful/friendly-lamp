@@ -623,6 +623,18 @@ def Singleton(cls):
 class A:
     name = 'kk'
 
+# 闭包，内部返回函数引用
+def outer(x):
+    y = 2
+    def inter(z):
+        return x + y + z
+    return inter
+
+f = outer(1)
+# 两者使用outer函数中同一个变量y
+f(1)
+f(2)
+
 import sys
 
 # os也是标准库中常用的模块
