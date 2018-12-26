@@ -4785,6 +4785,7 @@ def getBaiduData(*args):
 
 def runCrwal():
     from subprocess import Popen, PIPE
+    from scrapy.cmdline import execute
     os.chdir(r'srppro')
 
     # scrapy命令
@@ -4831,6 +4832,63 @@ def runCrwal():
     run_crawl_other = 'scrapy crawl proxy_youdaili'
 
     Popen(run_crawl_other, stdout=None, stderr=None)
+    #execute(['scrapy', 'crawl', 'csdnarticle'])
+
+
+from twisted.internet import reactor,defer
+from scrapy.spiders import Spider
+from scrapy.crawler import CrawlerRunner
+from scrapy.settings import Settings
+from scrapy.utils.project import get_project_settings
+
+class Myspider(Spider):
+    name = 'csimage'
+    allowed_domains = ['csdn.net']
+    start_urls = ["https://www.csdn.net"]
+
+    def parse(self, response):
+        item = {}
+        for sel in response.xpath('//img'):
+            item['image_urls'] = sel.xpath('@src').extract()
+            yield item
+
+# 在Twisted reactor中运行spider,使用自定义设置或者通用设置
+def runSpider1():
+    settings = Settings({'USER_AGENT':'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)'})
+    #runner = CrawlerRunner(settings)
+    runner = CrawlerRunner(get_project_settings())
+    # 自定义spider或者在scrapy已存在的spider
+    d = runner.crawl(Myspider)
+    d.addBoth(lambda _:reactor.stop())
+    # 阻塞，直到spider运行完毕
+    reactor.run()
+
+# 执行多个spider
+def runSpider2():
+    os.chdir(r'srppro')
+    runner = CrawlerRunner(get_project_settings())
+    dfs = set()
+    for domain in ['csdn.net']:
+        # domain会覆盖spider原来的domain
+        d = runner.crawl('csdnarticle', domain=domain)
+        dfs.add(d)
+
+    # 延迟加载
+    defer.DeferredList(dfs).addBoth(lambda _: reactor.stop())
+    reactor.run()
+
+# 通过链接(chaining) deferred来线性运行spider
+def runSpider3():
+    os.chdir(r'srppro')
+    runner = CrawlerRunner(get_project_settings())
+    @defer.inlineCallbacks
+    def crawl():
+        for domain in ['www.douban.com', 'csdn.net']:
+            yield runner.crawl('csimage', domain=domain)
+        reactor.stop()
+
+    crawl()
+    reactor.run()
 
 def main():
     runCrwal()
