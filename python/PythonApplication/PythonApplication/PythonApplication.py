@@ -4890,8 +4890,12 @@ def runSpider3():
     crawl()
     reactor.run()
 
+def pySpiderRun():
+    from subprocess import Popen
+    Popen('pyspider all', stdout=None, stderr=None)
+
 def main():
-    runCrwal()
+    pySpiderRun()
 
 if __name__ == '__main__':
     #---------------------------------------------------start
@@ -4900,20 +4904,7 @@ if __name__ == '__main__':
     print()
     starttime = time.time()
 
-    #main()
-
-    import tornado.ioloop
-    import tornado.web
-
-    class MainHandler(tornado.web.RequestHandler):
-        def get(self):
-            self.write("Hello World")
-    def make_app():
-        return tornado.web.Application([(r'/', MainHandler)])
-
-    app = make_app()
-    app.listen(8888)
-    tornado.ioloop.IOLoop.current().start()
+    main()
 
     #---------------------------------------------------end
     endtime = time.time()
