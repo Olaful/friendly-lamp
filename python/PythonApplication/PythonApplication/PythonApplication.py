@@ -913,8 +913,8 @@ text = "hello... wo-rld! are you ok"
 # 以指定模式分割字符串，[]集合匹配，+匹配1到多个，匹配集合中的单个字符，'.'为通配符
 x = re.split('[. ]+', text)
 print(x)
-# 位于集合匹配中的^符号是非的意思
-x = re.findall('[^h]+', text)
+# 位于集合匹配中的^符号是非的意思,re.S表示匹配.，所以也可以匹配\n,
+x = re.findall('[^h]+', text, re.S)
 print(x)
 # ()子模式匹配，'wo'两边会被分割开来，但'o'会出现在分割后的列表中
 x = re.split('w(o)', text)
@@ -1240,11 +1240,15 @@ urlretrieve('https://www.python.org/', 'myfile/python.html')
 # 如会把~转换成%7E，unquote功能则相反
 webpage = urlopen(quote('https://www.~myurl.org/'))
 
-from urllib.parse import urlencode
+from urllib.parse import urlencode, parse_qs
 # 返回param1=test&amp;param2=%c%de类似的字符串
 # 这些字符串可以在url中当作参数，如服务器cgi脚本是用
 # python编写的，则可通过cgi模块的getvalue方法获取到参数
 print(urlencode({'param1':'test', 'param2':'你好'}))
+# 与urlencode相反
+print(parse_qs('name=hello&value=22'))
+# 返回元组
+print(parse_qsl('name=hello&value=22'))
 
 # 导入基础网络服务器框架socketserver，包含TCP,UDP类等
 from socketserver import TCPServer, StreamRequestHandler, ThreadingMixIn
@@ -1714,6 +1718,9 @@ logging.info('begin the func')
 # 这样就可以通过日志查看程序执行到大概哪个地方出错了
 logging.info('func end')
 logging.info('endind  program')
+
+# 捕捉警告信息
+logging.captureWarning(True)
 
 file = open('myfile/template.txt').readlines()
 def filegrt(file):
@@ -4530,14 +4537,29 @@ def autoLogin():
     from urllib.parse import urlencode
     import http.cookiejar
     import ssl
+    from urllib.request import HTTPPasswordMgrWithDefaultRealm, HTTPBasicAuthHandler
 
     url = 'http://example.webscraping.com/places/default/user/login?_next=/places/default/index'
     email = 'test123@test.com'
     pwd = 'test'
 
+    # 处理一些界面需要的认证登陆
+    username = '123'
+    pwd = '123'
+    p = HTTPPasswordMgrWithDefaultRealm()
+    p.add_password(None, 'http://xxx', username, pwd)
+    auth_handler = HTTPBasicAuthHandler(p)
+    opener = build_opener(auth_handler)
+
     # 处理与cookie的交互
     cj = http.cookiejar.CookieJar()
     opener = build_opener(urllib.request.HTTPCookieProcessor(cj))
+
+    # 可以保存cookies
+    # fn = 'cookies.txt'
+    # cjj = http.cookiejar.MozillaCookieJar(fn)
+    # cjj.save(ignore_discard=True, ignore_expires=True)
+    #cjj.load(fn, ignore_discard=True, ignore_expires=True)
 
     # 如果访问https页面，可能会进行ssl认证，这时可以手动取消认证
     #cxt = ssl._create_unverified_context()
@@ -4600,8 +4622,25 @@ def autoLogin():
             print(cookieData)
             return cookieData
     print(encode_data_upd)
-    # 该方法没有成功修改网站数据，所以用来登录
+    # 该方法没有成功修改网站数据，所以用来登录, cookies也可以在headers中指定
+    # proxies设置代理,可以设置socks代理,如{'http':'socks5://user:pwd:host:port'
     resp = requests.post(urlEdit, headers = {'User-agent': 'wswp'}, data=encode_data_upd, cookies=getCookieFromChrome('example.webscraping.com'))
+    # 获取cookies
+    print(resp.cookies)
+    file = {'file': open('myfile/test.txt', 'rb')}
+    # 指定files可以上传文件
+    resp = requests.post(urlEdit, files=file)
+
+    # 忽视ssl认证
+    resp = requests.get('https://www.12306.cn', verify=False)
+
+    # 认证访问
+    resp = requests.get('https://www.12306.cn', auth=('username', 'pwd'))
+
+    # 保持会话持久性
+    s = requests.Session()
+    s.get(urlEdit)
+    s.get(urlEdit)
 
 # 使用mechanize获取表单内容自动登录
 def useMechLogin():
@@ -4894,8 +4933,173 @@ def pySpiderRun():
     from subprocess import Popen
     Popen('pyspider all', stdout=None, stderr=None)
 
+import json
+import requests
+from requests.exceptions import RequestException
+
+def get_one_page(url):
+    try:
+        header = {
+            'User-Agent':'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
+            + 'Chrome/71.0.3578.98 Safari/537.36'
+        }
+        resp = requests.get(url, headers=header)
+        if resp.status_code == 200:
+            return resp.text
+        return None
+    except RequestException:
+        return None
+
+def parse_one_page(html):
+    # 表达式太复杂，陷入死循环
+    pattern = """
+      <dd>.*?board-index.*?>(\d+)</i>.*?data-src="(.*?)".*?name"><a'
+     '.*?>(.*?)</a>.*?start">(.*?)</p>.*?releasetime">(.*?)</p>'
+     '.*?integer">(.*?)</i>.*?fraction">(.*?)</i>.*?</dd>
+     """
+
+    items = re.findall(pattern, html, re.S)
+    for item in items:  
+        yield{
+            'index':item[0],
+            'image':item[1],
+            'title':item[2],
+            'actor':item[3].strip()[3:],
+            'time':item[4].strip()[5:],
+            'score':item[5] + item[6]
+        }
+
+def write_to_file(content):
+    with open(r'myfile/maoyantop.txt', 'a', encoding='utf-8') as f:
+        f.write(json.dumps(content, ensure_ascii=False) + '\n')
+
+def maoyanMain(offset=0):
+    url = 'http://maoyan.com/board/4?offset={}'.format(offset)
+    html = get_one_page(url)
+    for item in parse_one_page(html):
+        print(item)
+        write_to_file(item)
+
+# 京东某商品图片url
+
+img_urls = []
+def get_Img_urls():
+    url = 'https://list.jd.com/list.html?cat=9987,653,655&ev=exprice%5FM500L999&sort=sort_rank_asc&trans=1&JL=3_%E4%BB%B7%E6%A0%BC_500-999#J_crumbsBar'
+    header = {
+    'User-Agent':'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
+    }
+    rsp = requests.get(url, headers=header)
+    tree = lxml.html.fromstring(rsp.text)
+    data = tree.xpath(r'//li[contains(@class, "gl-item")]/div/div[contains(@class, "p-img")]/a/img/@data-lazy-img')
+    for d in data:
+        if d is not None:
+            img_urls.append(urljoin(url, d))
+
+def write_to_file():
+    md = hashlib.md5()
+    get_Img_urls()
+
+    for url in img_urls:
+        resp = requests.get(url, headers=header)
+        md.update(resp.content)
+        suffix_name = url.split('/')[-1].split('.')[-1]
+        data = BytesIO(resp.content)
+        try:
+            img = Image.open(data)
+            img.save('{0}.{1}'.format(md.hexdigest(), suffix_name))
+        except OSError:
+            pass
+
+
+def pyQuery():
+    from pyquery import PyQuery as pq
+
+    html = """
+    <div class="wrap">
+        Hello World
+        <p>This is a paragraph</p>
+    <div id="container">
+    <ul class="list">
+    <li class="item-0">first item</li>
+    <li class="item-1"><a href="link2.html">second item</a></li>
+    <li class="item-0 active"><a href="link3.html"><span class="bold"></span>third item</a></li>
+    <li class="item-1 active"><a href="link4.html">fourth item</a></li>
+    <li class="item-0"><a href="link5.html">fifth item</a></li>
+    </ul>
+    </div>
+    </div>
+    """
+    doc = pq(html)
+    rls = doc('li')
+
+    doc = pq(url="https://maoyan.com/")
+    rls = doc('title')
+
+    doc = pq(filename='myfile/index.html')
+    rls = doc('title')
+
+    doc = pq(html)
+    rls = doc('#container .list li')
+
+    doc = pq(html)
+    rls = doc('.list')
+    rls = rls.find('li')
+    rls = rls.children()
+
+    rls = doc('.list')
+    rls = rls.parent()
+
+    rls = doc('.list')
+    rls = rls.parents()
+
+    rls = doc('.list .item-0.active')
+    #rls = rls.siblings()
+    rls = rls.siblings('.active')
+
+    rls = doc('li').items()
+    # for li in rls:
+    #     print(li)
+
+    rls = doc('.item-0.active a')
+    # 只返回第一个节点的属性
+    #rls = rls.attr('href')
+    # 查找所有节点的text并以逗号隔开
+    #rls = rls.text()
+    rls = rls.html()
+
+    # rls = doc('.item-0.active')
+    # print(rls)
+    # rls = rls.removeClass('active')
+    # print(rls)
+    # rls = rls.addClass('active')
+    # print(rls)
+
+    # rls = doc('.item-0.active')
+    # print(rls)
+    # rls.attr('name', 'link')
+    # print(rls)
+    # rls.text('changed item')
+    # print(rls)
+    # rls.html('<span>changed item</span>')
+    # print(rls)
+
+    rls = doc('.wrap')
+    rls.find('p').remove()
+
+    rls = doc('li:first-child')
+    rls = doc('li:last-child')
+    # 第二个li节点
+    rls = doc('li:nth-child(2)')
+    # 第三个节点之后的节点
+    rls = doc('li:gt(2)')
+    # 偶数位置节点
+    rls = doc('li:nth-child(2n)')
+    # 包含指定内容的节点
+    rls = doc('li:contains("second")')
+    print(rls)
+
 def main():
-    pySpiderRun()
+    pyQuery()
 
 if __name__ == '__main__':
     #---------------------------------------------------start
