@@ -4490,7 +4490,7 @@ def webDeriver():
     chrome_options.add_argument('--headless')
     driver = webdriver.Chrome(executable_path=r'C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe', chrome_options=chrome_options)
     driver.get('http://example.webscraping.com/places/default/search')
-    # 向页面中的元素填充内容
+    # 向页面中的元素填充内容7
     driver.find_element_by_id('search_term').send_keys('.')
     # 自定义js语句
     js = 'document.getElementById("page_size").options[1].text="1000"'
@@ -5098,8 +5098,177 @@ def pyQuery():
     rls = doc('li:contains("second")')
     print(rls)
 
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.common.by import By
+from selenium.webdriver import ActionChains
+# 处理拖动验证码
+class BiliBiliest():
+    # 调整偏移量
+    ADJ = 20
+    def __init__(self):
+        self.url = 'https://passport.bilibili.com/login'
+        self.br = webdriver.Chrome()
+        self.wait = WebDriverWait(self.br, 10)
+        self.phone = '13537554024'
+        self.pwd = 'bimimoli'
+    
+    # 对象被销毁时触发
+    def __del__(self):
+        self.br.close()
+
+    # 打开页面并输入用户名与密码
+    def open(self):
+        self.br.get(self.url)
+        self.br.implicitly_wait(30)
+        self.br.find_element_by_id('login-username').send_keys(self.phone)
+        self.br.find_element_by_id('login-passwd').send_keys(self.pwd)
+
+    def login(self):
+        submmit = self.br.find_element_by_xpath('//a[contains(@class, "btn btn-login")]')
+        submmit.click()
+        sleep(10)
+        print('登录成功')
+
+    # 获取拖动按钮
+    def get_slider_btn(self):
+        # 界面加载等待期间,界面按钮可点击的时候获取该按钮
+        #btn = self.wait.until(expected_conditions.element_to_be_clickable((By.CLASS_NAME, 'gt_slider_knob gt_show')))
+        self.br.implicitly_wait(10)
+        btn = self.br.find_element_by_xpath('//div[contains(@class, "gt_slider_knob gt_show")]')
+        return btn
+
+    # 获取验证码图片的位置
+    def get_pos(self):
+        self.br.implicitly_wait(10)
+        # 由于验证码图片是拼接起来的，先获取图片区域左上角
+        # 图片的左上角位置，再获取图片区域的右下角图片的右
+        # 下角位置
+        img = self.br.find_element_by_xpath('//div[contains(@style, "background-position: -157px -58px")]')
+        sleep(2)
+        location = img.location
+        size = img.size
+        top, left = location['y'], location['x']
+
+        img = self.br.find_element_by_xpath('//div[contains(@style, "background-position: -205px 0px")]')
+        location = img.location
+        size = img.size
+        bottom, right = location['y'] + size['height'], location['x'] + size['width']
+
+        return (left, top, right, bottom)
+
+    def get_screenshot(self):
+        screenshot = self.br.get_screenshot_as_png()
+        screenshot = Image.open(BytesIO(screenshot))
+        return screenshot
+
+    # 获取指定区域的屏幕截图
+    def get_image(self, name):
+        left, top, right, bottom = self.get_pos()
+        print('图片验证码位置:', left, top, right, bottom)
+        screenshot = self.get_screenshot()
+        captcha = screenshot.crop((left, top, right, bottom))
+        captcha.save('myfile/{}'.format(name))
+        return captcha
+
+    # 判断两张图片的像素是否相同
+    def is_pixel_equal(self, img1, img2, x, y):
+        # 获取图片指定位置像素
+        pixel1 = img1.load()[x, y]
+        pixel2 = img2.load()[x, y]
+        # 自定义阈值差
+        threshold = 40
+        # 判断RGB值是否相等
+        if abs(pixel1[0] - pixel2[0]) < threshold and abs(pixel1[1] - pixel2[1]) < threshold \
+            and abs(pixel1[2] - pixel2[2]) < threshold:
+            return True
+        else:
+            return False
+
+    # 获取带缺口图片的缺口像素位置
+    def get_gap(self, img1, img2):
+        # 默认偏移量, 由于待拼合的模块在左边，占用一定位置
+        left = 60
+        for i in range(left, img1.size[0]):
+            for j in range(img1.size[1]):
+                if not self.is_pixel_equal(img1, img2, i, j):
+                    left = i
+                    return left
+        return left
+
+    # 获取按钮拖动所需位移量信息，尽量模拟人拖动的速度
+    def get_track(self, distance):
+        track = []
+        current = 0
+        # 减速位置
+        mid = distance * 4 / 5
+        # 加速度时间单位
+        t = 0.2
+        # 初速度
+        v = 0
+
+        while current < distance:
+            # 前段加速，后段减速
+            if current < mid:
+                a = 2
+            else:
+                a = -3
+            v0 = v
+            # 当前速度
+            v = v0 + a * t
+            # 根据物理公式s = v0 * t + a * t^2 / 2计算每段时间移动距离
+            move = v0 * t + (a * t * t) / 2
+            current += move
+            track.append(move)
+
+        return track
+
+    # 根据移动轨迹模拟按钮拖动，浏览器不可缩小
+    # 否则拖动距离不准确
+    def move_to_gap(self, slider, tracks):
+        # 按钮按下
+        ActionChains(self.br).click_and_hold(slider).perform()
+        for x in tracks:
+            ActionChains(self.br).move_by_offset(xoffset=x, yoffset=0).perform()
+        sleep(0.5)
+        # 释放按钮按下动作
+        ActionChains(self.br).release().perform()
+
+    def crack(self):
+        self.open()
+        btn = self.get_slider_btn()
+        # 鼠标移动到拖动按钮上
+        ActionChains(self.br).move_to_element(btn).perform()
+        sleep(1)
+        img1 = self.get_image('captcha_normal.png')
+
+        ActionChains(self.br).click_and_hold(btn).perform()
+        img2 = self.get_image('captcha_gaps.png')
+        ActionChains(self.br).release().perform()
+
+        gap = self.get_gap(img1, img2)
+        print('图片缺口位置:', gap)
+
+        gap += self.ADJ
+        track = self.get_track(gap)
+        self.move_to_gap(btn, track)
+
+        self.br.implicitly_wait(5)
+        #success = self.wait.unit(expected_conditions.presence_of_element_located(By.ClASS_NAME, 'gt_ajax_tip gt_success'))
+        success = self.br.find_element_by_xpath('//div[contains(@class, "gt_ajax_tip gt_success")]')
+        print(success)
+
+        if not success:
+            ''
+            #self.crack()
+        else:
+            self.login()
+
+    
+
 def main():
-    pyQuery()
+    crack = BiliBiliest()
+    crack.crack()
 
 if __name__ == '__main__':
     #---------------------------------------------------start
