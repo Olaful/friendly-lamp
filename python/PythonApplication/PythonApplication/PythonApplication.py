@@ -4413,74 +4413,74 @@ if 1 > 2:
 #        self.html = html_str
 #        #self.app.quit()
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from PyQt4.QtWebKit import QWebView
+# from PyQt4.QtCore import *
+# from PyQt4.QtGui import *
+# from PyQt4.QtWebKit import QWebView
 
 # QWebKit实现的浏览器
-class BrowserRender(QWebView):
-    def __init__(self, show=True):
-        self.app = QApplication([])
-        QWebView.__init__(self)
-        if show:
-            self.show()
+# class BrowserRender(QWebView):
+#     def __init__(self, show=True):
+#         self.app = QApplication([])
+#         QWebView.__init__(self)
+#         if show:
+#             self.show()
 
-    def download(self, url, timeout=60):
-        loop = QEventLoop()
-        timer = QTimer()
-        # 设置定时器超时会执行函数
-        timer.setSingleShot(True)
-        # 定时器超时或者页面加载完成都会触发事件循环退出
-        # 如果页面一直没有响应则用定时器终止循环
-        timer.timeout.connect(loop.quit)
-        self.loadFinished.connect(loop.quit)
-        self.load(QUrl(url))
-        timer.start(timeout*1000)
-        # 一直循环直到loop.quit被调用，之后才继续后面的部分
-        loop.exec_()
+#     def download(self, url, timeout=60):
+#         loop = QEventLoop()
+#         timer = QTimer()
+#         # 设置定时器超时会执行函数
+#         timer.setSingleShot(True)
+#         # 定时器超时或者页面加载完成都会触发事件循环退出
+#         # 如果页面一直没有响应则用定时器终止循环
+#         timer.timeout.connect(loop.quit)
+#         self.loadFinished.connect(loop.quit)
+#         self.load(QUrl(url))
+#         timer.start(timeout*1000)
+#         # 一直循环直到loop.quit被调用，之后才继续后面的部分
+#         loop.exec_()
 
-        # 如果循环结束后，定时器还没有超时，则页面下载完成
-        if timer.isActive():
-            timer.stop()
-            return self.getHtml()
-        else:
-            print('Request time out:', url)
+#         # 如果循环结束后，定时器还没有超时，则页面下载完成
+#         if timer.isActive():
+#             timer.stop()
+#             return self.getHtml()
+#         else:
+#             print('Request time out:', url)
 
-    def getHtml(self):
-        return self.page().mainFrame().toHtml()
+#     def getHtml(self):
+#         return self.page().mainFrame().toHtml()
 
-    def find(self, pattern):
-        # css选择器，通过标签名或者class等选择
-        return self.page().mainFrame().findAllElements(pattern)
+#     def find(self, pattern):
+#         # css选择器，通过标签名或者class等选择
+#         return self.page().mainFrame().findAllElements(pattern)
 
-    # 设置html页面元素的值
-    def attr(self, pattern, name, value):
-        for e in self.find(pattern):
-            e.setAttribute(name, value)
+#     # 设置html页面元素的值
+#     def attr(self, pattern, name, value):
+#         for e in self.find(pattern):
+#             e.setAttribute(name, value)
 
-    def text(self, pattern, value):
-        for e in self.find(pattern):
-            e.setPlainText(value)
+#     def text(self, pattern, value):
+#         for e in self.find(pattern):
+#             e.setPlainText(value)
 
-    # 模拟html页面元素的点击事件，调用相关javascript方法
-    def click(self, pattern):
-        for e in self.find(pattern):
-            e.evaluateJavaScript('this.click()')
+#     # 模拟html页面元素的点击事件，调用相关javascript方法
+#     def click(self, pattern):
+#         for e in self.find(pattern):
+#             e.evaluateJavaScript('this.click()')
 
-    # 在定时内反复查找页面返回的信息，因为ajax调用在规定时间内可能不能及时返回数据
-    def wait_load(self, pattern, timeout=60):
-        dealine = time.time() + timeout
-        while time.time() < dealine:
-            # processEvents调用之后就能响应后面的页面事件，app.exec_内部就是调用这个方法
-            self.app.processEvents()
-            matches = self.find(pattern)
-            if matches:
-                return matches
-        print('Wait load time out')
+#     # 在定时内反复查找页面返回的信息，因为ajax调用在规定时间内可能不能及时返回数据
+#     def wait_load(self, pattern, timeout=60):
+#         dealine = time.time() + timeout
+#         while time.time() < dealine:
+#             # processEvents调用之后就能响应后面的页面事件，app.exec_内部就是调用这个方法
+#             self.app.processEvents()
+#             matches = self.find(pattern)
+#             if matches:
+#                 return matches
+#         print('Wait load time out')
 
-    # 保持当前窗口
-    def keepWindow(self):
-        self.app.exec_()
+#     # 保持当前窗口
+#     def keepWindow(self):
+#         self.app.exec_()
 
 from selenium import webdriver
 def webDeriver():
@@ -5102,10 +5102,13 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.common.by import By
 from selenium.webdriver import ActionChains
+from selenium.common.exceptions import NoSuchElementException
+import random
 # 处理拖动验证码
 class BiliBiliest():
     # 调整偏移量
-    ADJ = 20
+    ADJ = 15
+    RETRY = 0
     def __init__(self):
         self.url = 'https://passport.bilibili.com/login'
         self.br = webdriver.Chrome()
@@ -5217,14 +5220,13 @@ class BiliBiliest():
             # 当前速度
             v = v0 + a * t
             # 根据物理公式s = v0 * t + a * t^2 / 2计算每段时间移动距离
-            move = v0 * t + (a * t * t) / 2
+            move = v0 * t + (a * t * t) / 2 + random.random()
             current += move
             track.append(move)
 
         return track
 
-    # 根据移动轨迹模拟按钮拖动，浏览器不可缩小
-    # 否则拖动距离不准确
+    # 根据移动轨迹模拟按钮拖动
     def move_to_gap(self, slider, tracks):
         # 按钮按下
         ActionChains(self.br).click_and_hold(slider).perform()
@@ -5244,7 +5246,7 @@ class BiliBiliest():
 
         ActionChains(self.br).click_and_hold(btn).perform()
         img2 = self.get_image('captcha_gaps.png')
-        ActionChains(self.br).release().perform()
+        # ActionChains(self.br).release().perform()
 
         gap = self.get_gap(img1, img2)
         print('图片缺口位置:', gap)
@@ -5254,14 +5256,19 @@ class BiliBiliest():
         self.move_to_gap(btn, track)
 
         self.br.implicitly_wait(5)
-        #success = self.wait.unit(expected_conditions.presence_of_element_located(By.ClASS_NAME, 'gt_ajax_tip gt_success'))
-        success = self.br.find_element_by_xpath('//div[contains(@class, "gt_ajax_tip gt_success")]')
-        print(success)
-
-        if not success:
-            ''
-            #self.crack()
-        else:
+        success = False
+        # 计算缺口的位置可能有所偏差，所以多重复几次
+        try:
+            #success = self.wait.unit(expected_conditions.presence_of_element_located(By.ClASS_NAME, 'gt_ajax_tip gt_success'))
+            success = self.br.find_element_by_xpath('//div[contains(@class, "gt_ajax_tip gt_success")]')
+            print(success)
+        except NoSuchElementException:
+            pass
+        
+        if not success and self.RETRY < 5:
+            self.RETRY += 1
+            self.crack()
+        elif self.RETRY >= 5:
             self.login()
 
     
