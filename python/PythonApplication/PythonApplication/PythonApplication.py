@@ -5268,7 +5268,7 @@ class BiliBiliest():
         if not success and self.RETRY < 5:
             self.RETRY += 1
             self.crack()
-        elif self.RETRY >= 5:
+        else:
             self.login()
 
     
@@ -5300,6 +5300,7 @@ class Chaojiying(object):
         params.update(self.base_params)
         files = {'userfile':('hello.jpg', im)}
         r = requests.post(self.upload_url, data=params, files=files, headers=self.header)
+        # 结果示例{"err_no":0,"err_str":"OK","pic_id":"1662228516102","pic_str":"1,2|3,4","md5":"35d5c7f6f53223fbdc5b72783db0c2c0"}
         return r.json()
 
     # 获取上传错误信息
@@ -5307,12 +5308,14 @@ class Chaojiying(object):
         params = {'id':im_id}
         params.update(self.base_params)
         r = requests.post(self.uperror_url, data=params, headers=self.header)
+        # 结果示例{"err_no":0,"err_str":"OK"}
         return r.json()
 
 CHAOJIYING_USER = ''
 CHAOJIYING_PWD = ''
-CHAOJIYING_SOFTID = 0
-CHAOJIYING_KIND = 9102 
+CHAOJIYING_SOFTID = 898312
+# 选取1-4个坐标
+CHAOJIYING_KIND = 9004 
 RAILWAY_12306_USER = ''
 RAILWAY_12306_PWD = ''
 
@@ -5339,7 +5342,7 @@ class Railway_12306():
     def login(self):
         submmit = self.wait.until(expected_conditions.presence_of_element_located((By.ID, 'J-login')))
         submmit.click()
-        sleep(10)
+        sleep(5)
         print('登录成功')
 
     def get_click_element(self):
@@ -5349,7 +5352,7 @@ class Railway_12306():
     def get_login_image(self, name):
         em_img = self.get_click_element()
         img_base64data = em_img.get_property('src').split(',')[-1]
-        img_base64data = re.sub('[\s]+', '', img_base64data)
+        img_base64data = re.sub(r'[\s]+', '', img_base64data)
         binary_data = base64.b64decode(img_base64data)
         img = Image.open(BytesIO(binary_data))
         img.save('myfile/{}'.format(name))
@@ -5376,21 +5379,18 @@ class Railway_12306():
         print('坐标信息:', rls)
         locations = self.get_pos(rls)
         self.touch_click_pic(locations)
+        self.login()
 
-        try:
-            success = self.wait.until(expected_conditions.visibility_of_element_located((By.CLASS_NAME, 'lgcode-success')))
-        except NoSuchElementException:
-            pass
+        success = not re.search('login', self.br.current_url)
+
         if not success and self.RETRY < 5:
             self.RETRY += 1
             self.crack()
-        elif self.RETRY >= 5:
-            self.login()
 
 from selenium.common.exceptions import TimeoutException
 
-USERNAME = '1764740905@qq.com'
-PWD = 've13377248866lo'
+USERNAME = ''
+PWD = ''
 class CrackWeiboSlide():
     "把模板保存到本地，对比验证码与模板匹配"
     def __init__(self):
@@ -5510,8 +5510,8 @@ class CrackWeiboSlide():
         
 
 def main():
-    crack = CrackWeiboSlide()
-    crack.main()
+    crack = Railway_12306()
+    crack.crack()
 
 if __name__ == '__main__':
     #---------------------------------------------------start
