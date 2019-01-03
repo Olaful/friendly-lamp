@@ -5272,10 +5272,246 @@ class BiliBiliest():
             self.login()
 
     
+import requests
+from hashlib import md5
+
+# 通过向chaojiying验证码服务提供网站请求图片数据
+class Chaojiying(object):
+    def __init__(self, username, pwd, soft_id):
+        self.username = username
+        self.pwd = pwd
+        self.soft_id = soft_id
+        self.base_params = {
+            'user':self.username,
+            'pass2':self.pwd,
+            'softid':self.soft_id,
+        }
+        self.header = {
+            'Connection':'Keep-Alive',
+            'User-Agent':'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 \
+            (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
+        }
+        self.upload_url = 'http://upload.chaojiying.net/Upload/Processing.php'
+        self.uperror_url = 'http://upload.chaojiying.net/Upload/ReportError.php'
+    
+    # 上传图片
+    def post_pic(self, im, codetype):
+        params = {'codetype': codetype,}
+        params.update(self.base_params)
+        files = {'userfile':('hello.jpg', im)}
+        r = requests.post(self.upload_url, data=params, files=files, headers=self.header)
+        return r.json()
+
+    # 获取上传错误信息
+    def report_error(self, im_id):
+        params = {'id':im_id}
+        params.update(self.base_params)
+        r = requests.post(self.uperror_url, data=params, headers=self.header)
+        return r.json()
+
+CHAOJIYING_USER = ''
+CHAOJIYING_PWD = ''
+CHAOJIYING_SOFTID = 0
+CHAOJIYING_KIND = 9102 
+RAILWAY_12306_USER = ''
+RAILWAY_12306_PWD = ''
+
+class Railway_12306():
+    RETRY = 0
+    def __init__(self):
+        self.url = 'https://kyfw.12306.cn/otn/resources/login.html'
+        self.br = webdriver.Chrome()
+        # 等待界面出现元素的时间
+        self.wait = WebDriverWait(self.br, 10)
+        self.username = RAILWAY_12306_USER
+        self.pwd = RAILWAY_12306_PWD
+        self.captSerive = Chaojiying(CHAOJIYING_USER, CHAOJIYING_PWD, CHAOJIYING_SOFTID)
+
+    def open(self):
+        self.br.get(self.url)
+        login_with_acct = self.wait.until(expected_conditions.presence_of_element_located((By.CLASS_NAME, 'login-hd-account')))
+        login_with_acct.click()
+        username = self.wait.until(expected_conditions.presence_of_element_located((By.ID, 'J-userName')))
+        pwd = self.wait.until(expected_conditions.presence_of_element_located((By.ID, 'J-password')))
+        username.send_keys(self.username)
+        pwd.send_keys(self.pwd)
+
+    def login(self):
+        submmit = self.wait.until(expected_conditions.presence_of_element_located((By.ID, 'J-login')))
+        submmit.click()
+        sleep(10)
+        print('登录成功')
+
+    def get_click_element(self):
+        em_img = self.wait.until(expected_conditions.presence_of_element_located((By.ID, 'J-loginImg')))
+        return em_img
+
+    def get_login_image(self, name):
+        em_img = self.get_click_element()
+        img_base64data = em_img.get_property('src').split(',')[-1]
+        img_base64data = re.sub('[\s]+', '', img_base64data)
+        binary_data = base64.b64decode(img_base64data)
+        img = Image.open(BytesIO(binary_data))
+        img.save('myfile/{}'.format(name))
+        return img
+        
+    # 获取点击图像的坐标
+    def get_pos(self, captcha_rls):
+        groups = captcha_rls.get('pic_str').split('|')
+        locations = [[int(number) for number in group.split(',')] for group in groups]
+        return locations
+    
+    # 根据坐标点击图像
+    def touch_click_pic(self, locations):
+        for location in locations:
+            ActionChains(self.br).move_to_element_with_offset(self.get_click_element(), location[0], location[1]).click().perform()
+        sleep(1)
+
+    def crack(self):
+        self.open()
+        image = self.get_login_image('captcha_railway.png')
+        byteData = BytesIO()
+        image.save(byteData, format='PNG')
+        rls = self.captSerive.post_pic(byteData.getvalue(), CHAOJIYING_KIND)
+        print('坐标信息:', rls)
+        locations = self.get_pos(rls)
+        self.touch_click_pic(locations)
+
+        try:
+            success = self.wait.until(expected_conditions.visibility_of_element_located((By.CLASS_NAME, 'lgcode-success')))
+        except NoSuchElementException:
+            pass
+        if not success and self.RETRY < 5:
+            self.RETRY += 1
+            self.crack()
+        elif self.RETRY >= 5:
+            self.login()
+
+from selenium.common.exceptions import TimeoutException
+
+USERNAME = '1764740905@qq.com'
+PWD = 've13377248866lo'
+class CrackWeiboSlide():
+    "把模板保存到本地，对比验证码与模板匹配"
+    def __init__(self):
+        self.url = 'https://passport.weibo.cn/signin/login'
+        self.br = webdriver.Chrome()
+        self.wait = WebDriverWait(self.br, 10)
+        self.username = USERNAME
+        self.pwd = PWD
+    
+    def __del__(self):
+        self.br.close()
+
+    def open(self):
+        self.br.get(self.url)
+        username = self.wait.until(expected_conditions.presence_of_element_located((By.ID, "loginName")))
+        pwd = self.wait.until(expected_conditions.presence_of_element_located((By.ID, "loginPassword")))
+        submit = self.wait.until(expected_conditions.element_to_be_clickable((By.ID, "loginAction")))
+        username.send_keys(self.username)
+        pwd.send_keys(self.pwd)
+        submit.click()
+
+    def get_pos(self):
+        img = None
+        try:
+            img = self.wait.until(expected_conditions.presence_of_element_located((By.CLASS_NAME, "patt-shadow")))
+        except TimeoutException:
+            print('验证码没有出现')
+            self.open()
+        sleep(2)
+        if img is not None:
+            location = img.location
+            size = img.size
+            top, left, bottom, right = location['y'], location['x'], location['y'] + size['height'],\
+            location['x'] + size['width']
+            return (top, left, bottom, right)
+        return (0, 0, 0, 0)
+
+    def get_screenshot(self):
+        screenshot = self.br.get_screenshot_as_png()
+        screenshot = Image.open(BytesIO(screenshot))
+        return screenshot
+
+    def get_img(self, name):
+        top, left, bottom, right = self.get_pos()
+        print('宫格码位置信息:', top, left, bottom, right)
+        screenshot = self.get_screenshot()
+        captcha = screenshot.crop((left, top, right, bottom))
+        captcha.save('myfile/Palace/{}'.format(name))
+
+    # 获取带有箭头的宫格图像
+    def main(self):
+        cnt = 0
+        while True:
+            self.open()
+            self.get_img(str(cnt) + '.png')
+            cnt += 1
+
+    def detect_img(self, img):
+        for tmp_name in os.listdir('myfile/Palace'):
+            print('正在匹配:', tmp_name)
+            tmp = Image.open('myfile/Palace/{}'.format(tmp_name))
+            if self.same_img(img, tmp):
+                num = [int(number) for number in list(tmp_name.split('.')[0])]
+                print('拖动顺序为:', num)
+                return num
+
+    def is_pixel_equal(self, img1, img2, x, y):
+        pixel1 = img1.load()[x, y]
+        pixel2 = img2.load()[x, y]
+        threshold = 20
+        if abs(pixel1[0] - pixel2[0]) < threshold and abs(pixel1[1] - pixel2[1]) < threshold \
+            and abs(pixel1[2] - pixel2[2]) < threshold:
+            return True
+        else:
+            return False
+
+    def same_img(self, img, tmp):
+        threshold = 0.99
+        cnt = 0
+        for x in range(img.width):
+            for y in range(img.height):
+                if self.is_pixel_equal(img, tmp, x, y):
+                    cnt += 1
+        # 误差
+        rls = float(cnt) / (img.width * img.height)
+        if rls > threshold:
+            print('匹配成功')
+            return True
+        return False
+
+    # 按照路径在宫格上拖动鼠标
+    def move(self, num):
+        circles = self.br.find_element_by_css_selector('.patt-wrap .patt-circ')
+        dx = dy = 0
+        for idx in range(4):
+            circle = circles[num[idx] - 1]
+            if idx == 0:
+                ActionChains(self.br).move_to_element_with_offset(circle, circle.size['width'] / 2,\
+                circle.size['height'] / 2).click_and_hold().perform()
+            else:
+                times = 30
+                for i in range(times):
+                    ActionChains(self.br).move_by_offset(dx / times, dy / times).perform()
+                    sleep(1 / times)
+            if idx == 3:
+                ActionChains(self.br).release().perform()
+            else:
+                dx = circles[num[idx + 1] - 1].location['x'] - circle.location['x']
+                dy = circles[num[idx + 1] - 1].location['y'] - circle.location['y']
+
+    def crack(self):
+        self.open()
+        img = self.get_img('Palace.png')
+        num = self.detect_img(img)
+        self.move(num)
+        sleep(10)
+        
 
 def main():
-    crack = BiliBiliest()
-    crack.crack()
+    crack = CrackWeiboSlide()
+    crack.main()
 
 if __name__ == '__main__':
     #---------------------------------------------------start
