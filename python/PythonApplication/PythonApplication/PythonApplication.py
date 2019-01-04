@@ -4488,6 +4488,9 @@ def webDeriver():
     chrome_options = webdriver.ChromeOptions()
     # 隐藏浏览器窗口
     chrome_options.add_argument('--headless')
+    # 设置代理
+    # proxy = '127.0.0.1:1025'
+    # chrome_options.add_argument('--proxy-server=http://' + proxy)
     driver = webdriver.Chrome(executable_path=r'C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe', chrome_options=chrome_options)
     driver.get('http://example.webscraping.com/places/default/search')
     # 向页面中的元素填充内容7
@@ -5507,6 +5510,81 @@ class CrackWeiboSlide():
         num = self.detect_img(img)
         self.move(num)
         sleep(10)
+
+import redis
+from redis.exceptions import DataError
+
+MAX_SCORE = 100
+MIN_SCORE = 0
+INITIAL_SCORE = 10
+REDIS_HOST = '127.0.0.1'
+REDIS_PORT = '6379'
+REDIS_PWD = '123456'
+REDIS_ZSET_KEY = 'proxies'
+
+# 使用redis存储代理
+class RedisCli():
+    def __init__(self, host=REDIS_HOST, port=REDIS_PORT, pwd=REDIS_PWD):
+        self.db = redis.StrictRedis(host=host, port=port, password=pwd, decode_responses=True)
+
+    def add(self, proxy, score=INITIAL_SCORE):
+        if not self.db.zscore(REDIS_ZSET_KEY, proxy):
+            self.db.zadd(REDIS_ZSET_KEY, score, proxy)
+    
+    def random(self):
+        rls = self.db.zrangebyscore(REDIS_ZSET_KEY, MAX_SCORE, MAX_SCORE)
+        if len(rls):
+            return random.choice(rls)
+        else:
+            rls = self.db.zrevrange(REDIS_ZSET_KEY, 0, 100)
+            if len(rls):
+                return random.choice(rls)
+            else:
+                 raise DataError
+    
+    def decrease(self, proxy):
+        score = self.db.zscore(REDIS_ZSET_KEY, proxy)
+        if score and score > MIN_SCORE:
+            print('代理{}分数{}减1'.format(proxy, score))
+            self.db.zincrby(REDIS_ZSET_KEY, proxy, -1)
+        else:
+            print('移除代理{}:{}'.format(proxy, score))
+            self.db.zrem(REDIS_ZSET_KEY, proxy)
+
+    def exist(self, proxy):
+        return not zscore(REDIS_ZSET_KEY, proxy) == None
+    
+    def add_max(self, proxy):
+        print('代理{}可用，分数设置为{}'.format(proxy, MAX_SCORE))
+        return self.db.zadd(REDIS_ZSET_KEY, MAX_SCORE, proxy)
+
+    def count(self):
+        return self.db.zcard(REDIS_ZSET_KEY)
+
+    def all(self):
+        return self.db.zrangebyscore(REDIS_ZSET_KEY, MIN_SCORE, MAX_SCORE)
+
+class ProxyMetaclass(type):
+    def __new__(cls, name, bases, attrs):
+        cnt = 0
+        attrs['_CrawlFunc__'] = []
+        for k, v in attrs.items():
+            if '_Crawl' in k:
+                attrs['_CrawlFunc__'].append(k)
+                cnt += 1
+        attrs['_CrawlFuncCount__'] = cnt
+        return type.__new__(cls, name, bases, attrs)
+
+class CrawlProxy(object, metaclass=ProxyMetaclass):
+    def get_proxies(self, callback):
+        proxies = []
+        for proxy in eval('self.{}()'.format(callback)):
+            print('获取代理:', proxy)
+            proxies.append(proxy)
+        return proxies
+
+    # 获取有代理网站免费代理IP
+    
         
 
 def main():
