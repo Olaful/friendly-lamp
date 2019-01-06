@@ -1,0 +1,9 @@
+scrapy>=1.5.1
+pymongo>=3.7.2
+lxml
+scrapy_redis
+selenium
+pillow
+redis
+scrapyd
+scrapyd-client

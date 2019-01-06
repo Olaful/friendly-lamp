@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items>
+<item><title>推荐</title><link>https://www.csdn.net/</link></item>
+<item><title>最新文章</title><link>https://www.csdn.net/nav/newarticles</link></item>
+<item><title>关注</title><link>https://www.csdn.net/nav/watchers</link></item>
+<item><title>资讯</title><link>https://www.csdn.net/nav/news</link></item>
+<item><title>人工智能</title><link>https://www.csdn.net/nav/ai</link></item>
+<item><title>云计算/大数据</title><link>https://www.csdn.net/nav/cloud</link></item>
+<item><title>区块链</title><link>https://blockchain.csdn.net</link></item>
+<item><title>数据库</title><link>https://www.csdn.net/nav/db</link></item>
+<item><title>程序人生</title><link>https://www.csdn.net/nav/career</link></item>
+<item><title>游戏开发</title><link>https://www.csdn.net/nav/game</link></item>
+<item><title>研发管理</title><link>https://www.csdn.net/nav/engineering</link></item>
+<item><title>前端</title><link>https://www.csdn.net/nav/web</link></item>
+<item><title>移动开发</title><link>https://www.csdn.net/nav/mobile</link></item>
+<item><title>物联网</title><link>https://www.csdn.net/nav/iot</link></item>
+<item><title>运维</title><link>https://www.csdn.net/nav/ops</link></item>
+<item><title>计算机基础</title><link>https://www.csdn.net/nav/fund</link></item>
+<item><title>编程语言</title><link>https://www.csdn.net/nav/lang</link></item>
+<item><title>架构</title><link>https://www.csdn.net/nav/arch</link></item>
+<item><title>音视频开发</title><link>https://www.csdn.net/nav/avi</link></item>
+<item><title>安全</title><link>https://www.csdn.net/nav/sec</link></item>
+<item><title>其他</title><link>https://www.csdn.net/nav/other</link></item>
+</items>

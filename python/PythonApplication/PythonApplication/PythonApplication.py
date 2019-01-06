@@ -555,6 +555,8 @@ print(formatPrint(random.choice(list(symbols2(4)))))
 print(formatPrint(random.choice(list(symbols2(8)))))
 
 # 只返回单个实例的类
+# type与object都属于type object类型对象，其实是同一个东西
+# python3.x可以省略不明显继承于object
 class c(object):
     _instance_lock = threading.Lock()
     def __init__(self):
@@ -574,6 +576,9 @@ class c(object):
         return c._instance
 
     # 通过__new__返回实例，通过类创建对象时自动调用
+    # *args默认收集三个参数(name类名称, bases父类集合, 类实例字典__dic__)
+    # 其不会收集创建实例时传入的参数，这些参数传给__init__函数
+    # 可以对args的第三个参数参数进行扩展，动态添加属性
     def __new__(cls, *args, **kwargs):
         if not hasattr(c, '_instance'):
             with c._instance_lock:
@@ -1381,6 +1386,73 @@ tidy = Popen('tidy', stdin = PIPE, stdout = PIPE, stderr = PIPE, shell = True)
 tidy.stdin.write(text)
 # 以下实际中不会输出数据
 tidy.stdout.read()
+
+# 异步协程函数
+async def hello(value):
+    # 挂起该协程去执行其他协程，直到其他协程挂起或者完毕
+    await asyncio.sleep(10)
+    print(str(value),time.time())
+
+def callback(future):
+    print(future.result())
+
+# 嵌套协程
+async def main():
+    task1 = asyncio.ensure_future(hello(1))
+    task2 = asyncio.ensure_future(hello(2))
+    task3 = asyncio.ensure_future(hello(3))
+    tasks = [task1, task2, task3]
+
+    # 完成与等待的协程
+    # 此外还有Running,Cacelled状态
+    dones, pendings = await asyncio.wait(tasks)
+    # 返回结果列表
+    #retults = await asyncio.gather(*tasks)
+    
+loop = asyncio.get_event_loop()
+# 创建任务
+#task = loop.create_task(hello())
+task1 = asyncio.ensure_future(hello(1))
+task2 = asyncio.ensure_future(hello(2))
+task3 = asyncio.ensure_future(hello(3))
+tasks = [task1, task2, task3]
+# 任务完成后调用相应的回调函数.传入参数future
+task1.add_done_callback(callback)
+#loop.run_until_complete(task)
+# 并发执行多个任务
+#loop.run_until_complete(asyncio.wait(tasks))
+loop.run_until_complete(main())
+
+# 取消任务
+try:
+    loop.run_until_complete(asyncio.wait(tasks))
+except KeyboardInterrupt as e:
+    for task in asyncio.Task.all_tasks():
+        task.cancel()
+    loop.stop()
+    loop.run_forever()
+finally:
+    loop.close()
+
+def start_loop(loop):
+    asyncio.set_event_loop(loop)
+    loop.run_forever()
+
+async def work(x):
+    print(x)
+    await asyncio.sleep(x)
+
+# 新建循环
+new_loop = asyncio.new_event_loop()
+# 子线程中开启事件循环
+t = Thread(target = start_loop, args=(new_loop,))
+t.start()
+# 在主进程中注册协程对象
+asyncio.run_coroutine_threadsafe(work(3), new_loop)
+asyncio.run_coroutine_threadsafe(work(4), new_loop)
+
+#new_loop.call_soon_threadsafe(work, 3)
+#new_loop.call_soon_threadsafe(work, 4)
 
 from urllib.request import urlopen
 from HTMLParser import HTMLParser
@@ -4611,6 +4683,7 @@ def autoLogin():
     #print(resp.geturl())
 
     # 获取存在在本地的cookie
+    # requests与标准库urllib一样是一个同步请求库，会等待网页响应
     import requests, sqlite3
     from win32.win32crypt import CryptUnprotectData
     def getCookieFromChrome(host_key):
@@ -5101,6 +5174,32 @@ def pyQuery():
     rls = doc('li:contains("second")')
     print(rls)
 
+# 通过splash渲染页面
+def renderUseSplash():
+    from urllib.parse import quote
+    # 通过splash渲染页面
+    url = 'http://192.168.99.100:8050/render.html?url=https://www.baidu.com'
+    # 指定长宽参数可以返回页面截图
+    png_data = '&wait=5&width=1000&height=700'
+    png_url = url + png_data
+    # 返回页面加载参数，如时间，header等
+    rar_url = 'http://192.168.99.100:8050/render.har?url=https://www.baidu.com'
+    # 以json格式返回
+    json_url = 'http://192.168.99.100:8050/render.har?url=https://www.baidu.com'
+    # 返回数据中带html内容
+    html_data = 'html=1'
+    json_url = json_url + html_data
+
+    lua = """
+        function main(splash)
+            return 'hello'
+        end
+        """
+    # 执行lua脚本
+    exec_url = 'http://192.168.99.100:8050/execute?lua_source=' + quote(lua)
+    rsp = requests.get(exec_url)
+    print(rsp.text)
+
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.common.by import By
@@ -5529,7 +5628,7 @@ class RedisCli():
 
     def add(self, proxy, score=INITIAL_SCORE):
         if not self.db.zscore(REDIS_ZSET_KEY, proxy):
-            self.db.zadd(REDIS_ZSET_KEY, score, proxy)
+            self.db.zadd(REDIS_ZSET_KEY, {proxy:score,})
     
     def random(self):
         rls = self.db.zrangebyscore(REDIS_ZSET_KEY, MAX_SCORE, MAX_SCORE)
@@ -5546,7 +5645,7 @@ class RedisCli():
         score = self.db.zscore(REDIS_ZSET_KEY, proxy)
         if score and score > MIN_SCORE:
             print('代理{}分数{}减1'.format(proxy, score))
-            self.db.zincrby(REDIS_ZSET_KEY, proxy, -1)
+            self.db.zincrby(REDIS_ZSET_KEY, -1, proxy)
         else:
             print('移除代理{}:{}'.format(proxy, score))
             self.db.zrem(REDIS_ZSET_KEY, proxy)
@@ -5556,7 +5655,7 @@ class RedisCli():
     
     def add_max(self, proxy):
         print('代理{}可用，分数设置为{}'.format(proxy, MAX_SCORE))
-        return self.db.zadd(REDIS_ZSET_KEY, MAX_SCORE, proxy)
+        return self.db.zadd(REDIS_ZSET_KEY, {proxy:MAX_SCORE})
 
     def count(self):
         return self.db.zcard(REDIS_ZSET_KEY)
@@ -5564,18 +5663,28 @@ class RedisCli():
     def all(self):
         return self.db.zrangebyscore(REDIS_ZSET_KEY, MIN_SCORE, MAX_SCORE)
 
+# 代理元类
 class ProxyMetaclass(type):
+    # 参数：1.当前准备创建的类的对象 2.类的名字 3.类继承的父类集合 4.类的方法集合
     def __new__(cls, name, bases, attrs):
         cnt = 0
-        attrs['_CrawlFunc__'] = []
+        attrs['_CrawlFunc_'] = []
         for k, v in attrs.items():
-            if '_Crawl' in k:
-                attrs['_CrawlFunc__'].append(k)
+            if 'crawl_' in k:
+                attrs['_CrawlFunc_'].append(k)
                 cnt += 1
-        attrs['_CrawlFuncCount__'] = cnt
+        attrs['_CrawlFuncCount_'] = cnt
         return type.__new__(cls, name, bases, attrs)
 
+from pyquery import PyQuery as pq
+
+# 获取代理
 class CrawlProxy(object, metaclass=ProxyMetaclass):
+    def __init__(self):
+        self.header = {
+        'User-Agent':'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
+        }
+
     def get_proxies(self, callback):
         proxies = []
         for proxy in eval('self.{}()'.format(callback)):
@@ -5584,12 +5693,270 @@ class CrawlProxy(object, metaclass=ProxyMetaclass):
         return proxies
 
     # 获取有代理网站免费代理IP
+    def crawl_youdaili(self):
+        start_url = 'https://www.youdaili.net/Daili/http/368{:02d}.html'
+        urls = [start_url.format(page) for page in range(13, 0, -1)]
+        for url in urls:
+            print('下载有代理数据:', url)
+            html = requests.get(url, headers=self.header).content.decode()
+            doc = pq(html)
+            rls = doc('.content p')
+            for p in rls:
+                ipports = p.text_content()
+                for ipport in re.findall(r'([\d.:]+)#', ipports):
+                    yield ipport
+
+    # 获取快代理网站免费代理IP
+    def crawl_kuaidaili(self, page_cnt=20):
+        start_url = 'https://www.kuaidaili.com/free/inha/{}/'
+        urls = [start_url.format(page) for page in range(1, page_cnt + 1)]
+        for url in urls:
+            print('下载块代理数据:', url)
+            html = requests.get(url, headers=self.header).content.decode()
+            doc = pq(html)
+            rls = doc('table tr')
+            # 去掉表头
+            rls = rls[1:0]
+            # tr类型为lxml.html.HtmlElement
+            for tr in rls:
+                ip = tr.getchildren()[0].text
+                port = tr.getchildren()[1].text
+                yield ':'.join([ip, port])
+            
+
+POOL_UPPER__THRESHOLD = 10000
+# 存储代理
+class StorageProxy():
+    def __init__(self):
+        self.redis = RedisCli()
+        self.crawler = CrawlProxy()
+
+    def is_over_threshold(self):
+        if self.redis.count() >= POOL_UPPER__THRESHOLD:
+            return True
+        else:
+            return False
     
-        
+    def run(self):
+        print('开始入库--------')
+        for callback_label in range(self.crawler._CrawlFuncCount_):
+            callback_func = self.crawler._CrawlFunc_[callback_label]
+            proxies = self.crawler.get_proxies(callback_func)
+            for proxy in proxies:
+                self.redis.add(proxy)
+
+import aiohttp
+import asyncio
+from aiohttp.client_exceptions import ClientError, ClientConnectionError
+
+VALID_STATUS_CODE = [200]
+TEST_URL = 'http://www.baidu.com'
+BATCH_TEST_SIZE = 100
+
+# 测试代理
+class TestProxy(object):
+        def __init__(self):
+            self.redis = RedisCli()
+        # 异步协程函数，不会导致阻塞
+        async def test_single_proxy(self, proxy):
+            conn = aiohttp.TCPConnector(verify_ssl=False)
+            async with aiohttp.ClientSession(connector=conn) as session:
+                try:
+                    if isinstance(proxy, bytes):
+                        proxy = proxy.decode()
+                    real_proxy = 'http://' + proxy
+                    print('正在测试:',proxy)
+                    # 异步请求，get方法类似于reuqests的get方法
+                    async with session.get(TEST_URL, proxy=real_proxy, timeout=15) as response:
+                        if response.status in VALID_STATUS_CODE:
+                            self.redis.add_max(proxy)
+                            print('代理可用:', proxy)
+                        else:
+                            self.redis.decrease(proxy)
+                            print('响应码不正确，代理可能不可用:', proxy)
+                except (ClientError, ClientConnectionError, TimeoutError, AttributeError):
+                    self.redis.decrease(proxy)
+                    print('代理请求失败:', proxy)
+
+        def run(self):
+            print('代理测试器开始运行')
+            try:
+                proxies = self.redis.all()
+                for i in range(0, len(proxies), BATCH_TEST_SIZE):
+                    test_proxies = proxies[i:i+BATCH_TEST_SIZE]
+                    loop = asyncio.get_event_loop()
+                    tasks = [self.test_single_proxy(proxy) for proxy in test_proxies]
+                    # 同时并发BATCH_TEST_SIZE个协程
+                    loop.run_until_complete(asyncio.wait(tasks))
+                    sleep(5)
+            except Exception as e:
+                print('测试器运行错误:', e.args)
+
+# 通过web接口访问代理
+def FlaskWebApiProxy(host, port):
+    from flask import Flask, g
+    __all__ = ['app']
+    app = Flask(__name__)
+    
+    def get_conn():
+        if not hasattr(g, 'redis'):
+            g.redis = RedisCli()
+        return g.redis
+    
+    @app.route('/')
+    def index():
+        return '<h2>Welcome To Visit The Proxy Pool</h2>'
+
+    @app.route('/random')
+    def get_proxy():
+        conn = get_conn()
+        return conn.random()
+    
+    @app.route('/count')
+    def get_cnt():
+        conn = get_conn()
+        return str(conn.count())
+
+    app.run(host, port)
+
+TEST_CYCLE = 1
+GET_CYCLE = 1
+TEST_ENABLED = False
+GET_ENABLED = False
+API_ENABLED = True
+API_IP = '127.0.0.1'
+API_PORT = 1025
+from multiprocessing import Process
+# 调度代理：获取，存储，测试，调用
+class Scheduler():
+    def scheduler_test(self, cycle=TEST_CYCLE):
+        test = TestProxy()
+        while cycle:
+            print('测试器开始执行')
+            test.run()
+            cycle -= 1
+            sleep(5)
+
+    def scheduler_get(self, cycle=GET_CYCLE):
+        get = StorageProxy()
+        while cycle:
+            print('抓取器开始执行')
+            get.run()
+            cycle -= 1
+            sleep(5)
+
+    def scheduler_api(self):
+        print('代理API开启:',API_IP,API_PORT)
+        FlaskWebApiProxy(API_IP, API_PORT)
+
+    def run(self):
+        print('代理调度器开始执行')
+        if TEST_ENABLED:
+            test_process = Process(target=self.scheduler_test)
+            test_process.start()
+
+        if GET_ENABLED:
+            get_process = Process(target=self.scheduler_get)
+            get_process.start()
+
+        if API_ENABLED:
+            api_process = Process(target=self.scheduler_api)
+            api_process.start()
+
+# 随机获取一个可用代理
+def get_proxy(API_IP, API_PORT):
+    proxy_url = 'http://' + API_IP + str(API_PORT) + '/random'
+    try:
+        return requests.get(proxy_url).text
+    except ConnectionError:
+        return None
+    
+# spider运行管理 1.scrapyrt http接口, 2.scrapyd http接口与部署 3.gerapy可视化界面管理
+# 环境问题解决: 制作docker spider项目镜像 scrapyd镜像
+# 使用云主机快速克隆环境部署
+
+# 通过scrapyrt启动爬虫
+def StartSpiderWithSrprt():
+    # 可选参数spider_name, url(start_requests为False则必填),max_requests,callback
+    # get请求
+    os.chdir('srppro')
+    cmd = 'scrapyrt'
+    url = 'http://localhost:9080/crawl.json?spider_name=csimage&start_requests=true&callback=parse'
+    # 返回json格式
+    resp = requests.get(url)
+    data = resp.json()
+
+# 制作scrapy项目docker镜像
+def MkDockerImage():
+    cmd = 'docker build -t srppro .'
+
+# scrapyd部署scrapy项目
+def Scrapyd():
+    cmd = 'scrapyd'
+
+    # 查看scrapy任务
+    status_cmd = 'curl http://127.0.0.1:6800/daemonstatus.json'
+    # 把项目打包成egg
+    egg_cmd= 'curl http://127.0.0.1:6800/addversion.json -F project=srppro -F version=first -F egg=@srppro.egg'
+    # 调度已部署的项目spider
+    scheduler_cmd= 'curl http://127.0.0.1:6800/scheduler.json -d project=srppro -d spider=csimage'
+    # 取消spider的运行
+    cacel_cmd = 'curl http://127.0.0.1:6800/cancel.json -d project=srppro -d job=spiderid'
+    # 列出已部署的项目
+    list_cmd = 'curl http://127.0.0.1:6800/listprojects.json'
+    # 列出项目版本号
+    version_cmd = 'curl http://127.0.0.1:6800/listversions.json'
+    # 列出项目的spider
+    spider_cmd = 'curl http://127.0.0.1:6800/listspiders.json?project=srppro'
+    # 列出项目spider的任务详情
+    spidertask_cmd = 'curl http://127.0.0.1:6800/listjobs.json?project=srppro'
+    # 删除某版本的项目
+    delversion_cmd = 'curl http://127.0.0.1:6800/delversion.json -d project=srppro -d version=v1'
+    # 删除项目
+    delpro_cmd = 'curl http://127.0.0.1:6800/delversion.json -d project=srppro'
+    # 返回json格式
+    #resp = requests.get(status_cmd)
+    #data = resp.json()
+
+    # 通过scrapyd_api部署
+    from scrapyd_api import ScrapydAPI
+    url = 'http://127.0.0.1:6800'
+    scrapyd = ScrapydAPI(url)
+    # 运行爬虫
+    scrapyd.schedule('srppro', 'csimage')
+    # 列出srppro状态
+    scrapyd.list_jobs('srppro')
+    # 列出项目版本
+    scrapyd.list_versions('srppro')
+    # 列出项目spider
+    scrapyd.list_spiders('srppro')
+    # 列出所有项目
+    scrapyd.list_projects()
+    # 删除项目指定版本
+    scrapyd.delete_version('srppro', '123')
+    # 删除项目
+    scrapyd.delete_project('srppro')
+    # 取消项目制定任务
+    scrapyd.cancel('srppro', '123')
+    # 添加项目
+    # with open('myfile/srppro.egg', 'rb') as egg:
+    #     scrapyd.add_version('srppro', 'v1', egg)
+
+    scrapyd_cli_cmd = 'scrapyd-deploy'
+
+# 通过gerapy进行界面化管理scrapy项目
+def Gerapy():
+    # 新建gerapy项目
+    cmd_init = 'gerapy init'
+    # 通过sqlite保存gerapy信息
+    cmd_db = 'gerapy migrate'
+    # 启动gerapy项目
+    cmd_run = 'gerapy runserver'
+
+
 
 def main():
-    crack = Railway_12306()
-    crack.crack()
+    Scrapyd()
 
 if __name__ == '__main__':
     #---------------------------------------------------start

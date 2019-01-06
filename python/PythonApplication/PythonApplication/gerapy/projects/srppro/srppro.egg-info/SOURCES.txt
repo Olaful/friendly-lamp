@@ -1,0 +1,6 @@
+setup.py
+srppro.egg-info/PKG-INFO
+srppro.egg-info/SOURCES.txt
+srppro.egg-info/dependency_links.txt
+srppro.egg-info/entry_points.txt
+srppro.egg-info/top_level.txt
