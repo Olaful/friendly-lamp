@@ -5423,13 +5423,13 @@ RAILWAY_12306_PWD = ''
 
 class Railway_12306():
     RETRY = 0
-    def __init__(self):
+    def __init__(self, username=RAILWAY_12306_USER, pwd=RAILWAY_12306_PWD):
         self.url = 'https://kyfw.12306.cn/otn/resources/login.html'
         self.br = webdriver.Chrome()
         # 等待界面出现元素的时间
         self.wait = WebDriverWait(self.br, 10)
-        self.username = RAILWAY_12306_USER
-        self.pwd = RAILWAY_12306_PWD
+        self.username = username
+        self.pwd = pwd
         self.captSerive = Chaojiying(CHAOJIYING_USER, CHAOJIYING_PWD, CHAOJIYING_SOFTID)
 
     def open(self):
@@ -5472,6 +5472,9 @@ class Railway_12306():
             ActionChains(self.br).move_to_element_with_offset(self.get_click_element(), location[0], location[1]).click().perform()
         sleep(1)
 
+    def get_cookies(self):
+        return self.br.get_cookies()
+
     def crack(self):
         self.open()
         image = self.get_login_image('captcha_railway.png')
@@ -5488,6 +5491,11 @@ class Railway_12306():
         if not success and self.RETRY < 5:
             self.RETRY += 1
             self.crack()
+
+        if success:
+            return {'status': 1, 'content': self.get_cookies()}
+        else:
+            return {'status': 3, 'content': '登录失败'}
 
 from selenium.common.exceptions import TimeoutException
 
@@ -5823,7 +5831,7 @@ TEST_CYCLE = 1
 GET_CYCLE = 1
 TEST_ENABLED = False
 GET_ENABLED = False
-API_ENABLED = True
+API_ENABLED = False
 API_IP = '127.0.0.1'
 API_PORT = 1025
 from multiprocessing import Process
@@ -5870,7 +5878,226 @@ def get_proxy(API_IP, API_PORT):
         return requests.get(proxy_url).text
     except ConnectionError:
         return None
+
+# cookie池: 1.获取 2.存储 3.检测 4.接口
+
+# cookie存储模块
+class RedisCookieCli(object):
+    def __init__(self, type, website, host = REDIS_HOST, port=REDIS_PORT, pwd=REDIS_PWD):
+        self.db = redis.StrictRedis(host=host, port=port, password=pwd, decode_responses=True)
+        self.type = type
+        self.website = website
+
+    def name(self):
+        return '{type}:{website}.'.format(type=self.type, website=self.website)
+
+    # 存储格式usrname:hashvalue
+    def set(self, usrname, value):
+        return self.db.hset(self.name(), usrname, value)
+
+    def get(self, usrname):
+        return self.db.hget(self.name(), usrname)
+
+    def delete(self, usrname):
+        return self.db.hdel(self.name(), usrname)
+
+    def count(self):
+        return self.db.hlen(self.name())
+
+    def random(self):
+        return random.choice(self.db.hvals(self.name()))
+
+    def username(self):
+        return self.db.hkeys(self.name())
+
+    def all(self):
+        return self.db.hgetall(self.name())
+
+# cookie生成模块父类, 在数据库先存储站点用户名与密码,之后根据
+# 用户名与密码登录站点，之后通过webdriver获取到cookie,账户信息
+# 存储在名为account:website(自定站点名)的hash表中, 根据账户登录浏览器获取
+# 的cookie存储在名为cookies:website的hash表中
+class CookieGenerator(object):
+    def __init__(self, website='default'):
+        self.website = website
+        self.cookies_db = RedisCookieCli('cookies', self.website)
+        self.accounts_db = RedisCookieCli('accounts', self, website)
+        self.init_br()
+
+    def __del__(self):
+        self.close()
+
+    def init_br(self):
+        self.br = webdriver.Chrome()
+
+    def new_cookies(self, username, pwd):
+        raise NotImplementedError
+
+    def process_cookies(self, cookies):
+        dicts = {}
+        for cookie in cookies:
+            dicts[cookie['name']] = cookie['value']
+        return dicts
+
+    def run(self):
+        accounts_usernames = self.accounts_db.username()
+        cookies_usernames = self.cookies_db.username()
+
+        for username in accounts_usernames:
+            if not username in cookies_usernames:
+                pwd = self.accounts_db.get(username)
+                print('正在生成cookie:账户 {}, 密码 {}'.format(username, pwd))
+                rls = self.new_cookies(username, pwd)
+                if rls.get('status') == 1:
+                    cookies = self.process_cookies(rls.get('content'))
+                    print('成功获取cookie:{}'.format(cookies))
+                    if self.cookies_db.set(username, json.dumps(cookies)):
+                        print('成功保存cookie')
+                elif rls.get('status') == 2:
+                    print('cookie获取失败:{}'.format(rls.get('content')))
+                    if self.accounts_db.delete(username):
+                        print('删除账户成功')
+                else:
+                    print('cookie获取失败:{}'.format(rls.get('content')))
+
+    def close(self):
+        try:
+            print('Closing Browser')
+            self.br.close()
+            del self.br
+        except TypeError:
+            print('Browser not opened')
+
+# 12306cookie生成器
+class CookieGenerator12306(CookieGenerator):
+    def __init__(self, website='12306'):
+        CookieGenerator.__init__(self, website)
+        self.website = website
+
+    def new_cookies(self, username, pwd):
+        return Railway_12306(username, pwd).crack()
+
+# cookie检测模块
+class TestCookie(object):
+    def __init__(self, website='default'):
+        self.website = website
+        self.accounts_db = RedisCookieCli('accounts', self.website)
+        self.cookies_db = RedisCookieCli('cookies', self.website)
+
+    def test(self, username, cookies):
+        raise NotImplementedError
+
+    def run(self):
+        cookie_groups = self.cookies_db.all()
+        for username, cookie in cookie_groups.items():
+            self.test(username, cookie)
+
+TEST_URL_MAP = {'12306':'https://www.12306.cn/index/'}
+
+# 检测12306网站cookie
+class Test12306(TestCookie):
+    def __init__(self, website='12306'):
+        TestCookie.__init__(self, website)
+
+    def test(self, username, cookies):
+        print('正在测试用户{}的cookie'.format(username))
+        try:
+            cookies = json.loads(cookies)
+        except TypeError:
+            print('cookies不合法')
+            self.cookies_db.delete(username)
+            print('删除cookie')
+            return
+        try:
+            test_url = TEST_URL_MAP[self.website]
+            resp = requests.get(test_url, cookies=cookies, timeout=10, allow_redirects=False)
+            if resp.status_code == 200:
+                print('cookie有效'.format(username))
+                print('请求返回结果部分展示:{}'.format(resp.text[0:50]))
+            else:
+                print('请求失败:{} {}'.format(resp.status_code, resp.headers))
+                print('cookie失效')
+                self.cookies_db.delete(username)
+                print('删除cookie')
+        except ConnectionError as e:
+            print('发生异常:{}'.format(e.args))
+
+GENERATOR_MAP = {'12306', 'CookieGenerator12306'}
+
+# cookie池访问API
+def FlaskWebApiCookie(host, port):
+    from flask import Flask, g                 
+    app = Flask(__name__)
+    @app.route('/')
+    def index():
+        return '<h2>Welcome To Visit The Cookie Pool</h2>'
+
+    def get_conn():
+        for website in GENERATOR_MAP:
+            if not hasattr(g, website):
+                setattr(g, website + '_cookies', eval('RedisCookieCli' + '("cookies", "' + website + '")'))
+            return g
     
+    @app.route('/<website>/random')
+    def random(website):
+        g = get_conn()
+        cookies = getattr(g, website + '_cookies').random()
+        return cookies
+
+    app.run(host, port)
+
+TESTER_MAP = {'12306':'Test12306'}
+COOKIEGENERATOR_ENABLED = True
+COOKIETESTER_ENABLED = False
+
+# 调度cookie池模块
+class SchedulerCookie(object):
+    @staticmethod
+    def test_cookie(cycle=5):
+        while True:
+            print('cookie测试器开始运行')
+            try:
+                for website, cls in TESTER_MAP.items():
+                    tester = eval(cls + '(website="' + website + '")')
+                    tester.run()
+                    print('cookie测试完成')
+                    del tester
+                    sleep(cycle)
+            except Exception as e:
+                print('发生异常:{}'.format(e.args))
+
+    def generator_cookie(cycle=1):
+        while cycle:
+            print('cookie生成器开始运行')
+            try:
+                for website, cls in GENERATOR_MAP.items():
+                    generator = eval(cls + '(website="' + website + '")')
+                    generator.run()
+                    print('cookie生成完成')
+                    generator.close()
+                    sleep(cycle)
+            except Exception as e:
+                print('发生异常:{}'.format(e.args))
+
+            cycle -= 1
+
+    @staticmethod
+    def api():
+        print('cookie池API接口开始运行')
+        FlaskWebApiCookie(API_IP, API_PORT)
+    
+    def run(self):
+        if API_ENABLED:
+            api_process = Process(target=SchedulerCookie.api)
+            api_process.start()
+        if COOKIEGENERATOR_ENABLED:
+            generator_process = Process(target=SchedulerCookie.generator_cookie)
+            generator_process.start()
+        if COOKIETESTER_ENABLED:
+            tester_process = Process(target=SchedulerCookie.test_cookie)
+            tester_process.start()
+
+
 # spider运行管理 1.scrapyrt http接口, 2.scrapyd http接口与部署 3.gerapy可视化界面管理
 # 环境问题解决: 制作docker spider项目镜像 scrapyd镜像
 # 使用云主机快速克隆环境部署
@@ -5952,8 +6179,6 @@ def Gerapy():
     cmd_db = 'gerapy migrate'
     # 启动gerapy项目
     cmd_run = 'gerapy runserver'
-
-
 
 def main():
     Scrapyd()
