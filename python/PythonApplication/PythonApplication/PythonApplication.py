@@ -651,6 +651,7 @@ from os import *
 def getFileList(dir):
     try:
         files = os.listdir(dir)
+        # path.join使用的路径分隔符根据系统类型而定
         fullfile = [os.path.join(dir, name) for name in files]
         for d in fullfile:
             for dd in getFileList(d):
@@ -3735,6 +3736,7 @@ class DiskCache:
     # 设置文件内容
     def __setitem__(self, url, result):
         path = self.url_to_path(url)
+        # 获取父目录路径
         folder = os.path.dirname(path)
         if not os.path.exists(folder):
             os.makedirs(folder)
@@ -4946,7 +4948,7 @@ def runCrwal():
 
     run_crawl_other = 'scrapy crawl proxy_youdaili'
 
-    Popen(run_crawl_other, stdout=None, stderr=None)
+    Popen('dir', stdout=None, stderr=None)
     #execute(['scrapy', 'crawl', 'csdnarticle'])
 
 
@@ -6181,7 +6183,7 @@ def Gerapy():
     cmd_run = 'gerapy runserver'
 
 def main():
-    Scrapyd()
+    runCrwal()
 
 if __name__ == '__main__':
     #---------------------------------------------------start

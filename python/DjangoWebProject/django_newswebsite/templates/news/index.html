@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+
+<!--告诉模板引擎将在该模板中使用静态文件-->
+{% load staticfiles %}
+
+<html>
+    <head>
+        <title>news</title>
+    </head>
+    <body>
+        <h1>Hello news</h1>
+        <div>
+            some message will display here <br />
+            <!--模板部分-->
+            <strong>{{ boldmessage }}</strong>
+        </div>
+        <div>
+            <a href="/news/about/">about</a> <br />
+            <!--static声明加载静态文件 scr 最终由STATIC_URL决定，如/static/images/plantVSzoom.jpg-->
+            <!--也可以加载css，js文件-->
+            <img src="{% static 'images/plantVSzoom.jpg' %}" alt="plantVSzoom picture" height="200" width="200" />
+            <!--会使用媒体模板上下文填充-->
+            <img src="{{ MEDIA_URL }}16t.png" alt="16t" />
+        </div>
+    </body>
+</html>
