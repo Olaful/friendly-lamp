@@ -29,5 +29,6 @@ urlpatterns = [
     url(r'^news/', include('news.urls')),
     # 传给下一个urls处理时再次去掉news路径部分
     url(r'^news/about/', include('news.urls')),
+    # 管理员界面，用于管理模型等
     path('admin/', admin.site.urls),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
