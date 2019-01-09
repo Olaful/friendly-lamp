@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 
 <!--告诉模板引擎将在该模板中使用静态文件-->
+<!--模板语言命令放在里面-->
 {% load staticfiles %}
 
 <html>
@@ -9,10 +10,18 @@
     </head>
     <body>
         <h1>Hello news</h1>
+        <div>Categories show below</div>
         <div>
-            some message will display here <br />
             <!--模板部分-->
-            <strong>{{ boldmessage }}</strong>
+            {% if categories %}
+            <ul>
+                {% for cate in categories %}
+                    <li>{{ cate.name }}</li>
+                {% endfor %}
+            </ul>
+            {% else%}
+            {% endif %}
+            <strong>There are no categories present.</strong>
         </div>
         <div>
             <a href="/news/about/">about</a> <br />

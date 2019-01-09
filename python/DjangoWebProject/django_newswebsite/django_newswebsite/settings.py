@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # 注册自己的应用
     'news',
 ]
 
@@ -83,9 +84,14 @@ WSGI_APPLICATION = 'django_newswebsite.wsgi.application'
 
 DATABASES = {
     'default': {
-        # 默认使用sqlite3数据库引擎，也可以使用其它数据库引擎
+        # 默认使用sqlite3数据库引擎，也可以使用其它数据库引擎如postgresql
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        # 如果使用其它需要认证的数据库，则配置如下信息
+        # USER 
+        # PASSWORD
+        # HOST
+        # PORT
     }
 }
 
@@ -112,9 +118,11 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+#LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'zh-Hans'
 
-TIME_ZONE = 'UTC'
+#TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Hong_Kong'
 
 USE_I18N = True
 

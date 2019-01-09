@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from news.models import Category
 
 # 函数就是一个视图，在urls文件添加映射
 def index_test(request):
@@ -9,8 +10,12 @@ def index_test(request):
 
 def index(request):
     # 使用关键字去填充模板中{{ keyworld }}中对应的内容
-    context_dict = {'boldmessage':'Here are template world'}
+    #context_dict = {'boldmessage':'Here are template world'}
+    # 根据likes获取前五条数据
+    category_list = Category.objects.order_by('-likes')[0:5]
+    context_dict = {'categories':category_list}
     # render函数也是返回HttpResponse对象
+    # 这里就把视图，模板，模型的联系给建立起来了
     return render(request, 'news/index.html', context=context_dict)
 
 def about_test(req):

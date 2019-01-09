@@ -37,6 +37,9 @@ print(listNum)
 def myFunc():
     print("hello, myFunc")
 
+# 函数也可以添加属性
+myFunc.name = 'myFunc'
+
 # 获取数字对应的ascii码
 chr(98)
 
