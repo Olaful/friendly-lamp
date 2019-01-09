@@ -56,10 +56,10 @@ def populate():
         c = Category.objects.get_or_create(name=name)[0]
         if name == 'fenghuangnews_pages':
             c.views = 128
-            c.likes = 64
+            c.likes = 32
         elif name == 'Django':
             c.views = 64
-            c.likes = 32
+            c.likes = 64
         elif name == 'Other':
             c.views = 32
             c.likes = 16

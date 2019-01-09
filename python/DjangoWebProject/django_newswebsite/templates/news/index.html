@@ -10,19 +10,36 @@
     </head>
     <body>
         <h1>Hello news</h1>
-        <div>Categories show below</div>
+        <div>Top 5 Liked categories</div>
         <div>
             <!--模板部分-->
-            {% if categories %}
+            {% if categories_top_like %}
             <ul>
-                {% for cate in categories %}
-                    <li>{{ cate.name }}</li>
+                {% for cate in categories_top_like %}
+                    <li>
+                        <a href="/news/category/{{ cate.slug }}">{{ cate.name }}</a>
+                    </li>
                 {% endfor %}
             </ul>
             {% else%}
+                <strong>There are no categories present.</strong>
             {% endif %}
-            <strong>There are no categories present.</strong>
         </div>
+        <div>Top 5 Viewed categories</div>
+        <div>
+            {% if categories_top_view %}
+            <ul>
+                {% for cate in categories_top_view %}
+                    <li>
+                        <a href="/news/category/{{ cate.slug }}">{{ cate.name }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+            {% else%}
+                <strong>There are no categories present.</strong>
+            {% endif %}
+        </div>
+        <br />
         <div>
             <a href="/news/about/">about</a> <br />
             <!--static声明加载静态文件 scr 最终由STATIC_URL决定，如/static/images/plantVSzoom.jpg-->
