@@ -41,7 +41,7 @@ class CategoryAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug':('name',)}
 
 class PagesAdmin(admin.ModelAdmin):
-    list_display = ('title', 'category', 'url')
+    list_display = ('title', 'category', 'url', 'views')    
     list_per_page = 10
 
 # 注册后才能在管理界面看到模型信息

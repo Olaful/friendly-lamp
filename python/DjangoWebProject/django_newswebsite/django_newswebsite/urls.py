@@ -22,13 +22,14 @@ from django.conf.urls.static import static
 from news import views
 
 urlpatterns = [
-    #path('index/', views.index),
+    # path('index/', views.index),
     # ^$开头至结尾匹配url,交给指定的函数进行处理，name参数可选
+    # name在模板中可以代替指定url路径
     url(r'^$', views.index, name='index'),
     # url路径去掉域名后剩下的news路径交由指定应用的urls来处理
     url(r'^news/', include('news.urls')),
-    # 传给下一个urls处理时再次去掉news路径部分
-    url(r'^news/about/', include('news.urls')),
+    # 传给下一个urls处理时去掉news/about/路径部分
+    #url(r'^news/about/', include('news.urls')),
     # 管理员界面，用于管理模型等
     path('admin/', admin.site.urls),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

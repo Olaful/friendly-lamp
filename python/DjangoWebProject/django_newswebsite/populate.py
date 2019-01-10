@@ -11,29 +11,29 @@ from news.models import Category, Page
 def populate():
     fenghuangnews_pages = [
         {"title":"降税后个人工资反而下降？别拿问题数据忽悠人",
-        "url":"http://news.ifeng.com/c/7fqHsHBvTNo"},
+        "url":"http://news.ifeng.com/c/7fqHsHBvTNo", "views":10},
         {"title":"醒醒，苹果在华被禁售只是个法律问题",
-        "url":"http://news.ifeng.com/c/7iYSj6gRHEG"},
+        "url":"http://news.ifeng.com/c/7iYSj6gRHEG", "views":15},
         {"title":"视频报警短信报警均不靠谱，正确方法还是拨打110！",
-        "url":"http://news.ifeng.com/c/7iYSj6gRHEG"},
+        "url":"http://news.ifeng.com/c/7iYSj6gRHEG", "views":20},
     ]
 
     django_pages = [
         {"title":"database setup",
-        "url":"https://docs.djangoproject.com/en/1.9/intro/tutorial02/#database-setup"},
+        "url":"https://docs.djangoproject.com/en/1.9/intro/tutorial02/#database-setup", "views":25},
         {"title":"Playing with the API",
-        "url":"https://docs.djangoproject.com/en/1.9/intro/tutorial02/#playing-with-the-api"},
+        "url":"https://docs.djangoproject.com/en/1.9/intro/tutorial02/#playing-with-the-api", "views":30},
         {"title":"Enter the admin site",
-        "url":"https://docs.djangoproject.com/en/1.9/intro/tutorial02/#enter-the-admin-site"},
+        "url":"https://docs.djangoproject.com/en/1.9/intro/tutorial02/#enter-the-admin-site", "views":35},
     ]
 
     other_pages = [
         {"title":"bilibili",
-        "url":"https://www.bilibili.com/"},
+        "url":"https://www.bilibili.com/", "views":40},
         {"title":"github",
-        "url":"https://github.com/Olaful?tab=repositories"},
+        "url":"https://github.com/Olaful?tab=repositories", "views":45},
         {"title":"CSDN",
-        "url":"https://www.csdn.net/"},
+        "url":"https://www.csdn.net/", "views":50},
     ]
 
     cates = {
@@ -70,7 +70,7 @@ def populate():
     for cate, cate_data in cates.items():
         c = add_cates(cate)
         for p in cate_data['pages']:
-            add_page(c, p['title'], p['url'])
+            add_page(c, p['title'], p['url'], p['views'])
 
     for c in Category.objects.all():
         # filter过滤，还有count计算等类似数据库sql方法,
