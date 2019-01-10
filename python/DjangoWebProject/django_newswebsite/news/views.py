@@ -21,7 +21,7 @@ def index(request):
     # top 5 点赞分类
     category_list = Category.objects.order_by('-views')[0:5]
     context_dict['categories_top_view'] = category_list
-    # render函数也是返回HttpResponse对象
+    # render函数也是返回HttpResponse对象,内部调用 render_to_string函数
     # 这里就把视图，模板，模型的联系给建立起来了
     return render(request, 'news/index.html', context=context_dict)
 

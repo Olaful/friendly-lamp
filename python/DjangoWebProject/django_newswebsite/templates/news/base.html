@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+
+<html>
+    <head>
+        <title>
+            News -
+            {% block title_block %}
+                Test
+            {% endblock %}
+        </title>
+    </head>
+    <body>
+        <div>
+            <!--block部分可以由子类模板代替-->
+            {% block body_block %}
+            <!--可以添加默认显示的内容-->
+                Here default content can be insteaded by the real content.
+            {% endblock %}
+        </div>
+        <hr />
+        <div>
+            <ul>
+                <li><a href="{% url 'news:add_category' %}">Add New Category</a></li>
+                <li><a href="{% url 'news:about' %}">About</a></li>
+                <li><a href="{% url 'news:index' %}">Index</a></li>
+            </ul>
+        </div>
+    </body>
+</html>

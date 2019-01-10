@@ -2,7 +2,7 @@ from django import forms
 from news.models import Category, Page
 
 class CategoryForm(forms.ModelForm):
-    name = forms.CharField(max_length=128,
+    name = forms.CharField(max_length=Category.MAX_NAME_LEN,
                             help_text='Please input the category name.')
     views = forms.IntegerField(widget=forms.HiddenInput(), initial=0)
     likes = forms.IntegerField(widget=forms.HiddenInput(), initial=0)

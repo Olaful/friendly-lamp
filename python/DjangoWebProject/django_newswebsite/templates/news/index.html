@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 
 <!--告诉模板引擎将在该模板中使用静态文件-->
+<!--模板渲染使用的是自带的DTL模板系统，也可以选择使用信任的-->
+<!--第三方系统，不信任的第三方可能会做一些注入攻击-->
 <!--模板语言命令放在里面-->
 {% load staticfiles %}
 
@@ -17,7 +19,8 @@
             <ul>
                 {% for cate in categories_top_like %}
                     <li>
-                        <a href="/news/category/{{ cate.slug }}">{{ cate.name }}</a>
+                        <a href="{% url 'news:show_category' cate.slug %}">{{ cate.name }}</a>
+                        <!--<a href="/news/category/{{ cate.slug }}">{{ cate.name }}</a>-->
                     </li>
                 {% endfor %}
             </ul>
@@ -42,8 +45,10 @@
         <br />
         <div>
             <a href="/news/add_category/">Add a New Category</a> <br />
-            <a href="/news/about/">about</a> <br />
-            <!--<a href="{% url 'news:about' %}">about</a> <br />-->
+            <!--使用的是硬编码链接，有个不好的地方，如果urls.py路径改变了，可能得修改整个模板文件-->
+            <!--所以可以使用url别名来代替-->
+            <!--<a href="/news/about/">about</a> <br />-->
+            <a href="{% url 'news:about' %}">about</a> <br />
             <!--static声明加载静态文件 scr 最终由STATIC_URL决定，如/static/images/plantVSzoom.jpg-->
             <!--也可以加载css，js文件-->
             <img src="{% static 'images/plantVSzoom.jpg' %}" alt="plantVSzoom picture" height="200" width="200" />

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>News</title>
+    </head>
+    <body>
+        <div>
+            {% if category %}
+                <h1>{{ category.name }}<h1>
+                {% if pages %}
+                <ul>
+                    {% for page in pages %}
+                        <li><a href="{{ page.url }}">{{ page.title }}</a></li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                    <strong>No pages currently in category.</strong>
+                {% endif %}
+                <a href="/news/category/{{ category.slug }}/add_page">Add a New Page</a>
+            {% else %}
+                the specified category does not exist.
+            {% endif %}
+        </div>
+        <div>
+            <a href="/news">Home</a>
+        </div>
+    </body>
+</html>

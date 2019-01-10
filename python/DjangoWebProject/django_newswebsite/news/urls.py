@@ -2,7 +2,8 @@ from django.conf.urls import url
 from news import views
 
 # 命名空间名称,之后模板中中的url可以使用
-# userpace:urlname代替
+# userpace:urlname代替，命令空间可以有效
+# 区分url名称所属的区域，
 app_name = 'news'
 urlpatterns = [
     # Url传到这时，再次去掉news/部分，所以^$

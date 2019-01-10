@@ -59,9 +59,11 @@ ROOT_URLCONF = 'django_newswebsite.urls'
 
 TEMPLATES = [
     {
+        # 使用DTL模板渲染系统
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        # 使用绝对路径
+        # 使用绝对路径，以下路径中的模板将由BACKEND指定的模板系统来渲染
         'DIRS': [TEMPLATE_DIR, ],
+        # 可以查找APP中的模板
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -74,6 +76,11 @@ TEMPLATES = [
             ],
         },
     },
+    {
+        'BACKEND': 'django.template.backends.jinja2.Jinja2',
+        # 其他由Jinja2渲染系统渲染的模板路径
+        'DIRS': [],
+    }
 ]
 
 WSGI_APPLICATION = 'django_newswebsite.wsgi.application'

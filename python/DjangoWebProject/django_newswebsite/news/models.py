@@ -9,8 +9,10 @@ import datetime
 # 这就是ORM对象关系映射
 # 分类类，
 class Category(models.Model):
+    MAX_NAME_LEN = 128
+
     # 自定义字段，默认有id字段，用作主键，可以自定义修改
-    name = models.CharField(max_length=128, unique=True)
+    name = models.CharField(max_length=MAX_NAME_LEN, unique=True)
     views = models.IntegerField(default=0)
     likes = models.IntegerField(default=0)
 
