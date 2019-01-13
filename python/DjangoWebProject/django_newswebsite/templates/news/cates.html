@@ -1,0 +1,20 @@
+{% load staticfiles %}
+
+<ul>
+    {% if cates %}
+        {% for cate in cates %}
+            {# 突出当前显示标签 #}
+            {% if cate == act_cate %}
+                <li>
+                    <strong>
+                        <a href="{% url 'news:show_category' cate.slug %}">{{ cate.name }}</a>
+                    </strong>
+                </li>
+            {% else %}
+                <li class="list-inline"><a href="{% url 'news:show_category' cate.slug %}">{{ cate.name }}</a></li>
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        <li><strong>There are no categories present.</stong></li>
+    {% endif %}
+</ul>

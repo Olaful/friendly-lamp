@@ -1,5 +1,5 @@
 from django.contrib import admin
-from news.models import Category, Page
+from news.models import Category, Page, UserProfile
 
 class PagesInline(admin.StackedInline):
     model = Page
@@ -49,3 +49,4 @@ class PagesAdmin(admin.ModelAdmin):
 admin.site.register(Page, PagesAdmin)
 # 用myAdmin定义的界面管理 Category
 admin.site.register(Category,CategoryAdmin)
+admin.site.register(UserProfile)

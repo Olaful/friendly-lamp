@@ -43,10 +43,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # 注册自己的应用
     'news',
+    # 使用第三方用户管理模块，注册，登录，注销，验证等功能
+    'registration',
+    'bootstrap_toolkit',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    # 会话处理中间件
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -54,6 +58,25 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# registration应用的设置信息
+# 是否允许注册
+REGISTRATION_OPEN = True
+# 注册后有剩余多久可以激活
+ACCOUNT_ACTIVATION_DAYS = 3
+# 注册后是否自动登录
+REGISTRATION_AUTO_LOGIN = True
+# 登录后页面
+LOGIN_REDIRECT_URL = '/news/'
+# 访问需要登录的页面或者未登录重定向的页面
+LOGIN_URL = '/accounts/login/'
+
+# 启用浏览器存续期会话(浏览器关闭后会话过期),默认使用持久性会话，由服务器
+# 决定会话过期时间
+#SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+# 持久性会话过期时间,单位秒
+SESSION_COOKIE_AGE = 3600
 
 ROOT_URLCONF = 'django_newswebsite.urls'
 
@@ -106,12 +129,15 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
+# 密码有效性验证
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        # 限定密码最小长度
+        'OPTIONS':{'min_length':6,},
     },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
@@ -120,6 +146,14 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+# 使用以下算法加密用户密码，默认第一个，无效的话使用第二个
+PASSWORD_HASHERS = (
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+    'django.contrib.auth.hashers.BCryptPasswordHasher',
+)
 
 
 # Internationalization
@@ -148,3 +182,6 @@ STATICFILES_DIRS = [STATIC_DIR,]
 MEDIA_ROOT = MEDIA_DIR
 # 路径后面要加上斜线,因为该路径下面可能还有其他路径
 MEDIA_URL = '/media/'
+
+# 登录装饰器把未登录的用户的访问请求重定向到该地址
+LOGIN_URL = '/news/login/'

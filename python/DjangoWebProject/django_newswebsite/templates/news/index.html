@@ -1,26 +1,48 @@
-<!DOCTYPE html>
-
-<!--告诉模板引擎将在该模板中使用静态文件-->
-<!--模板渲染使用的是自带的DTL模板系统，也可以选择使用信任的-->
-<!--第三方系统，不信任的第三方可能会做一些注入攻击-->
-<!--模板语言命令放在里面-->
+{# 告诉模板引擎将在该模板中使用静态文件 #}
+{# 模板渲染使用的是自带的DTL模板系统，也可以选择使用信任的 #}
+{# 第三方系统，不信任的第三方可能会做一些注入攻击 #}
+{# 模板语言命令放在里面 #}
+{% extends 'news/base.html' %}
 {% load staticfiles %}
+{# 加载自定义标签处理模块 #}
+{% load newstag %}
 
-<html>
-    <head>
-        <title>news</title>
-    </head>
-    <body>
-        <h1>Hello news</h1>
-        <div>Top 5 Liked categories</div>
-        <div>
-            <!--模板部分-->
+{% block title_block %}
+    Home
+{% endblock title_block %}
+
+{% block page_head %}
+    <h1>你好!
+    {# user对象表示登录的用户，由request对象传入 #}
+    {% if user.is_authenticated %}
+        {{ user.username }}!
+    {% else %}
+        News!
+     {% endif %}
+     </h1>
+{% endblock page_head %}
+
+{% block body_head %}
+    <div class="jumbotron">
+        <h1 class="display-3">Hello, News</h1>
+        <p class="lead">The most populate categories below</p>
+    </div>
+{% endblock body_head %}
+
+{% block body_block %}
+
+    <div class="row marketing">
+        <div class="col-lg-6">
+            <h4>Top 5 Liked categories</h4>
+            <p>
+            {# 模板部分 #}
             {% if categories_top_like %}
-            <ul>
+            <ul class="list-group">
                 {% for cate in categories_top_like %}
-                    <li>
-                        <a href="{% url 'news:show_category' cate.slug %}">{{ cate.name }}</a>
-                        <!--<a href="/news/category/{{ cate.slug }}">{{ cate.name }}</a>-->
+                    <li class="list-group-item">
+                        {# 使用自定义过滤器 #}
+                        <a href="{% url 'news:show_category' cate.slug %}">{{ cate.name|add_prefix:'hot-' }}</a>
+                        {# <a href="/news/category/{{ cate.slug }}">{{ cate.name }}</a> #}
                     </li>
                 {% endfor %}
             </ul>
@@ -28,32 +50,34 @@
                 <strong>There are no categories present.</strong>
             {% endif %}
         </div>
-        <div>Top 5 Viewed categories</div>
-        <div>
+        <div class="col-lg-6">
+            <h4>Top 5 Viewed categories</h4>
+            <p>
             {% if categories_top_view %}
-            <ul>
-                {% for cate in categories_top_view %}
-                    <li>
-                        <a href="/news/category/{{ cate.slug }}">{{ cate.name }}</a>
-                    </li>
-                {% endfor %}
+            <ul class="list-group">
+            {% for cate in categories_top_view %}
+                <li class="list-group-item">
+                    {# |后面为过滤器函数，default接收一到两个参数 #}
+                    {# 此外还有add date等过滤器 #}
+                    <a href="/news/category/{{ cate.slug }}">{{ cate.name|default:"empty name" }}</a>
+                </li>
+            {% endfor %}
             </ul>
             {% else%}
                 <strong>There are no categories present.</strong>
             {% endif %}
         </div>
-        <br />
-        <div>
-            <a href="/news/add_category/">Add a New Category</a> <br />
-            <!--使用的是硬编码链接，有个不好的地方，如果urls.py路径改变了，可能得修改整个模板文件-->
-            <!--所以可以使用url别名来代替-->
-            <!--<a href="/news/about/">about</a> <br />-->
-            <a href="{% url 'news:about' %}">about</a> <br />
-            <!--static声明加载静态文件 scr 最终由STATIC_URL决定，如/static/images/plantVSzoom.jpg-->
-            <!--也可以加载css，js文件-->
-            <img src="{% static 'images/plantVSzoom.jpg' %}" alt="plantVSzoom picture" height="200" width="200" />
-            <!--会使用媒体模板上下文填充-->
-            <img src="{{ MEDIA_URL }}16t.png" alt="16t" />
-        </div>
-    </body>
-</html>
+    </div>
+
+{% endblock  %}
+<br />
+
+{% block body_tail %}
+    <img src="{% static 'images/plantVSzoom.jpg' %}" alt="plantVSzoom picture" height="200" width="200" />
+    {# 会使用媒体模板上下文填充 #}
+    <img src="{{ MEDIA_URL }}16t.png" alt="16t" />
+{% endblock body_tail %}
+
+{# 由于继承了模板，如果内容不再block中将不会显示 #}
+{# 使用自定义标签函数 #}
+{% catstr '------------' '************' '------------' %}

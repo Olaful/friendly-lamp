@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+
+<!--告诉模板引擎将在该模板中使用静态文件-->
+<!--模板渲染使用的是自带的DTL模板系统，也可以选择使用信任的-->
+<!--第三方系统，不信任的第三方可能会做一些注入攻击-->
+<!--模板语言命令放在里面-->
+{% load staticfiles %}
+{# 加载自定义标签处理模块 #}
+{% load newstag %}
+
+<html>
+    <head>
+        <title>news</title>
+    </head>
+    <body>
+        <h1>Hello news</h1>
+        <div>Top 5 Liked categories</div>
+        <div>
+            <!--模板部分-->
+            {% if categories_top_like %}
+            <ul>
+                {% for cate in categories_top_like %}
+                    <li>
+                        {# 使用自定义过滤器 #}
+                        <a href="{% url 'news:show_category' cate.slug %}">{{ cate.name|add_prefix:'hot-' }}</a>
+                        <!--<a href="/news/category/{{ cate.slug }}">{{ cate.name }}</a>-->
+                    </li>
+                {% endfor %}
+            </ul>
+            {% else%}
+                <strong>There are no categories present.</strong>
+            {% endif %}
+        </div>
+        <div>Top 5 Viewed categories</div>
+        <div>
+            {% if categories_top_view %}
+            <ul>
+                {% for cate in categories_top_view %}
+                    <li>
+                        {# |后面为过滤器函数，default接收一到两个参数 #}
+                        {# 此外还有add date等过滤器 #}
+                        <a href="/news/category/{{ cate.slug }}">{{ cate.name|default:"empty name" }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+            {% else%}
+                <strong>There are no categories present.</strong>
+            {% endif %}
+        </div>
+        <br />
+        {# 使用自定义标签函数 #}
+        {% catstr '------------' '************' '------------' %}
+        <div>
+            <a href="/news/add_category/">Add a New Category</a> <br />
+            <!--使用的是硬编码链接，有个不好的地方，如果urls.py路径改变了，可能得修改整个模板文件-->
+            <!--所以可以使用url别名来代替-->
+            <!--<a href="/news/about/">about</a> <br />-->
+            <a href="{% url 'news:about' %}">About</a> <br />
+            <!--static声明加载静态文件 scr 最终由STATIC_URL决定，如/static/images/plantVSzoom.jpg-->
+            <!--也可以加载css，js文件-->
+            <img src="{% static 'images/plantVSzoom.jpg' %}" alt="plantVSzoom picture" height="200" width="200" />
+            <!--会使用媒体模板上下文填充-->
+            <img src="{{ MEDIA_URL }}16t.png" alt="16t" />
+        </div>
+    </body>
+</html>

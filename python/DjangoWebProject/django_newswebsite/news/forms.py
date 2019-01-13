@@ -1,7 +1,9 @@
 from django import forms
-from news.models import Category, Page
+from news.models import Category, Page, UserProfile
+from django.contrib.auth.models import User
 
 class CategoryForm(forms.ModelForm):
+    # 字段名称要与model定义的字段名称一样
     name = forms.CharField(max_length=Category.MAX_NAME_LEN,
                             help_text='Please input the category name.')
     views = forms.IntegerField(widget=forms.HiddenInput(), initial=0)
@@ -39,3 +41,15 @@ class PageForm(forms.ModelForm):
             cleaned_data['url'] = url
             return cleaned_data
         
+class UserForm(forms.ModelForm):
+    # 覆盖User模型属性，改成密码组件样式
+    password = forms.CharField(widget=forms.PasswordInput())
+
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'password')
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ('website', 'picture')

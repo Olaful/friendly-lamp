@@ -1,25 +1,35 @@
-<!DOCTYPE html>
+{% extends 'news/base.html' %}
+{% load staticfiles %}
 
-<html>
-    <head>
-        <title>News</title>
-    </head>
-    <body>
-        <h1>Add a page</h1>
-        <div>
-            <form id="page_form" method="post" action="/news/category/{{ category.slug }}/add_page/">
-            {% csrf_token %}
-            {% for hidden in form.hidden_fields %}
-                <!--会根据字段类型使用合适的标签包围显示-->
-                {{ hidden }}
-            {% endfor %}
-            {% for visible in form.visible_fields %}
-                {{ visible.errors }}
-                {{ visible.help_text }}
-                {{ visible}}
-            {% endfor %}
-            <input type="submit" name="submit" value="提交" />
-            </form>
-        </div>
-    </body>
-</html>
+{% block title_block %}
+    Add a page
+{% endblock title_block %}
+
+{% block body_head %}
+    <link href="{% static 'css/signin.css' %}" rel="stylesheet">
+    <div class="jumbotron">
+        <h1 class="display-3">添加页面</h1>
+    </div>
+{% endblock body_head %}
+
+{% block body_block %}
+    <form class="form-signin" role="form" id="page_form" method="post" action="/news/category/{{ category.slug }}/add_page/">
+        <h2 class="form-signin-heading">请填写以下信息</h2>
+        {% csrf_token %}
+        {% for hidden in form.hidden_fields %}
+            {# 会根据字段类型使用合适的标签包围显示 #}
+            {{ hidden }}
+        {% endfor %}
+        {% for visible in form.visible_fields %}
+            {{ visible.errors }}
+            {% if visible.name == "title" %}
+                <label for="id_{{ visible.name }}" class="required">标题:</label>
+            {% else %}
+                <label for="id_{{ visible.name }}" class="required">网址:</label>
+            {% endif %}
+            {{ visible }} <br />
+        {% endfor %}
+        <p>
+        <button class="btn btn-primary" type="submit" name="submit">添加</button>
+    </form>
+{% endblock body_block %}

@@ -19,13 +19,16 @@ create_superuser = 'python manage.py createsuperuser'
 gener_sql = 'python manage.py makemigrations news'
 # 查看某个应用数据迁移至数据库的sql，具体sql表现形式取决于你
 # 配置的数据库类型
-see_sql = 'python manage.py sqlmigrate news 0006'
+see_sql = 'python manage.py sqlmigrate news 0001'
 # 打开shell,shell常用于调试项目
 shell = 'python manage.py shell'
 # 检查项目
 check = 'python manage.py check'
 # 填充脚本, 填充数据库数据
 populate = 'python populate.py'
+
+# 清理会话数据库,由于随着连接用户的增加，数据库会越来越大
+clear_session_data = 'python manage.py clearsessions'
 
 # shell中的命令
 # 查看所有表

@@ -20,6 +20,12 @@ from django.conf.urls import include
 from django.conf import settings
 from django.conf.urls.static import static
 from news import views
+from registration.backends.simple.views import RegistrationView
+
+class NewsRegistrationView(RegistrationView):
+    # 注册成功后定位到首页
+    def get_success_url(self, user):
+        return '/news/'
 
 urlpatterns = [
     # path('index/', views.index),
@@ -32,4 +38,8 @@ urlpatterns = [
     #url(r'^news/about/', include('news.urls')),
     # 管理员界面，用于管理模型等
     path('admin/', admin.site.urls),
+    # simple使用一步认证，此外还有其他如发送电子邮件验证等
+    # registration与django目录同级
+    url(r'^accounts/', include('registration.backends.simple.urls')),
+    url(r'^accounts/register/$', NewsRegistrationView.as_view(), name='registration_register'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

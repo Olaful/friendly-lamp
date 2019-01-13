@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils import timezone
 from django.template.defaultfilters import slugify
+from django.contrib.auth.models import User
+
 import datetime
 
 # 一个类对应一个模型, 模型对应数据库中的表
@@ -54,3 +56,18 @@ class Page(models.Model):
 
     def __str__(self):
         return self.title
+
+# 用户模型扩展
+class UserProfile(models.Model):
+    # 建立与User模型之间的联系,User模型默认用username, password, email等属性
+    # OneToOneField的话当前模型实例与User实例会同时被插入数据库
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    # 额外增加的用户属性
+    website = models.URLField(blank=True)
+    # profile_images文件夹会在media文件夹下建立
+    picture = models.ImageField(upload_to='profile_images', blank=True)
+
+    def __str__(self):
+        return self.user.username
+    
