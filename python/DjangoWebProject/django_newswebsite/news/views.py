@@ -8,6 +8,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 import datetime
+from news.webhose_search import run_query
 
 # 返回HttpResponse的对象的函数就是一个视图，在urls文件添加映射
 def index_test(request):
@@ -235,3 +236,13 @@ def CookieChk(request, cookieName):
         print('the cookie {} value is {}'.format(cookieName, request.COOKIES[cookieName]))
     else:
         print('{} is not exist:'.format(cookieName))
+
+# 搜索视图
+def search(request):
+    rls_list = []
+    query = ""
+    if request.method == "POST":
+        query = request.POST['query'].strip()
+        if query:
+            rls_list = run_query(query)
+    return render(request, 'news/search.html', {'result_list': rls_list, 'query_word':query})
