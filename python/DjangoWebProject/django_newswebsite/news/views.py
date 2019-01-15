@@ -9,6 +9,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 import datetime
 from news.webhose_search import run_query
+from news.webdriver_search import WebDriver
 
 # 返回HttpResponse的对象的函数就是一个视图，在urls文件添加映射
 def index_test(request):
@@ -237,8 +238,8 @@ def CookieChk(request, cookieName):
     else:
         print('{} is not exist:'.format(cookieName))
 
-# 搜索视图
-def search(request):
+# 通过webhose搜索视图
+def search_webhose(request):
     rls_list = []
     query = ""
     if request.method == "POST":
@@ -246,3 +247,15 @@ def search(request):
         if query:
             rls_list = run_query(query)
     return render(request, 'news/search.html', {'result_list': rls_list, 'query_word':query})
+
+# 获取百度搜索结果
+def search(request):
+    br = WebDriver()
+    rls_list = []
+    query = ""
+    if request.method == "POST":
+        query = request.POST['query'].strip()
+        if query:
+            rls_list = br.run_query(query)
+    return render(request, 'news/search.html', {'result_list': rls_list, 'query_word':query})
+    

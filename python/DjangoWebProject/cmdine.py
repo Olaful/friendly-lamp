@@ -7,8 +7,8 @@ start_server = 'python manage.py runserver 0.0.0.0:1025'
 create_app = 'python manage.py startapp news'
 # 创建数据库 默认sqlite3数据库,之后应用的更新就可以同步到
 # 各自的数据库，如果有待提交的sql数据(通过django_migrations 
-# 表检查)，
-# 则是提交数据至数据库
+# 表检查)，则是提交数据至数据库,默认初始化会话表,管理员表,
+# 用户认证表
 create_or_up__appdata = 'python manage.py migrate'
 # 移除app数据模型
 rm_appdata = 'python manage.py migrate news zero'
