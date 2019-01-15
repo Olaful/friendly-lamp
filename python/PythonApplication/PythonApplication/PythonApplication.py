@@ -4895,10 +4895,11 @@ def getBaiduData(*args):
         html = br.download(url='https://www.baidu.com/s?wd={0}&pn={1}'.format(args[0], page))
 
         tree = lxml.html.fromstring(html)
-        elements = tree.cssselect('a.c-showurl')
-        hrefs = [element.text_content() for element in elements]
+        elements_url = tree.cssselect('a.c-showurl')
+        hrefs = [element.text_content() for element in elements_url]
         hrefs = list(map(parseHref, hrefs))
         domains = [urlparse(href).scheme+'://'+urlparse(href).netloc for href in hrefs]
+        
         print(domains)
 
     br.keepWindow()
