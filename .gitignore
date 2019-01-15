@@ -5,3 +5,6 @@ db.json
 node_modules/
 public/
 .deploy*/
+*.pyc
+db.sqlite3
+search.key

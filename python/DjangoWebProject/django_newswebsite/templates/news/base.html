@@ -102,6 +102,7 @@
               <li class="nav-item"><a class="nav-link" href="{% url 'auth_login' %}">登录</a></li>
               <li class="nav-item"><a class="nav-link" href="{% url 'registration_register' %}">注册</a></li>
           {% endif %}
+          {% comment %} <li class="nav-item"><span class="nav-link">访问次数:{{ visits }}</span></li> {% endcomment %}
           <li class="nav-item"><a class="nav-link" href="{% url 'news:search' %}">搜索功能</a></li>
         </ul>
       </div>
@@ -110,6 +111,34 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
+            
+
+        <div>
+            <form class="form-inline" id="user_form" method="post" action="{% url 'news:search' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input class="form-control" type="text" size="50" name="query" value="{{ query_word }}" id="query" />
+                </div>
+                <button class="btn btn-primary" type="submit" name="submit" value="Search">搜索</button>
+            </form>
+
+            <div id="listgroup">
+                {% if result_list %}
+                    <h3>搜索结果 </h3><button class="btn btn-primary" onclick="clearClick()">清除</button>
+                    <div class="list-group">
+                    {% for result in result_list %}
+                        <div class="list-group-item">
+                            <h4 class="list-group-item-heading"><a href="{{ result.link }}" target="new_tag">{{ result.title }}</a></h4>
+                            <p class="list-group-item-text">{{ result.summary }}</p>
+                        </div>
+                    {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <p>
+        <p>
+
           {% block sidebar_block %}
               {# category参数是由子模板中传过来的 #}
               {% get_category_list category %}
@@ -135,8 +164,10 @@
     <script src="{% static 'js/jquery-3.1.1.slim.min.js' %}" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
     <script>window.jQuery</script>
     <script src="{% static 'js/tether.min.js' %}" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-    <script src="{% static 'bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="http://v4-alpha.getbootstrap.com/assets/js/ie10-viewport-bug-workaround.js"></script>
+    {# 自定义js #}
+    <script src="{% static 'js/my_js.js' %}"></script>
   </body>
 </html>

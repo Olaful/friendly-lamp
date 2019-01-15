@@ -9,7 +9,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 import datetime
 from news.webhose_search import run_query
-from news.webdriver_search import WebDriver
+from news.webdriver_search import WebDriver, BrowserRender
 
 # 返回HttpResponse的对象的函数就是一个视图，在urls文件添加映射
 def index_test(request):
@@ -66,6 +66,9 @@ def show_category(request, category_name_slug):
     # 根据传入的分类名称查找数据库
     try:
         category = Category.objects.get(slug=category_name_slug)
+        # 查看次数加1
+        category.views += 1
+        category.save()
         # 也可以使用此方式返回异常信息
         # category = get_object_or_404(Category, slug=category_name_slug)
         pages = Page.objects.filter(category=category)
@@ -250,12 +253,12 @@ def search_webhose(request):
 
 # 获取百度搜索结果
 def search(request):
-    br = WebDriver()
     rls_list = []
     query = ""
     if request.method == "POST":
+        br = WebDriver()
         query = request.POST['query'].strip()
         if query:
             rls_list = br.run_query(query)
-    return render(request, 'news/search.html', {'result_list': rls_list, 'query_word':query})
+    return render(request, 'news/index.html', {'result_list': rls_list, 'query_word':query})
     
