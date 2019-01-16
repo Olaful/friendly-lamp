@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from news.models import Category, Page
 from django.template import loader
-from news.forms import CategoryForm, PageForm, UserForm, UserProfileForm
+from news.forms import CategoryForm, PageForm, UserForm, UserProfileForm, UserProfileInfoForm
 from django.template.defaultfilters import slugify
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
@@ -75,9 +75,23 @@ def show_category(request, category_name_slug):
         pages = Page.objects.filter(category=category)
         context_dict['pages'] = pages
         context_dict['category'] = category
+
+        # 根据关键字搜索并返回结果
+        rls_list = []
+        query = ""
+        if request.method == "POST":
+            br = WebDriver()
+            query = request.POST['query'].strip()
+            if query:
+                rls_list = br.run_query(query)
+        context_dict['result_list'] = rls_list
+        context_dict['query_word'] = query
+
     except Category.DoesNotExist:
         context_dict['category'] = None
         context_dict['pages'] = None
+        context_dict['result_list'] = None
+        context_dict['query_word'] = ''
     
     return render(request, 'news/category.html', context_dict)
 
@@ -273,7 +287,13 @@ def personalinfo(request, user_name):
     userinfo = User.objects.get_by_natural_key(username=user_name)
     return render(request, 'news/personalinfo.html', {'userinfo': userinfo})
 
-def track_url(request, name='goto', page_id=None):
+# 打开page链接
+def track_url(request):
+    page_id = None
+    if request.method == 'GET':
+        if 'page_id' in request.GET:
+            page_id = request.GET['page_id']
+
     page = Page.objects.get(id=page_id)
     if page_id is None or page is None:
         return HttpResponseRedirect(reverse('index'))
@@ -283,6 +303,21 @@ def track_url(request, name='goto', page_id=None):
 
     # 重定向到page真正的url
     return redirect(page.url)
-
     #return redirect('/index/')
     
+def register_profile(request):
+    if request.method == "POST":
+        own_form = UserProfileInfoForm(request.POST)
+
+        if own_form.is_valid:
+            own_info = own_form.save(commit=False)
+
+            if 'picture' in request.FILES:
+                own_info.picture = request.FILES['picture']
+            own_info.save()
+        
+
+    own_form = UserProfileInfoForm(request.GET())
+    content_dict = {'own_form': own_form}
+
+    render(request, 'news/profile_registration.html', content_dict)

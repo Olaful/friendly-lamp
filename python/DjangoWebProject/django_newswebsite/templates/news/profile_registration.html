@@ -1,0 +1,17 @@
+{% extends 'news/base.html' %}
+{% load staticfiles %}
+
+{% block body_head %}
+    <link href="{% static 'css/signin.css' %}" rel="stylesheet">
+    <div class="jumbotron">
+        <h1 class="display-3">个人信息</h1>
+    </div>
+{% endblock body_head %}
+
+{% block body_block %}
+    <form id="own_info" method="post" action="{% url 'news:login' %}">
+        {% csrf_token %}
+        {{ own_form.as_p }}
+        <input type="submit" value="提交" />
+    </form>
+{% endblock body_block %}

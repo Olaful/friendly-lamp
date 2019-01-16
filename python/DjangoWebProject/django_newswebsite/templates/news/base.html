@@ -99,13 +99,12 @@
               <li class="nav-item"><a class="nav-link" href="{% url 'news:user_info' %}">用户列表</a></li>
               <li class="nav-item"><span class="nav-link">你好! {{ user.username }}</span></li>
               {# visits从服务器中获取 #}
-              <li class="nav-item"><span class="nav-link">登录期间访问次数:{{ visits }}</span></li>
+              {% comment %} <li class="nav-item"><span class="nav-link">登录期间访问次数:{{ visits }}</span></li> {% endcomment %}
           {% else %}
               <li class="nav-item"><a class="nav-link" href="{% url 'auth_login' %}">登录</a></li>
               <li class="nav-item"><a class="nav-link" href="{% url 'registration_register' %}">注册</a></li>
           {% endif %}
           {% comment %} <li class="nav-item"><span class="nav-link">访问次数:{{ visits }}</span></li> {% endcomment %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'news:search' %}">搜索功能</a></li>
         </ul>
       </div>
     </nav>

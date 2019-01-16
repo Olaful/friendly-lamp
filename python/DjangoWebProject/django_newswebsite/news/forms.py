@@ -53,3 +53,10 @@ class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ('website', 'picture')
+
+# 用户个人资料表单
+class UserProfileInfoForm(forms.ModelForm):
+    
+    class Meta:
+        model = UserProfile
+        fields = ('username', 'email', 'website', 'picture')

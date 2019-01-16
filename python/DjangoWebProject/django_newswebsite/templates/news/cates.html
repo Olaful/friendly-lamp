@@ -9,10 +9,9 @@
                     <strong>
                         <a href="{% url 'news:show_category' cate.slug %}">{{ cate.name }}</a>
                     </strong>
-                    {{ cate.views }}
                 </li>
             {% else %}
-                <li class="list-inline"><a href="{% url 'news:show_category' cate.slug %}">{{ cate.name }}</a> {{ cate.views }}</li>
+                <li class="list-inline"><a href="{% url 'news:show_category' cate.slug %}">{{ cate.name }}</a></li>
             {% endif %}
         {% endfor %}
     {% else %}
