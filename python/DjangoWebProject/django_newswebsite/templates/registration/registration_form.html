@@ -1,5 +1,6 @@
 {% extends 'news/base.html' %}
 {% load staticfiles %}
+{% load bootstrap_toolkit %}
 
 {% comment %} {% block body_block %}
     <form method="post" action=".">
@@ -19,9 +20,9 @@
 
 {% block body_block %}
     <h2 class="form-signin-heading">请填写以下注册信息</h2>
-    <form role="form" method="post" action=".">
+    <form class="form-signin" role="form" method="post" action="{% url 'registration_register' %}">
         {% csrf_token %}
-        <div class="form-group">
+        {% comment %} <div class="form-group">
             <p class="required">
                 <label for="id_username" class="required">用户名:</label>
                 <input class="form-control" id="id_username" maxlength="30" name="username" type="text" required /> <br />
@@ -29,7 +30,7 @@
             </p class="required">
             <p class="required">
                 <label for="id_email" class="required">邮箱:</label>
-                <input class="form-control" id="id_email" name="username" type="email" required />
+                <input class="form-control" id="id_email" name="email" type="email" required />
             </p>
             <p class="required">
                 <label for="id_password1" class="required">密码:</label>
@@ -39,7 +40,8 @@
                 <label for="id_password2" class="required">密码确认:</label>
                 <input class="form-control" id="id_password2" name="password2" type="password" required />
             </p>
-        </div>
+        </div> {% endcomment %}
+        {{ form }}
         <button class="btn btn-default" type="submit">注册</button>
     </form>
 {% endblock body_block %}

@@ -95,6 +95,8 @@
               <li class="nav-item"><a class="nav-link" href="{% url 'news:add_category' %}">添加分类</a></li>
               <li class="nav-item"><a class="nav-link" href="{% url 'auth_logout' %}?next=/news/">退出</a></li>
               <li class="nav-item"><a class="nav-link" href="{% url 'auth_password_change' %}?next=/news/">修改密码</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'news:personal_info' user.username %}">个人信息</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'news:user_info' %}">用户列表</a></li>
               <li class="nav-item"><span class="nav-link">你好! {{ user.username }}</span></li>
               {# visits从服务器中获取 #}
               <li class="nav-item"><span class="nav-link">登录期间访问次数:{{ visits }}</span></li>
@@ -111,34 +113,6 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
-            
-
-        <div>
-            <form class="form-inline" id="user_form" method="post" action="{% url 'news:search' %}">
-                {% csrf_token %}
-                <div class="form-group">
-                    <input class="form-control" type="text" size="50" name="query" value="{{ query_word }}" id="query" />
-                </div>
-                <button class="btn btn-primary" type="submit" name="submit" value="Search">搜索</button>
-            </form>
-
-            <div id="listgroup">
-                {% if result_list %}
-                    <h3>搜索结果 </h3><button class="btn btn-primary" onclick="clearClick()">清除</button>
-                    <div class="list-group">
-                    {% for result in result_list %}
-                        <div class="list-group-item">
-                            <h4 class="list-group-item-heading"><a href="{{ result.link }}" target="new_tag">{{ result.title }}</a></h4>
-                            <p class="list-group-item-text">{{ result.summary }}</p>
-                        </div>
-                    {% endfor %}
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-        <p>
-        <p>
-
           {% block sidebar_block %}
               {# category参数是由子模板中传过来的 #}
               {% get_category_list category %}

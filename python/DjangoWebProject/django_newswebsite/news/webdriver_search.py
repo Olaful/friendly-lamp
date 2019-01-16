@@ -1,6 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import lxml.html
+import time
 
 class WebDriver(object):
     def __init__(self, browser=None, option='--headless'):
@@ -50,6 +51,12 @@ from PyQt4.QtGui import *
 from PyQt4.QtWebKit import QWebView
 
 class BrowserRender(QWebView):
+    def __new__(cls, *args, **kwargs):
+        if not hasattr(BrowserRender, '_instance'):
+            print('create new instance')
+            BrowserRender._instance =  QWebView.__new__(cls, *args, **kwargs)
+        return BrowserRender._instance
+
     def __init__(self, show=False):
         self.app = QApplication([])
         QWebView.__init__(self)

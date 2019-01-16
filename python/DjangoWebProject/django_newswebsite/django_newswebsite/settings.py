@@ -70,6 +70,8 @@ REGISTRATION_AUTO_LOGIN = True
 LOGIN_REDIRECT_URL = '/news/'
 # 访问需要登录的页面或者未登录重定向的页面
 LOGIN_URL = '/accounts/login/'
+# 自定义注册表单
+#REGISTRATION_FORM = 'news.forms.UserProfileForm'
 
 # 启用浏览器存续期会话(浏览器关闭后会话过期),默认使用持久性会话，由服务器
 # 决定会话过期时间

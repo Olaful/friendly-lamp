@@ -1,0 +1,18 @@
+{% extends 'news/base.html' %}
+{% load staticfiles %}
+
+{% block body_head %}
+    <link href="{% static 'css/signin.css' %}" rel="stylesheet">
+    <div class="jumbotron">
+        <h1 class="display-3">用户列表</h1>
+    </div>
+{% endblock body_head %}
+
+{% block body_block %}
+    <div>
+        {% for user in userinfo %}
+            <li><a href="{% url 'news:personal_info' user.username %}">{{ user.username }}</a></li>
+            <li>{{ user.email }}</li>
+        {% endfor %}
+    </div>
+{% endblock body_block %}

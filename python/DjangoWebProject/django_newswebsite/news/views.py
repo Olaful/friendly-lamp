@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from news.models import Category, Page
 from django.template import loader
@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 import datetime
 from news.webhose_search import run_query
 from news.webdriver_search import WebDriver, BrowserRender
+from django.contrib.auth.models import User
 
 # 返回HttpResponse的对象的函数就是一个视图，在urls文件添加映射
 def index_test(request):
@@ -260,5 +261,28 @@ def search(request):
         query = request.POST['query'].strip()
         if query:
             rls_list = br.run_query(query)
-    return render(request, 'news/index.html', {'result_list': rls_list, 'query_word':query})
+    return render(request, 'news/search.html', {'result_list': rls_list, 'query_word':query})
+
+# 用户列表
+def userinfo(request):
+    userinfo = User.objects.all()
+    return render(request, 'news/userinfo.html', {'userinfo': userinfo})
+
+# 个人信息
+def personalinfo(request, user_name):
+    userinfo = User.objects.get_by_natural_key(username=user_name)
+    return render(request, 'news/personalinfo.html', {'userinfo': userinfo})
+
+def track_url(request, name='goto', page_id=None):
+    page = Page.objects.get(id=page_id)
+    if page_id is None or page is None:
+        return HttpResponseRedirect(reverse('index'))
+
+    page.views += 1
+    page.save()
+
+    # 重定向到page真正的url
+    return redirect(page.url)
+
+    #return redirect('/index/')
     
