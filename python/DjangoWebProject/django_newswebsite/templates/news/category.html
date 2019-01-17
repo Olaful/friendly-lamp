@@ -19,13 +19,21 @@
         {% else %}
             <strong>No pages currently in category.</strong>
         {% endif %}
+        <div >
+            <strong id="like_count">{{ category.likes }}</strong>
+            {% if user.is_authenticated %}
+                <button class="btn btn-primary btn-sm" id="likes" type="button" data-catid="{{ category.id }}">
+                    赞
+                </button>
+            {% endif %}
+        </div>
         {% if user.is_authenticated %}
-            <button type="button" class="btn btn-default"><a href="{% url 'news:add_page' category.slug %}">添加页面</a></button>
+            <a class="btn btn-default" href="{% url 'news:add_page' category.slug %}">添加页面</a>
             <p>
             <p>
             {# 搜索功能 #}
             <div>
-                <form class="form-inline" id="user_form" method="post" action="{% url 'news:show_category' category.name %}">
+                <form class="form-inline" id="user_form" method="post" action="{% url 'news:show_category' category.slug %}">
                     {% csrf_token %}
                     <div class="form-group">
                         <input class="form-control" type="text" size="50" name="query" value="{{ query_word }}" id="query" />
@@ -39,6 +47,7 @@
                         <div class="list-group">
                         {% for result in result_list %}
                             <div class="list-group-item">
+                                <button class="btn btn-primary btn-sm" type="button" name="submit" value="Search">添加</button>
                                 <h4 class="list-group-item-heading"><a href="{{ result.link }}" target="new_tag">{{ result.title }}</a></h4>
                                 <p class="list-group-item-text">{{ result.summary }}</p>
                             </div>

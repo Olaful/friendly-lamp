@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from news.models import Category, Page
 from django.template import loader
-from news.forms import CategoryForm, PageForm, UserForm, UserProfileForm, UserProfileInfoForm
+from news.forms import CategoryForm, PageForm, UserForm, UserProfileForm
 from django.template.defaultfilters import slugify
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
@@ -11,6 +11,7 @@ import datetime
 from news.webhose_search import run_query
 from news.webdriver_search import WebDriver, BrowserRender
 from django.contrib.auth.models import User
+import json
 
 # 返回HttpResponse的对象的函数就是一个视图，在urls文件添加映射
 def index_test(request):
@@ -67,9 +68,6 @@ def show_category(request, category_name_slug):
     # 根据传入的分类名称查找数据库
     try:
         category = Category.objects.get(slug=category_name_slug)
-        # 查看次数加1
-        category.views += 1
-        category.save()
         # 也可以使用此方式返回异常信息
         # category = get_object_or_404(Category, slug=category_name_slug)
         pages = Page.objects.filter(category=category)
@@ -307,7 +305,7 @@ def track_url(request):
     
 def register_profile(request):
     if request.method == "POST":
-        own_form = UserProfileInfoForm(request.POST)
+        own_form = UserProfileForm(request.POST)
 
         if own_form.is_valid:
             own_info = own_form.save(commit=False)
@@ -317,7 +315,57 @@ def register_profile(request):
             own_info.save()
         
 
-    own_form = UserProfileInfoForm(request.GET())
+    own_form = UserProfileForm(request.GET())
     content_dict = {'own_form': own_form}
 
     render(request, 'news/profile_registration.html', content_dict)
+
+# 返回分类点赞次数
+@login_required
+def like_category(request):
+    category_id = None
+    likes = 0
+    if request.method == "GET":
+        category_id = request.GET['category_id']
+        cate = Category.objects.get(id=int(category_id))
+
+        if category_id is None or cate is None:
+            return HttpResponse(likes)
+        likes = cate.likes + 1
+        cate.likes = likes
+        cate.save()
+        return HttpResponse(cate.likes)
+    return HttpResponse(likes)
+
+# def suggest_category(request):
+#     query = None
+#     names = []
+#     if request.method == "GET":
+#         query = request.GET['query']
+#         # 对应sql:name like '%query%'，且大小写不敏感,而contains大小不敏感
+#         cates = Category.objects.filter(name__icontains=query)[0:8]
+#         # 包装成json返回
+#         for cate in cates:
+#             names.append(cate.name)
+#         return HttpResponse(json.dumps({'name':names}))
+
+#     return HttpResponse(names)
+
+def get_cate_list(max_results=0, start_with=''):
+    cate_list = []
+    if start_with:
+        cate_list = Category.objects.filter(name__istartswith=start_with)
+    if max_results > 0:
+        if len(cate_list) > max_results:
+            cate_list = cate_list[:max_results]
+    return cate_list
+
+def suggest_category(request):
+    cate_list = []
+    starts_with = ''
+
+    if request.method == "GET":
+        starts_with = request.GET['query']
+    cate_list = get_cate_list(8, starts_with)
+
+    return render(request, 'news/cates.html', {'cates': cate_list})

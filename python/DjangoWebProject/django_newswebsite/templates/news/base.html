@@ -112,10 +112,18 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
-          {% block sidebar_block %}
+            <ul class="nav nav-list flex-column">
+                <li class="nav-item">
+                    <input class="search-query form-control" id="suggestion" type="text" 
+                    placeholder="搜索分类" name="suggestion" value="" />
+                </li>
+            </ul>
+            <hr>
+            <div id="cates"></div>
+          {% comment %} {% block sidebar_block %}
               {# category参数是由子模板中传过来的 #}
               {% get_category_list category %}
-          {% endblock sidebar_block %}
+          {% endblock sidebar_block %} {% endcomment %}
         </div>
         <div class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 main">
           {# block部分可以由子类模板代替 #}
@@ -140,7 +148,10 @@
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="http://v4-alpha.getbootstrap.com/assets/js/ie10-viewport-bug-workaround.js"></script>
+    {# jquery #}
+    <script src="{% static 'js/jquery.min.js' %}"></script>
     {# 自定义js #}
-    <script src="{% static 'js/my_js.js' %}"></script>
+    <script src="{% static 'js/news-jquery.js' %}"></script>
+    <script src="{% static 'js/news-ajax.js' %}"></script>
   </body>
 </html>
