@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
-from django.template.defaultfilters import slugify
+#from django.template.defaultfilters import slugify
+from uuslug import slugify
 from django.contrib.auth.models import User
 
 import datetime
@@ -42,6 +43,7 @@ class Category(models.Model):
     def save(self, *args, **kwargs):
         # slugify函数会把字符串中的空白符用'-'替换,大写变为小写
         self.slug = slugify(self.name)
+        self.views = self.views
         super(Category, self).save(*args, **kwargs)
 
 # 页面类
@@ -53,6 +55,8 @@ class Page(models.Model):
     title = models.CharField(max_length=128)
     url = models.URLField()
     views = models.IntegerField(default=0)
+    first_visit = models.DateTimeField(default=datetime.datetime.now())
+    last_visit = models.DateTimeField(default=datetime.datetime.now())
 
     def __str__(self):
         return self.title

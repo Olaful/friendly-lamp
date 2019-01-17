@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^register_profile/$', views.track_url, name="register_profile"),
     url(r'^like/$', views.like_category, name="like_category"),
     url(r'^suggest/$', views.suggest_category, name="suggest"),
+    url(r'^add_page/$', views.auto_add_page, name="auto_add_page"),
     # url(r'^register/$', views.register, name='register'),
     # url(r'^login/$', views.user_login, name='login'),
     # url(r'^logout/$', views.user_logout, name='logout'),

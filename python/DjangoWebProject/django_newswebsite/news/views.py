@@ -369,3 +369,24 @@ def suggest_category(request):
     cate_list = get_cate_list(8, starts_with)
 
     return render(request, 'news/cates.html', {'cates': cate_list})
+
+@login_required
+def auto_add_page(request):
+    cate_id = None
+    title = None
+    url = None
+
+    content_dict = {}
+
+    if request.method == "GET":
+        cate_id = request.GET['cate_id']
+        title = request.GET['title']
+        url = request.GET['url']
+        
+        if cate_id:
+            cate = Category.objects.get(id=int(cate_id))
+            page = Page.objects.get_or_create(category=cate, title=title, url=url)
+            pages = Page.objects.filter(category=cate).order_by('-views')
+
+            content_dict['pages'] = pages
+    return render(request, 'news/page_list.html', content_dict)

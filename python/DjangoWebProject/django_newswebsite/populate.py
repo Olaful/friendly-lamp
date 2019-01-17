@@ -83,8 +83,17 @@ class TestData(object):
         c.views = 128
         c.save()
 
+    def delete_cate(self, name):
+        c = Category.objects.get(name=name)
+        c.delete()
+
+    def quey_cate(self, name):
+        c = Category.objects.all()
+        for c in c.values_list():
+            print(c)
+
 if __name__ == '__main__':
     print('Start News population script...')
     test_data = TestData()
     # test_data.populate()
-    test_data.updateView('fenghuangnews_pages')
+    test_data.quey_cate('电影')

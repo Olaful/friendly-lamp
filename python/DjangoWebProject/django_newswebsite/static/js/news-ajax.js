@@ -43,3 +43,23 @@ $('#suggestion').keyup(
         );
     }
 )
+
+$(".news-page-add").click(
+    function()
+    {
+        var cate_id = $(this).attr('data-catid');
+        var title = $(this).attr('data-title');
+        var url = $(this).attr('data-url');
+        var my = $(this);
+
+        $.get(
+            '/news/add_page/',
+            {"cate_id": cate_id, "title": title, "url": url},
+            function(data)
+            {
+                $("#pages").html(data);
+                my.hide()
+            }
+        );
+    }
+)

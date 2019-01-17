@@ -11,17 +11,21 @@
     {% if category %}
         <h1>{{ category.name }}</h1>
         {% if pages %}
-        <ul>
-            {% for page in pages %}
-                <li><a href="{% url 'news:goto' %}?page_id={{ page.id }}" target="new_tag">{{ page.title }}</a> {{ page.views }}</li>
-            {% endfor %}
-        </ul>
+        <div id="pages">
+            <ul>
+                {% for page in pages %}
+                    <li><a href="{% url 'news:goto' %}?page_id={{ page.id }}" target="new_tag">{{ page.title }}</a> {{ page.views }}</li>
+                {% endfor %}
+            </ul>
+        </div>
         {% else %}
-            <strong>No pages currently in category.</strong>
+            <strong>当前分类没有内容.</strong>
         {% endif %}
         <div >
             <strong id="like_count">{{ category.likes }}</strong>
+            个赞
             {% if user.is_authenticated %}
+                {# data-catid 携带分类id，以便jquery方便获取所需数据 #}
                 <button class="btn btn-primary btn-sm" id="likes" type="button" data-catid="{{ category.id }}">
                     赞
                 </button>
@@ -47,7 +51,11 @@
                         <div class="list-group">
                         {% for result in result_list %}
                             <div class="list-group-item">
-                                <button class="btn btn-primary btn-sm" type="button" name="submit" value="Search">添加</button>
+                                {# 自定义分类news-page-add 以便jquery获取 #}
+                                <button class="news-page-add btn btn-info btn-sm" id="add_page" type="button" name="submit" value="Search" 
+                                data-catid="{{ category.id }}" data-title="{{ result.title }}" data-url="{{ result.link }}">
+                                    添加
+                                </button>
                                 <h4 class="list-group-item-heading"><a href="{{ result.link }}" target="new_tag">{{ result.title }}</a></h4>
                                 <p class="list-group-item-text">{{ result.summary }}</p>
                             </div>

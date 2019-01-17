@@ -27,8 +27,19 @@ check = 'python manage.py check'
 # 填充脚本, 填充数据库数据
 populate = 'python populate.py'
 
+# 测试，使用news下面的tests.py文件中的
+# 测试类来测试
+test = 'python manage.py test news'
+
+# 测试覆盖度
+coverage = 'coverage run --source="." manage.py test news'
+
+# 查看覆盖度数据,视图测试，模型测试覆盖率等
+coverage_report = 'coverage report'
+
 # 清理会话数据库,由于随着连接用户的增加，数据库会越来越大
 clear_session_data = 'python manage.py clearsessions'
+
 
 # shell中的命令
 # 查看所有表
@@ -41,4 +52,4 @@ clear_session_data = 'python manage.py clearsessions'
 
 if __name__ == '__main__':
     os.chdir(r'DjangoWebProject/django_newswebsite')
-    Popen(start_server, stdout = None, stderr = None, shell=True)
+    Popen(create_or_up__appdata, stdout = None, stderr = None, shell=True)

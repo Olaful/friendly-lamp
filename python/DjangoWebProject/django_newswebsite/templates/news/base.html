@@ -142,16 +142,17 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="{% static 'js/jquery-3.1.1.slim.min.js' %}" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+    {# 自定义js #}
+    {# jquery #}
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    {# news-jquery需要引用jquery库，所以得保证上面已经引入了jquery #}
+    <script src="{% static 'js/news-jquery.js' %}"></script>
+    <script src="{% static 'js/news-ajax.js' %}"></script>
+    {% comment %} <script src="{% static 'js/jquery-3.1.1.slim.min.js' %}" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script> {% endcomment %}
     <script>window.jQuery</script>
     <script src="{% static 'js/tether.min.js' %}" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="http://v4-alpha.getbootstrap.com/assets/js/ie10-viewport-bug-workaround.js"></script>
-    {# jquery #}
-    <script src="{% static 'js/jquery.min.js' %}"></script>
-    {# 自定义js #}
-    <script src="{% static 'js/news-jquery.js' %}"></script>
-    <script src="{% static 'js/news-ajax.js' %}"></script>
   </body>
 </html>
