@@ -1,6 +1,7 @@
 from django.test import TestCase
 from news.models import Category, Page
 from django.urls import reverse
+import datetime
 
 # Create your tests here.
 
@@ -54,5 +55,11 @@ class IndexViewTests(TestCase):
                 self.assertEqual(cnt_cate, 4)
 
 class PagesMethodTests(TestCase):
+        # 第一次访问时间不等于将来时间
         def test_ensure_vistdate_no_future(self):
-                page = Page()
+                cate = Category(name='Other')
+                cate.save()
+                page = Page(category=cate, title='github', url="http://123.com")
+                page.save()
+                self.assertEqual((page.first_visit <= datetime.datetime.now()), True)
+                self.assertEqual((page.first_visit <= page.first_visit), True)
