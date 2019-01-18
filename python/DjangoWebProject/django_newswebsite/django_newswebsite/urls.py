@@ -21,11 +21,12 @@ from django.conf import settings
 from django.conf.urls.static import static
 from news import views
 from registration.backends.simple.views import RegistrationView
+from django.urls import reverse
 
 class NewsRegistrationView(RegistrationView):
-    # 注册成功后定位到首页
+    # 注册成功后定位到添加额外属性界面
     def get_success_url(self, user):
-        return '/news/'
+        return reverse('register_profile')
 
 urlpatterns = [
     # path('index/', views.index),

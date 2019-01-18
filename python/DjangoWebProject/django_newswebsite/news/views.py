@@ -302,21 +302,26 @@ def track_url(request):
     # 重定向到page真正的url
     return redirect(page.url)
     #return redirect('/index/')
-    
+
+# 用户注册后添加额外的设置
+# 额外的设置基于另一个用户扩展模型
+@login_required
 def register_profile(request):
+    form = UserProfileForm()
+
     if request.method == "POST":
-        own_form = UserProfileForm(request.POST)
+        form = UserProfileForm(request.POST, request.FILES)
 
-        if own_form.is_valid:
-            own_info = own_form.save(commit=False)
-
-            if 'picture' in request.FILES:
-                own_info.picture = request.FILES['picture']
+        if form.is_valid:
+            own_info = form.save(commit=False)
+            own_info.user = request.user
             own_info.save()
-        
 
-    own_form = UserProfileForm(request.GET())
-    content_dict = {'own_form': own_form}
+            return reverse('index')
+        else:
+            print(form.errors)
+
+    content_dict = {'form': form}
 
     render(request, 'news/profile_registration.html', content_dict)
 

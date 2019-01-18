@@ -1,17 +1,22 @@
 {% extends 'news/base.html' %}
 {% load staticfiles %}
 
+{% block title_block %}
+  注册-步骤2
+{% endblock title_block %}
+
 {% block body_head %}
     <link href="{% static 'css/signin.css' %}" rel="stylesheet">
     <div class="jumbotron">
-        <h1 class="display-3">个人信息</h1>
+        <h1 class="display-3">注册-步骤2</h1>
     </div>
 {% endblock body_head %}
 
 {% block body_block %}
-    <form id="own_info" method="post" action="{% url 'news:login' %}">
+    {# 分段上传，不编码 #}
+    <form method="post" action="." enctype="multipart/form-data">
         {% csrf_token %}
-        {{ own_form.as_p }}
+        {{ form.as_p }}
         <input type="submit" value="提交" />
     </form>
 {% endblock body_block %}
