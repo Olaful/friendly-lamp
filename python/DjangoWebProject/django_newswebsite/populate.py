@@ -96,4 +96,4 @@ if __name__ == '__main__':
     print('Start News population script...')
     test_data = TestData()
     # test_data.populate()
-    test_data.quey_cate('电影')
+    test_data.populate()
