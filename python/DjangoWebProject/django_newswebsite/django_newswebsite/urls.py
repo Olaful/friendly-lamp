@@ -42,5 +42,5 @@ urlpatterns = [
     # simple使用一步认证，此外还有其他如发送电子邮件验证等
     # registration与django目录同级
     url(r'^accounts/', include('registration.backends.simple.urls')),
-    url(r'^accounts/register/$', RegistrationView.as_view(), name='registration_register'),
+    url(r'^accounts/register/$', NewsRegistrationView.as_view(), name='registration_register'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
