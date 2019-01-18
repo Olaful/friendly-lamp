@@ -9,7 +9,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 import datetime
 from news.webhose_search import run_query
-from news.webdriver_search import WebDriver, BrowserRender
+from news.webdriver_search import WebDriver
 from django.contrib.auth.models import User
 import json
 
