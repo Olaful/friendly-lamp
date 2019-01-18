@@ -101,11 +101,11 @@ TEMPLATES = [
             ],
         },
     },
-    {
-        'BACKEND': 'django.template.backends.jinja2.Jinja2',
-        # 其他由Jinja2渲染系统渲染的模板路径
-        'DIRS': [],
-    }
+    # {
+    #     'BACKEND': 'django.template.backends.jinja2.Jinja2',
+    #     # 其他由Jinja2渲染系统渲染的模板路径
+    #     'DIRS': [],
+    # }
 ]
 
 WSGI_APPLICATION = 'django_newswebsite.wsgi.application'
