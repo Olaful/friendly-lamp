@@ -29,7 +29,7 @@ SECRET_KEY = 'kjr#jbw&+d^s!0n@_f3pz!)p29xl$d$6iy7v8%h*k3ksy-=zw6'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.123.175', '127.0.0.1', 'localhost', 'http://senkie.pythonanywhere.com']
+ALLOWED_HOSTS = ['192.168.123.175', '127.0.0.1', 'localhost', 'senkie.pythonanywhere.com']
 
 
 # Application definition
