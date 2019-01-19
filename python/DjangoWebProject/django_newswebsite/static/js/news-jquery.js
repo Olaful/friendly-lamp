@@ -57,6 +57,20 @@ $(document).ready(
     ),
 
     // 弹出大图
+    $("#index_picture").click(
+        function()
+        {
+            //$(this).imgbox();
+            $(this).imgbox(
+                {
+                    'zoomOpacity'        : True,
+                    'alignment'        : 'center',
+                }
+            );
+        }
+    ),
+
+    // 弹出大图
     $('#thumb').click(
         function(e)
         {
