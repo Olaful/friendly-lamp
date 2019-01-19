@@ -62,7 +62,7 @@ def about(request):
     #print(request.method, request.user)
     return render(request, 'news/about.html', context=context_dict)
 
-def show_category(request, category_name_slug):
+def show_category(request, category_name_slug, is_get=False):
     context_dict = {}
     
     # 根据传入的分类名称查找数据库
@@ -77,7 +77,7 @@ def show_category(request, category_name_slug):
         # 根据关键字搜索并返回结果
         rls_list = []
         query = ""
-        if request.method == "POST":
+        if request.method == "POST" and not is_get:
             br = WebDriver()
             query = request.POST['query'].strip()
             if query:
@@ -136,7 +136,7 @@ def add_page(request, category_name_slug):
                 page.category = category
                 page.views = 0
                 page.save()
-                return show_category(request, category_name_slug)
+                return show_category(request, category_name_slug, True)
         else:
             print(form.errors)
 

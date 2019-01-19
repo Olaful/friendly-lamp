@@ -28,7 +28,7 @@ class PageForm(forms.ModelForm):
     class Meta:
         model = Page
         # 表单中不包含的字段
-        exclude = ('category',)
+        exclude = ('category', 'first_visit', 'last_visit')
 
     # 在save之前调用
     # 表单填写的数据是传递给cleaned_data的

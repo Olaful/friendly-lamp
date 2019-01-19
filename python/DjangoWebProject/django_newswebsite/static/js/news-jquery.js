@@ -71,12 +71,13 @@ $(document).ready(
     ),
 
     // 弹出大图
-    $('#thumb').click(
+    $('.innerimg').click(
         function(e)
         {
-            alert('hello')
-            var img = '<img src="' + $(this).attr("src") + '" />'
-            $('bigerimg').html($(img).animate({height: '30%', width: '30%'}, 500));
+            alert('hellp')
+            var img = '<img src="' + $('.thumb').attr("src") + '" />';
+            alert(img);
+            $('.bigerimg').html($(img).animate({height: '30%', width: '30%'}, 500));
         }
     ),
 );

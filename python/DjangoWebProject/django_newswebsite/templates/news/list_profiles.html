@@ -25,10 +25,11 @@
                                         {{ listuser.user.username }}
                                     </a>
                                     {% if listuser.picture %}
-                                        <a id="user_pic" href="{{ MEDIA_URL }}{{ listuser.picture }}"><img class="thumb rounded-circle" src="{{ MEDIA_URL }}{{ listuser.picture }}" width="64" height="64" /></a>
-                                        <span id="bigerimg"></span>
+                                        <a id="user_pic" href="{{ MEDIA_URL }}{{ listuser.picture }}">
+                                            <img class="thumb rounded-circle" src="{{ MEDIA_URL }}{{ listuser.picture }}" width="64" height="64" />
+                                        </a>
                                     {% else %}
-                                        <img src="http://lorempixel.com/64/64/people/" width="64" height="64" />
+                                        <img class="rounded-circle" src="http://lorempixel.com/64/64/people/" width="64" height="64" />
                                     {% endif %}
                                 </h4>
                             </div>
