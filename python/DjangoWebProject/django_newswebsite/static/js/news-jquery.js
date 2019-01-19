@@ -41,4 +41,28 @@ $(document).ready(
             $('#msg').html(msgstr);
         }
     ),
+
+    // 弹出大图
+    $("#user_pic").click(
+        function()
+        {
+            //$(this).imgbox();
+            $(this).imgbox(
+                {
+                    'zoomOpacity'        : True,
+                    'alignment'        : 'center',
+                }
+            );
+        }
+    ),
+
+    // 弹出大图
+    $('#thumb').click(
+        function(e)
+        {
+            alert('hello')
+            var img = '<img src="' + $(this).attr("src") + '" />'
+            $('bigerimg').html($(img).animate({height: '30%', width: '30%'}, 500));
+        }
+    ),
 );
