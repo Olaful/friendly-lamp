@@ -27,7 +27,7 @@ def get_user_picture(username):
         user = User.objects.get(username=username)
         userprofile = UserProfile.objects.get(user=user)
         return userprofile.picture
-    except User.DoesNotExist:
+    except:
         return None
 
 # 热点图片
