@@ -24,9 +24,14 @@ from registration.backends.simple.views import RegistrationView
 from django.urls import reverse
 
 class NewsRegistrationView(RegistrationView):
-    # 注册成功后定位到添加额外属性界面
-    def get_success_url(self, user):
-        return reverse('register_profile')
+    # 注册成功后定位到添加额外属性界面,以下不知原因无法覆盖
+    # 父类方法，只好修改父类中的方法
+    def get_success_url(self, user=None):
+        """
+        Use the new user when constructing success_url.
+
+        """
+        return '/news/register_profile/'
 
 urlpatterns = [
     # path('index/', views.index),

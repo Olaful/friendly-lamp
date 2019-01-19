@@ -10,7 +10,7 @@ class PagesInline(admin.StackedInline):
 class PagesSingleInline(admin.TabularInline):
     model = Page
     # 默认显示的待添加page数量
-    extra = 3
+    extra = 0
 
 # 继承ModelAdmin自定义管理界面
 class CategoryAdmin(admin.ModelAdmin):

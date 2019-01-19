@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect
-from news.models import Category, Page
+from news.models import Category, Page, UserProfile
 from django.template import loader
 from news.forms import CategoryForm, PageForm, UserForm, UserProfileForm
 from django.template.defaultfilters import slugify
@@ -104,7 +104,7 @@ def add_category(request):
     if request.method == 'POST':
         # POST存放提交表单的数据，POST['name']返回的数据格式是字符串
         form = CategoryForm(request.POST)
-        if form.is_valid:
+        if form.is_valid():
             try:
                 # commit提交事务
                 cate = form.save(commit=True)
@@ -130,7 +130,7 @@ def add_page(request, category_name_slug):
     form = PageForm()
     if request.method == 'POST':
         form = PageForm(request.POST)
-        if form.is_valid:
+        if form.is_valid():
             if category:
                 page = form.save(commit=False)
                 page.category = category
@@ -299,7 +299,7 @@ def track_url(request):
     page.views += 1
     page.save()
 
-    # 重定向到page真正的url
+    # 重定向到page真正的url,参数可以是真实的url，也可以是url映射
     return redirect(page.url)
     #return redirect('/index/')
 
@@ -312,18 +312,18 @@ def register_profile(request):
     if request.method == "POST":
         form = UserProfileForm(request.POST, request.FILES)
 
-        if form.is_valid:
+        if form.is_valid():
             own_info = form.save(commit=False)
             own_info.user = request.user
             own_info.save()
 
-            return reverse('index')
+            return redirect('index')
         else:
             print(form.errors)
 
     content_dict = {'form': form}
 
-    render(request, 'news/profile_registration.html', content_dict)
+    return render(request, 'news/profile_registration.html', content_dict)
 
 # 返回分类点赞次数
 @login_required
@@ -359,7 +359,8 @@ def like_category(request):
 def get_cate_list(max_results=0, start_with=''):
     cate_list = []
     if start_with:
-        cate_list = Category.objects.filter(name__istartswith=start_with)
+        # cate_list = Category.objects.filter(name__istartswith=start_with)
+        cate_list = Category.objects.filter(name__icontains=start_with)
     if max_results > 0:
         if len(cate_list) > max_results:
             cate_list = cate_list[:max_results]
@@ -395,3 +396,39 @@ def auto_add_page(request):
 
             content_dict['pages'] = pages
     return render(request, 'news/page_list.html', content_dict)
+
+# 个人信息页面
+@login_required
+def profile(request, username):
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        return redirect('index')
+
+    userprofile = UserProfile.objects.get_or_create(user=user)[0]
+    # 获取原信息
+    form = UserProfileForm({'website': userprofile.website, 'picture': userprofile.picture})
+
+    if request.method == "POST":
+        # instance 指定模型实例，达到更新的目的，如果不指定，则变成新建
+        form = UserProfileForm(request.POST, request.FILES, instance=userprofile)
+        if form.is_valid():
+            form.save(commit=True)
+            return redirect('news:profile', user.username)
+        else:
+            print(form.errors)
+
+    context_dict = {}
+    context_dict['userprofile'] = userprofile
+    context_dict['selecteduser'] = user
+    context_dict['form'] = form
+    
+    return render(request, 'news/profile.html', context_dict)
+
+# 用户列表
+@login_required
+def list_profiles(request):
+    userprofile_list = UserProfile.objects.all()
+
+    context_dict = {'userprofile_list': userprofile_list}
+    return render(request, 'news/list_profiles.html', context_dict)

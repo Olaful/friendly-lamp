@@ -1,5 +1,6 @@
 from django import template
-from news.models import Category
+from news.models import Category, UserProfile
+from django.contrib.auth.models import User
 
 register = template.Library()
 
@@ -18,4 +19,19 @@ def catstr(str1, str2, str3):
 def get_category_list(cate=None):
     return {'cates': Category.objects.all(),
             'act_cate':cate}
+
+# 获取用户头像信息
+@register.filter
+def get_user_picture(username):
+    try:
+        user = User.objects.get(username=username)
+        userprofile = UserProfile.objects.get(user=user)
+        return userprofile.picture
+    except User.DoesNotExist:
+        return None
+
+# 热点图片
+@register.filter
+def get_hot_picture(tmp):
+    return 'hot.png'
 

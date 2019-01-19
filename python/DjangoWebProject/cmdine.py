@@ -52,4 +52,4 @@ clear_session_data = 'python manage.py clearsessions'
 
 if __name__ == '__main__':
     os.chdir(r'DjangoWebProject/django_newswebsite')
-    Popen(create_or_up__appdata, stdout = None, stderr = None, shell=True)
+    Popen(start_server, stdout = None, stderr = None, shell=True)

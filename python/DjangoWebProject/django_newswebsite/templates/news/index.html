@@ -25,7 +25,7 @@
 {% block body_head %}
     <div class="jumbotron">
         <h1 class="display-3">Hello, News</h1>
-        <p class="lead">The most populate categories below</p>
+        <p class="lead">可以添加你喜欢的分类，让其他用户也能看到</p>
     </div>
 {% endblock body_head %}
 
@@ -33,7 +33,7 @@
 
     <div class="row marketing">
         <div class="col-lg-6">
-            <h4>Top 5 Liked categories</h4>
+            <h4>点赞数排行</h4>
             <p>
             {# 模板部分 #}
             {% if categories_top_like %}
@@ -41,7 +41,10 @@
                 {% for cate in categories_top_like %}
                     <li class="list-group-item">
                         {# 使用自定义过滤器 #}
-                        <a href="{% url 'news:show_category' cate.slug %}">{{ cate.name|add_prefix:'hot-' }}</a>
+                        <a href="{% url 'news:show_category' cate.slug %}">
+                            <img class="rounded-circle" src="{{ MEDIA_URL }}{{ ''|get_hot_picture }}" width="25" height="25" />
+                            {{ cate.name }}
+                        </a>
                         {# <a href="/news/category/{{ cate.slug }}">{{ cate.name }}</a> #}
                     </li>
                 {% endfor %}
@@ -51,7 +54,7 @@
             {% endif %}
         </div>
         <div class="col-lg-6">
-            <h4>Top 5 Viewed categories</h4>
+            <h4>浏览数排行</h4>
             <p>
             {% if categories_top_view %}
             <ul class="list-group">
@@ -73,9 +76,9 @@
 <br />
 
 {% block body_tail %}
-    <img src="{% static 'images/plantVSzoom.jpg' %}" alt="plantVSzoom picture" height="200" width="200" />
+    <img class="rounded-circle" src="{% static 'images/plantVSzoom.jpg' %}" alt="plantVSzoom picture" height="200" width="200" />
     {# 会使用媒体模板上下文填充 #}
-    <img src="{{ MEDIA_URL }}16t.png" alt="16t" />
+    <img class="rounded-circle" src="{{ MEDIA_URL }}16t.png" alt="16t" />
 {% endblock body_tail %}
 
 {# 由于继承了模板，如果内容不再block中将不会显示 #}

@@ -2,6 +2,7 @@ from django import forms
 from news.models import Category, Page, UserProfile
 from django.contrib.auth.models import User
 
+# 表单用于处理界面输入，与模型关联
 class CategoryForm(forms.ModelForm):
     # 字段名称要与model定义的字段名称一样
     name = forms.CharField(max_length=Category.MAX_NAME_LEN,
