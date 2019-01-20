@@ -5221,8 +5221,8 @@ class BiliBiliest():
         self.url = 'https://passport.bilibili.com/login'
         self.br = webdriver.Chrome()
         self.wait = WebDriverWait(self.br, 10)
-        self.phone = '13537554024'
-        self.pwd = 'bimimoli'
+        self.phone = ''
+        self.pwd = ''
     
     # 对象被销毁时触发
     def __del__(self):

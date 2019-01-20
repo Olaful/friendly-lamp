@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 class CategoryForm(forms.ModelForm):
     # 字段名称要与model定义的字段名称一样
     name = forms.CharField(max_length=Category.MAX_NAME_LEN,
-                            help_text='Please input the category name.')
+                            help_text='请输入分类名称.', label="名称")
     views = forms.IntegerField(widget=forms.HiddenInput(), initial=0)
     likes = forms.IntegerField(widget=forms.HiddenInput(), initial=0)
     slug = forms.CharField(widget=forms.HiddenInput(), required=False)
@@ -51,8 +51,8 @@ class UserForm(forms.ModelForm):
         fields = ('username', 'email', 'password')
 
 class UserProfileForm(forms.ModelForm):
-    website = forms.URLField(required=False)
-    picture = forms.ImageField(required=False)
+    website = forms.URLField(required=False, label="个人网址")
+    picture = forms.ImageField(required=False, label="头像")
 
     class Meta:
         model = UserProfile
