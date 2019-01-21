@@ -40,6 +40,10 @@ def myFunc():
 # 函数也可以添加属性
 myFunc.name = 'myFunc'
 
+# 函数参数类型注释，返回值类型注释
+def hello(sno:int, name:str)->list:
+    return [1,2,3]
+
 # 获取数字对应的ascii码
 chr(98)
 
@@ -356,6 +360,8 @@ print(x[2])
 
 class myClass4:
     # 指定该方法为静态方法，可以直接使用类调用
+    # @staticmethod装饰器返回staticmethod对象，不是
+    # callable对象，所以只能在它下面使用别的装饰器
     # 不需要传入cls参数，对外部可以像普通方法一样调用
     @staticmethod
     def staticFunc(): print("this is a static func")
@@ -642,6 +648,76 @@ f = outer(1)
 # 两者使用outer函数中同一个变量y
 f(1)
 f(2)
+
+from functools import wraps
+
+# 装饰器
+# 装饰器要求接收一个callable对象作为入参
+def mydecorate(func):
+    # 经过wraps装饰后func能保留函数原始的信息如__name__,不然属性
+    # 就全部变成innerFunc的属性了
+    @wraps(func)
+    def innerFunc(*args, **kwargs):
+        print('enter {}'.format(func.__name__))
+        return func(*args, **kwargs)
+    return innerFunc
+
+def mydecorate2(level):
+    # 参数会延级接受，第一装饰器参数，第二函数对象参数
+    # 第三函数对象自己的参数
+    def wrapper(func):
+        def inner_wrapper(*args, **kwargs)
+            return func(*args, **kwargs)
+        return wrapper
+    return wrapper
+
+@mydecorate
+def testFunc(arg)
+    return arg + 1
+
+import inspect
+print(inspect.getargspec(func))
+print(inspect.getsource(func))
+
+@mydecorate2(level="LOG")
+def testFunc(arg)
+    return arg + 1
+
+from decorator import decorate
+
+def wrapper(fun, *args, **kwargs):
+    return func(*args, **kwargs)
+
+def logging(func):
+    # decorate使用wrapper装饰func
+    return decorate(func, wrapper)
+
+@logging
+def testFunc(arg)
+    return arg + 1
+
+import wrapt
+
+# 使用wrapt实现的装饰器
+@wrapt.decorator
+# instance在装饰器装饰类的实例方法时可以得到类实例
+def logging(wrapped, instance, args, kwargs):
+    return wrapped(*args, **kwargs)
+
+def logging2(level):
+    @wrapt.decorator
+    def wrapper(wrapped, instance, args, kwargs):
+        return wrapped(*args, **kwargs)
+    return wrapper
+
+@logging
+def testFunc(arg)
+    return arg + 1
+
+@logging2(level="INFO")
+def testFunc(arg)
+    return arg + 1
+
 
 import sys
 

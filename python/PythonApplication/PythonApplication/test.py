@@ -56,5 +56,6 @@ def func7(nNum):
     test = mydll.vistData(nNum)
 
 if __name__ == '__main__':
-    import doctest, test
-    doctest.testmod(test)
+    # import doctest, test
+    # doctest.testmod(test)
+    ''

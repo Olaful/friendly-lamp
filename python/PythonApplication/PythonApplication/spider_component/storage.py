@@ -9,14 +9,14 @@ except ImportError:
 
 import redis
 from redis.exceptions import DataError
-from .settings import (MAX_SCORE,
-MIN_SCORE,
-INITIAL_SCORE,
-REDIS_HOST,
-REDIS_PORT,
-REDIS_PWD,
-REDIS_ZSET_KEY,
-MONGO_URI)
+from .settings import MAX_SCORE,\
+MIN_SCORE,\
+INITIAL_SCORE,\
+REDIS_HOST,\
+REDIS_PORT,\
+REDIS_PWD,\
+REDIS_ZSET_KEY,\
+MONGO_URI\
 
 import random
 import redis

@@ -14,23 +14,29 @@ from io import BytesIO
 import base64
 import time
 from PIL import Image
-from .storage import RedisProxy
-from .settings import (POOL_UPPER__THRESHOLD, VALID_STATUS_CODE, TEST_URL, BATCH_TEST_SIZE,
-TEST_CYCLE,
-GET_CYCLE,
-TEST_ENABLED,
-GET_ENABLED,
-API_ENABLED,
-API_IP,
-API_PORT)
-
+from .storage import RedisProxy, RedisCookie
+import json
 from pyquery import PyQuery as pq
 import aiohttp
 import asyncio
 from aiohttp.client_exceptions import ClientError, ClientConnectionError
 from flask import Flask, g
 from multiprocessing import Process
+from selenium import webdriver
+import random
 
+from .settings import POOL_UPPER__THRESHOLD, VALID_STATUS_CODE, TEST_URL, BATCH_TEST_SIZE, \
+TEST_CYCLE,\
+GET_CYCLE,\
+TEST_ENABLED,\
+GET_ENABLED,\
+API_ENABLED,\
+API_IP,\
+API_PORT,\
+GENERATOR_MAP,\
+TESTER_MAP,\
+COOKIEGENERATOR_ENABLED,\
+COOKIETESTER_ENABLED
 
 class Throttle:
     """
@@ -207,6 +213,24 @@ class CaptChaAPI:
         # apikey错误
         if re.match(r'00\d\d \w+', result):
             raise CaptchaError('API error:', result)
+
+def getAgent():
+    """
+    获取随机user-agent
+    """
+    return random.choice([
+        'Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1062.0 Safari/536.3',
+        'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.6; rv:2.0.1) Gecko/20100101 Firefox/4.0.1',
+        'Mozilla/5.0 (Windows NT 6.1; rv:2.0.1) Gecko/20100101 Firefox/4.0.1',
+        'Opera/9.80 (Macintosh; Intel Mac OS X 10.6.8; U; en) Presto/2.8.131 Version/11.11',
+        'Opera/9.80 (Windows NT 6.1; U; en) Presto/2.8.131 Version/11.11',
+        'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)',
+        'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)',
+        'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-us) AppleWebKit/534.50 (KHTML, like Gecko) Version/5.1 Safari/534.50',
+        'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0; Trident/4.0)',
+        'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_8; en-us) AppleWebKit/534.50 (KHTML, like Gecko) Version/5.1 Safari/534.50'
+        ])
 
 # 代理元类
 class ProxyMetaclass(type):
@@ -406,3 +430,149 @@ def get_proxy(API_IP, API_PORT):
         return requests.get(proxy_url).text
     except ConnectionError:
         return None
+
+
+class CookieGenerator(object):
+    """
+    cookie生成模块父类, 在数据库先存储站点用户名与密码,之后根据
+    用户名与密码登录站点，之后通过webdriver获取到cookie,账户信息
+    存储在名为account:website(自定站点名)的hash表中, 根据账户登录浏览器获取
+    的cookie存储在名为cookies:website的hash表中
+    """
+    def __init__(self, website='default'):
+        self.website = website
+        self.cookies_db = RedisCookie('cookies', self.website)
+        self.accounts_db = RedisCookie('accounts', self, website)
+        self.init_br()
+
+    def __del__(self):
+        self.close()
+
+    def init_br(self):
+        self.br = webdriver.Chrome()
+
+    def new_cookies(self, username, pwd):
+        raise NotImplementedError
+
+    def process_cookies(self, cookies):
+        dicts = {}
+        for cookie in cookies:
+            dicts[cookie['name']] = cookie['value']
+        return dicts
+
+    def run(self):
+        accounts_usernames = self.accounts_db.username()
+        cookies_usernames = self.cookies_db.username()
+
+        for username in accounts_usernames:
+            if not username in cookies_usernames:
+                pwd = self.accounts_db.get(username)
+                print('正在生成cookie:账户 {}, 密码 {}'.format(username, pwd))
+                rls = self.new_cookies(username, pwd)
+                if rls.get('status') == 1:
+                    cookies = self.process_cookies(rls.get('content'))
+                    print('成功获取cookie:{}'.format(cookies))
+                    if self.cookies_db.set(username, json.dumps(cookies)):
+                        print('成功保存cookie')
+                elif rls.get('status') == 2:
+                    print('cookie获取失败:{}'.format(rls.get('content')))
+                    if self.accounts_db.delete(username):
+                        print('删除账户成功')
+                else:
+                    print('cookie获取失败:{}'.format(rls.get('content')))
+
+    def close(self):
+        try:
+            print('Closing Browser')
+            self.br.close()
+            del self.br
+        except TypeError:
+            print('Browser not opened')
+
+class TestCookie(object):
+    """
+    cookie检测模块
+    """
+    def __init__(self, website='default'):
+        self.website = website
+        self.accounts_db = RedisProxy('accounts', self.website)
+        self.cookies_db = RedisProxy('cookies', self.website)
+
+    def test(self, username, cookies):
+        raise NotImplementedError
+
+    def run(self):
+        cookie_groups = self.cookies_db.all()
+        for username, cookie in cookie_groups.items():
+            self.test(username, cookie)
+
+def FlaskWebApiCookie(host, port):
+    """
+    # cookie池访问API
+    """            
+    app = Flask(__name__)
+    @app.route('/')
+    def index():
+        return '<h2>Welcome To Visit The Cookie Pool</h2>'
+
+    def get_conn():
+        for website in GENERATOR_MAP:
+            if not hasattr(g, website):
+                setattr(g, website + '_cookies', eval('RedisCookieCli' + '("cookies", "' + website + '")'))
+            return g
+    
+    @app.route('/<website>/random')
+    def random(website):
+        g = get_conn()
+        cookies = getattr(g, website + '_cookies').random()
+        return cookies
+
+    app.run(host, port)
+
+# 调度cookie池模块
+class SchedulerCookie(object):
+    @staticmethod
+    def test_cookie(cycle=5):
+        while True:
+            print('cookie测试器开始运行')
+            try:
+                for website, cls in TESTER_MAP.items():
+                    tester = eval(cls + '(website="' + website + '")')
+                    tester.run()
+                    print('cookie测试完成')
+                    del tester
+                    sleep(cycle)
+            except Exception as e:
+                print('发生异常:{}'.format(e.args))
+
+    @staticmethod
+    def generator_cookie(cycle=1):
+        while cycle:
+            print('cookie生成器开始运行')
+            try:
+                for website, cls in GENERATOR_MAP.items():
+                    generator = eval(cls + '(website="' + website + '")')
+                    generator.run()
+                    print('cookie生成完成')
+                    generator.close()
+                    sleep(cycle)
+            except Exception as e:
+                print('发生异常:{}'.format(e.args))
+
+            cycle -= 1
+
+    @staticmethod
+    def api():
+        print('cookie池API接口开始运行')
+        FlaskWebApiCookie(API_IP, API_PORT)
+    
+    def run(self):
+        if API_ENABLED:
+            api_process = Process(target=SchedulerCookie.api)
+            api_process.start()
+        if COOKIEGENERATOR_ENABLED:
+            generator_process = Process(target=SchedulerCookie.generator_cookie)
+            generator_process.start()
+        if COOKIETESTER_ENABLED:
+            tester_process = Process(target=SchedulerCookie.test_cookie)
+            tester_process.start()

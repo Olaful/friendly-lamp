@@ -20,6 +20,8 @@ from scrapy.exceptions import CloseSpider
 
 from scrapy_redis.spiders import RedisSpider 
 
+from scrapy_splash import SplashRequest
+
 # 1.获取spider的url列表
 # 2.由url初始化的request经过middleware的处理,产生reponse,则到步骤4
 # 3.request经过下载器返回reponse
@@ -208,7 +210,18 @@ class TaobaoSpider(scrapy.spiders.Spider):
     start_urls = ['https://www.taobao.com/']
 
     def start_requests(self):
-        yield Request(url=self.start_urls[0], callback=self.parse, dont_filter=True)
+        #yield Request(url=self.start_urls[0], callback=self.parse, dont_filter=True)
+        # splashrequest会传给splash中间件来处理，返回的结果就是渲染后的,
+        # 支持异步
+        yield SplashRequest(self.start_urls, self.parse, args=
+        {
+            'wait':5,
+        },
+        # 指定返回html文件
+        endpoint='render.html',
+        # splash 服务地址,由配置SPLASH_URL指定
+        splash_url='<url>')
+
 
     def parse(self, reponse):
         pass

@@ -63,9 +63,10 @@ TELNETCONSOLE_HOST = '127.0.0.1'
 
 # Enable or disable spider middlewares
 # See https://doc.scrapy.org/en/latest/topics/spider-middleware.html
-#SPIDER_MIDDLEWARES = {
-#    'srppro.middlewares.SrpproSpiderMiddleware': 543,
-#}
+SPIDER_MIDDLEWARES = {
+   #'srppro.middlewares.SrpproSpiderMiddleware': 543,
+   'scrapy_splash.SplashDeduplicateArgsMiddleware':544,
+}
 
 # Enable or disable downloader middlewares
 # See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
@@ -79,6 +80,9 @@ DOWNLOADER_MIDDLEWARES = {
     #'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': 127,
     'srppro.middlewares.UAPOOLS': 128,
     #'srppro.middlewares.ProxyMiddleware': 129,
+    # splash
+    'scrapy_splash.SplashCookiesMiddleware':130,
+    'scrapy_splash.SplashMiddleware':131,
 }
 
 # Enable or disable extensions
@@ -215,6 +219,11 @@ DOWNLOAD_TIMEOUT = 20
 # # SCHEDULER = "scrapy_redis.scheduler.Scheduler"
 # # 去重
 # DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
+
+# splash
+DUPEFILTER_CLASS = "scrapy_splash.SplashAwareDupeFilter"
+HTTPCACHE_STORAGE = 'scrapy_splash.SplashAwareFSCacheStorage'
+SPLASH_URL = 'http://127.0.0.1:1050'
 
 # # 配置服务器地址及密码
 # REDIS_HOST = '127.0.0.1'
