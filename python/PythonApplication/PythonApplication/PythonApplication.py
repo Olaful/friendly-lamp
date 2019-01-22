@@ -6272,7 +6272,8 @@ if __name__ == '__main__':
     print()
     starttime = time.time()
 
-    main()
+    #main()
+    print('hello')
 
     #---------------------------------------------------end
     endtime = time.time()
