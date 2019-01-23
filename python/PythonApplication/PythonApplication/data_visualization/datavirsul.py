@@ -378,7 +378,9 @@ def openBigdata():
     with open('bigdata.data', 'r') as f:
         chunksize = 1000
         readable = ''
-        while f:
+        done = 0
+        # f不会是空
+        while not done:
             # 当前读取位置
             start = f.tell()
             print("开始位置:{}".format(start))
@@ -387,6 +389,9 @@ def openBigdata():
                 # next不能与tell同时用
                 #line = next(f)
                 line = f.readline()
+                if not line:
+                    done = 1
+                    break
                 file_block = file_block + line
                 print('逐行读取:{}-{}'.format(type(file_block), file_block))
             readable = readable + file_block
