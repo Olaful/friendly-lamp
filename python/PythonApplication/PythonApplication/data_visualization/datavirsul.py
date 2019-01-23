@@ -20,6 +20,10 @@ try:
 except:
     from io import StringIO
 
+import sqlite3
+import aide
+from pylab import *
+
 os.chdir(r'E:\hexo\source.Olaful.github.io\Olaful.github.io\python\PythonApplication\PythonApplication\myfile')
 
 def setParam():
@@ -32,6 +36,9 @@ def setParam():
     mp.rc('lines', linewidth=2, color='r')
 
 def sincosLine():
+    """
+    正弦余弦
+    """
     t = np.arange(0.0, 1.0, 0.01)
 
     s = np.sin(2 * np.pi * t)
@@ -48,6 +55,9 @@ def sincosLine():
     plt.show()
 
 def readCsv():
+    """
+    读取csv文件
+    """
     data = []
     try:
         with open('mycsv.csv') as f:
@@ -91,6 +101,9 @@ def readXlsx():
         print(datetime(*date_value))
 
 def makeBigData():
+    """
+    制造大数据
+    """
     def get_rand_len_data(len):
         data = []
         for _ in range(len):
@@ -104,6 +117,9 @@ def makeBigData():
             file.write('{} {} {}\n'.format(f, s, t))
 
 def readJsonData():
+    """
+    读取json文件
+    """
     url = 'https://github.com/timeline.json'
 
     resp = requests.get(url)
@@ -117,8 +133,9 @@ def readJsonData():
             print('没有数据:{}'.format(e))
 
 def readBigData(file):
-    # 先读取9个宽度的字符,s表示c语言中的char[]，接着读取14个，以此类推，根据文件而定
-    # 600833296 4937438977840 7014
+    """先读取9个宽度的字符,s表示c语言中的char[]，接着读取14个，以此类推，根据文件而定
+    600833296 4937438977840 7014
+    """
     mask = '9s14s5s'
     data = []
     with open(file, 'r') as f:
@@ -130,6 +147,9 @@ def readBigData(file):
         return data
 
 def import_data(data, export_format):
+    """
+    按格式导出数据
+    """
     if export_format == 'csv':
         return write_csv(data)
     elif export_format == 'json':
@@ -140,6 +160,9 @@ def import_data(data, export_format):
         print('不支持的格式:{}'.format(export_format))
 
 def write_csv(data):
+    """
+    导成csv数据
+    """
     f = StringIO()
     writer = csv.writer(f)
     for row in data:
@@ -147,10 +170,16 @@ def write_csv(data):
     return f.getvalue()
 
 def write_json(data):
+    """
+    导成json数据
+    """
     j = json.dumps(data)
     return j
 
 def write_xlsx(data):
+    """
+    导成xlsx数据
+    """
     from xlwt import Workbook
 
     book = Workbook()
@@ -173,9 +202,8 @@ def write_xlsx(data):
 
 def args():
     ''
-        
 
-if __name__ == "__main__":
+def importData():
     # parser = argparse.ArgumentParser()
     # parser.add_argument("import_file", help="定宽文件的路径")
     # parser.add_argument("export_format", help="支持的导出格式:json, csv, xlsx")
@@ -196,3 +224,190 @@ if __name__ == "__main__":
     data = readBigData(args.import_file)
     rls = import_data(data, args.export_format)
     print(rls)
+
+def makeSqliteData():
+    """
+    大批量插入sqlite
+    """
+    conn = sqlite3.connect('mysqlitedb.db')
+    cursor = conn.cursor()
+    createSql = """
+        create table population
+        (
+            id INTEGER primary key,
+            name TEXT,
+            population TEXT
+        )    
+    """
+    insertSql = 'insert into population values(?,?,?)'
+    #cursor.execute(createSql)
+    
+    id = 1
+    population = 10000
+
+    for _ in range(5000):
+        name = 'country_' + str(id)
+        data = [id, name, population]
+        cursor.execute(insertSql, data)
+        id += 1
+        population += 100
+    
+    conn.commit()
+    conn.close()
+
+def readSqlite():
+    """
+    读取sqlite数据
+    """
+    conn = sqlite3.connect('mysqlitedb.db')
+    try:
+        with conn:
+            cursor = conn.cursor()
+            querySql = 'select id, name, population from population \
+            order by population desc limit 1000'
+            cursor.execute(querySql)
+
+            resultset = cursor.fetchall()
+            col_names = [cn[0] for cn in cursor.description]
+            print('{0:10} {1:30} {2:10}'.format(col_names[0], col_names[1], col_names[2]))
+            print('='*(10+1+30+1+10))
+            
+            for row in resultset:
+                print('%10s %30s %10s' % row)
+    except sqlite3.Error as e:
+        print("sqlite 出错:{}".format(e))
+
+def is_outer(points, threshold=3.5):
+    """
+    超出范围，异常
+    """
+    if len(points.shape) == 1:
+        points = points[:, None]
+    median = np.median(points, axis=0)
+
+    diff = np.sum((points - median)**2, axis=-1)
+    diff = np.sqrt(diff)
+    med_abs_deviation = np.median(diff)
+    modified_z_zcore = 0.6745 * diff / med_abs_deviation
+    
+    return modified_z_zcore > threshold
+
+def showCleanData():
+    """
+    直方图显示
+    """
+    # 返回产生100个0-1之间的数的array对象
+    x = np.random.random(100)
+    buckets = 50
+    # r_按行连接矩阵: 例r_[[1,2], ]
+    x = np.r_[x, -49, 95, 100, -100]
+
+    filtered = x[~is_outer(x)]
+    # figure可以划分为多个子图
+    plt.figure()
+
+    # 子图像
+    plt.subplot(211)
+    # 直方图,buckets指个数
+    plt.hist(x, buckets)
+    plt.xlabel('Raw')
+
+    plt.subplot(212)
+    plt.hist(filtered, buckets)
+    plt.xlabel('Cleaned')
+    plt.show()
+        
+def showBox():
+    """
+    箱型图
+    """
+    # rand(50)返回50个0-1之间的随机数的numpy.narray对象
+    spread = rand(50) * 100
+    # 返回25个50的对象
+    center = ones(25) * 50
+    flier_high = rand(10) * 100 + 100
+    flier_low = rand(10) * -100
+    # 按行连接array
+    data = concatenate((spread, center, flier_high, flier_low), 0)
+
+    subplot(311)
+    # gx表示超出异常
+    boxplot(data, 0, 'gx')
+    
+    subplot(312)
+
+    spread_1 = concatenate((spread, flier_high, flier_low), 0)
+    center_1 = ones(70) * 25
+    # 两个array组成的散点图
+    scatter(center_1, spread_1)
+    # x轴范围
+    xlim([0, 50])
+
+    subplot(313)
+    center_2 = rand(70) * 50
+    scatter(center_2, spread_1)
+    xlim([0, 50])
+
+    show()
+
+def showScatter():
+    """
+    散点图
+    """
+    x = 1e6 * rand(1000)
+    y = rand(1000)
+
+    figure()
+
+    subplot(211)
+    scatter(x, y)
+    xlim(1e-6, 1e6)
+
+    subplot(212)
+    scatter(x, y)
+    # x轴整数区间比例尺
+    xscale('log')
+    xlim(1e-6, 1e6)
+
+    show()
+
+def openBigdata():
+    """
+    按块读取大数据
+    """
+    with open('bigdata.data', 'r') as f:
+        chunksize = 1000
+        readable = ''
+        while f:
+            # 当前读取位置
+            start = f.tell()
+            print("开始位置:{}".format(start))
+            file_block = ''
+            for _ in range(start, start + chunksize):
+                # next不能与tell同时用
+                #line = next(f)
+                line = f.readline()
+                file_block = file_block + line
+                print('逐行读取:{}-{}'.format(type(file_block), file_block))
+            readable = readable + file_block
+            stop = f.tell()
+            print('块数据:{}-{}'.format(type(readable), readable))
+            print('读取{}到{}之间的数据'.format(start, stop))
+            print('总读取字节数:{}'.format(len(readable)))
+            # data = input("继续:")
+
+if __name__ == "__main__":
+    #---------------------------------------------------start
+    tupletime = time.localtime()
+    print('program start:', '{0}/{1}/{2} {3}:{4}:{5}'.format(tupletime.tm_year, tupletime.tm_mon, tupletime.tm_mday, tupletime.tm_hour, tupletime.tm_min, tupletime.tm_sec))
+    print()
+    starttime = time.time()
+
+    aide.processRun(openBigdata)
+
+    #---------------------------------------------------end
+    endtime = time.time()
+    tupletime = time.localtime()
+    print()
+    print('program   end:', '{0}/{1}/{2} {3}:{4}:{5}'.format(tupletime.tm_year, tupletime.tm_mon, tupletime.tm_mday, tupletime.tm_hour, tupletime.tm_min, tupletime.tm_sec))
+    print('total time: {0:5.2f}seconds'.format(endtime-starttime))
