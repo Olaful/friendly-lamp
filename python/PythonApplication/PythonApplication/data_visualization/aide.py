@@ -25,7 +25,7 @@ def processRun(func, num=5, *args, **kwargs):
     num_cpus = multiprocessing.cpu_count()
     process = []
     for _ in range(num_cpus):
-        p = multiprocessing.Process(target=threadRun, args=(func,), kwargs={'num':num})
+        p = multiprocessing.Process(target=func, args=args, kwargs=kwargs)
         p.start()
         process.append(p)
     for p in process:

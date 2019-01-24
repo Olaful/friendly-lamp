@@ -23,8 +23,12 @@ except:
 import sqlite3
 import aide
 from pylab import *
+import pylab
+import scipy.misc
+import scipy
+from PIL import Image
 
-os.chdir(r'E:\hexo\source.Olaful.github.io\Olaful.github.io\python\PythonApplication\PythonApplication\myfile')
+os.chdir(r'E:\git\Olaful\Olaful.github.io\python\PythonApplication\PythonApplication\myfile')
 
 def setParam():
     """
@@ -107,7 +111,7 @@ def makeBigData():
     def get_rand_len_data(len):
         data = []
         for _ in range(len):
-            data.append(random.randint(0,9))
+            data.append(randint(0,9))
         string = ''.join(list(map(str, data)))
         return string
 
@@ -308,7 +312,7 @@ def showCleanData():
 
     # 子图像
     plt.subplot(211)
-    # 直方图,buckets指个数
+    # 直方图,buckets指柱状条个数,个数越多，区分范围越细
     plt.hist(x, buckets)
     plt.xlabel('Raw')
 
@@ -401,6 +405,101 @@ def openBigdata():
             print('总读取字节数:{}'.format(len(readable)))
             # data = input("继续:")
 
+def readTimeChangeData():
+    """
+    读取变化的文件
+    """
+    with open('countries.txt') as f:
+        # 文件大小
+        filesize = os.stat('countries.txt')[6]
+        f.seek(filesize)
+        while True:
+            where = f.tell()
+            line = f.readline()
+            if not line:
+                time.sleep(1)
+                # 重定位
+                f.seek(where)
+            else:
+                print(line)
+
+def showMisc():
+    face = scipy.misc.face()
+    plt.gray()
+    plt.imshow(face)
+    plt.colorbar()
+
+    # 像素信息
+    print(face.shape)
+    # 最大灰度直
+    print(face.max())
+    # 像素点的值类型
+    print(face.dtype)
+    plt.show()
+
+def openByPIL():
+    img = Image.open('captcha_railway.png')
+    # 图像数据类似一个二维数据
+    arr = np.array(img.getdata(), np.uint8).reshape(img.size[1], img.size[0], 3)
+    plt.gray()
+    # 加载数组形式的图像数据
+    plt.imshow(arr)
+    plt.colorbar()
+    plt.show()
+
+def dealImg():
+    # 把大内存图像部分加载到内存
+    # img = np.memmap('captcha_railway.png', dtype=np.uint8, shape=(375,500)
+    img = scipy.misc.imread('captcha_railway.png')
+    # 把b通道灰度值置0
+    img = img[:,:,0]
+    plt.figure()
+    plt.gray()
+
+    plt.subplot(121)
+    plt.imshow(img)
+
+    # 选择100:250, 140:350行之间的图像进行放大
+    zimg = img[100:250, 140:350] 
+
+    plt.subplot(122)
+    plt.imshow(zimg)
+    plt.show()
+
+def dealArray():
+    # 一维数组
+    a = array([5, 1, 2, 3, 4])
+    print(a[2:3])
+    print(a[:2])
+    print(a[3:])
+
+    # 多维数组
+    b = array([[1,1,1],[2,2,2],[3,3,3]])
+    # 取第一行
+    print(b[0,:])
+    # 去第一列
+    print(b[:,0])
+
+def showRandData():
+    """
+    随机数直方图
+    """
+    # seed系统时间
+    seed()
+    real_rand_vals = []
+    real_rand_vals = [random() for _ in range(100)]
+    pylab.hist(real_rand_vals, 20)
+    pylab.xlabel('随机数')
+    pylab.ylabel('个数')
+
+    pylab.subplot()
+    real_rand_vals = [randint(1,7) for _ in range(100)]
+    pylab.hist(real_rand_vals, 20)
+    pylab.xlabel('随机数')
+    pylab.ylabel('个数')
+    
+    pylab.show()
+
 if __name__ == "__main__":
     #---------------------------------------------------start
     tupletime = time.localtime()
@@ -408,7 +507,7 @@ if __name__ == "__main__":
     print()
     starttime = time.time()
 
-    aide.processRun(openBigdata)
+    showRandData()
 
     #---------------------------------------------------end
     endtime = time.time()

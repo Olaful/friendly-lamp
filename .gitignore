@@ -8,3 +8,5 @@ public/
 *.pyc
 db.sqlite3
 search.key
+.vs/
+bigdata.data
