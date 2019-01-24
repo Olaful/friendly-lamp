@@ -9,12 +9,15 @@ from pprint import pprint
 import os
 import time
 from datetime import datetime
-import random
+
+# numpy中也会有random这个模块,重命令避免混淆
+import random as std_rand
 import struct
 import string
 import requests
 import argparse
 import json
+import settings
 try:
     import cStringIO as StringIO
 except:
@@ -22,13 +25,16 @@ except:
 
 import sqlite3
 import aide
+# pylab相当导入作图相关的库matplotlib,numpy等
 from pylab import *
 import pylab
+from matplotlib.font_manager import FontProperties
 import scipy.misc
 import scipy
+import scipy.signal
 from PIL import Image
 
-os.chdir(r'E:\git\Olaful\Olaful.github.io\python\PythonApplication\PythonApplication\myfile')
+os.chdir(r'E:\hexo\source.Olaful.github.io\Olaful.github.io\python\PythonApplication\PythonApplication\myfile')
 
 def setParam():
     """
@@ -310,7 +316,7 @@ def showCleanData():
     # figure可以划分为多个子图
     plt.figure()
 
-    # 子图像
+    # 子图像,211表示2行1列，位置索引1
     plt.subplot(211)
     # 直方图,buckets指柱状条个数,个数越多，区分范围越细
     plt.hist(x, buckets)
@@ -453,7 +459,8 @@ def dealImg():
     img = scipy.misc.imread('captcha_railway.png')
     # 把b通道灰度值置0
     img = img[:,:,0]
-    plt.figure()
+    # 指定图像实例，初始化参数
+    plt.figure(num="hello")
     plt.gray()
 
     plt.subplot(121)
@@ -484,21 +491,170 @@ def showRandData():
     """
     随机数直方图
     """
-    # seed系统时间
+    # seed使用系统时间初始化伪随机数
     seed()
+
+    pylab.subplot(211)
     real_rand_vals = []
     real_rand_vals = [random() for _ in range(100)]
     pylab.hist(real_rand_vals, 20)
-    pylab.xlabel('随机数')
-    pylab.ylabel('个数')
 
-    pylab.subplot()
+    # 设置中文字符集
+    pylab.xlabel('随机数', FontProperties=settings.FONT_SET)
+    pylab.ylabel('个数', FontProperties=settings.FONT_SET)
+
+    # 1-6随机数
+    pylab.subplot(212)
     real_rand_vals = [randint(1,7) for _ in range(100)]
     pylab.hist(real_rand_vals, 20)
-    pylab.xlabel('随机数')
-    pylab.ylabel('个数')
+    pylab.xlabel('随机数', FontProperties=font_set)
+    pylab.ylabel('个数', FontProperties=font_set)
+
+    # 0-6浮点数
+    # subplot最多为两个
+    # pylab.subplot(213)
+    # real_rand_vals = [uniform(1,7) for _ in range(100)]
+    # pylab.hist(real_rand_vals, 20)
+    # pylab.xlabel('随机数', FontProperties=font_set)
+    # pylab.ylabel('个数', FontProperties=font_set)
+    
     
     pylab.show()
+
+def showPriceChange():
+    """
+    价格与时间
+    """
+    duration = 100
+    mean_inc = 0.2
+    std_dev_inc = 1.2
+    x = range(duration)
+    y = []
+    price_today = 0
+    
+    for _ in x:
+        # 随机正态分布数据,参数：中值，标准差
+        next_delta = std_rand.normalvariate(mean_inc, std_dev_inc)
+        price_today += next_delta
+        y.append(price_today)
+
+    pylab.plot(x, y)
+    pylab.xlabel('时间', FontProperties=settings.FONT_SET)
+    pylab.ylabel('价格', FontProperties=settings.FONT_SET)
+    pylab.show()
+
+def showDistributed():
+    """
+    各种随机数分布
+    """
+    SAMPLE_SIZE = 1000
+    buckets = 100
+
+    plt.figure()
+    matplotlib.rcParams.update({'font.size': 7})
+    matplotlib.rcParams['font.sans-serif'] = ['SimHei']
+
+    plt.subplot(621)
+    plt.xlabel('0-1随机数分布')
+    res = [std_rand.random() for _ in range(1, SAMPLE_SIZE)]
+    plt.hist(res, buckets)
+
+    plt.subplot(622)
+    plt.xlabel('1-1000浮点数分布')
+    a = 1
+    b = SAMPLE_SIZE
+    res = [std_rand.uniform(a, b) for _ in range(1, SAMPLE_SIZE)]
+    plt.hist(res, buckets)
+
+    plt.subplot(623)
+    plt.xlabel('三角形分布')
+    low = 1
+    height = SAMPLE_SIZE
+    res = [std_rand.triangular(low, height) for _ in range(1, SAMPLE_SIZE)]
+    plt.hist(res, buckets)
+
+    plt.subplot(624)
+    plt.xlabel('beta分布')
+    alpha = 1
+    beta = 10
+    res = [std_rand.betavariate(alpha, beta) for _ in range(1, SAMPLE_SIZE)]
+    plt.hist(res, buckets)
+
+    plt.subplot(625)
+    plt.xlabel('指数分布')
+    lambd = 1.0 / ((SAMPLE_SIZE + 1) / 2.)
+    res = [std_rand.expovariate(lambd) for _ in range(1, SAMPLE_SIZE)]
+    plt.hist(res, buckets)
+
+    plt.subplot(626)
+    plt.xlabel('gamma分布')
+    alpha = 1
+    beta = 10
+    res = [std_rand.gammavariate(alpha, beta) for _ in range(1, SAMPLE_SIZE)]
+    plt.hist(res, buckets)
+
+    plt.subplot(627)
+    plt.xlabel('对数正态分布')
+    mu = 1
+    sigma = 0.5
+    res = [std_rand.lognormvariate(mu, sigma) for _ in range(1, SAMPLE_SIZE)]
+    plt.hist(res, buckets)
+
+    plt.subplot(628)
+    plt.xlabel('正态分布')
+    mu = 1
+    sigma = 0.5
+    res = [std_rand.normalvariate(mu, sigma) for _ in range(1, SAMPLE_SIZE)]
+    plt.hist(res, buckets)
+
+    plt.subplot(629)
+    plt.xlabel('帕累托分布')
+    alpha = 1
+    res = [std_rand.paretovariate(alpha) for _ in range(1, SAMPLE_SIZE)]
+    plt.hist(res, buckets)
+
+    # 设置子图默认间距
+    plt.tight_layout()
+    plt.show()
+
+def cleanNoiseData():
+    """"
+    convolve方法数据噪声去除
+    """
+
+    def moving_average(interval, window_size):
+        window = np.ones(int(window_size)) / float(window_size)
+        return np.convolve(interval, window, 'same')
+    
+    # 返回-4到4之间分布均匀的100个样本
+    t = pylab.linspace(-4, 4, 100)
+    y = sin(t) + pylab.randn(len(t)) * 0.1
+
+    # x,y轴坐标，刻度样式
+    pylab.plot(t, y, "k.")
+    y_av = moving_average(y, 10)
+    pylab.plot(t, y_av, "r")
+    pylab.xlabel("时间", FontProperties=settings.FONT_SET)
+    pylab.ylabel("值", FontProperties=settings.FONT_SET)
+    pylab.grid(True)
+    pylab.show()
+
+def cleanDataByMF():
+    """
+    中值滤波过滤噪声
+    """
+    x = np.linspace(0, 1, 101)
+    x[3::10] = 1.5
+
+    pylab.plot(x)
+    pylab.plot(scipy.signal.medfilt(x, 3))
+    pylab.plot(scipy.signal.medfilt(x, 5))
+
+    # 三个图例
+    pylab.legend(['原始数据', '中值3过滤', '中值5过滤'])
+    
+    pylab.show()
+    
 
 if __name__ == "__main__":
     #---------------------------------------------------start
@@ -507,7 +663,9 @@ if __name__ == "__main__":
     print()
     starttime = time.time()
 
-    showRandData()
+    matplotlib.rcParams['font.sans-serif'] = ['SimHei']
+
+    cleanDataByMF()
 
     #---------------------------------------------------end
     endtime = time.time()
