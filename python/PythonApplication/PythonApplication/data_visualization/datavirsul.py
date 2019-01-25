@@ -34,7 +34,7 @@ import scipy
 import scipy.signal
 from PIL import Image
 
-os.chdir(r'E:\hexo\source.Olaful.github.io\Olaful.github.io\python\PythonApplication\PythonApplication\myfile')
+os.chdir(r'E:\git\Olaful\Olaful.github.io\python\PythonApplication\PythonApplication\myfile')
 
 def setParam():
     """
@@ -317,6 +317,7 @@ def showCleanData():
     plt.figure()
 
     # 子图像,211表示2行1列，位置索引1
+    # 也可以写成2,1,1
     plt.subplot(211)
     # 直方图,buckets指柱状条个数,个数越多，区分范围越细
     plt.hist(x, buckets)
@@ -654,6 +655,126 @@ def cleanDataByMF():
     pylab.legend(['原始数据', '中值3过滤', '中值5过滤'])
     
     pylab.show()
+
+def simple():
+    """
+    简单线形图
+    """
+    # y轴值，x轴赋默认值
+    pylab.plot([1,2,3,4,5,6])
+    # 另一条线,分别是x,y轴, x轴从左到右升序，两个列表值按下标对应
+    pylab.plot([4,3,2,1], [1,2,3,4])
+    pylab.show()
+
+def showMany():
+    """
+    常见图集合
+    """
+    x = [1,2,3,4]
+    y = [5,4,3,2]
+
+    # 创建新图表
+    plt.figure("多图集合")
+    
+    # 线性图
+    s = plt.subplot(231)
+    s.set_title('tutu')
+    plt.plot(x, y)
+
+    # 垂直柱状图
+    plt.subplot(232)
+    plt.bar(x, y)
+
+    # 水平柱状图
+    plt.subplot(233)
+    plt.barh(x, y)
+
+    # 堆叠柱状图，一个坐标轴中显示两个子图
+    plt.subplot(234)
+    plt.bar(x, y)
+    y1 = [7,8,5,3]
+    # y1以y接底
+    plt.bar(x, y1, bottom=y, color='r')
+
+    # 箱形图,最大值位于箱顶，最小值位于箱底
+    # 中值位于箱体中部，箱体分8部分，上4分与下4分
+    # 下4分为集合中大小较低的25%的数据
+    plt.subplot(235)
+    plt.boxplot(x)
+
+    # 散点图
+    plt.subplot(236)
+    plt.scatter(x, y)
+
+    plt.show()
+
+def boxVsHist():
+    """
+    箱线图对比直方图
+    """
+    dataset = [113, 115, 119, 121, 124,
+               124, 125, 126, 126, 126,
+               127, 127, 128, 129, 130,
+               130, 131, 132, 133, 136]
+
+    pylab.subplot(121)
+    # vert=False横向显示
+    pylab.boxplot(dataset, vert=False)
+
+    subplot(122)
+    pylab.hist(dataset)
+
+    pylab.show()
+
+def sinCos():
+    """
+    sinCos曲线
+    """
+    # -pi 到 pi 等分的256个数，不包含尾数
+    x = np.linspace(-np.pi, np.pi, 256, endpoint=True)
+
+    # cos数集合，随着数据的增大，cos值
+    # 先减小后增大再减小
+    y = np.cos(x)
+    # sin数集合，随着数据的增大，sin值
+    # 先增大后减小
+    y1 = np.sin(x)
+
+    # 坐标轴默认值xmin, xmax, ymin, ymax
+    print(plt.axis())
+    # 手动设置坐标轴刻度值范围
+    # plt.axis([-1, 1, -10, 10])
+    # plt.axis({'ymax': 100})
+    # 根据数据设置坐标轴刻度范围
+    # plt.autoscale()
+
+    # 显示网格,显示纵向网格
+    plt.grid(axis='x')
+
+    plt.plot(x, y)
+    plt.plot(x, y1)
+
+    plt.title("正余弦函数")
+    plt.xlim(-3.0, 3.0)
+    plt.ylim(-1.0, 1.0)
+    # 给刻度值加标签显示
+    plt.xticks([-np.pi, -np.pi/2, 0, np.pi/2, np.pi],
+              # $$laTex语法
+              [r'$-\pi$', r'$-\pi/2$', r'$0$', r'$+\pi/2$', r'$+\pi/$'])
+    plt.yticks([-1, 0, +1],
+               [r'$-1$', r'$0$', r'$+1$'])
+
+    # y=0水平线
+    # plt.axhline()
+    # # x=0垂直线
+    # plt.axvline()
+    # # y=0.5水平线
+    # plt.axhline(0.5)
+
+    # 0<=y<=0.5之间的水平线
+    #plt.axhspan(0, 0.5)
+
+    plt.show()
     
 
 if __name__ == "__main__":
@@ -663,9 +784,12 @@ if __name__ == "__main__":
     print()
     starttime = time.time()
 
+    # 能显示中文
     matplotlib.rcParams['font.sans-serif'] = ['SimHei']
+    # 能显示负号
+    matplotlib.rcParams['axes.unicode_minus'] = False
 
-    cleanDataByMF()
+    sinCos()
 
     #---------------------------------------------------end
     endtime = time.time()
