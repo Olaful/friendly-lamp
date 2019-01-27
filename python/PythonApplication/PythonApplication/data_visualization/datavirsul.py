@@ -1,5 +1,7 @@
 import matplotlib as mp
 import matplotlib.pyplot as plt
+from mpl_toolkits.axes_grid1 import ImageGrid
+from matplotlib.cbook import get_sample_data
 import numpy as np
 import csv
 import sys
@@ -9,6 +11,8 @@ from pprint import pprint
 import os
 import time
 from datetime import datetime
+import datetime
+from math import sqrt
 
 # numpy中也会有random这个模块,重命令避免混淆
 import random as std_rand
@@ -34,7 +38,7 @@ import scipy
 import scipy.signal
 from PIL import Image
 
-os.chdir(r'E:\git\Olaful\Olaful.github.io\python\PythonApplication\PythonApplication\myfile')
+os.chdir(r'E:\hexo\source.Olaful.github.io\Olaful.github.io\python\PythonApplication\PythonApplication\myfile')
 
 def setParam():
     """
@@ -726,7 +730,7 @@ def boxVsHist():
 
     pylab.show()
 
-def sinCos():
+def showSinCos():
     """
     sinCos曲线
     """
@@ -751,7 +755,7 @@ def sinCos():
     # 显示网格,显示纵向网格
     plt.grid(axis='x')
 
-    plt.plot(x, y)
+    plt.plot(x, y, linewidth=3)
     plt.plot(x, y1)
 
     plt.title("正余弦函数")
@@ -775,7 +779,643 @@ def sinCos():
     #plt.axhspan(0, 0.5)
 
     plt.show()
+
+def showLine():
+    """
+    设置plot属性
+    """
+    x = [1,2,3,4,5]
+    y = [5,4,3,2,1]
+
+    #plt.plot(x, y, linewidth=3)
+    #line, = plt.plot(x, y)
+    #line.set_linewidth(3)
+    lines = plt.plot(x, y)
+    #plt.setp(lines, 'linewidth', 3)
+    plt.title('下降曲线', color='#123456')
+    # 坐标轴背景色
+    #plt.axes(facecolor="#e5f0cf")
+
+    plt.setp(lines, linewidth=1.5)
+    plt.setp(lines, color='r')
+    plt.setp(lines, label='下降直线')
+    plt.setp(lines, linestyle='--')
+    # 线条标记
+    plt.setp(lines, marker='D')
+    # 线条标记边缘色
+    plt.setp(lines, markeredgecolor='b')
+    plt.setp(lines, markeredgewidth=1.5)
+    # 线条标记的大小
+    plt.setp(lines, markersize=8)
+    #plt.setp(lines, markerfacecolor='c')
+    plt.setp(lines, markerfacecolor='#eeefff')
+    #plt.setp(lines, markerfacecolor=(0.3, 0.3, 0.4))
+
+    # 实线线端风格
+    plt.setp(lines, solid_capstyle='round')
+    plt.setp(lines, solid_joinstyle='miter')
+    # 显示作者
+    plt.setp(lines, visible=True)
+    # x轴array值
+    #plt.setp(lines, xdata=np.array([9,8,7,6,5]))
+    # 为artist设置z轴位置
+    plt.setp(lines, Zorder=1)
     
+    plt.show()
+
+def showTick():
+    """
+    设置刻度
+    """
+    # 获取轴对象
+    ax = pylab.gca()
+    # 紧凑视图, 因为数据比较多,最大刻度数20
+    ax.locator_params(tight=True, nbins=10)
+    # 正态分布数据曲线
+    ax.plot(np.random.normal(10, .1, 100))
+
+    # 设置主定位器x轴刻度为10的倍数
+    ax.xaxis.set_major_locator(mp.ticker.MultipleLocator(10))
+    
+    pylab.show()
+
+def showDate():
+    """
+    设置日期的显示
+    """
+    fig = pylab.figure()
+
+    ax = pylab.gca()
+
+    startdate = datetime.datetime(2013, 1, 1)
+    stopdate = datetime.datetime(2013, 12, 31)
+    delta = datetime.timedelta(days=1)
+
+    # 起始到结束日期，间隔为delta
+    dates = mp.dates.drange(startdate, stopdate, delta)
+    values = np.random.rand(len(dates))
+
+    ax = pylab.gca()
+    # 日期形式的图例
+    ax.plot_date(dates, values, linestyle='-', marker='')
+    date_format = mp.dates.DateFormatter('%Y-%m-%d')
+    # 格式器为日期格式
+    ax.xaxis.set_major_formatter(date_format)
+
+    # 自动格式日期
+    fig.autofmt_xdate()
+
+    pylab.show()
+
+def showAnnotation():
+    """
+    添加注解
+    """
+    x1 = np.random.normal(30, 3, 100)
+    x2 = np.random.normal(20, 2, 100)
+    x3 = np.random.normal(10, 3, 100)
+
+    plt.plot(x1, label="图1")
+    plt.plot(x2, label="图2")
+    plt.plot(x3, label="图3")
+
+    # 把以上三个图例添加到图例框中,框位于2(upper_left)位置
+    # 列数为3，边界框位置为(0.0, 1.02)，宽度为1.0,高度为0.102
+    # 水平扩展至整个坐标轴区域，坐标轴与图例边框之间的间距为0
+    plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=2,
+                ncol=3, mode="expand", borderaxespad=0.)
+
+    # 在(5, 38)的位置显示"重要数据"，箭头指向(55, 30的数据)
+    # xycoords='data'指定注解与数据使用相同的坐标系，箭头风格为'->'
+    plt.annotate("重要数据", (55, 30), xycoords='data', xytext=(5, 38), arrowprops=dict(arrowstyle='->'))
+
+    plt.show()
+
+def moveAxeToCenter():
+    """
+    移动轴线到图中央
+    """
+    x = np.linspace(-np.pi, np.pi, 500, endpoint=True)
+    y = np.sin(x)
+
+    plt.plot(x, y)
+    ax = plt.gca()
+    # 设置color为None，隐藏轴线
+    ax.spines['right'].set_color('none')
+    ax.spines['top'].set_color('none')
+
+    # 移动轴中心到(0,0)
+    ax.spines['bottom'].set_position(('data', 0))
+    ax.spines['left'].set_position(('data', 0))
+
+    # 移动x,y刻度轴位置
+    ax.xaxis.set_ticks_position('bottom')
+    ax.yaxis.set_ticks_position('left')
+
+    # 设置轴线在数据结束的地方停止延伸显示
+    #ax.xaxis.set_smart_bounds(True)
+
+    plt.show()
+
+def showHist():
+    """
+    设置直方图
+    """    
+    mu = 100
+    sigma = 15
+    x = np.random.normal(mu, sigma, 10000)
+
+    ax = plt.gca()
+    # 宽度为35,类型为未填充
+    plt.hist(x, bins=35, color='r', histtype='step')
+    ax.set_xlabel('值')
+    ax.set_ylabel('频率')
+    ax.set_title(r'$Histogram mu={},sigma={}$'.format(mu, sigma))
+
+    plt.show()
+
+def showErrorBar():
+    """
+    误差条
+    """
+    x = np.arange(0, 10, 1)
+    y = np.log(x)
+
+    xe = 0.1 * np.abs(np.random.randn(len(y)))
+
+    # 误差条颜色为红色，边缘为红色，内部颜色为青色,在y轴上生成误差条
+    # 显示数据偏离
+    plt.bar(x, y, yerr=xe, width=0.4, align='center', ecolor='r',
+            edgecolor='r', color='cyan', label='试验 #1')
+    plt.xlabel('尺寸')
+    plt.ylabel('测量值')
+    plt.title('测量数据')
+    plt.legend(loc='upper left')
+
+    plt.show()
+
+def showPie():
+    """
+    饼图
+    """
+    pylab.figure(1, figsize=(6, 6))
+    labels = '春', '夏', '秋', '冬'
+    x = [15, 30, 45, 10]
+    # explode元素个数为len(x)或者没有
+    explode = (0.1, 0.1, 0.1, 0.2)
+
+    # 从67度角位置升序显示，explode指定各个分裂程度
+    # autopct格式化各个区块中的数据
+    pylab.pie(x, explode=explode, labels=labels,
+            autopct='%1.1f%%', startangle=67)
+    pylab.title('季节降雨量')
+
+    pylab.show()
+    
+def showFillingArea():
+    """
+    填充曲线区域
+    """
+    x = np.arange(0.0, 2, 0.01)
+    y1 = np.sin(2*np.pi*x)
+    y2 = 1.2*np.sin(4*np.pi*x)
+
+    plt.figure()
+    ax = plt.gca()
+
+    # 两条曲线
+    ax.plot(x, y1, x, y2, color='black')
+    # 在x位置对应的y1与y2之间填充，如果y2>=y1则填充相应的颜色
+    ax.fill_between(x, y1, y2, where=y2>=y1, facecolor='b',
+                    interpolate=True)
+    ax.fill_between(x, y1, y2, where=y2<=y1, facecolor='deeppink',
+                    interpolate=True)
+    ax.set_title('填充曲线')
+
+    plt.show()
+
+def setScatter():
+    """
+    彩色标记散点图
+    """
+    # 不相关数据
+    x = np.random.randn(1000)
+    y1 = np.random.randn(len(x))
+
+    # 与x相关数据
+    y2 = 1.2 + np.exp(x)
+
+    ax1 = plt.subplot(121)
+    # 透明度0.3
+    plt.scatter(x, y1, color='indigo', alpha=0.3,
+                edgecolors='white', label='不相关')
+    plt.xlabel('不相关')
+    plt.grid(True)
+    plt.legend()
+
+    # 坐标属性与ax1一致
+    ax2 = plt.subplot(122, sharey=ax1, sharex=ax1)
+    plt.scatter(x, y2, color='green', alpha=0.3,
+                edgecolors='grey', label='相关')
+    plt.xlabel('强相关')
+    plt.grid(True)
+    plt.legend()
+
+    plt.show()
+
+def setAxisAlphaAndSize():
+    """
+    设置坐标轴标签阴影与大小
+    """
+    from matplotlib import patheffects
+    data = np.random.randn(70)
+
+    fontsize = 18
+    plt.plot(data)
+
+    title = '这是一个图例的标题'
+    x_label = '这是一个x轴标签'
+    y_label = '这是一个y轴标签'
+
+    title_text_obj = plt.title(title, fontsize=fontsize,
+                                verticalalignment='bottom')
+    # 设置标题阴影
+    title_text_obj.set_path_effects([patheffects.withSimplePatchShadow()])
+
+    offset_xy = (1, -1)
+    rgbred = (1.0, 0.0, 0.0)
+    alpha = 0.8
+    # 阴影偏移量为(1, -1),默认为(2, -2),阴影颜色为(1.0, 0.0, 0.0)
+    # 透明度为0.5
+    pe = patheffects.withSimplePatchShadow(offset=offset_xy,
+                                            shadow_rgbFace=rgbred,
+                                            alpha=alpha)
+    xlabel_obj = plt.xlabel(x_label, fontsize=fontsize, alpha=0.5)
+    xlabel_obj.set_path_effects([pe])
+
+    y_label_obj = plt.ylabel(y_label, fontsize=fontsize, alpha=0.5)
+    y_label_obj.set_path_effects([pe])
+
+    plt.show()
+
+def setChartAlpha():
+    """
+    设置图表阴影效果
+    """
+    def setup(layout=None):
+        fig = plt.figure()
+        ax = fig.add_subplot(layout)
+        return fig, ax
+    
+    def get_signal():
+        t = np.arange(0., 2.5, 0.01)
+        s = np.sin(5*np.pi*t)
+        return t, s
+
+    def plot_signal(t, s):
+        line, = plt.plot(t, s, linewidth=5, color='magenta')
+        return line
+    
+    def make_shadow(fig, axes, line, t, s):
+        # 阴影偏移量
+        delta = 2 / 72
+        # 偏移转换对象，使用dpi_scale_trans转换可调用对象对delta，-delta
+        # 进行比例调整，位置不会因输出设备而改变
+        offset = mp.transforms.ScaledTranslation(delta, -delta, fig.dpi_scale_trans)
+        # 偏移数据
+        offset_transform = axes.transData + offset
+        # 根据偏移数据绘制另一个图例
+        axes.plot(t, s, linewidth=5, color='gray', transform=offset_transform,
+                zorder=0.5 * line.get_zorder())
+
+    fig, axes = setup(111)
+    t, s = get_signal()
+    line = plot_signal(t, s)
+    make_shadow(fig, axes, line, t, s)
+    axes.set_title('使用偏移转换设置图表阴影')
+    plt.show()
+
+def addDataSheetToChart():
+    """
+    往图表中添加数据表
+    """
+    plt.figure()
+    plt.gca()
+    y = np.random.randn(9)
+
+    col_labels = ['姓名', '住址', '联系方式']
+    row_labels = ['1', '2', '3']
+    table_vals = [['张三', '广东广州', 15698654458],
+                  ['李四', '广西南宁', 16599856648],
+                  ['王五', '湖南长沙', 19865789631]]
+    row_colors = ['red', 'gold', 'green']
+
+    people_table = plt.table(cellText=table_vals,
+            colWidths=[0.1]*3,
+            rowLabels=row_labels,
+            colLabels=col_labels,
+            rowColours=row_colors,
+            loc='upper right')
+    # 可以通过axes对表格进行微调
+    # fig = plt.figure()
+    # axes = fig.add_table(people_table)
+
+    plt.plot(y)
+
+    plt.show()
+
+def showSubplot():
+    """
+    显示子区
+    """
+    plt.figure(0)
+    # subplot索引是0开始
+    # 三行三列，从0行0列开始作图,列跨三个跨度
+    plt.subplot2grid((3, 3), (0, 0), colspan=3)
+    plt.subplot2grid((3, 3), (1, 0), colspan=2)
+    plt.subplot2grid((3, 3), (1, 2))
+    plt.subplot2grid((3, 3), (2, 0))
+    plt.subplot2grid((3, 3), (2, 1), colspan=2)
+
+    # 获取当前figure的所有轴
+    all_axes = plt.gcf().axes
+    for ax in all_axes:
+        # 设置刻度字体大小
+        for ticklabel in ax.get_xticklabels() + ax.get_yticklabels():
+            ticklabel.set_fontsize(10)
+    plt.suptitle('subplot2grid 示例')
+
+    plt.show()
+
+def setAxesbg():
+    """
+    设置图表背景
+    """
+    fig = plt.figure()
+    axes = fig.add_subplot(111)
+    rectangle = axes.patch
+    rectangle.set_facecolor('cyan')
+
+    # 创建一个补片，并在轴中显示这个补片
+    rect = mp.patches.Rectangle((0.5, 0.5), width=6, height=12, color='red')
+    axes.add_patch(rect)
+    axes.figure.canvas.draw()
+
+    plt.show()
+
+def showSimpleGrid():
+    """
+    设置网格
+    """
+    data = [1,2,3,3,5,4,4.3,3]
+    pylab.plot(data)
+    pylab.grid(color='g', linestyle='--', linewidth=1)
+    # 再次使用即关闭网格
+    #pylab.grid()
+
+    pylab.show()
+
+def setGrid():
+    """
+    设置网格
+    """
+    def get_demo_image():
+        f = get_sample_data('axes_grid/bivariate_normal.npy', asfileobj=False)
+        Z = np.load(f)
+        return Z, (-3, 4, -4, 3)
+    
+    def get_grid(fig=None, layout=None, nrows_ncols=None):
+        assert(fig is not None)
+        assert(layout is not None)
+        assert(nrows_ncols is not None)
+        grid = ImageGrid(fig, layout, nrows_ncols=nrows_ncols,
+                        axes_pad=0.05, add_all=True, label_mode='L')
+        return grid
+    
+    def load_image_to_grid(grid, Z, *images):
+        min, max = Z.min(), Z.max()
+        for i, image in enumerate(images):
+            axes = grid[i]
+            axes.imshow(image, origin='lower', vmin=min, vmax=max,
+                        interpolation='nearest')
+    fig = plt.figure(1, (8,6))
+    grid = get_grid(fig, 111, (1, 3))
+    Z, extent = get_demo_image()
+
+    image1 = Z
+    image2 = Z[:, :10]
+    image3 = Z[:, 10:]
+
+    load_image_to_grid(grid, Z, image1, image2, image3)
+
+    plt.draw()
+    plt.show()
+
+def showSimpleContour():
+    """
+    简单等高线
+    """
+    data = [[1,2,3,3,5,4,4.3,3], [1,2,3,3,5,4,4.3,3]]
+    # 数据必须是二维的
+    cs = pylab.contour(data)
+    pylab.colorbar(cs)
+
+    pylab.show()
+    
+
+def showContour():
+    """
+    等高线
+    """
+    def process_signals(x, y):
+        # exp返回e的幂次方
+        return (1 - (x**2 + y**2)) * np.exp(-y ** 3 / 3)
+    
+    x = np.arange(-1.5, 1.5, 0.1)
+    y = np.arange(-1.5, 1.5, 0.1)
+    # 返回坐标矩阵
+    X, Y = np.meshgrid(x, y)
+    Z = process_signals(X, Y)
+    N = np.arange(-1, 1.5, 0.3)
+    # 绘制Z数组的等高线，水平数由N决定,颜色映射为jet
+    CS = plt.contour(Z, N, linewidth=2, cmap=mp.cm.jet)
+    # 为等高线添加标签
+    plt.clabel(CS, inline=True, fmt='%1.1f', fontsize=10)
+    plt.colorbar(CS)
+    plt.title('我的函数: $z=(1-x^2+y^2) e^{-(y^3)/3}$')
+   
+    plt.show()
+
+def setSimpleFill():
+    """
+    填充特定区域
+    """
+    t = range(1000)
+    y = [sqrt(i) for i in t]
+    plt.plot(t, y, color='red', lw=2)
+    # 填充y轴值之间的区域，where=y
+    plt.fill_between(t, y, color='silver')
+
+    plt.show()
+
+def setFill():
+    """
+    根据多条件填充区域
+    """
+    x = np.arange(0.0, 2, 0.01)
+    y1 = np.sin(np.pi*x)
+    y2 = 1.7 * np.sin(4*np.pi*x)
+
+    fig = plt.figure()
+    axes1 = fig.add_subplot(211)
+    axes1.plot(x, y1, x, y2, color='grey')
+    # where 接收长度为n的布尔数组
+    axes1.fill_between(x, y1, y2, where=y2<=y1, facecolor='blue', interpolate=True)
+    axes1.fill_between(x, y1, y2, where=y2>=y1, facecolor='gold', interpolate=True)
+    axes1.set_title('蓝色区域表示y2<=y1, 金色区域表示y2>=y1.')
+    axes1.set_ylim(-2, 2)
+
+    # 大于1.0的数屏蔽掉
+    y2 = np.ma.masked_greater(y2, 1.0)
+    axes2 = fig.add_subplot(212, sharex=axes1)
+    axes2.plot(x, y1, x, y2, color='black')
+    axes2.fill_between(x, y1, y2, where=y2<=y1, facecolor='blue', interpolate=True)
+    axes2.fill_between(x, y1, y2, where=y2<=y1, facecolor='gold', interpolate=True)
+    axes2.set_title('同上, 但是有些隐藏.')
+    axes2.set_ylim(-2, 2)
+    axes2.grid('on')
+
+    plt.show()
+
+def showSimplePolar():
+    """
+    简单极线图
+    """
+    # 角度的宽度表示样本量的多少
+    theta = [1, 2, 3]
+    # 半径的长度表示个体样本的大小
+    radii = [1.5, 2, 3]
+    fig = plt.figure(figsize=(8, 8))
+    # 轴原点坐标(0.1, 0.1), 坐标轴长度(0.6, 0.6)
+    # 显示为极坐标
+    ax = fig.add_axes([0.2, 0.2, 0.6, 0.6], polar=True)
+    bars = ax.bar(theta, radii, tick_label=('样本1','样本2','样本3'),
+                edgecolor='cyan')
+
+    colormap = lambda r: mp.cm.Set2(r / len(theta))
+    # 分别设置不同的颜色
+    for r, each in zip(radii, bars):
+        each.set_facecolor(colormap(r))
+        each.set_alpha(0.5)
+
+    plt.annotate("重要数据", (1, 3), xycoords='data', xytext=(10, 0.5), arrowprops=dict(arrowstyle='->'))
+
+    plt.show()
+
+def showPolar():
+    """
+    极线图
+    """
+    figsize = 7
+    colormap = lambda r: mp.cm.Set2(r / 20.)
+    N = 18
+    # 正方形图表
+    fig = plt.figure(figsize=(figsize, figsize))
+    # 添加极坐标轴
+    ax = fig.add_axes([0.2, 0.2, 0.7, 0.7], polar=True)
+    # 角度集合
+    theta = np.arange(0.0, 2 * np.pi, 2 * np.pi / N)
+    # 极线距离集合
+    radii = 20 * np.random.randn(N)
+    width = np.pi / 4 * np.random.randn(N)
+    # 饼图集合
+    bars = ax.bar(theta, radii, width=width, bottom=0.0)
+    # 逐个添加极线条
+    for r, bar in zip(radii, bars):
+        bar.set_facecolor(colormap(r))
+        bar.set_alpha(0.6)
+    
+    plt.show()
+
+def showFileSysTree():
+    """
+    使用极线图显示文件系统树
+    """
+    def build_folders(start_path):
+        folders = []
+
+        for each in get_directories(start_path):
+            size = get_size(each)
+            if size >= 25 * 1024 * 1024:
+                folders.append({'size': size, 'path': each})
+        for each in folders:
+            print("路径:", os.path.basename(each['path']))
+            print("大小", str(each['size'] / 1024 / 1024), "MB")
+        
+        return folders
+
+    def get_size(path):
+        assert(path is not None)
+        total_size = 0
+        total_size = os.path.getsize(path)
+        for dirpath, dirnames, filenames in os.walk(path):
+            for f in filenames:
+                fp = os.path.join(dirpath, f)
+                try:
+                    size = os.path.getsize(fp)
+                    total_size += size
+                except OSError as e:
+                    print(str(e))
+                    pass
+        return total_size
+
+    def get_directories(path):
+        dirs = set()
+        for dirpath, dirnames, filenames in os.walk(path):
+            #dirs = set([os.path.join(dirpath, x) for x in dirnames])
+            for f in filenames:
+                dirs.add(os.path.join(dirpath, f))
+            #只需要第一个文件
+            break
+        return dirs
+
+    def draw(folders):
+        figsize = (8, 8)
+        ldo, rup = 0.1, 0.8
+        fig = plt.figure(figsize=figsize)
+        ax = fig.add_axes([ldo, ldo, rup, rup], polar=True)
+        
+        x = [os.path.basename(x['path']) for x in folders]
+        y = [y['size'] / 1024 / 1024 for y in folders]
+        theta = np.arange(0.0, 2 * np.pi, 2 * np.pi / len(x))
+        radii = y
+        bars = ax.bar(theta, radii)
+        middle = 90 / len(x)
+        theta_ticks = [t * (180 / np.pi) + middle for t in theta]
+        lines, labels = plt.thetagrids(theta_ticks, labels=x)
+
+        for step, each in enumerate(labels):
+            each.set_rotation(theta[step] * (180 / np.pi) + middle)
+            each.set_fontsize(8)
+
+        colormap = lambda r: mp.cm.Set2(r / len(x))
+        for r, each in zip(radii, bars):
+            each.set_facecolor(colormap(r))
+            each.set_alpha(0.5)
+
+        plt.show()
+
+    start_path = r'E:\迅雷下载'
+    if not os.path.exists(start_path):
+        print("路径不存在:{}".format(start_path))
+        sys.exit(-1)
+
+    folders = build_folders(start_path)
+    if len(folders) < 1:
+        print("路径底下没有文件夹:{}".format(start_path))
+        sys.exit(-1)
+
+    draw(folders)
 
 if __name__ == "__main__":
     #---------------------------------------------------start
@@ -789,7 +1429,7 @@ if __name__ == "__main__":
     # 能显示负号
     matplotlib.rcParams['axes.unicode_minus'] = False
 
-    sinCos()
+    showSimplePolar()
 
     #---------------------------------------------------end
     endtime = time.time()
