@@ -2,6 +2,7 @@ import matplotlib as mp
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import ImageGrid
 from matplotlib.cbook import get_sample_data
+from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 import csv
 import sys
@@ -36,9 +37,7 @@ from matplotlib.font_manager import FontProperties
 import scipy.misc
 import scipy
 import scipy.signal
-from PIL import Image
-
-os.chdir(r'E:\hexo\source.Olaful.github.io\Olaful.github.io\python\PythonApplication\PythonApplication\myfile')
+from PIL import Image, ImageChops, ImageFilter
 
 def setParam():
     """
@@ -1299,6 +1298,7 @@ def showSimplePolar():
     # 轴原点坐标(0.1, 0.1), 坐标轴长度(0.6, 0.6)
     # 显示为极坐标
     ax = fig.add_axes([0.2, 0.2, 0.6, 0.6], polar=True)
+    # 根据样本产生n个bar
     bars = ax.bar(theta, radii, tick_label=('样本1','样本2','样本3'),
                 edgecolor='cyan')
 
@@ -1417,6 +1417,373 @@ def showFileSysTree():
 
     draw(folders)
 
+def show3DBar():
+    """
+    简单3D柱状图
+    """
+    fig = plt.figure()
+    # 3D图例
+    ax = fig.add_subplot(111, projection='3d')
+
+    # x,y,z轴数据
+    for z in [2011, 2012, 2013, 2014]:
+        xs = range(1, 13)
+        ys = 1000 * np.random.rand(12)
+        
+        # 随机颜色映射
+        color = plt.cm.Set2(std_rand.choice(range(plt.cm.Set2.N)))
+        # 指定y轴作为z轴的维度,其它3d图如scatter,plot等
+        ax.bar(xs, ys, zs=z, zdir='y', color=color, alpha=0.8)
+
+    ax.xaxis.set_major_locator(mp.ticker.FixedLocator(xs))
+    ax.yaxis.set_major_locator(mp.ticker.FixedLocator(ys))
+
+    ax.set_xlabel('月份')
+    ax.set_ylabel('年份')
+    ax.set_zlabel('数据')
+
+    plt.show()
+
+def showSimple3dPlot():
+    """
+    简单3d图
+    """
+    x = [1, 2, 3]
+    y = [1, 2, 3]
+    z = [1, 2, 3]
+
+    dx = [0.1] * 3
+    dy = [0.1] * 3
+    dz = [0.1] * 3
+
+    fig = plt.figure()
+    color = plt.cm.Set2(std_rand.choice(range(plt.cm.Set2.N)))
+    ax = fig.add_subplot(211, projection='3d')
+    ax.scatter(x, y, zs=z, zdir='y', color=color, alpha=0.6)
+    ax = fig.add_subplot(212, projection='3d')
+    ax.bar(x, y, zs=z, zdir='y', color=color, alpha=0.6)
+    plt.show()
+
+def showHbPb():
+    """
+    三翼面图
+    """
+    # 角度数量
+    n_angles = 36
+    # 半径数量
+    n_radii = 8
+
+    radii = np.linspace(0.125, 1.0, n_radii)
+    angles = np.linspace(0, 2 * np.pi, n_angles, endpoint=False)
+    angles = np.repeat(angles[..., np.newaxis], n_radii, axis=1)
+    x = np.append(0, (radii * np.cos(angles)).flatten())
+    y = np.append(0, (radii * np.sin(angles)).flatten())
+    z = np.sin(-x * y)
+
+    fig = plt.figure()
+    ax = plt.gca(projection='3d')
+    ax.plot_trisurf(x, y, z, cmap=mp.cm.jet, linewidth=0.2)
+
+    plt.show()
+
+def show3dHist():
+    """
+    3d直方图
+    """
+    samples = 25
+    x = np.random.normal(5, 1, samples)
+    y = np.random.normal(3, .5, samples)
+
+    fig = plt.figure()
+    ax = fig.add_subplot(211, projection='3d')
+    # 计算两个空间的直方图
+    hist, xedges, yedges = np.histogram2d(x, y, bins=10)
+    elements = (len(xedges) - 1) * (len(yedges) - 1)
+    xpos, ypos = np.meshgrid(xedges[:-1]+.25, yedges[:-1]+.25)
+    xpos = xpos.flatten()
+    ypos = ypos.flatten()
+    zpos = np.zeros(elements)
+    dx = .1 * np.ones_like(zpos)
+    dy = dx.copy()
+    dz = hist.flatten()
+    
+    ax.bar3d(xpos, ypos, zpos, dx, dy, dz, color='b', alpha='0.4')
+    ax.set_xlabel('x轴')
+    ax.set_ylabel('y轴')
+    ax.set_zlabel('z轴')
+
+    ax2 = fig.add_subplot(212)
+    ax2.scatter(x, y)
+    ax2.set_xlabel('x轴')
+    ax2.set_ylabel('y轴')
+
+    plt.show()
+
+def showAnimation():
+    """
+    动图
+    """
+    from matplotlib import animation
+
+    fig = plt.figure()
+    ax = plt.axes(xlim=(0, 2), ylim=(-2, 2))
+    line, = ax.plot([], [], lw=2)
+
+    def init():
+        """
+        清空轴数据
+        """
+        line.set_data([], [])
+        return line,
+
+    def animate(i):
+        x = np.linspace(0, 2, 1000)
+        y = np.sin(2 * np.pi * (x - 0.01 * i)) * np.cos(22 * np.pi * (x - 0.01 *1))
+        line.set_data(x, y)
+        return line,
+    
+    # 动画长度200(一次循环包含的帧数),每20ms更新一次,blit=True更新所有点(false更新变化点)
+    # 每次更新调用init_func函数，使用animate(frames)作图
+    animator = animation.FuncAnimation(fig, animate, init_func=init,
+                                        frames=200, interval=20, blit=True)
+
+    # 保存动图, 使用ffmepg_file编码器
+    # animator.save('matplot动图.mp4', fps=30,
+    #                 extra_args=['-vcodec', 'libx264'],
+    #                 writer='ffmpeg')
+
+    plt.show()
+
+def showMayaAnimation():
+    """
+    maya动图
+    """
+    import mayavi.mlab as mmb
+
+    n_mer, n_long = 6, 11
+    pi = np.pi
+    dphi = pi / 1000.0
+    phi  = np.arange(0.0, 2*pi + 0.5*dphi, dphi, 'd')
+    mu = phi * n_mer
+    x = np.cos(mu) * (1 + np.cos(n_long*mu/n_mer)*0.5)
+    y = np.sin(mu) * (1 + np.cos(n_long*mu/n_mer)*0.5)
+    z = np.sin(n_long*mu/n_mer)*0.5
+    l = mmb.plot3d(x, y, z, np.sin(mu), tube_radius=0.025, colormap='Spectral')
+    ms = l.mlab_source
+    
+    for i in range(100):
+        x = np.cos(mu) * (1 + np.cos(n_long*mu/n_mer + np.pi*(i+1)/5)*0.5)
+        scalars = np.sin(mu + np.pi*(i+1)/5)
+        ms.set(x=x, scalars=scalars)
+
+def imgViewByPyglet():
+    """
+    使用pyglet察看图像
+    """
+    import pyglet
+
+    window = pyglet.window.Window()
+    image = pyglet.resource.image('captcha_normal.png')
+
+    @window.event
+    def on_draw():
+        window.clear()
+        image.blit(0, 0)
+
+    pyglet.app.run()
+
+def filterImage():
+    """
+    使用PIL滤波器过滤图像
+    """
+    class FilterImage():
+        def __init__(self, image_file=None):
+            self.fixed_filters = [ff for ff in dir(ImageFilter) if ff.isupper()]
+            assert(image_file is not None)
+            assert(os.path.isfile(image_file) is True)
+            self.image_file = image_file
+            self.image = Image.open(self.image_file)
+
+        def _make_temp_dir(self):
+            from tempfile import mkdtemp
+            # 创建临时目录
+            self.ff_tmpdir = mkdtemp(prefix='ff_demo')
+        
+        def _get_temp_name(self, filter_name):
+            # 获取文件名与文件扩展名
+            name, ext = os.path.splitext(os.path.basename(self.image_file))
+            newimage_file = name + '-' + filter_name + ext
+            path = os.path.join(self.ff_tmpdir, newimage_file)
+            return path
+
+        def _get_filter(self, filter_name):
+            real_filter = eval('ImageFilter.' + filter_name)
+            return real_filter
+
+        def applyfilter(self, filter_name):
+            print("正在使用滤波器:{}".format(filter_name))
+            filter_callable = self._get_filter(filter_name)
+            if filter_name in self.fixed_filters:
+                temp_img = self.image.filter(filter_callable)
+            else:
+                print("不支持该滤波器:{}".format(filter_name))
+            return temp_img
+
+        def run_fixed_filter(self):
+            self._make_temp_dir()
+            for ffilter in self.fixed_filters:
+                temp_img = self.applyfilter(ffilter)
+                temp_img.save(self._get_temp_name(ffilter))
+            print('过滤后的图像路径:{}'.format(self.ff_tmpdir))
+
+    imgfilter = FilterImage('captcha_normal.png')
+    imgfilter.run_fixed_filter()
+
+def adjustImageSize():
+    """
+    使用PIL调整指定目录下图像大小
+    """
+    class Thumbnailer(object):
+        def __init__(self, src_folder=None):
+            self.src_folder = src_folder
+            # 调整比例0.3
+            self.radio = .3
+            self.thumbnail_folder = 'thumbnails'
+
+        def _create_thumbnailers_folder(self):
+            thumb_path = os.path.join(self.src_folder, self.thumbnail_folder)
+            if not os.path.isdir(thumb_path):
+                os.makedirs(thumb_path)
+
+        def _build_thumb_path(self, image_path):
+            root = os.path.dirname(image_path)
+            name, ext = os.path.splitext(os.path.basename(image_path))
+            suffix = '.thumbnail'
+            return os.path.join(root, self.thumbnail_folder, name + suffix + ext)
+
+        def _load_files(self):
+            files = set()
+            for each in os.listdir(self.src_folder):
+                each = os.path.abspath(self.src_folder + '/' + each)
+                if os.path.isfile(each):
+                    files.add(each)
+            return files
+
+        def _thumb_size(self, size):
+            return (int(size[0] * self.radio), int(size[1] * self.radio))
+
+        def create_thumbnails(self):
+            self._create_thumbnailers_folder()
+            files = self._load_files()
+
+            for each in files:
+                print("正在处理:{}".format(each))
+                try:
+                    img = Image.open(each)
+                    thumb_size = self._thumb_size(img.size)
+                    resized = img.resize(thumb_size, Image.ANTIALIAS)
+                    savepath = self._build_thumb_path(each)
+                    resized.save(savepath)
+                except IOError as e:
+                    print("发生错误:{}".format(str(e)))
+
+    src_folder = r'E:\pictures'
+    if not os.path.isdir(src_folder):
+        print("路径不存在:{}".format(src_folder))
+        sys.exit(-1)
+    thumbs = Thumbnailer(src_folder)
+    thumbs.thumbnail_folder = 'THUMBS'
+    thumbs.radio = 0.1
+    thumbs.create_thumbnails()
+
+def addImgToChart():
+    """
+    向图表中添加图像
+    """
+    from matplotlib._png import read_png
+    from matplotlib.offsetbox import TextArea, \
+    OffsetImage, AnnotationBbox
+
+    def load_data():
+        import csv
+        with open('ship.csv', 'r') as f:
+            reader = csv.reader(f)
+            header = next(reader)
+            datarows = []
+            for row in reader:
+                datarows.append(row)
+            return header, datarows
+    
+    def format_data(datarows):
+        years, temps, pirates = [], [], []
+        for each in datarows:
+            years.append(each[0])
+            temps.append(each[1])
+            pirates.append(each[2])
+        return years, temps, pirates
+
+    fig = plt.figure(figsize=(16, 8))
+    ax = plt.subplot(111)
+    header, datarows = load_data()
+    xlabel, ylabel = header[0], header[1]
+    years, temps, pirates = format_data(datarows)
+    years = list(map(int, years))
+    title = '温度与船只的数量关系'
+    plt.plot(years, temps, lw=2)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+
+    # 在每一个点添加图像注解框
+    for x in range(len(years)):
+        xy = years[x], temps[x]
+        ax.plot(xy[0], xy[1], 'ok')
+        ship = read_png('captcha_normal.png')
+        zoomc = int(pirates[x]) * (1 / 90000.)
+        imagebox = OffsetImage(ship, zoom=zoomc)
+        # 注解类
+        ab = AnnotationBbox(imagebox, xy,
+                            xybox=(-200.*zoomc, 200.*zoomc),
+                            xycoords='data',
+                            boxcoords='offset points',
+                            pad=0.1,
+                            arrowprops=dict(arrowstyle='->',
+                            connectionstyle='angle, angleA=0, angleB=-30, rad=3'))
+        ax.add_artist(ab)
+
+        no_ship = TextArea(pirates[x], minimumdescent=False)
+        ab = AnnotationBbox(no_ship, xy,
+                            xybox=(50., -25.),
+                            xycoords='data',
+                            boxcoords='offset points',
+                            pad=.3,
+                            arrowprops=dict(arrowstyle='->',
+                            connectionstyle='angle, angleA=0, angleB=-30, rad=3'))
+        ax.add_artist(ab)
+    
+    plt.grid(1)
+    plt.xlim(2000, 2020)
+    plt.ylim(0, 18)
+    plt.title(title)
+
+    plt.show()
+
+def test():
+    ''
+    fig = plt.figure(figsize=(16, 8))
+    # plt.plot(['2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018'], 
+    # ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18'], 
+    # lw=2)
+    plt.plot([1, 2, 3], ['1', '2', '3'])
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+
+    plt.grid(1)
+    plt.xlim(2000, 2020)
+    plt.ylim(0, 18)
+    plt.title(title)
+
+    plt.show()
+    
 if __name__ == "__main__":
     #---------------------------------------------------start
     tupletime = time.localtime()
@@ -1424,12 +1791,14 @@ if __name__ == "__main__":
     print()
     starttime = time.time()
 
+    os.chdir(r'E:\git\Olaful\Olaful.github.io\python\PythonApplication\PythonApplication\myfile')
+
     # 能显示中文
     matplotlib.rcParams['font.sans-serif'] = ['SimHei']
     # 能显示负号
     matplotlib.rcParams['axes.unicode_minus'] = False
 
-    showSimplePolar()
+    addImgToChart()
 
     #---------------------------------------------------end
     endtime = time.time()
