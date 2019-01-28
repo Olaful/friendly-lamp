@@ -1698,7 +1698,7 @@ def adjustImageSize():
 
 def addImgToChart():
     """
-    向图表中添加图像
+    向图表中添加图像注解
     """
     from matplotlib._png import read_png
     from matplotlib.offsetbox import TextArea, \
@@ -1767,23 +1767,99 @@ def addImgToChart():
 
     plt.show()
 
-def test():
-    ''
-    fig = plt.figure(figsize=(16, 8))
-    # plt.plot(['2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018'], 
-    # ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18'], 
-    # lw=2)
-    plt.plot([1, 2, 3], ['1', '2', '3'])
-    plt.xlabel(xlabel)
-    plt.ylabel(ylabel)
+def imgHistView():
+    """
+    图像直方图查看
+    """
+    class ImageViewer(object):
+        def __init__(self, imfile):
+            self._load_image(imfile)
+            self._configure()
+            self.figure = plt.gcf()
+            t = 'Image:{}'.format(os.path.basename(imfile))
+            self.figure.suptitle(t, fontsize=20)
+            self.shape = (3, 2)
+        
+        def _configure(self):
+            mp.rcParams['font.size'] = 10
+            mp.rcParams['figure.autolayout'] = False
+            mp.rcParams['figure.figsize'] = (9, 6)
+            mp.rcParams['figure.subplot.top'] = .9
 
-    plt.grid(1)
-    plt.xlim(2000, 2020)
-    plt.ylim(0, 18)
-    plt.title(title)
+        def _load_image(self, imfile):
+            # 图像加载到数组
+            self.im = mp.image.imread(imfile)
 
+        @staticmethod
+        def _get_chno(ch):
+            chmap = {'R': 0, 'G': 1, 'B': 2}
+            return chmap.get(ch, -1)
+
+        def show_channel(self, ch):
+            bins = 256
+            ec = 'none'
+            chno = self._get_chno(ch)
+            loc = (chno, 1)
+            ax = plt.subplot2grid(self.shape, loc)
+            # flatten平滑响应通道数据
+            ax.hist(self.im[:, :, chno].flatten(), bins, color=ch, ec=ec,
+                    label=ch, alpha=.7)
+            ax.set_xlim(0, 255)
+            plt.setp(ax.get_xticklabels(), visible=True)
+            plt.setp(ax.get_yticklabels(), visible=False)
+            plt.setp(ax.get_xticklines(), visible=True)
+            plt.setp(ax.get_yticklines(), visible=False)
+            plt.legend()
+            plt.grid(True, axis='y')
+            return ax
+
+        def showHist(self):
+            loc = (0, 0)
+            axim = plt.subplot2grid(self.shape, loc, rowspan=3)
+            axim.imshow(self.im)
+            plt.setp(axim.get_xticklabels(), visible=True)
+            plt.setp(axim.get_yticklabels(), visible=False)
+            plt.setp(axim.get_xticklines(), visible=True)
+            plt.setp(axim.get_yticklines(), visible=False)
+            axr = self.show_channel('R')
+            axg = self.show_channel('G')
+            axb = self.show_channel('B')
+
+            plt.show()
+
+        def showPie(self):
+            rgb = [self.im[:, :, i].flatten()[0] for i in range(3)]
+            plt.pie(rgb)
+            plt.show()
+
+        def showBar(self):
+            x = ['r', 'g', 'b']
+            y = [self.im[:, :, i].flatten()[0] for i in range(3)]
+            colors = ['red', 'green', 'blue']
+            bars = plt.barh(x, y)
+            for i, bar in enumerate(bars):
+                bar.set_facecolor(colors[i])
+            plt.show()
+
+        
+    im = '泡泡.jpg'
+    iv = ImageViewer(im)
+    iv.showBar()
+
+def annoToBarh():
+    """
+    图形上方标记
+    """
+    x = ['a','b','c']
+    y = [1,2,3]
+    plt.bar(x, y, color='orange')
+    for i, name in enumerate(x, start=1):
+        xy = (i, y[i-1])
+        plt.annotate("{}".format(xy[1]), xy=xy, xytext=(i-1 , xy[1]), textcoords='offset points')
+    #plt.tight_layout()
     plt.show()
-    
+
+
 if __name__ == "__main__":
     #---------------------------------------------------start
     tupletime = time.localtime()
@@ -1791,14 +1867,14 @@ if __name__ == "__main__":
     print()
     starttime = time.time()
 
-    os.chdir(r'E:\git\Olaful\Olaful.github.io\python\PythonApplication\PythonApplication\myfile')
+    os.chdir(r'E:\hexo\source.Olaful.github.io\Olaful.github.io\python\PythonApplication\PythonApplication\myfile')
 
     # 能显示中文
     matplotlib.rcParams['font.sans-serif'] = ['SimHei']
     # 能显示负号
     matplotlib.rcParams['axes.unicode_minus'] = False
 
-    addImgToChart()
+    saveToBarh()
 
     #---------------------------------------------------end
     endtime = time.time()

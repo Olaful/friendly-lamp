@@ -12,6 +12,7 @@ from news.webhose_search import run_query
 from news.webdriver_search import WebDriver
 from django.contrib.auth.models import User
 import json
+import news.aide as dv
 
 # 返回HttpResponse的对象的函数就是一个视图，在urls文件添加映射
 def index_test(request):
@@ -27,6 +28,10 @@ def index(request):
     # 根据likes获取前五条数据, '-'表示反序
     category_list = Category.objects.order_by('-likes')[0:5]
     context_dict = {'categories_top_like':category_list}
+
+    # 数据可视化
+    dv.saveToBarh(category_list)
+
     # top 5 点赞分类
     category_list = Category.objects.order_by('-views')[0:5]
     context_dict['categories_top_view'] = category_list
