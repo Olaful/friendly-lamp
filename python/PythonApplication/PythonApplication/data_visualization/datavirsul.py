@@ -1851,7 +1851,7 @@ def annoToBarh():
     在柱状图上方添加注解
     """
     x = ['a','b','c']
-    y = [1,2,3]
+    y = [56,76,100]
 
     ax = plt.subplot2grid((1, 1), (0, 0))
     ax.barh(x, y, color='orange')
@@ -1862,11 +1862,15 @@ def annoToBarh():
 
     for i, name in enumerate(x, start=1):
         xy = (i, y[i-1])
+        xy = tuple(reversed(xy))
         # 注释内容，被注释内容，注释文字坐标位置, 使用与被注释对象相同的坐标系
-        plt.annotate("{}".format(xy[1]), xy=xy, xytext=(xy[1], i-1), xycoords='data')
+        plt.annotate("{}".format(xy[0]), xy=xy, xytext=(xy[0], i-1), xycoords='data')
+        print(xy, (xy[0], i-1))
+
+    plt.annotate("{}".format('hello'), xy=(4, 1), xytext=(4, 0), xycoords='data')
 
     # 去掉刻度
-    ax.set_xticks([])
+    #ax.set_xticks([])
 
     plt.show()
 
@@ -2015,14 +2019,14 @@ if __name__ == "__main__":
     print()
     starttime = time.time()
 
-    os.chdir(r'E:\git\Olaful\Olaful.github.io\python\PythonApplication\PythonApplication\myfile')
+    os.chdir(r'E:\hexo\source.Olaful.github.io\Olaful.github.io\python\PythonApplication\PythonApplication\myfile')
 
     # 能显示中文
     matplotlib.rcParams['font.sans-serif'] = ['SimHei']
     # 能显示负号
     matplotlib.rcParams['axes.unicode_minus'] = False
 
-    GenerateCaptcha()
+    annoToBarh()
 
     #---------------------------------------------------end
     endtime = time.time()

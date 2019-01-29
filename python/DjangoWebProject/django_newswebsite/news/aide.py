@@ -13,6 +13,30 @@ def saveToBarh(datalist):
     y.reverse()
 
     matplotlib.rcParams['font.sans-serif'] = ['SimHei']
-    plt.barh(x, y, color='orange')
+
+    ax = plt.subplot2grid((1, 1), (0, 0))
+    # 宽度0.5
+    ax.barh(x, y, 0.5, color='red')
+    
+    ticks = [i for i in range(0, len(x)+1)]
+    ax.set_xticks(y)
+    ax.set_yticks(ticks)
+
+    for i, _ in enumerate(x, start=1):
+        xy = (y[i-1], i)
+        plt.annotate(xy[0], xy=xy, xytext=(xy[0], i-1-0.1), xycoords='data')
+
+    ax.set_xticks([])
+    ax.set_facecolor('#eceeef')
+    ax.set_title('热门top 5(点赞数)')
+
+    axes = plt.gca()
+    axes.spines['right'].set_color('none')
+    axes.spines['top'].set_color('none')
+    #axes.spines['left'].set_color('none')
+    axes.spines['bottom'].set_color('none')
+
+    plt.setp(ax.get_yticklabels(), fontsize=15)
     plt.tight_layout()
-    plt.savefig('topviews.png')
+    # 保存透明背景图像
+    plt.savefig('topviews.png', facecolor='none')

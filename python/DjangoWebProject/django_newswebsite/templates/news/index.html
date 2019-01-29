@@ -24,7 +24,10 @@
 
 {% block body_head %}
     <div class="jumbotron">
-        <h1 class="display-3">Hello, News</h1>
+        <h1 class="display-3">Hello, News
+        <img src="{% static 'images/topviews.png' %}" alt="top views" height="250" width="500" />
+        <img class="rounded-circle" src="{% static 'images/plantVSzoom.jpg' %}" alt="plantVSzoom picture" height="200" width="200" />
+        </h1>
         <p class="lead">可以添加你喜欢的分类，让其他用户也能看到</p>
     </div>
 {% endblock body_head %}
@@ -76,10 +79,8 @@
 <br />
 
 {% block body_tail %}
-    <img src="{% static 'images/topviews.png' %}" alt="top views" height="300" width="500" />
-    <img class="rounded-circle" src="{% static 'images/plantVSzoom.jpg' %}" alt="plantVSzoom picture" height="200" width="200" />
     {# 会使用媒体模板上下文填充 #}
-    <img class="rounded-circle" src="{{ MEDIA_URL }}16t.png" alt="16t" />
+    {% comment %} <img class="rounded-circle" src="{{ MEDIA_URL }}16t.png" alt="16t" /> {% endcomment %}
 {% endblock body_tail %}
 
 {# 由于继承了模板，如果内容不再block中将不会显示 #}
