@@ -37,7 +37,7 @@ from matplotlib.font_manager import FontProperties
 import scipy.misc
 import scipy
 import scipy.signal
-from PIL import Image, ImageChops, ImageFilter
+from PIL import Image, ImageChops, ImageFilter, ImageDraw, ImageFont
 
 def setParam():
     """
@@ -1848,18 +1848,166 @@ def imgHistView():
 
 def annoToBarh():
     """
-    图形上方标记
+    在柱状图上方添加注解
     """
     x = ['a','b','c']
     y = [1,2,3]
-    plt.bar(x, y, color='orange')
+
+    ax = plt.subplot2grid((1, 1), (0, 0))
+    ax.barh(x, y, color='orange')
+
+    ticks = [i for i in range(0, len(x)+1)]
+    plt.xticks(y)
+    plt.yticks(ticks)
+
     for i, name in enumerate(x, start=1):
         xy = (i, y[i-1])
-        plt.annotate("{}".format(xy[1]), xy=xy, xytext=(i-1 , xy[1]), textcoords='offset points')
-    #plt.tight_layout()
+        # 注释内容，被注释内容，注释文字坐标位置, 使用与被注释对象相同的坐标系
+        plt.annotate("{}".format(xy[1]), xy=xy, xytext=(xy[1], i-1), xycoords='data')
+
+    # 去掉刻度
+    ax.set_xticks([])
+
     plt.show()
 
+def showSimpleBasemap():
+    """
+    绘制简单的地图
+    """
+    from mpl_toolkits.basemap import Basemap
 
+    # basemap 负责返回投影信息，画图部分交由matplot完成
+    # 使用cass投影实例,ll, ur 分别指定左下角的经纬度，右上角的经纬度
+    map = Basemap(projection='cass',
+                resolution='h',
+                area_thresh=0.1,
+                llcrnrlon=80.33, llcrnrlat=3.01,
+                urcrnrlon=138.16, urcrnrlat=56.123,
+                lat_0=42.5, lon_0=120)
+
+    #map = Basemap()
+
+    map.drawcoastlines()
+    #map.drawcounties()
+    map.fillcontinents(color='coral', lake_color='aqua')
+    # 边界线
+    map.drawmapboundary(fill_color='aqua')
+    # 子午线
+    map.drawmeridians(np.arange(0, 360, 30))
+    # 纬度线
+    map.drawparallels(np.arange(-90, 90, 30))
+
+    x = [1, 2, 3]
+    y = [10, 20, 30]
+    map.scatter(x, y, 25, marker='o', color='red', zorder=10)
+
+    plt.show()
+
+def GenerateCaptcha():
+    """
+    生成captcha图像
+    """
+    class CaptchaException(Exception):
+        pass
+
+    class GenerateCaptcha():
+        def __init__(self, length=5, size=(200, 100),
+                    fontsize=36, random_text=None, random_bgcolor=None):
+            self.length = length
+            self.size = size
+            self.fontsize = fontsize
+            self.text = "验证码"
+            self.bgcolor = 255
+            self.image = None
+
+            if random_text:
+                self.text = self._random_text()
+
+            if not self.text:
+                raise CaptchaException('验证码文字不能为空。')
+
+            if not self.size:
+                raise CaptchaException('验证码图片大小不能为空')
+
+            if not self.fontsize:
+                raise CaptchaException('验证码文字大小不能为空')
+
+            if random_bgcolor:
+                self.bgcolor = self._random_color()
+        
+        # 获取待绘制文字的左上角坐标
+        def _center_coords(self, draw, font):
+            width, height = draw.textsize(self.text, font)
+            xy = (self.size[0] - width) / 2., (self.size[1] - height) / 2.
+            return xy
+
+        # 添加白点噪声
+        def _add_noise_dots(self, draw):
+            size = self.image.size
+            # 添加%10的噪声点
+            for _ in range(int(size[0] * size[1] * 0.1)):
+                draw.point((std_rand.randint(0, size[0]),
+                            std_rand.randint(0, size[1])),
+                            fill='white')
+            return draw
+
+        # 添加白色线条噪声
+        def _add_noise_lines(self, draw):
+            size = self.image.size
+            for _ in range(8):
+                # 线条随机宽度
+                width = std_rand.randint(1, 2)
+                # 在图像高度范围内取随机开始位置
+                start = (0, std_rand.randint(0, size[1] - 1))
+                # 在图像宽度高度范围内取随机结束位置
+                end = (size[0], std_rand.randint(0, size[1] - 1))
+                # 画线
+                draw.line([start, end], fill='white', width=width)
+            for _ in range(8):
+                # 在开始-50,50到随机结束的位置之间顺时针划一条
+                # 0到360度的弧线,其中0度为水平向右
+                start = (-50, 50)
+                end = (size[0] + 10, std_rand.randint(0, size[1] + 10))
+                draw.arc(start + end, 0, 360, fill='white')
+            return draw
+        
+        def get_captcha(self, size=None, text=None, bgcolor=None):
+            if size:
+                self.size = size
+            if text:
+                self.text = text
+            if bgcolor:
+                self.bgcolor = bgcolor
+        
+            self.image = Image.new('RGB', self.size, self.bgcolor)
+            font = ImageFont.truetype(r'C:\Windows\Fonts\simsunb.ttf', self.fontsize)
+            draw = ImageDraw.Draw(self.image)
+            xy = self._center_coords(draw, font)
+            draw.text(xy=xy, text=self.text, font=font)
+
+            draw = self._add_noise_dots(draw)
+            draw = self._add_noise_lines(draw)
+            
+            self.image.show()
+
+            return self.image, self.text
+        
+        def _random_text(self):
+            letters = string.ascii_lowercase + string.ascii_uppercase
+            random_text = ""
+            for _ in range(self.length):
+                random_text += std_rand.choice(letters)
+            return random_text
+
+        def _random_color(self):
+            r = std_rand.randint(0, 255)
+            g = std_rand.randint(0, 255)
+            b = std_rand.randint(0, 255)
+            return (r, g, b)
+    
+    gc = GenerateCaptcha(length=7, fontsize=36, random_text=True, random_bgcolor=True)
+    gc.get_captcha()
+    
 if __name__ == "__main__":
     #---------------------------------------------------start
     tupletime = time.localtime()
@@ -1867,14 +2015,14 @@ if __name__ == "__main__":
     print()
     starttime = time.time()
 
-    os.chdir(r'E:\hexo\source.Olaful.github.io\Olaful.github.io\python\PythonApplication\PythonApplication\myfile')
+    os.chdir(r'E:\git\Olaful\Olaful.github.io\python\PythonApplication\PythonApplication\myfile')
 
     # 能显示中文
     matplotlib.rcParams['font.sans-serif'] = ['SimHei']
     # 能显示负号
     matplotlib.rcParams['axes.unicode_minus'] = False
 
-    saveToBarh()
+    GenerateCaptcha()
 
     #---------------------------------------------------end
     endtime = time.time()
