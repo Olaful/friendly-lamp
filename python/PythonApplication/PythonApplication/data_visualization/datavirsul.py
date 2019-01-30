@@ -2488,6 +2488,85 @@ def showText():
     """
     设置字体
     """
+    families = ['serif', 'sans-serif', 'DejaVu Sans', 'fantasy', 'monospace']
+    sizes = ['xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large']
+    styles = ['normal', 'italic', 'oblique']
+    weights = ['light', 'normal', 'medium', 'semibold', 'bold', 'heavy', 'black']
+    variants = ['normal', 'small-caps']
+
+    fig = plt.figure(figsize=(9, 17))
+    ax = fig.add_subplot(111)
+    ax.set_xlim(0, 9)
+    ax.set_ylim(0, 17)
+
+    y = 0
+    size = sizes[0]
+    style = styles[0]
+    weight = weights[0]
+    variant = variants[0]
+
+    for family in families:
+        x = 0
+        y = y + .5
+        for size in sizes:
+            y = y + .4
+            sample = family + " " + size
+            ax.text(x, y, sample, family=family, size=size,
+                    style=style, weight=weight, variant=variant)
+    y = 0
+    family = families[0]
+    size = sizes[4]
+    variant = variants[0]
+
+    for weight in weights:
+        x = 5
+        y = y + .5
+        for style in styles:
+            y = y + .4
+            sample = weight + " " + style
+            ax.text(x, y, sample, family=family, size=size,
+                    style=style, weight=weight, variant=variant)
+
+    # 关闭轴显示
+    ax.set_axis_off()
+    
+    plt.show()
+
+def showByLaTex():
+    """
+    使用LaTex渲染
+    """
+    t = np.arange(0.0, 1.0 + 0.01, 0.01)
+    s = np.cos(4 * np.pi * t) * np.sin(np.pi * t / 4) + 2
+
+    # 使用Latex渲染
+    plt.rc('text', usetex=True)
+    #plt.rc('font', **{'family':'sans-serif', 'sans-serif':['Helvetica'], 'size': 16})
+
+    plt.plot(t, s, alpha=0.25)
+    plt.annotate(r'$\cos(4 \times \pi \times {t} times \sin(\pi \times '
+                 r'\frac{t} 4) + 2$', xy=(.9, 2.2), xytext=(.5, 2.6), color='red', arrowprops=
+                  {'arrowstyle':'->'})
+    plt.text(.01, 2.7, r'$\alpha, \beta, \gamma, \Gamma, \pi, \Pi, \phi, \varphi, \Phi$')
+    plt.text(.01, 2.5, r'一些方程式 $\frac{n !}{k!(n-k)!} = {n \choose k}$')
+    plt.text(.01, 2.3, r'方程式1 $\lim_{x \to \infty} \exp(-x) = 0$')
+    plt.text(.01, 2.1, r'Ranges: $( a ), [ b ], \{ c \}, | d |, \| e \|, \'
+                       r'langle f \rangle, \lfloor g \rfloor, \lceil h \rceil$')
+    plt.text(.01, 1.9, r'文本: $50 apples \times 100 oranges = lots of juice$')
+    plt.text(.01, 1.7, r'更多格式化文本: $50 \textrm{ apples } \times 100 \textbf{ apples } = \textit{lots of juice}$')
+    plt.text(.01, 1.5, r'一些索引: $\beta = (\beta_1,\beta_2,\dotsc,\beta_n)$')
+    plt.xlabel(r'textbf{time} (s)')
+    plt.ylabel(r'textit{y values} (W)')
+    plt.title(r'\TeX is Number '
+              r'$\displaystyle\sum_{n=1}^\infty\frac{-e^{i\pi}}{2^n}$!',
+              fontsize=16, color='gray')
+
+    # 调整子图布局
+    plt.subplots_adjust(top=0.8)
+    
+    plt.savefig('text_Tex')
+
+    plt.show()
 
 if __name__ == "__main__":
     #---------------------------------------------------start
@@ -2496,14 +2575,14 @@ if __name__ == "__main__":
     print()
     starttime = time.time()
 
-    os.chdir(r'E:\git\Olaful\Olaful.github.io\python\PythonApplication\PythonApplication\myfile')
+    os.chdir(r'E:\hexo\source.Olaful.github.io\Olaful.github.io\python\PythonApplication\PythonApplication\myfile')
 
     # 能显示中文
     matplotlib.rcParams['font.sans-serif'] = ['SimHei']
     # 能显示负号
     matplotlib.rcParams['axes.unicode_minus'] = False
 
-    showErrorPlot()
+    showText()
 
     #---------------------------------------------------end
     endtime = time.time()
