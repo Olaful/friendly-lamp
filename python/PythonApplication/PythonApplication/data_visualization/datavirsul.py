@@ -46,6 +46,16 @@ def setParam():
     """
     mp.rcParams['lines.linewidth'] = 2
     mp.rcParams['lines.color'] = 'r'
+    mp.rcParams['text.family'] = 'serif'
+    mp.rcParams['text.size'] = 'small'
+    mp.rcParams['text.style'] = 'italic'
+    # 字体变形形式
+    mp.rcParams['text.variant'] = 'small-caps'
+    mp.rcParams['text.weight'] = 'light'
+    mp.rcParams['text.horizontalalignment'] = 'center'
+    mp.rcParams['text.verticalalignment'] = 'center'
+    # 跨多行文本对齐
+    mp.rcParams['text.multialignment'] = 'center'
     mp.rc('lines', linewidth=2, color='r')
 
 def sincosLine():
@@ -321,6 +331,7 @@ def showCleanData():
 
     # 子图像,211表示2行1列，位置索引1
     # 也可以写成2,1,1
+    # 索引范围为1到4
     plt.subplot(211)
     # 直方图,buckets指柱状条个数,个数越多，区分范围越细
     plt.hist(x, buckets)
@@ -819,6 +830,15 @@ def showLine():
     #plt.setp(lines, xdata=np.array([9,8,7,6,5]))
     # 为artist设置z轴位置
     plt.setp(lines, Zorder=1)
+
+    ax = plt.add_subplot(211)
+    # 在指定位置添加注解
+    ax.text((1,2))
+    # 设置label与坐标轴的间距
+    ax.set_xlabel('hello', labelpad=0.1)
+
+    # 指定位置添加文本
+    plt.figure().text((1, 1))
     
     plt.show()
 
@@ -1127,7 +1147,7 @@ def showSubplot():
     """
     显示子区
     """
-    plt.figure(0)
+    fig = plt.figure(0)
     # subplot索引是0开始
     # 三行三列，从0行0列开始作图,列跨三个跨度
     plt.subplot2grid((3, 3), (0, 0), colspan=3)
@@ -1142,6 +1162,7 @@ def showSubplot():
         # 设置刻度字体大小
         for ticklabel in ax.get_xticklabels() + ax.get_yticklabels():
             ticklabel.set_fontsize(10)
+    # 添加居中标题
     plt.suptitle('subplot2grid 示例')
 
     plt.show()
@@ -1237,6 +1258,7 @@ def showContour():
     Z = process_signals(X, Y)
     N = np.arange(-1, 1.5, 0.3)
     # 绘制Z数组的等高线，水平数由N决定,颜色映射为jet
+    # 颜色表还有autumn, cool等
     CS = plt.contour(Z, N, linewidth=2, cmap=mp.cm.jet)
     # 为等高线添加标签
     plt.clabel(CS, inline=True, fmt='%1.1f', fontsize=10)
@@ -2011,7 +2033,462 @@ def GenerateCaptcha():
     
     gc = GenerateCaptcha(length=7, fontsize=36, random_text=True, random_bgcolor=True)
     gc.get_captcha()
+
+def showLogarithm():
+    """
+    对数图, 消除一些差异较大的数
+    """
+    x = np.linspace(1, 10)
+    # 指数
+    y = [10 ** el for el in x]
+    # 线性
+    z = [1 * el for el in x]
+
+    fig = plt.figure(figsize=(10, 8))
+    ax1 = fig.add_subplot(2, 2, 1)
+    ax1.plot(x, y, color='blue')
+    ax1.set_yscale('log')
+    ax1.set_title(r'对数曲线 $ {10}^{x} $')
+    ax1.set_ylabel(r'$ {y} = {10}^{x} $')
+    plt.grid(b=True, which='both', axis='both')
+
+    ax2 = fig.add_subplot(2, 2, 2)
+    ax2.plot(x, y, color='red')
+    ax2.set_yscale('linear')
+    ax2.set_title(r'线性曲线 $ {10}^{x} $')
+    ax2.set_ylabel(r'$ {y} = {10}^{x} $')
+    plt.grid(b=True, which='both', axis='both')
+
+    ax3 = fig.add_subplot(2, 2, 3)
+    ax3.plot(x, z, color='green')
+    ax3.set_yscale('log')
+    ax3.set_title(r'对数曲线 $ {2}*{x} $')
+    ax3.set_ylabel(r'$ {y} = {2}*{x} $')
+    plt.grid(b=True, which='both', axis='both')
+
+    ax4 = fig.add_subplot(2, 2, 4)
+    ax4.plot(x, z, color='magenta')
+    ax4.set_yscale('linear')
+    ax4.set_title(r'线性曲线 $ {2}*{x} $')
+    ax4.set_ylabel(r'$ {y} = {2}*{x} $')
+    plt.grid(b=True, which='both', axis='both')
+
+    plt.show()
+
+def showStem():
+    """
+    火柴杆图, 杆的末端为数据点
+    """
+    x = np.linspace(0, 20, 50)
+    y = np.sin(x + 1) + np.cos(x ** 2)
+    bottom = -0.1
+    hold = False
+    label = 'delta'
+    # bottom基线位置
+    # 杆头标记，杆茎标记，基线标记
+    markerline, stemline, baseline = plt.stem(x, y, bottom=bottom,
+                                            label=label)
+
+    plt.setp(markerline, color='red', marker='o')
+    plt.setp(stemline, color='blue', linestyle=':')
+    plt.setp(baseline, color='grey', linewidth=2, linestyle='-')
+
+    plt.legend()
+
+    plt.show()
+
+def showSteamLine():
+    """
+    流线图
+    """
+    Y, X = np.mgrid[0:5:100j, 0:5:100j]
+    #U = X
+    # V, U 是匹配X，Y的速率
+    U = np.sin(X)
+    V = Y
+
+    plt.streamplot(X, Y, V, U)
+
+    plt.show()
+
+def showMultiColor():
+    """
+    彩色图
+    """
+    r_y_g = ['#d73027', '#f46d43', '#fdae61',
+             '#fee08b', '#ffffbf', '#d9ef8b',
+             '#a6d96a', '#66bd36', '#1a9850']
+    sample_size = 1000
+    fig, ax = plt.subplots(1)
+
+    for i in range(9):
+        y = np.random.normal(size=sample_size).cumsum()
+        x = np.arange(sample_size)
+        ax.scatter(x, y, label=str(i), lw=0.1,
+                edgecolors='grey', facecolor=r_y_g[i])
+    ax.legend()
+
+    plt.show()
+
+def setColorMap():
+    """
+    自定义颜色表
+    """
+    cdict = {'red':((0.0, 0.0, 0.0),
+                    (0.5, 1.0, 0.7),
+                    (1.0, 1.0, 1.0)),
+            'green':((0.0, 0.0, 0.0),
+                     (0.5, 1.0, 0.0),
+                     (1.0, 1.0, 1.0)),
+            'blue':((0.0, 0.0, 0.0),
+                    (0.5, 1.0, 0.0),
+                    (1.0, 0.5, 1.0))}
+    t_cmap = mp.colors.LinearSegmentedColormap('t_cmap', cdict, 256)
+    plt.pcolor(rand(10, 10), cmap=t_cmap)
+    plt.colorbar()
+    plt.show()
+
+def showRelateByScatter():
+    """
+    使用散点图显示数据正负相关
+    """
+    d = [1.04, 1.04, 1.16, 1.22, 1.46, 2.34, 1.16,
+            1.12, 1.24, 1.30, 1.44, 1.22]
+
+    d1 = np.random.random(12)
+    assert(len(d1) == len(d))
+    fig = plt.figure()
+
+    ax1 = fig.add_subplot(221)
+    ax1.scatter(d, d1, alpha=0.5)
+    ax1.set_title('不相关')
+    ax1.grid(True)
+
+    ax2 = fig.add_subplot(222)
+    ax2.scatter(d1, d1, alpha=0.5)
+    ax2.set_title('理想正相关')
+    ax2.grid(True)
+
+    ax3 = fig.add_subplot(223)
+    ax3.scatter(d1, -1 * d1, alpha=0.5)
+    ax3.set_title('理想负相关')
+    ax3.grid(True)
+
+    ax4 = fig.add_subplot(224)
+    ax4.scatter(d1, d1 + d, alpha=0.5)
+    ax4.set_title('非理想正相关')
+    ax4.grid(True)
+
+    plt.tight_layout()
+
+    plt.show()
+
+def showScatterhist():
+    """
+    散点直方图
+    """
+    from mpl_toolkits.axes_grid1 import make_axes_locatable
+
+    def scatterhist(x, y, figsize=(8, 8)):
+        _,  scatters_axes = plt.subplots(figsize=figsize)
+        scatters_axes.scatter(x, y, alpha=0.5)
+        scatters_axes.set_aspect(1.)
+        # 使用现有的轴创建一个轴对象，之后可以基于此进行轴数据的共享
+        divider = make_axes_locatable(scatters_axes)
+        # 添加轴
+        axes_hist_x = divider.append_axes(position='top', sharex=scatters_axes,
+                                        size=1, pad=0.1)
+        axes_hist_y = divider.append_axes(position='right', sharex=scatters_axes,
+                                        size=1, pad=0.1)
+        binswidth = 0.25
+        xymax = np.max([np.max(np.fabs(x)), np.max(np.fabs(y))])
+        bincap = int(xymax / binswidth) * binswidth
+        bins = np.arange(-bincap, bincap, binswidth)
+        # 直方图
+        nx, binsx, _ = axes_hist_x.hist(x, bins=bins, histtype='stepfilled',
+                                        orientation='vertical')
+        ny, binsy, _ = axes_hist_y.hist(y, bins=bins, histtype='stepfilled',
+                                        orientation='horizontal')
+        tickstep = 50
+        tickmax = np.max([np.max(nx), np.max(ny)])
+        xyticks = np.arange(0, tickmax + tickstep, tickstep)
+
+        for tl in axes_hist_x.get_xticklabels():
+            tl.set_visible(False)
+        axes_hist_x.set_yticks(xyticks)
+
+        for tl in axes_hist_y.get_yticklabels():
+            tl.set_visible(False)
+        axes_hist_y.set_xticks(xyticks)
+
+        plt.show()
     
+    d = [1.04, 1.04, 1.16, 1.22, 1.46, 2.34, 1.16,
+            1.12, 1.24, 1.30, 1.44, 1.22]
+    d1 = np.random.random(12)
+    assert(len(d1) == len(d))
+
+    scatterhist(d, d1)
+
+def showTwoCorrelation():
+    """
+    两个变量互相关图
+    """
+    d = [1.04, 1.04, 1.16, 1.22, 1.46, 2.34, 1.16,
+            1.12, 1.24, 1.30, 1.44, 1.22]
+    d1 = np.random.random(12)
+    assert(len(d1) == len(d))
+
+    total = sum(d)
+    av = total / len(d)
+    z = [i - av for i in d]
+
+    total1 = sum(d1)
+    av1 = total1 / len(d1)
+    z1 = [i - av1 for i in d1]
+
+    fig = plt.figure()
+
+    ax1 = fig.add_subplot(311)
+    ax1.plot(d)
+    ax1.set_xlabel('一些样本数据')
+    
+    ax2 = fig.add_subplot(312)
+    ax2.plot(d1)
+    ax2.set_xlabel('随机数据')
+
+    ax3 = fig.add_subplot(313)
+    ax3.set_xlabel('随机数的交叉相关')
+    # 延x轴时间线数据相似度，
+    ax3.xcorr(z, z1, usevlines=True, maxlags=None, normed=None, lw=2)
+    ax3.grid(True)
+    plt.ylim(-1, 1)
+
+    plt.tight_layout()
+
+    plt.show()
+
+def showSelfCorrelation():
+    """
+    自相关图，延着时间线，数据会表现出正或负相关
+    """
+    d = [1.04, 1.04, 1.16, 1.22, 1.46, 2.34, 1.16,
+            1.12, 1.24, 1.30, 1.44, 1.22]
+    d1 = np.random.random(12)
+    assert(len(d1) == len(d))
+
+    total = sum(d)
+    av = total / len(d)
+    z = [i - av for i in d]
+
+    fig = plt.figure()
+
+    ax1 = fig.add_subplot(221)
+    ax1.plot(d)
+    ax1.set_xlabel('一些样本数据')
+
+    ax2 = fig.add_subplot(222)
+    ax2.acorr(z, usevlines=True, maxlags=None, normed=True, lw=2)
+    ax2.grid(True)
+    ax2.set_xlabel('自动相关')
+
+    total = sum(d1)
+    av = total / len(d1)
+    z = [i - av for i in d1]
+
+    ax3 = fig.add_subplot(223)
+    ax3.plot(d1)
+    ax3.set_xlabel('随机数据')
+
+    ax4 = fig.add_subplot(224)
+    # 延x轴时间线的自相关
+    ax4.acorr(z, usevlines=True, maxlags=None, normed=True, lw=2)
+    ax4.grid(True)
+    ax4.set_xlabel('随机数的自动相关')
+
+    plt.tight_layout()
+
+    plt.show()
+
+def showWindPole():
+    """
+    风杆图
+    """
+    x = np.linspace(-20, 20, 8)
+    y = np.linspace(0, 20, 8)
+    X, Y = np.meshgrid(x, y)
+    # 表示在北-南，东-西方向上一knots为单位的向量的大小
+    U, V = X + 25, Y - 25
+
+    plt.subplot(1, 2, 1)
+    plt.barbs(X, Y, U, V, flagcolor='green', alpha=0.75)
+    plt.grid(True, color='gray')
+
+    plt.subplot(1, 2, 2)
+    plt.quiver(X, Y, U, V, facecolor='red', alpha=0.75)
+    plt.grid(True, color='gray')
+    
+    plt.show()
+
+def showBoxPlot():
+    """
+    箱线图
+    """
+    PROCESS = {
+        'A': [12, 15, 23, 24, 30, 31, 33, 36, 50, 73],
+        'B': [6, 22, 26, 33, 35, 47, 54, 55, 62, 63],
+        'C': [2, 3, 6, 8, 13, 14, 19, 23, 60, 69],
+        'D': [1, 22, 36, 37, 45, 47, 48, 51, 52, 69],
+    }
+
+    # 四组数据值
+    DATA = PROCESS.values()
+    LABELS = PROCESS.keys()
+
+    plt.boxplot(DATA, notch=False, widths=0.3)
+    plt.gca().xaxis.set_ticklabels(LABELS)
+
+    for spine in plt.gca().spines.values():
+        # 隐藏轴线
+        spine.set_visible(False)
+
+    # 去掉一些线条使图表数据更集中视力
+    plt.gca().xaxis.set_ticks_position('none')
+    # 刻度位置为轴线左边
+    plt.gca().yaxis.set_ticks_position('left')
+
+    plt.xlabel('异常值组')
+    plt.ylabel('异常值')
+
+    plt.show()
+
+def showGantt():
+    """
+    甘特图
+    """
+    import matplotlib.font_manager as fm
+    import matplotlib.dates as mdates
+
+    class Gantt(object):
+        r_y_g = ['#d73027', '#f46d43', '#fdae61',
+                 '#fee08b', '#ffffbf', '#d9ef8b',
+                 '#a6d96a', '#66bd36', '#1a9850']
+        POST_START = 1.0
+        POS_STEP = 0.5
+        
+        def __init__(self, tasks):
+            self._fig = plt.figure()
+            self._ax = self._fig.add_axes([0.1, 0.1, .75, .5])
+            self.tasks = tasks[::-1]
+
+        def _format_date(self, date_string):
+            try:
+                date = datetime.datetime.strptime(date_string, '%Y-%m-%d %H:%M:%S')
+            except ValueError as e:
+                logging.error('字符串:{}不可以转换成datetime对象:{}'.format(date_string, e))
+                sys.exit(-1)
+            mpl_date = mdates.date2num(date)
+            return mpl_date
+
+        def _plot_bars(self):
+            i = 0
+            for task in self.tasks:
+                start = self._format_date(task['start'])
+                end = self._format_date(task['end'])
+                bottom = i * Gantt.POS_STEP + Gantt.POST_START
+                width = start - end
+                # left指示离左边多少距离开始显示
+                self._ax.barh(bottom, width, left=start, height=0.3,
+                            align='center', label=task['label'],
+                            color=Gantt.r_y_g[i])
+                i += 1
+
+        def _configure_yaxis(self):
+            task_labels = [t['label'] for t in self.tasks]
+            pos = self._positions(len(task_labels))
+            # 设置y轴刻度
+            ylocs = self._ax.set_yticks(pos)
+            ylabels = self._ax.set_yticklabels(task_labels)
+            plt.setp(ylabels, size='medium')
+
+        def _configure_xaxis(self):
+            self._ax.xaxis_date()
+            rule = mdates.rrulewrapper(mdates.DAILY, interval=7)
+            loc = mdates.RRuleLocator(rule)
+            formatter = mdates.DateFormatter('%d %b')
+
+            # 设置x轴刻度
+            self._ax.xaxis.set_major_locator(loc)
+            self._ax.xaxis.set_major_formatter(formatter)
+            xlabels = self._ax.get_xticklabels()
+            # rotation倾斜30度角
+            plt.setp(xlabels, rotation=30, fontsize=9)
+
+        def _configure_figure(self):
+            self._configure_xaxis()
+            self._configure_yaxis()
+            self._ax.grid(True, color='gray')
+            self._set_legend()
+            self._fig.autofmt_xdate()
+
+        def _set_legend(self):
+            font = fm.FontProperties(size='small')
+            self._ax.legend(loc='upper right', prop=font)
+
+        def _positions(self, count):
+            end = count * Gantt.POS_STEP + Gantt.POST_START
+            pos = np.arange(Gantt.POST_START, end, Gantt.POS_STEP)
+            return pos
+
+        def show(self):
+            self._plot_bars()
+            self._configure_figure()
+            plt.show()
+    
+    DATA = (
+        {'label': '调研', 'start': '2018-10-01 12:00:00', 'end': '2018-10-02 18:00:00'},
+        {'label': '聚会', 'start': '2018-10-02 09:00:00', 'end': '2018-10-02 12:00:00'},
+        {'label': '会议1', 'start': '2018-10-03 12:00:00', 'end': '2018-10-03 18:00:00'},
+        {'label': '设计', 'start': '2018-10-04 09:00:00', 'end': '2018-10-10 13:00:00'},
+        {'label': '会议2', 'start': '2018-10-11 09:00:00', 'end': '2018-10-11 13:00:00'},
+        {'label': '实施', 'start': '2018-10-12 09:00:00', 'end': '2018-10-22 13:00:00'},
+        {'label': '演示', 'start': '2018-10-23 09:00:00', 'end': '2018-10-23 13:00:00'},
+    )
+
+    gantt = Gantt(DATA)
+    gantt.show()
+
+def showErrorPlot():
+    """
+    误差条图
+    """
+
+
+    DATA = np.array([
+        [1, 2, 3, 2, 1, 2, 3, 4, 2, 3, 2, 1, 2, 3, 4, 4, 3, 2, 3, 2, 3, 2, 1],
+        [5, 6, 5, 4, 5, 6, 7, 7, 6, 7, 7, 2, 8, 7, 6, 5, 5, 6, 7, 7, 7, 6, 5],
+        [9, 8, 7, 8, 8, 7, 4, 6, 6, 5, 4, 3, 2, 2, 2, 3, 3, 4, 5, 5, 5, 6, 1],
+        [3, 2, 3, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 6, 6, 7, 8, 9, 8, 5],
+    ])
+
+    # 平均差
+    y = np.mean(DATA, axis=1, dtype=np.float64)
+    ci95 = np.abs(y - 1.96 * scipy.stats.sem(DATA, axis=1))
+    tries = np.arange(0, len(y), 1.0)
+    plt.grid(True, alpha=0.5)
+    plt.gca().set_xlabel('观测')
+    plt.gca().set_ylabel('平均值 (+- 95% CI)')
+    plt.title('以相应的95％CI作为误差条观察')
+
+    plt.bar(tries, y, align='center', alpha=0.2)
+    plt.errorbar(tries, y, yerr=ci95)
+    plt.show()
+
+def showText():
+    """
+    设置字体
+    """
+
 if __name__ == "__main__":
     #---------------------------------------------------start
     tupletime = time.localtime()
@@ -2019,14 +2496,14 @@ if __name__ == "__main__":
     print()
     starttime = time.time()
 
-    os.chdir(r'E:\hexo\source.Olaful.github.io\Olaful.github.io\python\PythonApplication\PythonApplication\myfile')
+    os.chdir(r'E:\git\Olaful\Olaful.github.io\python\PythonApplication\PythonApplication\myfile')
 
     # 能显示中文
     matplotlib.rcParams['font.sans-serif'] = ['SimHei']
     # 能显示负号
     matplotlib.rcParams['axes.unicode_minus'] = False
 
-    annoToBarh()
+    showErrorPlot()
 
     #---------------------------------------------------end
     endtime = time.time()
