@@ -25,7 +25,7 @@
 {% block body_head %}
     <div class="jumbotron">
         <h1 class="display-3">Hello, News</h1>
-        <p class="lead">可以添加你喜欢的分类，让其他用户也能看到</p>
+        <div style="color:#8DB6CD"><p class="lead">可以添加你喜欢的分类，让其他用户也能看到</p></div>
         {% comment %} <img src="{% static 'images/topviews.png' %}" alt="top views" height="250" width="500" /> {% endcomment %}
         <img src="data:image/png;base64,{{ imgbase64 }}" alt="top views" height="250" width="500" />
         {% comment %} <img class="rounded-circle" src="{% static 'images/plantVSzoom.jpg' %}" alt="plantVSzoom picture" height="200" width="200" /> {% endcomment %}
@@ -37,7 +37,7 @@
 
     <div class="row marketing">
         <div class="col-lg-6">
-            <h4>点赞数排行</h4>
+            <div style="color:#B8860B"><h4>点赞数排行</h4></div>
             <p>
             {# 模板部分 #}
             {% if categories_top_like %}
@@ -58,7 +58,7 @@
             {% endif %}
         </div>
         <div class="col-lg-6">
-            <h4>浏览数排行</h4>
+            <div style="color:#B8860B"><h4>浏览数排行</h4></div>
             <p>
             {% if categories_top_view %}
             <ul class="list-group">

@@ -19,7 +19,7 @@ $(document).ready(
 
     // 鼠标悬浮在元素上面触发
     // hover接受两个函数
-    $('p').hover(
+    $('.about').hover(
         function()
         {
             $(this).css('color', 'red');
