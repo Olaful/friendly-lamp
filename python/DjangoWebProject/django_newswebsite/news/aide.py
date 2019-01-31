@@ -10,13 +10,13 @@ def saveToBarh(datalist):
     
     if platform.system() == 'Windows':
         static_dir = os.path.join(base_dir, 'static/images')
-        img = os.path.join(static_dir, 'topviews.png')
+        img = STATIC_DIR + r'\images\topviews.png'
         fname = STATIC_DIR + r'\fonts\simheittf.ttf'
         font = FontProperties(fname=fname)
     elif platform.system() == 'Linux':
         static_dir = base_dir
-        img = os.path.join(static_dir, 'topviews.png')
-        fname = STATIC_DIR + r'/fonts/simheittf.ttf'
+        img = STATIC_DIR + '/images/topviews.png'
+        fname = STATIC_DIR + '/fonts/simheittf.ttf'
         font = FontProperties(fname=fname)
 
     x = [data.name for data in datalist]
@@ -47,7 +47,7 @@ def saveToBarh(datalist):
     axes = plt.gca()
     axes.spines['right'].set_visible(False)
     axes.spines['top'].set_visible(False)
-    #axes.spines['bottom'].set_visible(False)
+    axes.spines['bottom'].set_visible(False)
 
     plt.setp(ax.get_yticklabels(), fontsize=15)
     plt.tight_layout()
