@@ -26,8 +26,10 @@
     <div class="jumbotron">
         <h1 class="display-3">Hello, News</h1>
         <p class="lead">可以添加你喜欢的分类，让其他用户也能看到</p>
-        <img src="{% static 'images/topviews.png' %}" alt="top views" height="250" width="500" />
-        <img class="rounded-circle" src="{% static 'images/plantVSzoom.jpg' %}" alt="plantVSzoom picture" height="200" width="200" />
+        {% comment %} <img src="{% static 'images/topviews.png' %}" alt="top views" height="250" width="500" /> {% endcomment %}
+        <img src="data:image/png;base64,{{ imgbase64 }}" alt="top views" height="250" width="500" />
+        {% comment %} <img class="rounded-circle" src="{% static 'images/plantVSzoom.jpg' %}" alt="plantVSzoom picture" height="200" width="200" /> {% endcomment %}
+        <img class="rounded-circle" src="{% static 'images/cat.gif' %}" alt="plantVSzoom picture" height="200" width="200" />
     </div>
 {% endblock body_head %}
 

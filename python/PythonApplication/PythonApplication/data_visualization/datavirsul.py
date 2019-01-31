@@ -1567,12 +1567,15 @@ def showAnimation():
     # 动画长度200(一次循环包含的帧数),每20ms更新一次,blit=True更新所有点(false更新变化点)
     # 每次更新调用init_func函数，使用animate(frames)作图
     animator = animation.FuncAnimation(fig, animate, init_func=init,
-                                        frames=200, interval=20, blit=True)
+                                        frames=200, interval=20, blit=True, repeat=True)
 
-    # 保存动图, 使用ffmepg_file编码器
-    # animator.save('matplot动图.mp4', fps=30,
-    #                 extra_args=['-vcodec', 'libx264'],
-    #                 writer='ffmpeg')
+    # matplotlib.rcParams["animation.ffmpeg_path"] = r'F:\ffmpeg\bin\ffmpeg.exe'
+    # writer = animation.FFMpegWriter()
+
+    #保存动图, 使用ffmepg_file编码器
+    animator.save('matplot动图.gif', fps=30,
+                    extra_args=['-vcodec', 'libx264'],
+                    writer='ffmpeg')
 
     plt.show()
 
@@ -2610,7 +2613,7 @@ if __name__ == "__main__":
     # 能显示负号
     matplotlib.rcParams['axes.unicode_minus'] = False
 
-    showPatch()
+    showAnimation()
 
     #---------------------------------------------------end
     endtime = time.time()

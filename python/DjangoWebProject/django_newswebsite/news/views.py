@@ -30,7 +30,7 @@ def index(request):
     context_dict = {'categories_top_like':category_list}
 
     # 数据可视化
-    dv.saveToBarh(category_list)
+    context_dict['imgbase64'] = dv.saveToBarh(category_list)
 
     # top 5 点赞分类
     category_list = Category.objects.order_by('-views')[0:5]

@@ -105,8 +105,8 @@
                             <img class="rounded-circle" src="{{ MEDIA_URL }}{{ user.username|get_user_picture }}" width="28" height="28" />
                         </a>
                     {% else %}
-                        <a id="index_picture" href="http://lorempixel.com/64/64/people/">
-                            <img class="rounded-circle" src="http://lorempixel.com/64/64/people/" width="28" height="28" />
+                        <a id="index_picture" href="{% static 'images/lbxx.jpg' %}">
+                            <img class="rounded-circle" src="{% static 'images/lbxx.jpg' %}" width="28" height="28" />
                         </a>
                     {% endif %}
                 </span>
