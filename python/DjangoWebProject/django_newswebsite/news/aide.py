@@ -3,19 +3,21 @@ import matplotlib.pyplot as plt
 import os
 import platform
 from matplotlib.font_manager import FontProperties
+from django_newswebsite.settings import STATIC_DIR
 
 def saveToBarh(datalist):
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     
     if platform.system() == 'Windows':
         static_dir = os.path.join(base_dir, 'static/images')
-        font = FontProperties(fname=os.path.join(base_dir + r'\static\fonts\wqydkzh.ttf'))
+        img = os.path.join(static_dir, 'topviews.png')
+        fname = STATIC_DIR + r'\fonts\wqydkzh.ttf'
+        font = FontProperties(fname=fname)
     elif platform.system() == 'Linux':
         static_dir = base_dir
-        fname = os.path.join(os.path.dirname(static_dir), r'/fonts/wqydkzh.ttf')
+        img = os.path.join(static_dir, 'topviews.png')
+        fname = STATIC_DIR + r'/fonts/wqydkzh.ttf'
         font = FontProperties(fname=fname)
-
-    os.chdir(static_dir)
 
     x = [data.name for data in datalist]
     y = [data.likes for data in datalist]
@@ -51,4 +53,4 @@ def saveToBarh(datalist):
     plt.setp(ax.get_yticklabels(), fontsize=15)
     plt.tight_layout()
     # 保存透明背景图像
-    plt.savefig('topviews.png', facecolor='none')
+    plt.savefig(img, facecolor='none')
