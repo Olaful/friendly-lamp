@@ -1,10 +1,16 @@
 import matplotlib
 import matplotlib.pyplot as plt
 import os
+import platform
 
 def saveToBarh(datalist):
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    static_dir = os.path.join(base_dir, 'static/images')
+    
+    if platform.system() == 'Windows':
+        static_dir = os.path.join(base_dir, 'static/images')
+    elif platform.system() == 'Linux':
+        static_dir = base_dir
+
     os.chdir(static_dir)
 
     x = [data.name for data in datalist]
@@ -27,7 +33,7 @@ def saveToBarh(datalist):
         plt.annotate(xy[0], xy=xy, xytext=(xy[0], i-1-0.1), xycoords='data')
 
     ax.set_xticks([])
-    ax.set_facecolor('#eceeef')
+    ax.set_facecolor('none')
     ax.set_title('热门top 5(点赞数)')
 
     axes = plt.gca()

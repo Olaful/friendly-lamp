@@ -2550,8 +2550,7 @@ def showByLaTex():
     plt.text(.01, 2.7, r'$\alpha, \beta, \gamma, \Gamma, \pi, \Pi, \phi, \varphi, \Phi$')
     plt.text(.01, 2.5, r'一些方程式 $\frac{n !}{k!(n-k)!} = {n \choose k}$')
     plt.text(.01, 2.3, r'方程式1 $\lim_{x \to \infty} \exp(-x) = 0$')
-    plt.text(.01, 2.1, r'Ranges: $( a ), [ b ], \{ c \}, | d |, \| e \|, \'
-                       r'langle f \rangle, \lfloor g \rfloor, \lceil h \rceil$')
+    plt.text(.01, 2.1, r'Ranges: $( a ), [ b ], \{ c \}, | d |, \| e \|, \langle f \rangle, \lfloor g \rfloor, \lceil h \rceil$')
     plt.text(.01, 1.9, r'文本: $50 apples \times 100 oranges = lots of juice$')
     plt.text(.01, 1.7, r'更多格式化文本: $50 \textrm{ apples } \times 100 \textbf{ apples } = \textit{lots of juice}$')
     plt.text(.01, 1.5, r'一些索引: $\beta = (\beta_1,\beta_2,\dotsc,\beta_n)$')
@@ -2568,6 +2567,35 @@ def showByLaTex():
 
     plt.show()
 
+def showPatch():
+    """
+    创建补片
+    """
+    from matplotlib.path import Path
+    import matplotlib.patches as patches
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    
+    coords = [(1., 0.), (0., 1.), (0., 2.),
+              (1., 3.), (2., 3.), (3., 2.),
+              (3., 1.), (2., 0.), (0., 0.)]
+    line_cmds = [Path.MOVETO, Path.LINETO, Path.LINETO,
+                 Path.LINETO, Path.LINETO, Path.LINETO,
+                 Path.LINETO, Path.LINETO, Path.CLOSEPOLY,]
+
+    # 根据命令把用直线把坐标点连接起来
+    path = Path(coords, line_cmds)
+    # 在路经上创建一个补片
+    patch = patches.PathPatch(path, lw=1, facecolor='#A1D99B', edgecolor='#31A354')
+
+    ax.add_patch(patch)
+    ax.text(1.1, 1.4, 'Hello', fontsize=24)
+    ax.set_xlim(-1, 4)
+    ax.set_ylim(-1, 4)
+
+    plt.show()
+
 if __name__ == "__main__":
     #---------------------------------------------------start
     tupletime = time.localtime()
@@ -2575,14 +2603,14 @@ if __name__ == "__main__":
     print()
     starttime = time.time()
 
-    os.chdir(r'E:\hexo\source.Olaful.github.io\Olaful.github.io\python\PythonApplication\PythonApplication\myfile')
+    os.chdir(r'E:\git\Olaful\Olaful.github.io\python\PythonApplication\PythonApplication\myfile')
 
     # 能显示中文
     matplotlib.rcParams['font.sans-serif'] = ['SimHei']
     # 能显示负号
     matplotlib.rcParams['axes.unicode_minus'] = False
 
-    showText()
+    showPatch()
 
     #---------------------------------------------------end
     endtime = time.time()
