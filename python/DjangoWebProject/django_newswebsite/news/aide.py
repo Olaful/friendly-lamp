@@ -47,7 +47,7 @@ def saveToBarh(datalist):
     axes = plt.gca()
     axes.spines['right'].set_visible(False)
     axes.spines['top'].set_visible(False)
-    axes.spines['bottom'].set_visible(False)
+    #axes.spines['bottom'].set_visible(False)
 
     plt.setp(ax.get_yticklabels(), fontsize=15)
     plt.tight_layout()
