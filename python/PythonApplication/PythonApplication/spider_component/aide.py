@@ -14,7 +14,7 @@ from io import BytesIO
 import base64
 import time
 from PIL import Image
-from .storage import RedisProxy, RedisCookie
+from storage import RedisProxy, RedisCookie
 import json
 from pyquery import PyQuery as pq
 import aiohttp
@@ -25,7 +25,7 @@ from multiprocessing import Process
 from selenium import webdriver
 import random
 
-from .settings import POOL_UPPER__THRESHOLD, VALID_STATUS_CODE, TEST_URL, BATCH_TEST_SIZE, \
+from settings import POOL_UPPER__THRESHOLD, VALID_STATUS_CODE, TEST_URL, BATCH_TEST_SIZE, \
 TEST_CYCLE,\
 GET_CYCLE,\
 TEST_ENABLED,\
@@ -337,7 +337,8 @@ class TestProxy(object):
                     else:
                         self.redis.decrease(proxy)
                         print('响应码不正确，代理可能不可用:', proxy)
-            except (ClientError, ClientConnectionError, TimeoutError, AttributeError):
+            #except (ClientError, ClientConnectionError, TimeoutError, AttributeError):
+            except:
                 self.redis.decrease(proxy)
                 print('代理请求失败:', proxy)
     def run(self):
@@ -383,7 +384,7 @@ def FlaskWebApiProxy(host, port):
     app.run(host, port)
 
 
-class Scheduler():
+class ProxyScheduler():
     """
     调度代理：获取，存储，测试，调用
     """
@@ -421,11 +422,11 @@ class Scheduler():
             api_process = Process(target=self.scheduler_api)
             api_process.start()
 
-def get_proxy(API_IP, API_PORT):
+def get_proxy():
     """
     随机获取一个可用代理
     """
-    proxy_url = 'http://' + API_IP + str(API_PORT) + '/random'
+    proxy_url = 'http://' + API_IP + ":" + str(API_PORT) + '/random'
     try:
         return requests.get(proxy_url).text
     except ConnectionError:

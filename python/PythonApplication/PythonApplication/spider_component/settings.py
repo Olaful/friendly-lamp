@@ -20,17 +20,17 @@ POOL_UPPER__THRESHOLD = 10000
 
 # 测试代理
 VALID_STATUS_CODE = [200]
-TEST_URL = 'http://www.baidu.com'
+TEST_URL = 'https://www.dytt8.net'
 BATCH_TEST_SIZE = 100
 
 # 代理调度器
 TEST_CYCLE = 1
 GET_CYCLE = 1
-TEST_ENABLED = False
+TEST_ENABLED = True
 GET_ENABLED = False
 API_ENABLED = False
 API_IP = '127.0.0.1'
-API_PORT = 1025
+API_PORT = 1026
 
 # cookie
 GENERATOR_MAP = {'12306': 'CookieGenerator12306'}

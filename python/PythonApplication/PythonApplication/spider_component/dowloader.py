@@ -1,5 +1,5 @@
 import socket
-from .aide import Throttle, get_links, getFormData, AuthenFail
+from aide import Throttle, get_links, getFormData, AuthenFail
 from urllib.parse import urlparse, quote
 import random
 import urllib
@@ -8,8 +8,8 @@ import re
 from threading import Thread
 import os
 from time import sleep
-from .settings import TIME_SLEEP
-from .storage import MongoQueue
+from settings import TIME_SLEEP
+from storage import MongoQueue
 import multiprocessing
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -30,7 +30,7 @@ class Downloader:
     ps: 避免爬取被禁方法: 1.设置UA;2.设置proxy代理;3.下载之间延迟;4.禁止cookie
     5.如果可能，访问cache获取;6.分布式下载
     """
-    def __init__(self, delay=1, user_agent='wswp', timeout=1000, proxies=None, num_retries=3, cache=None):
+    def __init__(self, delay=1, user_agent='wswp', timeout=1000, proxies=None, num_retries=3, get_way='normal', cache=None):
         # 对整个socket设置连接的超时时间, urlopen的read会调用socket接口
         socket.setdefaulttimeout(timeout)
         self.throttle = Throttle(delay)
@@ -38,6 +38,8 @@ class Downloader:
         self.proxies = proxies
         self.num_retries = num_retries
         self.cache = cache
+        self.timeout = timeout
+        self.way = get_way
 
     def __call__(self, url):
         result = None
@@ -62,19 +64,25 @@ class Downloader:
         return result['html']
 
     def download(self, url, headers, proxy, num_retries, data = None):
-        print('Downloading:',url)
+        print('Downloading:',url, headers, proxy)
         request = urllib.request.Request(url, data, headers = headers)
         opener = build_opener()
 
         if proxy:
-            proxy_params = {urlparse(url).scheme: proxy}
+            proxy_params = {urlparse(url).scheme: urlparse(url).scheme + "://" + proxy + '/'}
             opener.add_handler(ProxyHandler(proxy_params))
 
         try:
             html = None
-            code =None
-            html = opener.open(request, timeout=20).read()
-            code = opener.open(request, timeout=20).code
+            code = None
+            if self.way != 'requests':
+                resp = opener.open(request, timeout=self.timeout).read()
+                html = resp.read()
+                code = resp.code
+            else:
+                resp = requests.get(url, proxies=proxy_params, headers = headers)
+                html = resp.content
+                code = resp.status_code
         except urllib.request.URLError as e:
             print('Download error:',e.reason)
 

@@ -9,7 +9,7 @@ except ImportError:
 
 import redis
 from redis.exceptions import DataError
-from .settings import MAX_SCORE,\
+from settings import MAX_SCORE,\
 MIN_SCORE,\
 INITIAL_SCORE,\
 REDIS_HOST,\
@@ -303,10 +303,11 @@ class CsvHtml:
     """
     csv存储
     """
-    def __init__(self, file, col_heads):
-        self.writer = csv.writer(open(file, 'w'))
-        self.fields = col_heads
-        self.writer.writerow(self.fields)
+    def __init__(self, file, col_head):
+        with open(file, 'w') as f:
+            self.writer = csv.writer(f)
+            self.fields = col_head
+            self.writer.writerow(self.fields)
 
     # 特殊方法，csvHtml() 的时候会被自动调用,其中csvHtml是实例化的对象
     def __call__(self, row):
