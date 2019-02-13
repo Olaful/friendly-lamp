@@ -304,11 +304,17 @@ class CsvHtml:
     csv存储
     """
     def __init__(self, file, col_head):
-        with open(file, 'w') as f:
-            self.writer = csv.writer(f)
-            self.fields = col_head
-            self.writer.writerow(self.fields)
+        self.file = open(file, 'w')
+        self.writer = csv.writer(self.file)
+        self.fields = col_head
+        self.writer.writerow(self.fields)
 
     # 特殊方法，csvHtml() 的时候会被自动调用,其中csvHtml是实例化的对象
     def __call__(self, row):
-        self.writer.writerow(row)
+        try:
+            self.writer.writerow(row)
+        except Exception as e:
+            print('存储错误:', str(e))
+
+    def __del__(self):
+        self.file.close()

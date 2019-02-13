@@ -76,7 +76,7 @@ class Downloader:
             html = None
             code = None
             if self.way != 'requests':
-                resp = opener.open(request, timeout=self.timeout).read()
+                resp = opener.open(request, timeout=self.timeout)
                 html = resp.read()
                 code = resp.code
             else:
