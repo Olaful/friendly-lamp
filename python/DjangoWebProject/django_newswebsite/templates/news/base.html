@@ -1,0 +1,171 @@
+{% comment %} <!DOCTYPE html>
+{% load staticfiles %}
+{% load newstag %}
+
+<html>
+    <head>
+        <title>
+            News -
+            {% block title_block %}
+                Test
+            {% endblock %}
+        </title>
+    </head>
+    <body>
+        {% block page_head %}
+        {% endblock page_head %}
+        <div>
+            {% block sidebar_block %}
+                {# category参数是由子模板中传过来的 #}
+                {% get_category_list category %}
+            {% endblock sidebar_block %}
+        </div>
+        <div>
+            <!--block部分可以由子类模板代替-->
+            {% block body_block %}
+            <!--可以添加默认显示的内容-->
+                Here default content can be insteaded by the real content.
+            {% endblock %}
+        </div>
+        <div>
+            {% block page_tail %}
+            {% endblock page_tail %}
+        </div>
+        <hr />
+        <div>
+            <ul>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'news:add_category' %}">添加分类</a></li>
+                    {# <li><a href="{% url 'news:logout' %}">Logout</a></li> #}
+                    <li><a href="{% url 'auth_logout' %}?next=/news/">退出</a></li>
+                    <li><a href="{% url 'auth_password_change' %}?next=/news/">修改密码</a></li>
+                {% else %}
+                    {# <li><a href="{% url 'news:login' %}">Login</a></li> #}
+                    <li><a href="{% url 'auth_login' %}">登录</a></li>
+                    {# <li><a href="{% url 'news:register' %}">Register</a></li> #}
+                    <li><a href="{% url 'registration_register' %}">注册</a></li>
+                {% endif %}
+                <li><a href="{% url 'news:about' %}">关于</a></li>
+                <li><a href="{% url 'news:index' %}">主页</a></li>
+            </ul>
+        </div>
+    </body>
+</html> {% endcomment %}
+
+<!DOCTYPE html>
+
+{% load staticfiles %}
+{% load newstag %}
+
+<html lang="zh">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="{% static 'images/fi.ico' %}">
+
+    <title>
+       News - 
+      {% block title_block %}
+        Home
+      {% endblock title_block %}
+    </title>
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/dashboard/">
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{% static 'css/dashboard.css' %}" rel="stylesheet">
+  </head>
+
+  <body>
+    <nav class="navbar navbar-toggleable-md navbar-inverse fixed-top bg-inverse">
+      <button class="navbar-toggler navbar-toggler-right hidden-lg-up" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <a class="navbar-brand" href="#">News</a>
+
+      <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active"><a class="nav-link" href="{% url 'news:index' %}">主页</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'news:about' %}">关于</a></li>
+          {% if user.is_authenticated %}
+              <li class="nav-item"><a class="nav-link" href="{% url 'news:add_category' %}">添加分类</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'auth_logout' %}?next=/news/">退出</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'auth_password_change' %}?next=/news/">修改密码</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'news:list_profiles' %}">用户列表</a></li>
+              <li class="nav-item">
+                <span class="nav-link">
+                    你好! 
+                    <a href="{% url 'news:profile' user.username %}">{{ user.username }}</a>
+                    {% if user.username|get_user_picture %}
+                        <a id="index_picture" href="{{ MEDIA_URL }}{{ user.username|get_user_picture }}">
+                            <img class="rounded-circle" src="{{ MEDIA_URL }}{{ user.username|get_user_picture }}" width="28" height="28" />
+                        </a>
+                    {% else %}
+                        <a id="index_picture" href="{% static 'images/lbxx.jpg' %}">
+                            <img class="rounded-circle" src="{% static 'images/lbxx.jpg' %}" width="28" height="28" />
+                        </a>
+                    {% endif %}
+                </span>
+              </li>
+              {# visits从服务器中获取 #}
+              {% comment %} <li class="nav-item"><span class="nav-link">登录期间访问次数:{{ visits }}</span></li> {% endcomment %}
+          {% else %}
+              <li class="nav-item"><a class="nav-link" href="{% url 'auth_login' %}">登录</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'registration_register' %}">注册</a></li>
+          {% endif %}
+          {% comment %} <li class="nav-item"><span class="nav-link">访问次数:{{ visits }}</span></li> {% endcomment %}
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+            <ul class="nav nav-list flex-column">
+                <li class="nav-item">
+                    <input class="search-query form-control" id="suggestion" type="text" 
+                    placeholder="搜索分类" name="suggestion" value="" />
+                </li>
+            </ul>
+            <hr>
+            <div id="cates"></div>
+          {% comment %} {% block sidebar_block %}
+              {# category参数是由子模板中传过来的 #}
+              {% get_category_list category %}
+          {% endblock sidebar_block %} {% endcomment %}
+        </div>
+        <div class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 main">
+          {# block部分可以由子类模板代替 #}
+          {% block body_head %}
+          {% endblock body_head %}
+          {% block body_block %}
+          {# 可以添加默认显示的内容 #}
+              Here default content can be insteaded by the real content.
+          {% endblock %}
+          {% block body_tail %}
+          {% endblock body_tail %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    {# 自定义js #}
+    {# jquery #}
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    {# news-jquery需要引用jquery库，所以得保证上面已经引入了jquery #}
+    <script src="{% static 'js/news-jquery.js' %}"></script>
+    <script src="{% static 'js/news-ajax.js' %}"></script>
+    {% comment %} <script src="{% static 'js/jquery-3.1.1.slim.min.js' %}" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script> {% endcomment %}
+    <script>window.jQuery</script>
+    <script src="{% static 'js/tether.min.js' %}" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="http://v4-alpha.getbootstrap.com/assets/js/ie10-viewport-bug-workaround.js"></script>
+  </body>
+</html>

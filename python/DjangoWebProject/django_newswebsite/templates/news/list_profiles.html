@@ -1,0 +1,44 @@
+{% extends 'news/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+    用户列表
+{% endblock title_block %}
+
+{% block body_head %}
+    <link href="{% static 'css/signin.css' %}" rel="stylesheet">
+    <div class="jumbotron">
+        <h1 class="display-3">用户列表</h1>
+    </div>
+{% endblock body_head %}
+
+{% block body_block %}
+    <div class="panel">
+        {% if userprofile_list %}
+            <div class="panel-heading">
+                <div class="panel-body">
+                    <div class="list-group">
+                        {% for listuser in userprofile_list %}
+                            <div class="list-group-item">
+                                <h4 class="list-group-item-heading">
+                                    <a href="{% url 'news:profile' listuser.user.username %}">
+                                        {{ listuser.user.username }}
+                                    </a>
+                                    {% if listuser.picture %}
+                                        <a id="user_pic" href="{{ MEDIA_URL }}{{ listuser.picture }}">
+                                            <img class="thumb rounded-circle" src="{{ MEDIA_URL }}{{ listuser.picture }}" width="64" height="64" />
+                                        </a>
+                                    {% else %}
+                                        <img class="rounded-circle" src="http://lorempixel.com/64/64/people/" width="64" height="64" />
+                                    {% endif %}
+                                </h4>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            当前网站还没有任何注册用户
+        {% endif %}
+    </div>
+{% endblock body_block %}

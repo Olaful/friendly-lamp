@@ -1,0 +1,28 @@
+{% extends 'news/base.html' %}
+{% load staticfiles %}
+
+{% block body_head %}
+    <link href="{% static 'css/signin.css' %}" rel="stylesheet">
+    <div class="jumbotron">
+        <h1 class="display-3">Login</h1>
+    </div>
+{% endblock body_head %}
+
+{% block body_block %}
+    {# role为强调该标签为表单，H5中新增 #}
+    <form class="form-signin" role="form" method="post" action=".">
+        {% csrf_token %}
+        <h2 class="form-signin-heading">请登录<h2>
+        <label for="id_username" class="sr-only">用户名:</label>
+        <input type="text" name="username" id="id_username" class="form-control" placeholder="用户名" required autofocus>
+        {{ error }}
+        <label for="id_password" class="sr-only">密码:</label>
+        <input type="password" name="password" id="id_password" class="form-control" placeholder="密码" required>
+        <button class="btn btn-lg btn-primary btn-block" type="submit" value="submit">登录</button>
+        <input type="hidden" name="next" value="{{ next }}" />
+    </form>
+    <p>
+        没有账户？
+        <a href="{% url "registration_register" %}">注册</a>
+    </p>
+{% endblock body_block %}

@@ -1,0 +1,18 @@
+{% extends 'news/base.html' %}
+{% load staticfiles %}
+
+{% block body_head %}
+    <link href="{% static 'css/signin.css' %}" rel="stylesheet">
+    <div class="jumbotron">
+        <h1 class="display-3">个人信息</h1>
+    </div>
+{% endblock body_head %}
+
+{% block body_block %}
+    <div>
+        {% if userinfo %}
+            <li>{{ userinfo.username }}</li>
+            <li>{{ userinfo.email }}</li>
+        {% endif %}
+    </div>
+{% endblock body_block %}

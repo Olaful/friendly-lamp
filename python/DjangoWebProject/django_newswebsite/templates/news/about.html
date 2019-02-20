@@ -1,0 +1,25 @@
+
+{% extends 'news/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+    About
+{% endblock title_block %}
+
+{% block body_head %}
+    <link href="{% static 'css/signin.css' %}" rel="stylesheet">
+    <div class="jumbotron">
+        <h1 class="display-3">关于</h1>
+    </div>
+{% endblock body_head %}
+
+{% block body_block %}
+    <button onclick="alert('use normal js')" id="button-about">normal js</button>
+    <button class="btn btn-primary" id="about-btn">jquery</button>
+    <p class="about">test paragraph-changecolor</p>
+    <div id="msg">test paragraph-append</div>
+    <br />
+    <br />
+    <img src="{{ MEDIA_URL }}桥.jpg" alt="about" />
+    {# <img src="{% static 'images/about.jpg' %}" height="200" width="200" alt="about" /> #}
+{% endblock body_block %}

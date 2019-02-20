@@ -1,0 +1,19 @@
+{% extends 'news/base.html' %}
+
+{% block title_block %}
+    login
+{% endblock title_block %}
+
+{% block body_block %}
+    <form id="user_login" method="post" action="{% url 'news:login' %}">
+        {% csrf_token %}
+        {% if error %}
+            {{ error }} <br />
+        {% endif %}
+        用户名: <input type="text" name="username" value="" size="20" />
+        <br />
+        密  码:  <input type="password" name="password" value="" size="20" />
+        <br />
+        <input type="submit" value="提交" />
+    </form>
+{% endblock body_block %}

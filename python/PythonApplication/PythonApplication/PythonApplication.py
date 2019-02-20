@@ -21,18 +21,28 @@ j = 0
 temp = 0
 print(time.time())
 while i < nLen:
+    swap = False
     while j < nLen - i - 1:
         if listNum[j] > listNum[j+1]:
             temp = listNum[j+1]
             listNum[j+1] = listNum[j]
             listNum[j] = temp
+            swap = True
         j = j + 1
+    if !swap: break
     i = i + 1
 print(time.time())
 print(listNum)
 
 def myFunc():
     print("hello, myFunc")
+
+# 函数也可以添加属性
+myFunc.name = 'myFunc'
+
+# 函数参数类型注释，返回值类型注释
+def hello(sno:int, name:str)->list:
+    return [1,2,3]
 
 # 获取数字对应的ascii码
 chr(98)
@@ -350,6 +360,8 @@ print(x[2])
 
 class myClass4:
     # 指定该方法为静态方法，可以直接使用类调用
+    # @staticmethod装饰器返回staticmethod对象，不是
+    # callable对象，所以只能在它下面使用别的装饰器
     # 不需要传入cls参数，对外部可以像普通方法一样调用
     @staticmethod
     def staticFunc(): print("this is a static func")
@@ -413,7 +425,8 @@ nested = [[1,2], [3,4], [5,6,7]]
 
 # 函数中包含有yield语句的则该函数称为生成器，
 # yield语句会使函数冻结暂停，返回一个迭代器等待被激活后从暂停
-# 点开始继续执行
+# 点开始继续执行，生成器每遍历一次才把数据放入内存中，所以可以
+# 处理很大的数据
 def myGenerator(listParam):
     for sublist in listParam:
         for element in sublist:
@@ -550,6 +563,162 @@ import random
 print(formatPrint(random.choice(list(symbols2(4)))))
 print(formatPrint(random.choice(list(symbols2(8)))))
 
+# 只返回单个实例的类
+# type与object都属于type object类型对象，其实是同一个东西
+# python3.x可以省略不明显继承于object
+class c(object):
+    _instance_lock = threading.Lock()
+    def __init__(self):
+        time.sleep(1)
+        name = 'kk'
+    
+    # 通过类方法返回实例
+    @classmethod
+    def instance(cls, *args, **kwargs):
+        if not hasattr(c, '_instance'):
+            # 加锁是因为如果类的实例化是在线程中实行的
+            # 那么由于一些io操作，资源混乱，导致每个
+            # 实例初始化都不一样
+            with c._instance_lock:
+                if not hasattr(c, '_instance'):
+                    c._instance = c(*args, **kwargs)
+        return c._instance
+
+    # 通过__new__返回实例，通过类创建对象时自动调用
+    # *args默认收集三个参数(name类名称, bases父类集合, 类实例字典__dic__)
+    # 其不会收集创建实例时传入的参数，这些参数传给__init__函数
+    # 可以对args的第三个参数参数进行扩展，动态添加属性
+    def __new__(cls, *args, **kwargs):
+        if not hasattr(c, '_instance'):
+            with c._instance_lock:
+                if not hasattr(c, '_instance'):
+                    c._instance = object.__new__(cls)
+        return c._instance
+    
+        
+def task(arg):
+    obj = c.instance()
+    print(obj)
+
+for i in range(5):
+    t = threading.Thread(target=task, args=[i,])
+    t.start()
+
+class SingletonParent(type):
+    _instance_lock = threading.Lock()
+    def __call__(cls, *args, **kwargs):
+        if not hasattr(cls, "_instance"):
+            with SingletonParent._instance_lock:
+                if not hasattr(cls, "_instance"):
+                    # type的__call__方法中会执行__init__与__new__方法
+                    cls._instance = super(SingletonParent,cls).__call__(*args, **kwargs)
+        return cls._instance
+
+class Singleton(metaclass=SingletonType):
+    def __init__(self,name):
+        self.name = name
+
+# Singleton()会调用元类的__call__方法，
+# 可以在其中返回实例对象
+obj1 = Singleton()
+obj2 = Singleton()
+
+def Singleton(cls):
+    _instance = {}
+    # 多次实例化时，只返回相同的实例对象
+    def _singleton(*args, **kargs):
+        if cls not in _instance:
+            _instance[cls] = cls(*args, **kargs)
+        return _instance[cls]
+
+    return _singleton
+
+@decorSingle
+class A:
+    name = 'kk'
+
+# 闭包，内部返回函数引用
+def outer(x):
+    y = 2
+    def inter(z):
+        return x + y + z
+    return inter
+
+f = outer(1)
+# 两者使用outer函数中同一个变量y
+f(1)
+f(2)
+
+from functools import wraps
+
+# 装饰器
+# 装饰器要求接收一个callable对象作为入参
+def mydecorate(func):
+    # 经过wraps装饰后func能保留函数原始的信息如__name__,不然属性
+    # 就全部变成innerFunc的属性了
+    @wraps(func)
+    def innerFunc(*args, **kwargs):
+        print('enter {}'.format(func.__name__))
+        return func(*args, **kwargs)
+    return innerFunc
+
+def mydecorate2(level):
+    # 参数会延级接受，第一装饰器参数，第二函数对象参数
+    # 第三函数对象自己的参数
+    def wrapper(func):
+        def inner_wrapper(*args, **kwargs)
+            return func(*args, **kwargs)
+        return wrapper
+    return wrapper
+
+@mydecorate
+def testFunc(arg)
+    return arg + 1
+
+import inspect
+print(inspect.getargspec(func))
+print(inspect.getsource(func))
+
+@mydecorate2(level="LOG")
+def testFunc(arg)
+    return arg + 1
+
+from decorator import decorate
+
+def wrapper(fun, *args, **kwargs):
+    return func(*args, **kwargs)
+
+def logging(func):
+    # decorate使用wrapper装饰func
+    return decorate(func, wrapper)
+
+@logging
+def testFunc(arg)
+    return arg + 1
+
+import wrapt
+
+# 使用wrapt实现的装饰器
+@wrapt.decorator
+# instance在装饰器装饰类的实例方法时可以得到类实例
+def logging(wrapped, instance, args, kwargs):
+    return wrapped(*args, **kwargs)
+
+def logging2(level):
+    @wrapt.decorator
+    def wrapper(wrapped, instance, args, kwargs):
+        return wrapped(*args, **kwargs)
+    return wrapper
+
+@logging
+def testFunc(arg)
+    return arg + 1
+
+@logging2(level="INFO")
+def testFunc(arg)
+    return arg + 1
+
+
 import sys
 
 # os也是标准库中常用的模块
@@ -561,6 +730,7 @@ from os import *
 def getFileList(dir):
     try:
         files = os.listdir(dir)
+        # path.join使用的路径分隔符根据系统类型而定
         fullfile = [os.path.join(dir, name) for name in files]
         for d in fullfile:
             for dd in getFileList(d):
@@ -828,8 +998,8 @@ text = "hello... wo-rld! are you ok"
 # 以指定模式分割字符串，[]集合匹配，+匹配1到多个，匹配集合中的单个字符，'.'为通配符
 x = re.split('[. ]+', text)
 print(x)
-# 位于集合匹配中的^符号是非的意思
-x = re.findall('[^h]+', text)
+# 位于集合匹配中的^符号是非的意思,re.S表示匹配.，所以也可以匹配\n,
+x = re.findall('[^h]+', text, re.S)
 print(x)
 # ()子模式匹配，'wo'两边会被分割开来，但'o'会出现在分割后的列表中
 x = re.split('w(o)', text)
@@ -852,11 +1022,13 @@ x = re.search('(ar.)', text)
 # 返回匹配模式对象中的第1个匹配组
 # 位于匹配模式中()内的内容就是匹配组的内容
 # 如果没有()，默认匹配到的所有字符就是组的内容，即组0
-print(x.group(1))
 # 返回第一个匹配组匹配项的开始索引
 print(x.start(1))
 # 返回第一个匹配组匹配项的结束索引
 print(x.end(1))
+# (?P<groupname>he) ?P<name>可以指定组名,之后
+# 可以通过gourp(name)进行访问
+print(re.search('(?P<name>he)', 'hello'))
 # 有了re.VERBOSE参数，就可以在匹配模式中添加注释了，这样不会当作
 # 匹配模式的一部分去匹配
 print(re.search('\- # 转义"-"符号', text, re.VERBOSE))
@@ -1153,11 +1325,15 @@ urlretrieve('https://www.python.org/', 'myfile/python.html')
 # 如会把~转换成%7E，unquote功能则相反
 webpage = urlopen(quote('https://www.~myurl.org/'))
 
-from urllib.parse import urlencode
+from urllib.parse import urlencode, parse_qs
 # 返回param1=test&amp;param2=%c%de类似的字符串
 # 这些字符串可以在url中当作参数，如服务器cgi脚本是用
 # python编写的，则可通过cgi模块的getvalue方法获取到参数
 print(urlencode({'param1':'test', 'param2':'你好'}))
+# 与urlencode相反
+print(parse_qs('name=hello&value=22'))
+# 返回元组
+print(parse_qsl('name=hello&value=22'))
 
 # 导入基础网络服务器框架socketserver，包含TCP,UDP类等
 from socketserver import TCPServer, StreamRequestHandler, ThreadingMixIn
@@ -1290,6 +1466,73 @@ tidy = Popen('tidy', stdin = PIPE, stdout = PIPE, stderr = PIPE, shell = True)
 tidy.stdin.write(text)
 # 以下实际中不会输出数据
 tidy.stdout.read()
+
+# 异步协程函数
+async def hello(value):
+    # 挂起该协程去执行其他协程，直到其他协程挂起或者完毕
+    await asyncio.sleep(10)
+    print(str(value),time.time())
+
+def callback(future):
+    print(future.result())
+
+# 嵌套协程
+async def main():
+    task1 = asyncio.ensure_future(hello(1))
+    task2 = asyncio.ensure_future(hello(2))
+    task3 = asyncio.ensure_future(hello(3))
+    tasks = [task1, task2, task3]
+
+    # 完成与等待的协程
+    # 此外还有Running,Cacelled状态
+    dones, pendings = await asyncio.wait(tasks)
+    # 返回结果列表
+    #retults = await asyncio.gather(*tasks)
+    
+loop = asyncio.get_event_loop()
+# 创建任务
+#task = loop.create_task(hello())
+task1 = asyncio.ensure_future(hello(1))
+task2 = asyncio.ensure_future(hello(2))
+task3 = asyncio.ensure_future(hello(3))
+tasks = [task1, task2, task3]
+# 任务完成后调用相应的回调函数.传入参数future
+task1.add_done_callback(callback)
+#loop.run_until_complete(task)
+# 并发执行多个任务
+#loop.run_until_complete(asyncio.wait(tasks))
+loop.run_until_complete(main())
+
+# 取消任务
+try:
+    loop.run_until_complete(asyncio.wait(tasks))
+except KeyboardInterrupt as e:
+    for task in asyncio.Task.all_tasks():
+        task.cancel()
+    loop.stop()
+    loop.run_forever()
+finally:
+    loop.close()
+
+def start_loop(loop):
+    asyncio.set_event_loop(loop)
+    loop.run_forever()
+
+async def work(x):
+    print(x)
+    await asyncio.sleep(x)
+
+# 新建循环
+new_loop = asyncio.new_event_loop()
+# 子线程中开启事件循环
+t = Thread(target = start_loop, args=(new_loop,))
+t.start()
+# 在主进程中注册协程对象
+asyncio.run_coroutine_threadsafe(work(3), new_loop)
+asyncio.run_coroutine_threadsafe(work(4), new_loop)
+
+#new_loop.call_soon_threadsafe(work, 3)
+#new_loop.call_soon_threadsafe(work, 4)
 
 from urllib.request import urlopen
 from HTMLParser import HTMLParser
@@ -1627,6 +1870,9 @@ logging.info('begin the func')
 # 这样就可以通过日志查看程序执行到大概哪个地方出错了
 logging.info('func end')
 logging.info('endind  program')
+
+# 捕捉警告信息
+logging.captureWarning(True)
 
 file = open('myfile/template.txt').readlines()
 def filegrt(file):
@@ -3397,14 +3643,14 @@ from urllib.request import ProxyHandler
 # 下载html数据
 def download(url, user_agent = 'wswp', proxy = None, num_retries=3):
     print('Downloading:',url)
-    # 设置用户代理
+    # 设置用户代理,伪装成浏览器访问
     header = {'User-agent': user_agent}
     request = urllib.request.Request(url, headers = header)
     # 这个支持代理
     opener = build_opener()
 
     if proxy:
-        # 设置代理服务器，请求将会发送到该服务器
+        # 设置代理服务器，通过该代理IP进行访问
         proxy_params = {urlparse(url).scheme: proxy}
         opener.add_handler(ProxyHandler(proxy_params))
 
@@ -3431,6 +3677,8 @@ def download(url, user_agent = 'wswp', proxy = None, num_retries=3):
 
 import socket
 # downloadler类，先读取缓存的内容，没有再从网络上获取后再写入缓存
+# ps: 避免爬取被禁方法: 1.设置UA;2.设置proxy代理;3.下载之间延迟;4.禁止cookie
+# 5.如果可能，访问cache获取;6.分布式下载
 class Downloader:
     def __init__(self, delay=1, user_agent='wswp', timeout=1000, proxies=None, num_retries=3, cache=None):
         # 对整个socket设置连接的超时时间, urlopen的read会调用socket接口
@@ -3567,10 +3815,12 @@ class DiskCache:
     # 设置文件内容
     def __setitem__(self, url, result):
         path = self.url_to_path(url)
+        # 获取父目录路径
         folder = os.path.dirname(path)
         if not os.path.exists(folder):
             os.makedirs(folder)
         # 序列化数据与存取的时间,
+        # 将数据通过特殊的形式转换为只有python语言认识的字符串
         data = pickle.dumps((result, datetime.datetime.utcnow()))
         if self.compress:
             data = zlib.compress(data)
@@ -3587,6 +3837,7 @@ class DiskCache:
                 if self.compress:
                     data = zlib.decompress(data)
                     # 序列化数据后获取
+                    # 将pickle数据转换为python的数据结构
                 result, timestamp = pickle.loads(data)
                 if self.has_expired(timestamp):
                     self.clear()
@@ -3650,6 +3901,8 @@ class MongoCache:
         if self.compress:
             # pickle序列化后压缩
             result = Binary(zlib.compress(pickle.dumps(result)))
+        else:
+            result = Binary(pickle.dumps(result))
         record = {'result': result, 'timestamp': datetime.datetime.utcnow()}
         self.db.webpage.update({'_id': url}, {'$set':record}, upsert=True)
 
@@ -3659,7 +3912,7 @@ class MongoCache:
             print('get from mongodb:',url)
             if self.compress:
                 return pickle.loads(zlib.decompress(record['result']))
-            return record['result']
+            return pickle.loads(record['result'])
         else:
             raise KeyError(url + 'dose not exist')
 
@@ -3722,7 +3975,9 @@ def link_crawler(seed_url, link_regex, delay=3, timeout=1000, max_urls=10, max_d
                     # 已经抓取过的不再抓取，也可以避免在互相有各自连接的两个页面之间反复跳跃
                     if link not in seen:
                         seen[link] = depth + 1
-                        craw_queue.append(link)
+                        # 只抓取同一domain的链接
+                        if urlparse(seed_url).netloc == urlparse(link).netloc:
+                            craw_queue.append(link)
         num_urls += 1
         if num_urls == max_urls:
             break
@@ -3740,6 +3995,7 @@ from urllib import robotparser
 
 rp = robotparser.RobotFileParser()
 rp.set_url('http://example.webscraping.com/robots.txt')
+rp.read()
 user_agent = 'BadCrawler'
 user_agent = 'GooddCrawler'
 # 检查是否可以指定代理访问网站
@@ -3901,6 +4157,8 @@ if 1 > 2:
     #db.webpage.insert({'url':url, 'html':'hello American-Samoa'})
     result = db.webpage.find_one({'url':url})
     result = db.webpage.find({'url':url}).count()
+    # 正则模糊查询
+    result = db.webpage.find({'url':{'$regex':'xx'}}).count()
 
     # 查询_id字段值为url，如果不存在则插入$set
     db.webpage.update({'_id': url}, {'$set':{'html':'old_html'}}, upsert=True)
@@ -4035,7 +4293,7 @@ def thread_link_crawler_tmp(seed_url, delay=3, timeout=1000, user_agent='wswp', 
             thread.setDaemon(True)
             thread.start()
             threads.append(thread)
-        sleep(TIME_SLEEP)
+            sleep(TIME_SLEEP)
 
 # 单线程
 def simple_link_crawler(seed_url, delay=3, timeout=1000, user_agent='wswp', max_threads=5, proxies=None, num_retries=1, scrape_callback = None, cache=None):
@@ -4052,7 +4310,7 @@ def simple_link_crawler(seed_url, delay=3, timeout=1000, user_agent='wswp', max_
 #thread_link_crawler('', delay=0, timeout=1000, user_agent='wswp', max_threads=5, proxies=None, num_retries=1, scrape_callback = GetUrlCallback(), cache=None)
 
 import timeit
-# 时间比大约为1:count(max_threads)
+# 时间比大约为1:max_threads
 # 112sec
 #t = timeit.Timer("thread_link_crawler('', delay=0, timeout=20, user_agent='wswp', max_threads=5, proxies=None, num_retries=1, scrape_callback = GetUrlCallback(), cache=None)",
 #                 setup="from __main__ import thread_link_crawler, GetUrlCallback").timeit(1)
@@ -4089,7 +4347,6 @@ class MongoQueue:
         # 重复记录处理
         except errors.DuplicateKeyError as e:
             print(url, 'already exist in the database')
-            pass
 
     # 取一条处于待处理状态的url，并置其状态为处理中，并加上开始处理的时间
     # 补充'set'待设置的集合，相当于一条记录，'$lt'小于，'$ne'不等于，还有'gt'大于
@@ -4169,8 +4426,8 @@ def thread_link_crawler(seed_url, delay=3, timeout=1000, user_agent='wswp', max_
             thread.setDaemon(True)
             thread.start()
             threads.append(thread)
-        # 等待上一个进程开启完后再开启下一个进程
-        sleep(TIME_SLEEP)
+            # 等待上一个进程开启完后再开启下一个进程
+            sleep(TIME_SLEEP)
 
 import multiprocessing
 # 多进程爬取，每个进程中包含了多线程爬取函数
@@ -4228,6 +4485,7 @@ def getInfoByJson(max_urls = 50):
                 try:
                     ajax = json.loads(html)
                 # 类似'{"key1":"values", "key2":"values2"}'这样的包含字典的字符串才能解析成字典返回
+                # key,value以双引号包围
                 except json.decoder.JSONDecodeError as e:
                     print(e)
                     ajax = None
@@ -4308,81 +4566,87 @@ if 1 > 2:
 #        self.html = html_str
 #        #self.app.quit()
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from PyQt4.QtWebKit import QWebView
+# from PyQt4.QtCore import *
+# from PyQt4.QtGui import *
+# from PyQt4.QtWebKit import QWebView
 
 # QWebKit实现的浏览器
-class BrowserRender(QWebView):
-    def __init__(self, show=True):
-        self.app = QApplication([])
-        QWebView.__init__(self)
-        if show:
-            self.show()
+# class BrowserRender(QWebView):
+#     def __init__(self, show=True):
+#         self.app = QApplication([])
+#         QWebView.__init__(self)
+#         if show:
+#             self.show()
 
-    def download(self, url, timeout=60):
-        loop = QEventLoop()
-        timer = QTimer()
-        # 设置定时器超时会执行函数
-        timer.setSingleShot(True)
-        # 定时器超时或者页面加载完成都会触发事件循环退出
-        # 如果页面一直没有响应则用定时器终止循环
-        timer.timeout.connect(loop.quit)
-        self.loadFinished.connect(loop.quit)
-        self.load(QUrl(url))
-        timer.start(timeout*1000)
-        # 一直循环直到loop.quit被调用，之后才继续后面的部分
-        loop.exec_()
+#     def download(self, url, timeout=60):
+#         loop = QEventLoop()
+#         timer = QTimer()
+#         # 设置定时器超时会执行函数
+#         timer.setSingleShot(True)
+#         # 定时器超时或者页面加载完成都会触发事件循环退出
+#         # 如果页面一直没有响应则用定时器终止循环
+#         timer.timeout.connect(loop.quit)
+#         self.loadFinished.connect(loop.quit)
+#         self.load(QUrl(url))
+#         timer.start(timeout*1000)
+#         # 一直循环直到loop.quit被调用，之后才继续后面的部分
+#         loop.exec_()
 
-        # 如果循环结束后，定时器还没有超时，则页面下载完成
-        if timer.isActive():
-            timer.stop()
-            return self.getHtml()
-        else:
-            print('Request time out:', url)
+#         # 如果循环结束后，定时器还没有超时，则页面下载完成
+#         if timer.isActive():
+#             timer.stop()
+#             return self.getHtml()
+#         else:
+#             print('Request time out:', url)
 
-    def getHtml(self):
-        return self.page().mainFrame().toHtml()
+#     def getHtml(self):
+#         return self.page().mainFrame().toHtml()
 
-    def find(self, pattern):
-        # css选择器，通过标签名或者class等选择
-        return self.page().mainFrame().findAllElements(pattern)
+#     def find(self, pattern):
+#         # css选择器，通过标签名或者class等选择
+#         return self.page().mainFrame().findAllElements(pattern)
 
-    # 设置html页面元素的值
-    def attr(self, pattern, name, value):
-        for e in self.find(pattern):
-            e.setAttribute(name, value)
+#     # 设置html页面元素的值
+#     def attr(self, pattern, name, value):
+#         for e in self.find(pattern):
+#             e.setAttribute(name, value)
 
-    def text(self, pattern, value):
-        for e in self.find(pattern):
-            e.setPlainText(value)
+#     def text(self, pattern, value):
+#         for e in self.find(pattern):
+#             e.setPlainText(value)
 
-    # 模拟html页面元素的点击事件，调用相关javascript方法
-    def click(self, pattern):
-        for e in self.find(pattern):
-            e.evaluateJavaScript('this.click()')
+#     # 模拟html页面元素的点击事件，调用相关javascript方法
+#     def click(self, pattern):
+#         for e in self.find(pattern):
+#             e.evaluateJavaScript('this.click()')
 
-    # 在定时内反复查找页面返回的信息，因为ajax调用在规定时间内可能不能及时返回数据
-    def wait_load(self, pattern, timeout=60):
-        dealine = time.time() + timeout
-        while time.time() < dealine:
-            # processEvents调用之后就能响应后面的页面事件，app.exec_内部就是调用这个方法
-            self.app.processEvents()
-            matches = self.find(pattern)
-            if matches:
-                return matches
-        print('Wait load time out')
+#     # 在定时内反复查找页面返回的信息，因为ajax调用在规定时间内可能不能及时返回数据
+#     def wait_load(self, pattern, timeout=60):
+#         dealine = time.time() + timeout
+#         while time.time() < dealine:
+#             # processEvents调用之后就能响应后面的页面事件，app.exec_内部就是调用这个方法
+#             self.app.processEvents()
+#             matches = self.find(pattern)
+#             if matches:
+#                 return matches
+#         print('Wait load time out')
 
-    # 保持当前窗口
-    def keepWindow(self):
-        self.app.exec_()
+#     # 保持当前窗口
+#     def keepWindow(self):
+#         self.app.exec_()
 
 from selenium import webdriver
 def webDeriver():
     # webdriver能使用响应浏览器的驱动打开浏览器
-    driver = webdriver.Chrome(executable_path=r'C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe')
+    chrome_options = webdriver.ChromeOptions()
+    # 隐藏浏览器窗口
+    chrome_options.add_argument('--headless')
+    # 设置代理
+    # proxy = '127.0.0.1:1025'
+    # chrome_options.add_argument('--proxy-server=http://' + proxy)
+    driver = webdriver.Chrome(executable_path=r'C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe', chrome_options=chrome_options)
     driver.get('http://example.webscraping.com/places/default/search')
-    # 向页面中的元素填充内容
+    # 向页面中的元素填充内容7
     driver.find_element_by_id('search_term').send_keys('.')
     # 自定义js语句
     js = 'document.getElementById("page_size").options[1].text="1000"'
@@ -4394,16 +4658,16 @@ def webDeriver():
     # 查找的元素如果超过这个时间出现，则抛出异常
     driver.implicitly_wait(30)
 
-    # 通过css选择器查找元素
+    # 通过css选择器查找元素，其他匹配模式例如，通过属性匹配：div[name="value"]，正则匹配div[name^="value"]
     links = driver.find_elements_by_css_selector('#results a')
     countries = [link.text for link in links]
     hrefs = [link.get_attribute('href') for link in links]
     print(countries)
-    # 关闭浏览器驱动器
+    # 关闭浏览器驱动器，关闭后，对象的session状态也会被取消
     driver.close()
 
 
-def main(url):
+def main_webkit(url):
     br = BrowserRender(show=True)
     br.download('http://example.webscraping.com/places/default/search')
     # 模拟界面点击过程: 填写值->点击按钮
@@ -4428,14 +4692,34 @@ def getFormData(html):
 def autoLogin():
     from urllib.parse import urlencode
     import http.cookiejar
+    import ssl
+    from urllib.request import HTTPPasswordMgrWithDefaultRealm, HTTPBasicAuthHandler
 
     url = 'http://example.webscraping.com/places/default/user/login?_next=/places/default/index'
     email = 'test123@test.com'
     pwd = 'test'
 
+    # 处理一些界面需要的认证登陆
+    username = '123'
+    pwd = '123'
+    p = HTTPPasswordMgrWithDefaultRealm()
+    p.add_password(None, 'http://xxx', username, pwd)
+    auth_handler = HTTPBasicAuthHandler(p)
+    opener = build_opener(auth_handler)
+
     # 处理与cookie的交互
     cj = http.cookiejar.CookieJar()
     opener = build_opener(urllib.request.HTTPCookieProcessor(cj))
+
+    # 可以保存cookies
+    # fn = 'cookies.txt'
+    # cjj = http.cookiejar.MozillaCookieJar(fn)
+    # cjj.save(ignore_discard=True, ignore_expires=True)
+    #cjj.load(fn, ignore_discard=True, ignore_expires=True)
+
+    # 如果访问https页面，可能会进行ssl认证，这时可以手动取消认证
+    #cxt = ssl._create_unverified_context()
+    #opener = build_opener(urllib.request.HTTPCookieProcessor(cj)，urllib.request.HTTPSHandler(context=cxt))
 
     # 服务器会获取表单元素中name所指的字段的值
     html = opener.open(url).read()
@@ -4480,6 +4764,7 @@ def autoLogin():
     #print(resp.geturl())
 
     # 获取存在在本地的cookie
+    # requests与标准库urllib一样是一个同步请求库，会等待网页响应
     import requests, sqlite3
     from win32.win32crypt import CryptUnprotectData
     def getCookieFromChrome(host_key):
@@ -4494,13 +4779,30 @@ def autoLogin():
             print(cookieData)
             return cookieData
     print(encode_data_upd)
-    # 该方法没有成功修改网站数据，所以用来登录
+    # 该方法没有成功修改网站数据，所以用来登录, cookies也可以在headers中指定
+    # proxies设置代理,可以设置socks代理,如{'http':'socks5://user:pwd:host:port'
     resp = requests.post(urlEdit, headers = {'User-agent': 'wswp'}, data=encode_data_upd, cookies=getCookieFromChrome('example.webscraping.com'))
+    # 获取cookies
+    print(resp.cookies)
+    file = {'file': open('myfile/test.txt', 'rb')}
+    # 指定files可以上传文件
+    resp = requests.post(urlEdit, files=file)
+
+    # 忽视ssl认证
+    resp = requests.get('https://www.12306.cn', verify=False)
+
+    # 认证访问
+    resp = requests.get('https://www.12306.cn', auth=('username', 'pwd'))
+
+    # 保持会话持久性
+    s = requests.Session()
+    s.get(urlEdit)
+    s.get(urlEdit)
 
 # 使用mechanize获取表单内容自动登录
 def useMechLogin():
     import mechanicalsoup
-    browser = mechanicalsoup.StatefulBrowser()
+    browser = mechanicalsoup.StatefulBrowser(soup_config={'features': 'lxml'})
     urlLogin = 'http://example.webscraping.com/places/default/user/login?_next=/places/default/index'
     browser.open(urlLogin)
     # nr=0选择匹配到的第一个form
@@ -4509,6 +4811,7 @@ def useMechLogin():
     browser['password'] = 'test'
     # 提交所选择的表单的内容
     browser.submit_selected()
+    browser.close()
 
 from PIL import Image
 from io import BytesIO
@@ -4651,7 +4954,7 @@ class CaptChaAPI:
 class CaptchaError(Exception):
     pass
 
-# 使用渲染引擎获取百度搜索页面
+# 使用渲染引擎获取百度搜索页面链接
 def getBaiduData(*args):
     "args[0]搜索的关键字 args[1]获取的页数"
     def parseHref(x):
@@ -4662,21 +4965,1305 @@ def getBaiduData(*args):
         return x
 
     pn = [i*10 for i in range(args[1])]
-    br = BrowserRender(show=False)
+    br = BrowserRender(show=True)
 
     for page in pn:
         html = br.download(url='https://www.baidu.com/s?wd={0}&pn={1}'.format(args[0], page))
 
         tree = lxml.html.fromstring(html)
-        elements = tree.cssselect('a.c-showurl')
-        hrefs = [element.text_content() for element in elements]
+        elements_url = tree.cssselect('a.c-showurl')
+        hrefs = [element.text_content() for element in elements_url]
         hrefs = list(map(parseHref, hrefs))
         domains = [urlparse(href).scheme+'://'+urlparse(href).netloc for href in hrefs]
-        print(hrefs)
+        
         print(domains)
 
+    br.keepWindow()
+
+def runCrwal():
+    from subprocess import Popen, PIPE
+    from scrapy.cmdline import execute
+    os.chdir(r'srppro')
+
+    # scrapy命令
+    crawl_check = 'scrapy check -l'
+    crawl_check2 = 'scrapy check'
+    crawl_list = 'scrapy list'
+    crawl_edit = 'scrapy edit dmoz'
+    # 下载页面
+    crawl_fetch = 'scrapy fetch --nolog https://www.csdn.net'
+    crawl_fetch2 = 'scrapy fetch --nolog --headers https://www.csdn.net'
+    # 在浏览器中打开url
+    crawl_view = 'scrapy view https://www.csdn.net'
+    # 使用给定的spider的parse函数进行处理
+    crawl_parse = 'scrapy parse https://www.csdn.net --spider=dmoz'
+    # 指定spider的函数
+    crawl_parse1 = 'scrapy parse https://www.csdn.net --spider=dmoz -c parse'
+    crawl_parse2 = 'scrapy parse https://www.csdn.net --spider=dmoz --noitems'
+    crawl_parse3 = 'scrapy parse https://www.csdn.net --spider=dmoz --nolinks'
+    crawl_parse4 = 'scrapy parse https://www.csdn.net --spider=dmoz -v'
+    crawl_settings = 'scrapy settings --get BOT_NAME'
+    crawl_runspider = 'scrapy runspider PythonApplication.py'
+    crawl_v = 'scrapy version -v'
+    crawl_benchmark = 'scrapy bench'
+    create_crawler_pro = 'scrapy startproject test'
+    create_spider = 'scrapy genspider myspider XX.com'
+    run_crawl_dmoz = 'scrapy crawl csdnarticle'
+    run_crawl_csimage = 'scrapy crawl csimage'
+    run_crawl_example = 'scrapy crawl example.com'
+    run_crawl_shell = 'scrapy shell "https://www.csdn.net"'
+    # 导出item, 导出为jsonline格式，即[{'k1':'v1'},{'k2','v2'}]=>{'k1':'v1'}\n{'k2','v2'}
+    # 所以支持大量数据导入，[]形式的话会把整个对象写入内存，内存压力较大
+    run_crawl_o_json = 'scrapy crawl dmoz -o myfile/item.json'
+    run_crawl_o_csv = 'scrapy crawl dmoz -o myfile/item.csv'
+    run_crawl_o_xml = 'scrapy crawl dmoz -o myfile/item.xml'
+    run_crawl_o_localfile = 'scrapy crawl dmoz -o file:///e:/git/Olaful/Olaful.github.io/python/PythonApplication/PythonApplication/srppro/myfile/file.csv'
+    
+    auth_info = ('ta', 'qweasd', '192.168.123.175')
+    run_crawl_o_ftp = 'scrapy crawl dmoz -o ftp://{0}:{1}@{2}/ftpitem.csv'.format(*auth_info)
+    # name会被spider名称所覆盖,time被timestamp覆盖
+    run_crawl_o_ftp_autoname = 'scrapy crawl dmoz -o ftp://{0}:{1}@{2}/%(name)s_%(time)s.csv'.format(*auth_info)
+    # file_name会被spider的属性file_name所覆盖
+    run_crawl_o_ftp_autoproname = 'scrapy crawl dmoz -o ftp://{0}:{1}@{2}/%(file_name)s.csv'.format(*auth_info)
+
+    run_crawl_other = 'scrapy crawl proxy_youdaili'
+
+    Popen('dir', stdout=None, stderr=None)
+    #execute(['scrapy', 'crawl', 'csdnarticle'])
+
+
+from twisted.internet import reactor,defer
+from scrapy.spiders import Spider
+from scrapy.crawler import CrawlerRunner
+from scrapy.settings import Settings
+from scrapy.utils.project import get_project_settings
+
+class Myspider(Spider):
+    name = 'csimage'
+    allowed_domains = ['csdn.net']
+    start_urls = ["https://www.csdn.net"]
+
+    def parse(self, response):
+        item = {}
+        for sel in response.xpath('//img'):
+            item['image_urls'] = sel.xpath('@src').extract()
+            yield item
+
+# 在Twisted reactor中运行spider,使用自定义设置或者通用设置
+def runSpider1():
+    settings = Settings({'USER_AGENT':'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)'})
+    #runner = CrawlerRunner(settings)
+    runner = CrawlerRunner(get_project_settings())
+    # 自定义spider或者在scrapy已存在的spider
+    d = runner.crawl(Myspider)
+    d.addBoth(lambda _:reactor.stop())
+    # 阻塞，直到spider运行完毕
+    reactor.run()
+
+# 执行多个spider
+def runSpider2():
+    os.chdir(r'srppro')
+    runner = CrawlerRunner(get_project_settings())
+    dfs = set()
+    for domain in ['csdn.net']:
+        # domain会覆盖spider原来的domain
+        d = runner.crawl('csdnarticle', domain=domain)
+        dfs.add(d)
+
+    # 延迟加载
+    defer.DeferredList(dfs).addBoth(lambda _: reactor.stop())
+    reactor.run()
+
+# 通过链接(chaining) deferred来线性运行spider
+def runSpider3():
+    os.chdir(r'srppro')
+    runner = CrawlerRunner(get_project_settings())
+    @defer.inlineCallbacks
+    def crawl():
+        for domain in ['www.douban.com', 'csdn.net']:
+            yield runner.crawl('csimage', domain=domain)
+        reactor.stop()
+
+    crawl()
+    reactor.run()
+
+def pySpiderRun():
+    from subprocess import Popen
+    Popen('pyspider all', stdout=None, stderr=None)
+
+import json
+import requests
+from requests.exceptions import RequestException
+
+def get_one_page(url):
+    try:
+        header = {
+            'User-Agent':'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
+            + 'Chrome/71.0.3578.98 Safari/537.36'
+        }
+        resp = requests.get(url, headers=header)
+        if resp.status_code == 200:
+            return resp.text
+        return None
+    except RequestException:
+        return None
+
+def parse_one_page(html):
+    # 表达式太复杂，陷入死循环
+    pattern = """
+      <dd>.*?board-index.*?>(\d+)</i>.*?data-src="(.*?)".*?name"><a'
+     '.*?>(.*?)</a>.*?start">(.*?)</p>.*?releasetime">(.*?)</p>'
+     '.*?integer">(.*?)</i>.*?fraction">(.*?)</i>.*?</dd>
+     """
+
+    items = re.findall(pattern, html, re.S)
+    for item in items:  
+        yield{
+            'index':item[0],
+            'image':item[1],
+            'title':item[2],
+            'actor':item[3].strip()[3:],
+            'time':item[4].strip()[5:],
+            'score':item[5] + item[6]
+        }
+
+def write_to_file(content):
+    with open(r'myfile/maoyantop.txt', 'a', encoding='utf-8') as f:
+        f.write(json.dumps(content, ensure_ascii=False) + '\n')
+
+def maoyanMain(offset=0):
+    url = 'http://maoyan.com/board/4?offset={}'.format(offset)
+    html = get_one_page(url)
+    for item in parse_one_page(html):
+        print(item)
+        write_to_file(item)
+
+# 京东某商品图片url
+
+img_urls = []
+def get_Img_urls():
+    url = 'https://list.jd.com/list.html?cat=9987,653,655&ev=exprice%5FM500L999&sort=sort_rank_asc&trans=1&JL=3_%E4%BB%B7%E6%A0%BC_500-999#J_crumbsBar'
+    header = {
+    'User-Agent':'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
+    }
+    rsp = requests.get(url, headers=header)
+    tree = lxml.html.fromstring(rsp.text)
+    data = tree.xpath(r'//li[contains(@class, "gl-item")]/div/div[contains(@class, "p-img")]/a/img/@data-lazy-img')
+    for d in data:
+        if d is not None:
+            img_urls.append(urljoin(url, d))
+
+def write_to_file():
+    md = hashlib.md5()
+    get_Img_urls()
+
+    for url in img_urls:
+        resp = requests.get(url, headers=header)
+        md.update(resp.content)
+        suffix_name = url.split('/')[-1].split('.')[-1]
+        data = BytesIO(resp.content)
+        try:
+            img = Image.open(data)
+            img.save('{0}.{1}'.format(md.hexdigest(), suffix_name))
+        except OSError:
+            pass
+
+
+def pyQuery():
+    from pyquery import PyQuery as pq
+
+    html = """
+    <div class="wrap">
+        Hello World
+        <p>This is a paragraph</p>
+    <div id="container">
+    <ul class="list">
+    <li class="item-0">first item</li>
+    <li class="item-1"><a href="link2.html">second item</a></li>
+    <li class="item-0 active"><a href="link3.html"><span class="bold"></span>third item</a></li>
+    <li class="item-1 active"><a href="link4.html">fourth item</a></li>
+    <li class="item-0"><a href="link5.html">fifth item</a></li>
+    </ul>
+    </div>
+    </div>
+    """
+    doc = pq(html)
+    rls = doc('li')
+
+    doc = pq(url="https://maoyan.com/")
+    rls = doc('title')
+
+    doc = pq(filename='myfile/index.html')
+    rls = doc('title')
+
+    doc = pq(html)
+    rls = doc('#container .list li')
+
+    doc = pq(html)
+    rls = doc('.list')
+    rls = rls.find('li')
+    rls = rls.children()
+
+    rls = doc('.list')
+    rls = rls.parent()
+
+    rls = doc('.list')
+    rls = rls.parents()
+
+    rls = doc('.list .item-0.active')
+    #rls = rls.siblings()
+    rls = rls.siblings('.active')
+
+    rls = doc('li').items()
+    # for li in rls:
+    #     print(li)
+
+    rls = doc('.item-0.active a')
+    # 只返回第一个节点的属性
+    #rls = rls.attr('href')
+    # 查找所有节点的text并以逗号隔开
+    #rls = rls.text()
+    rls = rls.html()
+
+    # rls = doc('.item-0.active')
+    # print(rls)
+    # rls = rls.removeClass('active')
+    # print(rls)
+    # rls = rls.addClass('active')
+    # print(rls)
+
+    # rls = doc('.item-0.active')
+    # print(rls)
+    # rls.attr('name', 'link')
+    # print(rls)
+    # rls.text('changed item')
+    # print(rls)
+    # rls.html('<span>changed item</span>')
+    # print(rls)
+
+    rls = doc('.wrap')
+    rls.find('p').remove()
+
+    rls = doc('li:first-child')
+    rls = doc('li:last-child')
+    # 第二个li节点
+    rls = doc('li:nth-child(2)')
+    # 第三个节点之后的节点
+    rls = doc('li:gt(2)')
+    # 偶数位置节点
+    rls = doc('li:nth-child(2n)')
+    # 包含指定内容的节点
+    rls = doc('li:contains("second")')
+    print(rls)
+
+# 通过splash渲染页面
+def renderUseSplash():
+    from urllib.parse import quote
+    # 通过splash渲染页面
+    url = 'http://192.168.99.100:8050/render.html?url=https://www.baidu.com'
+    # 指定长宽参数可以返回页面截图
+    png_data = '&wait=5&width=1000&height=700'
+    png_url = url + png_data
+    # 返回页面加载参数，如时间，header等
+    rar_url = 'http://192.168.99.100:8050/render.har?url=https://www.baidu.com'
+    # 以json格式返回
+    json_url = 'http://192.168.99.100:8050/render.har?url=https://www.baidu.com'
+    # 返回数据中带html内容
+    html_data = 'html=1'
+    json_url = json_url + html_data
+
+    lua = """
+        function main(splash)
+            return 'hello'
+        end
+        """
+    # 执行lua脚本
+    exec_url = 'http://192.168.99.100:8050/execute?lua_source=' + quote(lua)
+    rsp = requests.get(exec_url)
+    print(rsp.text)
+
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.common.by import By
+from selenium.webdriver import ActionChains
+from selenium.common.exceptions import NoSuchElementException
+import random
+# 处理拖动验证码
+class BiliBiliest():
+    # 调整偏移量
+    ADJ = 15
+    RETRY = 0
+    def __init__(self):
+        self.url = 'https://passport.bilibili.com/login'
+        self.br = webdriver.Chrome()
+        self.wait = WebDriverWait(self.br, 10)
+        self.phone = ''
+        self.pwd = ''
+    
+    # 对象被销毁时触发
+    def __del__(self):
+        self.br.close()
+
+    # 打开页面并输入用户名与密码
+    def open(self):
+        self.br.get(self.url)
+        self.br.implicitly_wait(30)
+        self.br.find_element_by_id('login-username').send_keys(self.phone)
+        self.br.find_element_by_id('login-passwd').send_keys(self.pwd)
+
+    def login(self):
+        submmit = self.br.find_element_by_xpath('//a[contains(@class, "btn btn-login")]')
+        submmit.click()
+        sleep(10)
+        print('登录成功')
+
+    # 获取拖动按钮
+    def get_slider_btn(self):
+        # 界面加载等待期间,界面按钮可点击的时候获取该按钮
+        #btn = self.wait.until(expected_conditions.element_to_be_clickable((By.CLASS_NAME, 'gt_slider_knob gt_show')))
+        self.br.implicitly_wait(10)
+        btn = self.br.find_element_by_xpath('//div[contains(@class, "gt_slider_knob gt_show")]')
+        return btn
+
+    # 获取验证码图片的位置
+    def get_pos(self):
+        self.br.implicitly_wait(10)
+        # 由于验证码图片是拼接起来的，先获取图片区域左上角
+        # 图片的左上角位置，再获取图片区域的右下角图片的右
+        # 下角位置
+        img = self.br.find_element_by_xpath('//div[contains(@style, "background-position: -157px -58px")]')
+        sleep(2)
+        location = img.location
+        size = img.size
+        top, left = location['y'], location['x']
+
+        img = self.br.find_element_by_xpath('//div[contains(@style, "background-position: -205px 0px")]')
+        location = img.location
+        size = img.size
+        bottom, right = location['y'] + size['height'], location['x'] + size['width']
+
+        return (left, top, right, bottom)
+
+    def get_screenshot(self):
+        screenshot = self.br.get_screenshot_as_png()
+        screenshot = Image.open(BytesIO(screenshot))
+        return screenshot
+
+    # 获取指定区域的屏幕截图
+    def get_image(self, name):
+        left, top, right, bottom = self.get_pos()
+        print('图片验证码位置:', left, top, right, bottom)
+        screenshot = self.get_screenshot()
+        captcha = screenshot.crop((left, top, right, bottom))
+        captcha.save('myfile/{}'.format(name))
+        return captcha
+
+    # 判断两张图片的像素是否相同
+    def is_pixel_equal(self, img1, img2, x, y):
+        # 获取图片指定位置像素
+        pixel1 = img1.load()[x, y]
+        pixel2 = img2.load()[x, y]
+        # 自定义阈值差
+        threshold = 40
+        # 判断RGB值是否相等
+        if abs(pixel1[0] - pixel2[0]) < threshold and abs(pixel1[1] - pixel2[1]) < threshold \
+            and abs(pixel1[2] - pixel2[2]) < threshold:
+            return True
+        else:
+            return False
+
+    # 获取带缺口图片的缺口像素位置
+    def get_gap(self, img1, img2):
+        # 默认偏移量, 由于待拼合的模块在左边，占用一定位置
+        left = 60
+        for i in range(left, img1.size[0]):
+            for j in range(img1.size[1]):
+                if not self.is_pixel_equal(img1, img2, i, j):
+                    left = i
+                    return left
+        return left
+
+    # 获取按钮拖动所需位移量信息，尽量模拟人拖动的速度
+    def get_track(self, distance):
+        track = []
+        current = 0
+        # 减速位置
+        mid = distance * 4 / 5
+        # 加速度时间单位
+        t = 0.2
+        # 初速度
+        v = 0
+
+        while current < distance:
+            # 前段加速，后段减速
+            if current < mid:
+                a = 2
+            else:
+                a = -3
+            v0 = v
+            # 当前速度
+            v = v0 + a * t
+            # 根据物理公式s = v0 * t + a * t^2 / 2计算每段时间移动距离
+            move = v0 * t + (a * t * t) / 2 + random.random()
+            current += move
+            track.append(move)
+
+        return track
+
+    # 根据移动轨迹模拟按钮拖动
+    def move_to_gap(self, slider, tracks):
+        # 按钮按下
+        ActionChains(self.br).click_and_hold(slider).perform()
+        for x in tracks:
+            ActionChains(self.br).move_by_offset(xoffset=x, yoffset=0).perform()
+        sleep(0.5)
+        # 释放按钮按下动作
+        ActionChains(self.br).release().perform()
+
+    def crack(self):
+        self.open()
+        btn = self.get_slider_btn()
+        # 鼠标移动到拖动按钮上
+        ActionChains(self.br).move_to_element(btn).perform()
+        sleep(1)
+        img1 = self.get_image('captcha_normal.png')
+
+        ActionChains(self.br).click_and_hold(btn).perform()
+        img2 = self.get_image('captcha_gaps.png')
+        # ActionChains(self.br).release().perform()
+
+        gap = self.get_gap(img1, img2)
+        print('图片缺口位置:', gap)
+
+        gap += self.ADJ
+        track = self.get_track(gap)
+        self.move_to_gap(btn, track)
+
+        self.br.implicitly_wait(5)
+        success = False
+        # 计算缺口的位置可能有所偏差，所以多重复几次
+        try:
+            #success = self.wait.unit(expected_conditions.presence_of_element_located(By.ClASS_NAME, 'gt_ajax_tip gt_success'))
+            success = self.br.find_element_by_xpath('//div[contains(@class, "gt_ajax_tip gt_success")]')
+            print(success)
+        except NoSuchElementException:
+            pass
+        
+        if not success and self.RETRY < 5:
+            self.RETRY += 1
+            self.crack()
+        else:
+            self.login()
+
+    
+import requests
+from hashlib import md5
+
+# 通过向chaojiying验证码服务提供网站请求图片数据
+class Chaojiying(object):
+    def __init__(self, username, pwd, soft_id):
+        self.username = username
+        self.pwd = pwd
+        self.soft_id = soft_id
+        self.base_params = {
+            'user':self.username,
+            'pass2':self.pwd,
+            'softid':self.soft_id,
+        }
+        self.header = {
+            'Connection':'Keep-Alive',
+            'User-Agent':'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 \
+            (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
+        }
+        self.upload_url = 'http://upload.chaojiying.net/Upload/Processing.php'
+        self.uperror_url = 'http://upload.chaojiying.net/Upload/ReportError.php'
+    
+    # 上传图片
+    def post_pic(self, im, codetype):
+        params = {'codetype': codetype,}
+        params.update(self.base_params)
+        files = {'userfile':('hello.jpg', im)}
+        r = requests.post(self.upload_url, data=params, files=files, headers=self.header)
+        # 结果示例{"err_no":0,"err_str":"OK","pic_id":"1662228516102","pic_str":"1,2|3,4","md5":"35d5c7f6f53223fbdc5b72783db0c2c0"}
+        return r.json()
+
+    # 获取上传错误信息
+    def report_error(self, im_id):
+        params = {'id':im_id}
+        params.update(self.base_params)
+        r = requests.post(self.uperror_url, data=params, headers=self.header)
+        # 结果示例{"err_no":0,"err_str":"OK"}
+        return r.json()
+
+CHAOJIYING_USER = ''
+CHAOJIYING_PWD = ''
+CHAOJIYING_SOFTID = 898312
+# 选取1-4个坐标
+CHAOJIYING_KIND = 9004 
+RAILWAY_12306_USER = ''
+RAILWAY_12306_PWD = ''
+
+class Railway_12306():
+    RETRY = 0
+    def __init__(self, username=RAILWAY_12306_USER, pwd=RAILWAY_12306_PWD):
+        self.url = 'https://kyfw.12306.cn/otn/resources/login.html'
+        self.br = webdriver.Chrome()
+        # 等待界面出现元素的时间
+        self.wait = WebDriverWait(self.br, 10)
+        self.username = username
+        self.pwd = pwd
+        self.captSerive = Chaojiying(CHAOJIYING_USER, CHAOJIYING_PWD, CHAOJIYING_SOFTID)
+
+    def open(self):
+        self.br.get(self.url)
+        login_with_acct = self.wait.until(expected_conditions.presence_of_element_located((By.CLASS_NAME, 'login-hd-account')))
+        login_with_acct.click()
+        username = self.wait.until(expected_conditions.presence_of_element_located((By.ID, 'J-userName')))
+        pwd = self.wait.until(expected_conditions.presence_of_element_located((By.ID, 'J-password')))
+        username.send_keys(self.username)
+        pwd.send_keys(self.pwd)
+
+    def login(self):
+        submmit = self.wait.until(expected_conditions.presence_of_element_located((By.ID, 'J-login')))
+        submmit.click()
+        sleep(5)
+        print('登录成功')
+
+    def get_click_element(self):
+        em_img = self.wait.until(expected_conditions.presence_of_element_located((By.ID, 'J-loginImg')))
+        return em_img
+
+    def get_login_image(self, name):
+        em_img = self.get_click_element()
+        img_base64data = em_img.get_property('src').split(',')[-1]
+        img_base64data = re.sub(r'[\s]+', '', img_base64data)
+        binary_data = base64.b64decode(img_base64data)
+        img = Image.open(BytesIO(binary_data))
+        img.save('myfile/{}'.format(name))
+        return img
+        
+    # 获取点击图像的坐标
+    def get_pos(self, captcha_rls):
+        groups = captcha_rls.get('pic_str').split('|')
+        locations = [[int(number) for number in group.split(',')] for group in groups]
+        return locations
+    
+    # 根据坐标点击图像
+    def touch_click_pic(self, locations):
+        for location in locations:
+            ActionChains(self.br).move_to_element_with_offset(self.get_click_element(), location[0], location[1]).click().perform()
+        sleep(1)
+
+    def get_cookies(self):
+        return self.br.get_cookies()
+
+    def crack(self):
+        self.open()
+        image = self.get_login_image('captcha_railway.png')
+        byteData = BytesIO()
+        image.save(byteData, format='PNG')
+        rls = self.captSerive.post_pic(byteData.getvalue(), CHAOJIYING_KIND)
+        print('坐标信息:', rls)
+        locations = self.get_pos(rls)
+        self.touch_click_pic(locations)
+        self.login()
+
+        success = not re.search('login', self.br.current_url)
+
+        if not success and self.RETRY < 5:
+            self.RETRY += 1
+            self.crack()
+
+        if success:
+            return {'status': 1, 'content': self.get_cookies()}
+        else:
+            return {'status': 3, 'content': '登录失败'}
+
+from selenium.common.exceptions import TimeoutException
+
+USERNAME = ''
+PWD = ''
+class CrackWeiboSlide():
+    "把模板保存到本地，对比验证码与模板匹配"
+    def __init__(self):
+        self.url = 'https://passport.weibo.cn/signin/login'
+        self.br = webdriver.Chrome()
+        self.wait = WebDriverWait(self.br, 10)
+        self.username = USERNAME
+        self.pwd = PWD
+    
+    def __del__(self):
+        self.br.close()
+
+    def open(self):
+        self.br.get(self.url)
+        username = self.wait.until(expected_conditions.presence_of_element_located((By.ID, "loginName")))
+        pwd = self.wait.until(expected_conditions.presence_of_element_located((By.ID, "loginPassword")))
+        submit = self.wait.until(expected_conditions.element_to_be_clickable((By.ID, "loginAction")))
+        username.send_keys(self.username)
+        pwd.send_keys(self.pwd)
+        submit.click()
+
+    def get_pos(self):
+        img = None
+        try:
+            img = self.wait.until(expected_conditions.presence_of_element_located((By.CLASS_NAME, "patt-shadow")))
+        except TimeoutException:
+            print('验证码没有出现')
+            self.open()
+        sleep(2)
+        if img is not None:
+            location = img.location
+            size = img.size
+            top, left, bottom, right = location['y'], location['x'], location['y'] + size['height'],\
+            location['x'] + size['width']
+            return (top, left, bottom, right)
+        return (0, 0, 0, 0)
+
+    def get_screenshot(self):
+        screenshot = self.br.get_screenshot_as_png()
+        screenshot = Image.open(BytesIO(screenshot))
+        return screenshot
+
+    def get_img(self, name):
+        top, left, bottom, right = self.get_pos()
+        print('宫格码位置信息:', top, left, bottom, right)
+        screenshot = self.get_screenshot()
+        captcha = screenshot.crop((left, top, right, bottom))
+        captcha.save('myfile/Palace/{}'.format(name))
+
+    # 获取带有箭头的宫格图像
+    def main(self):
+        cnt = 0
+        while True:
+            self.open()
+            self.get_img(str(cnt) + '.png')
+            cnt += 1
+
+    def detect_img(self, img):
+        for tmp_name in os.listdir('myfile/Palace'):
+            print('正在匹配:', tmp_name)
+            tmp = Image.open('myfile/Palace/{}'.format(tmp_name))
+            if self.same_img(img, tmp):
+                num = [int(number) for number in list(tmp_name.split('.')[0])]
+                print('拖动顺序为:', num)
+                return num
+
+    def is_pixel_equal(self, img1, img2, x, y):
+        pixel1 = img1.load()[x, y]
+        pixel2 = img2.load()[x, y]
+        threshold = 20
+        if abs(pixel1[0] - pixel2[0]) < threshold and abs(pixel1[1] - pixel2[1]) < threshold \
+            and abs(pixel1[2] - pixel2[2]) < threshold:
+            return True
+        else:
+            return False
+
+    def same_img(self, img, tmp):
+        threshold = 0.99
+        cnt = 0
+        for x in range(img.width):
+            for y in range(img.height):
+                if self.is_pixel_equal(img, tmp, x, y):
+                    cnt += 1
+        # 误差
+        rls = float(cnt) / (img.width * img.height)
+        if rls > threshold:
+            print('匹配成功')
+            return True
+        return False
+
+    # 按照路径在宫格上拖动鼠标
+    def move(self, num):
+        circles = self.br.find_element_by_css_selector('.patt-wrap .patt-circ')
+        dx = dy = 0
+        for idx in range(4):
+            circle = circles[num[idx] - 1]
+            if idx == 0:
+                ActionChains(self.br).move_to_element_with_offset(circle, circle.size['width'] / 2,\
+                circle.size['height'] / 2).click_and_hold().perform()
+            else:
+                times = 30
+                for i in range(times):
+                    ActionChains(self.br).move_by_offset(dx / times, dy / times).perform()
+                    sleep(1 / times)
+            if idx == 3:
+                ActionChains(self.br).release().perform()
+            else:
+                dx = circles[num[idx + 1] - 1].location['x'] - circle.location['x']
+                dy = circles[num[idx + 1] - 1].location['y'] - circle.location['y']
+
+    def crack(self):
+        self.open()
+        img = self.get_img('Palace.png')
+        num = self.detect_img(img)
+        self.move(num)
+        sleep(10)
+
+import redis
+from redis.exceptions import DataError
+
+MAX_SCORE = 100
+MIN_SCORE = 0
+INITIAL_SCORE = 10
+REDIS_HOST = '127.0.0.1'
+REDIS_PORT = '6379'
+REDIS_PWD = '123456'
+REDIS_ZSET_KEY = 'proxies'
+
+# 使用redis存储代理
+class RedisCli():
+    def __init__(self, host=REDIS_HOST, port=REDIS_PORT, pwd=REDIS_PWD):
+        self.db = redis.StrictRedis(host=host, port=port, password=pwd, decode_responses=True)
+
+    def add(self, proxy, score=INITIAL_SCORE):
+        if not self.db.zscore(REDIS_ZSET_KEY, proxy):
+            self.db.zadd(REDIS_ZSET_KEY, {proxy:score,})
+    
+    def random(self):
+        rls = self.db.zrangebyscore(REDIS_ZSET_KEY, MAX_SCORE, MAX_SCORE)
+        if len(rls):
+            return random.choice(rls)
+        else:
+            rls = self.db.zrevrange(REDIS_ZSET_KEY, 0, 100)
+            if len(rls):
+                return random.choice(rls)
+            else:
+                 raise DataError
+    
+    def decrease(self, proxy):
+        score = self.db.zscore(REDIS_ZSET_KEY, proxy)
+        if score and score > MIN_SCORE:
+            print('代理{}分数{}减1'.format(proxy, score))
+            self.db.zincrby(REDIS_ZSET_KEY, -1, proxy)
+        else:
+            print('移除代理{}:{}'.format(proxy, score))
+            self.db.zrem(REDIS_ZSET_KEY, proxy)
+
+    def exist(self, proxy):
+        return not zscore(REDIS_ZSET_KEY, proxy) == None
+    
+    def add_max(self, proxy):
+        print('代理{}可用，分数设置为{}'.format(proxy, MAX_SCORE))
+        return self.db.zadd(REDIS_ZSET_KEY, {proxy:MAX_SCORE})
+
+    def count(self):
+        return self.db.zcard(REDIS_ZSET_KEY)
+
+    def all(self):
+        return self.db.zrangebyscore(REDIS_ZSET_KEY, MIN_SCORE, MAX_SCORE)
+
+# 代理元类
+class ProxyMetaclass(type):
+    # 参数：1.当前准备创建的类的对象 2.类的名字 3.类继承的父类集合 4.类的方法集合
+    def __new__(cls, name, bases, attrs):
+        cnt = 0
+        attrs['_CrawlFunc_'] = []
+        for k, v in attrs.items():
+            if 'crawl_' in k:
+                attrs['_CrawlFunc_'].append(k)
+                cnt += 1
+        attrs['_CrawlFuncCount_'] = cnt
+        return type.__new__(cls, name, bases, attrs)
+
+from pyquery import PyQuery as pq
+
+# 获取代理
+class CrawlProxy(object, metaclass=ProxyMetaclass):
+    def __init__(self):
+        self.header = {
+        'User-Agent':'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
+        }
+
+    def get_proxies(self, callback):
+        proxies = []
+        for proxy in eval('self.{}()'.format(callback)):
+            print('获取代理:', proxy)
+            proxies.append(proxy)
+        return proxies
+
+    # 获取有代理网站免费代理IP
+    def crawl_youdaili(self):
+        start_url = 'https://www.youdaili.net/Daili/http/368{:02d}.html'
+        urls = [start_url.format(page) for page in range(13, 0, -1)]
+        for url in urls:
+            print('下载有代理数据:', url)
+            html = requests.get(url, headers=self.header).content.decode()
+            doc = pq(html)
+            rls = doc('.content p')
+            for p in rls:
+                ipports = p.text_content()
+                for ipport in re.findall(r'([\d.:]+)#', ipports):
+                    yield ipport
+
+    # 获取快代理网站免费代理IP
+    def crawl_kuaidaili(self, page_cnt=20):
+        start_url = 'https://www.kuaidaili.com/free/inha/{}/'
+        urls = [start_url.format(page) for page in range(1, page_cnt + 1)]
+        for url in urls:
+            print('下载块代理数据:', url)
+            html = requests.get(url, headers=self.header).content.decode()
+            doc = pq(html)
+            rls = doc('table tr')
+            # 去掉表头
+            rls = rls[1:0]
+            # tr类型为lxml.html.HtmlElement
+            for tr in rls:
+                ip = tr.getchildren()[0].text
+                port = tr.getchildren()[1].text
+                yield ':'.join([ip, port])
+            
+
+POOL_UPPER__THRESHOLD = 10000
+# 存储代理
+class StorageProxy():
+    def __init__(self):
+        self.redis = RedisCli()
+        self.crawler = CrawlProxy()
+
+    def is_over_threshold(self):
+        if self.redis.count() >= POOL_UPPER__THRESHOLD:
+            return True
+        else:
+            return False
+    
+    def run(self):
+        print('开始入库--------')
+        for callback_label in range(self.crawler._CrawlFuncCount_):
+            callback_func = self.crawler._CrawlFunc_[callback_label]
+            proxies = self.crawler.get_proxies(callback_func)
+            for proxy in proxies:
+                self.redis.add(proxy)
+
+import aiohttp
+import asyncio
+from aiohttp.client_exceptions import ClientError, ClientConnectionError
+
+VALID_STATUS_CODE = [200]
+TEST_URL = 'http://www.baidu.com'
+BATCH_TEST_SIZE = 100
+
+# 测试代理
+class TestProxy(object):
+        def __init__(self):
+            self.redis = RedisCli()
+        # 异步协程函数，不会导致阻塞
+        async def test_single_proxy(self, proxy):
+            conn = aiohttp.TCPConnector(verify_ssl=False)
+            async with aiohttp.ClientSession(connector=conn) as session:
+                try:
+                    if isinstance(proxy, bytes):
+                        proxy = proxy.decode()
+                    real_proxy = 'http://' + proxy
+                    print('正在测试:',proxy)
+                    # 异步请求，get方法类似于reuqests的get方法
+                    async with session.get(TEST_URL, proxy=real_proxy, timeout=15) as response:
+                        if response.status in VALID_STATUS_CODE:
+                            self.redis.add_max(proxy)
+                            print('代理可用:', proxy)
+                        else:
+                            self.redis.decrease(proxy)
+                            print('响应码不正确，代理可能不可用:', proxy)
+                except (ClientError, ClientConnectionError, TimeoutError, AttributeError):
+                    self.redis.decrease(proxy)
+                    print('代理请求失败:', proxy)
+
+        def run(self):
+            print('代理测试器开始运行')
+            try:
+                proxies = self.redis.all()
+                for i in range(0, len(proxies), BATCH_TEST_SIZE):
+                    test_proxies = proxies[i:i+BATCH_TEST_SIZE]
+                    loop = asyncio.get_event_loop()
+                    tasks = [self.test_single_proxy(proxy) for proxy in test_proxies]
+                    # 同时并发BATCH_TEST_SIZE个协程
+                    loop.run_until_complete(asyncio.wait(tasks))
+                    sleep(5)
+            except Exception as e:
+                print('测试器运行错误:', e.args)
+
+# 通过web接口访问代理
+def FlaskWebApiProxy(host, port):
+    from flask import Flask, g
+    __all__ = ['app']
+    app = Flask(__name__)
+    
+    def get_conn():
+        if not hasattr(g, 'redis'):
+            g.redis = RedisCli()
+        return g.redis
+    
+    @app.route('/')
+    def index():
+        return '<h2>Welcome To Visit The Proxy Pool</h2>'
+
+    @app.route('/random')
+    def get_proxy():
+        conn = get_conn()
+        return conn.random()
+    
+    @app.route('/count')
+    def get_cnt():
+        conn = get_conn()
+        return str(conn.count())
+
+    app.run(host, port)
+
+TEST_CYCLE = 1
+GET_CYCLE = 1
+TEST_ENABLED = False
+GET_ENABLED = False
+API_ENABLED = False
+API_IP = '127.0.0.1'
+API_PORT = 1025
+from multiprocessing import Process
+# 调度代理：获取，存储，测试，调用
+class Scheduler():
+    def scheduler_test(self, cycle=TEST_CYCLE):
+        test = TestProxy()
+        while cycle:
+            print('测试器开始执行')
+            test.run()
+            cycle -= 1
+            sleep(5)
+
+    def scheduler_get(self, cycle=GET_CYCLE):
+        get = StorageProxy()
+        while cycle:
+            print('抓取器开始执行')
+            get.run()
+            cycle -= 1
+            sleep(5)
+
+    def scheduler_api(self):
+        print('代理API开启:',API_IP,API_PORT)
+        FlaskWebApiProxy(API_IP, API_PORT)
+
+    def run(self):
+        print('代理调度器开始执行')
+        if TEST_ENABLED:
+            test_process = Process(target=self.scheduler_test)
+            test_process.start()
+
+        if GET_ENABLED:
+            get_process = Process(target=self.scheduler_get)
+            get_process.start()
+
+        if API_ENABLED:
+            api_process = Process(target=self.scheduler_api)
+            api_process.start()
+
+# 随机获取一个可用代理
+def get_proxy(API_IP, API_PORT):
+    proxy_url = 'http://' + API_IP + str(API_PORT) + '/random'
+    try:
+        return requests.get(proxy_url).text
+    except ConnectionError:
+        return None
+
+# cookie池: 1.获取 2.存储 3.检测 4.接口
+
+# cookie存储模块
+class RedisCookieCli(object):
+    def __init__(self, type, website, host = REDIS_HOST, port=REDIS_PORT, pwd=REDIS_PWD):
+        self.db = redis.StrictRedis(host=host, port=port, password=pwd, decode_responses=True)
+        self.type = type
+        self.website = website
+
+    def name(self):
+        return '{type}:{website}.'.format(type=self.type, website=self.website)
+
+    # 存储格式usrname:hashvalue
+    def set(self, usrname, value):
+        return self.db.hset(self.name(), usrname, value)
+
+    def get(self, usrname):
+        return self.db.hget(self.name(), usrname)
+
+    def delete(self, usrname):
+        return self.db.hdel(self.name(), usrname)
+
+    def count(self):
+        return self.db.hlen(self.name())
+
+    def random(self):
+        return random.choice(self.db.hvals(self.name()))
+
+    def username(self):
+        return self.db.hkeys(self.name())
+
+    def all(self):
+        return self.db.hgetall(self.name())
+
+# cookie生成模块父类, 在数据库先存储站点用户名与密码,之后根据
+# 用户名与密码登录站点，之后通过webdriver获取到cookie,账户信息
+# 存储在名为account:website(自定站点名)的hash表中, 根据账户登录浏览器获取
+# 的cookie存储在名为cookies:website的hash表中
+class CookieGenerator(object):
+    def __init__(self, website='default'):
+        self.website = website
+        self.cookies_db = RedisCookieCli('cookies', self.website)
+        self.accounts_db = RedisCookieCli('accounts', self, website)
+        self.init_br()
+
+    def __del__(self):
+        self.close()
+
+    def init_br(self):
+        self.br = webdriver.Chrome()
+
+    def new_cookies(self, username, pwd):
+        raise NotImplementedError
+
+    def process_cookies(self, cookies):
+        dicts = {}
+        for cookie in cookies:
+            dicts[cookie['name']] = cookie['value']
+        return dicts
+
+    def run(self):
+        accounts_usernames = self.accounts_db.username()
+        cookies_usernames = self.cookies_db.username()
+
+        for username in accounts_usernames:
+            if not username in cookies_usernames:
+                pwd = self.accounts_db.get(username)
+                print('正在生成cookie:账户 {}, 密码 {}'.format(username, pwd))
+                rls = self.new_cookies(username, pwd)
+                if rls.get('status') == 1:
+                    cookies = self.process_cookies(rls.get('content'))
+                    print('成功获取cookie:{}'.format(cookies))
+                    if self.cookies_db.set(username, json.dumps(cookies)):
+                        print('成功保存cookie')
+                elif rls.get('status') == 2:
+                    print('cookie获取失败:{}'.format(rls.get('content')))
+                    if self.accounts_db.delete(username):
+                        print('删除账户成功')
+                else:
+                    print('cookie获取失败:{}'.format(rls.get('content')))
+
+    def close(self):
+        try:
+            print('Closing Browser')
+            self.br.close()
+            del self.br
+        except TypeError:
+            print('Browser not opened')
+
+# 12306cookie生成器
+class CookieGenerator12306(CookieGenerator):
+    def __init__(self, website='12306'):
+        CookieGenerator.__init__(self, website)
+        self.website = website
+
+    def new_cookies(self, username, pwd):
+        return Railway_12306(username, pwd).crack()
+
+# cookie检测模块
+class TestCookie(object):
+    def __init__(self, website='default'):
+        self.website = website
+        self.accounts_db = RedisCookieCli('accounts', self.website)
+        self.cookies_db = RedisCookieCli('cookies', self.website)
+
+    def test(self, username, cookies):
+        raise NotImplementedError
+
+    def run(self):
+        cookie_groups = self.cookies_db.all()
+        for username, cookie in cookie_groups.items():
+            self.test(username, cookie)
+
+TEST_URL_MAP = {'12306':'https://www.12306.cn/index/'}
+
+# 检测12306网站cookie
+class Test12306(TestCookie):
+    def __init__(self, website='12306'):
+        TestCookie.__init__(self, website)
+
+    def test(self, username, cookies):
+        print('正在测试用户{}的cookie'.format(username))
+        try:
+            cookies = json.loads(cookies)
+        except TypeError:
+            print('cookies不合法')
+            self.cookies_db.delete(username)
+            print('删除cookie')
+            return
+        try:
+            test_url = TEST_URL_MAP[self.website]
+            resp = requests.get(test_url, cookies=cookies, timeout=10, allow_redirects=False)
+            if resp.status_code == 200:
+                print('cookie有效'.format(username))
+                print('请求返回结果部分展示:{}'.format(resp.text[0:50]))
+            else:
+                print('请求失败:{} {}'.format(resp.status_code, resp.headers))
+                print('cookie失效')
+                self.cookies_db.delete(username)
+                print('删除cookie')
+        except ConnectionError as e:
+            print('发生异常:{}'.format(e.args))
+
+GENERATOR_MAP = {'12306', 'CookieGenerator12306'}
+
+# cookie池访问API
+def FlaskWebApiCookie(host, port):
+    from flask import Flask, g                 
+    app = Flask(__name__)
+    @app.route('/')
+    def index():
+        return '<h2>Welcome To Visit The Cookie Pool</h2>'
+
+    def get_conn():
+        for website in GENERATOR_MAP:
+            if not hasattr(g, website):
+                setattr(g, website + '_cookies', eval('RedisCookieCli' + '("cookies", "' + website + '")'))
+            return g
+    
+    @app.route('/<website>/random')
+    def random(website):
+        g = get_conn()
+        cookies = getattr(g, website + '_cookies').random()
+        return cookies
+
+    app.run(host, port)
+
+TESTER_MAP = {'12306':'Test12306'}
+COOKIEGENERATOR_ENABLED = True
+COOKIETESTER_ENABLED = False
+
+# 调度cookie池模块
+class SchedulerCookie(object):
+    @staticmethod
+    def test_cookie(cycle=5):
+        while True:
+            print('cookie测试器开始运行')
+            try:
+                for website, cls in TESTER_MAP.items():
+                    tester = eval(cls + '(website="' + website + '")')
+                    tester.run()
+                    print('cookie测试完成')
+                    del tester
+                    sleep(cycle)
+            except Exception as e:
+                print('发生异常:{}'.format(e.args))
+
+    def generator_cookie(cycle=1):
+        while cycle:
+            print('cookie生成器开始运行')
+            try:
+                for website, cls in GENERATOR_MAP.items():
+                    generator = eval(cls + '(website="' + website + '")')
+                    generator.run()
+                    print('cookie生成完成')
+                    generator.close()
+                    sleep(cycle)
+            except Exception as e:
+                print('发生异常:{}'.format(e.args))
+
+            cycle -= 1
+
+    @staticmethod
+    def api():
+        print('cookie池API接口开始运行')
+        FlaskWebApiCookie(API_IP, API_PORT)
+    
+    def run(self):
+        if API_ENABLED:
+            api_process = Process(target=SchedulerCookie.api)
+            api_process.start()
+        if COOKIEGENERATOR_ENABLED:
+            generator_process = Process(target=SchedulerCookie.generator_cookie)
+            generator_process.start()
+        if COOKIETESTER_ENABLED:
+            tester_process = Process(target=SchedulerCookie.test_cookie)
+            tester_process.start()
+
+
+# spider运行管理 1.scrapyrt http接口, 2.scrapyd http接口与部署 3.gerapy可视化界面管理
+# 环境问题解决: 制作docker spider项目镜像 scrapyd镜像
+# 使用云主机快速克隆环境部署
+
+# 通过scrapyrt启动爬虫
+def StartSpiderWithSrprt():
+    # 可选参数spider_name, url(start_requests为False则必填),max_requests,callback
+    # get请求
+    os.chdir('srppro')
+    cmd = 'scrapyrt'
+    url = 'http://localhost:9080/crawl.json?spider_name=csimage&start_requests=true&callback=parse'
+    # 返回json格式
+    resp = requests.get(url)
+    data = resp.json()
+
+# 制作scrapy项目docker镜像
+def MkDockerImage():
+    cmd = 'docker build -t srppro .'
+
+# scrapyd部署scrapy项目
+def Scrapyd():
+    cmd = 'scrapyd'
+
+    # 查看scrapy任务
+    status_cmd = 'curl http://127.0.0.1:6800/daemonstatus.json'
+    # 把项目打包成egg
+    egg_cmd= 'curl http://127.0.0.1:6800/addversion.json -F project=srppro -F version=first -F egg=@srppro.egg'
+    # 调度已部署的项目spider
+    scheduler_cmd= 'curl http://127.0.0.1:6800/scheduler.json -d project=srppro -d spider=csimage'
+    # 取消spider的运行
+    cacel_cmd = 'curl http://127.0.0.1:6800/cancel.json -d project=srppro -d job=spiderid'
+    # 列出已部署的项目
+    list_cmd = 'curl http://127.0.0.1:6800/listprojects.json'
+    # 列出项目版本号
+    version_cmd = 'curl http://127.0.0.1:6800/listversions.json'
+    # 列出项目的spider
+    spider_cmd = 'curl http://127.0.0.1:6800/listspiders.json?project=srppro'
+    # 列出项目spider的任务详情
+    spidertask_cmd = 'curl http://127.0.0.1:6800/listjobs.json?project=srppro'
+    # 删除某版本的项目
+    delversion_cmd = 'curl http://127.0.0.1:6800/delversion.json -d project=srppro -d version=v1'
+    # 删除项目
+    delpro_cmd = 'curl http://127.0.0.1:6800/delversion.json -d project=srppro'
+    # 返回json格式
+    #resp = requests.get(status_cmd)
+    #data = resp.json()
+
+    # 通过scrapyd_api部署
+    from scrapyd_api import ScrapydAPI
+    url = 'http://127.0.0.1:6800'
+    scrapyd = ScrapydAPI(url)
+    # 运行爬虫
+    scrapyd.schedule('srppro', 'csimage')
+    # 列出srppro状态
+    scrapyd.list_jobs('srppro')
+    # 列出项目版本
+    scrapyd.list_versions('srppro')
+    # 列出项目spider
+    scrapyd.list_spiders('srppro')
+    # 列出所有项目
+    scrapyd.list_projects()
+    # 删除项目指定版本
+    scrapyd.delete_version('srppro', '123')
+    # 删除项目
+    scrapyd.delete_project('srppro')
+    # 取消项目制定任务
+    scrapyd.cancel('srppro', '123')
+    # 添加项目
+    # with open('myfile/srppro.egg', 'rb') as egg:
+    #     scrapyd.add_version('srppro', 'v1', egg)
+
+    scrapyd_cli_cmd = 'scrapyd-deploy'
+
+# 通过gerapy进行界面化管理scrapy项目
+def Gerapy():
+    # 新建gerapy项目
+    cmd_init = 'gerapy init'
+    # 通过sqlite保存gerapy信息
+    cmd_db = 'gerapy migrate'
+    # 启动gerapy项目
+    cmd_run = 'gerapy runserver'
+
 def main():
-    getBaiduData('风景', 2)
+    runCrwal()
 
 if __name__ == '__main__':
     #---------------------------------------------------start
@@ -4685,7 +6272,8 @@ if __name__ == '__main__':
     print()
     starttime = time.time()
 
-    main()
+    #main()
+    print('hello')
 
     #---------------------------------------------------end
     endtime = time.time()

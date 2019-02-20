@@ -1,0 +1,13 @@
+{% load staticfiles %}
+
+{% if pages %}
+    <div id="pages">
+        <ul>
+            {% for page in pages %}
+                <li><a href="{% url 'news:goto' %}?page_id={{ page.id }}" target="new_tag">{{ page.title }}</a> {{ page.views }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% else %}
+    <strong>当前分类没有内容.</strong>
+{% endif %}

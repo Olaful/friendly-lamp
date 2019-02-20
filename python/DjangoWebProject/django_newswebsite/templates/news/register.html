@@ -1,0 +1,25 @@
+{% extends 'news/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+    Register
+{% endblock title_block %}
+
+{% block page_head %}
+    Register for News
+{% endblock page_head %}
+{% block body_block %}
+    {% if registered %}
+    <strong>Thank you for registering!</strong>
+    {% else %}
+        <strong>register here!</strong>
+        {# multipart/form-data 设置分段发送，因为用户上传的头像数据可能较大 #}
+        <form id = "user_form" method="post" action="{% url 'news:register' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            {# as_p在p标签中显示表单 #}
+            {{ user_form.as_p }}
+            {{ profile_form.as_p }}
+            <input type="submit" name="submit" value="提交" />
+        </form>
+    {% endif %}
+{% endblock body_block %}

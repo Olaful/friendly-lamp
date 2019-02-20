@@ -1,0 +1,34 @@
+{% extends 'news/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+    {{ selecteduser.username }} 用户信息
+{% endblock title_block %}
+
+{% block body_head %}
+    <link href="{% static 'css/signin.css' %}" rel="stylesheet">
+    <div class="jumbotron">
+        <h1 class="display-3">{{ selecteduser.username }} 用户信息</h1>
+    </div>
+{% endblock body_head %}
+
+{% block body_block %}
+    <img class="img-thumbnail" src="{{ MEDIA_URL }}{{ userprofile.picture }}"
+    width="300" height="300" alt="{{ selecteduser.username }}" />
+    <br />
+    <div>
+        {% if selecteduser.username == user.username %}
+            <form method="post" action="." enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input type="submit" value="提交" />
+            </form>
+        {% else %}
+            <p>
+                <strong>网站:</strong>
+                <a href="{{ userprofile.website }}">{{ userprofile.website }}</a>
+            </p>
+        {% endif %}
+    </div>
+    <div id="edit_profile"></div>
+{% endblock %}
