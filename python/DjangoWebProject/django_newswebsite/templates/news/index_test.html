@@ -7,6 +7,7 @@
 {% load staticfiles %}
 {# 加载自定义标签处理模块 #}
 {% load newstag %}
+{% load cache %}
 
 <html>
     <head>
@@ -62,5 +63,9 @@
             <!--会使用媒体模板上下文填充-->
             <img src="{{ MEDIA_URL }}16t.png" alt="16t" />
         </div>
+        {# 模板缓存 #}
+        {% cache 2 'name' %}
+        <div>{{ categories_top_like }}<div>
+        {% endcache %}
     </body>
 </html>

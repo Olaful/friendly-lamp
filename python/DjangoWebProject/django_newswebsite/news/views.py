@@ -437,3 +437,17 @@ def list_profiles(request):
 
     context_dict = {'userprofile_list': userprofile_list}
     return render(request, 'news/list_profiles.html', context_dict)
+
+from django.views.decorators.cache import cache_page
+
+# 缓存页面装饰器,360秒后该页面会超时，下次请求后重新缓存
+@cache_page(360)
+def test(request):
+    # sql
+    Category.objects.filter(name__icontains='hello').extra(where=['likes>100'])
+    Category.objects.raw('select * from category')
+
+    from django.db import connection
+    cursor = connection.cursor()
+    cursor.execute('select * from category')
+    cursor.fetchone()
