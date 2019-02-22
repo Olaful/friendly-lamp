@@ -445,6 +445,7 @@ from django.views.decorators.cache import cache_page
 def test(request):
     # sql
     Category.objects.filter(name__icontains='hello').extra(where=['likes>100'])
+    Category.objects.extra(select={'django':'select name from category where name=%s'}, select_param=(1,))
     Category.objects.raw('select * from category')
 
     from django.db import connection
