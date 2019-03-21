@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
 	sprintf_s(szTime, "systemtime: %d/%d/%d %d:%d:%d\n", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
 	cout << szTime << endl;
 
-	char cSwitch = 'q';
+	char cSwitch = 'a';
 
 	if (cSwitch == 'a')
 	{
@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
 			cout << "Max(i, j): " << Max(i, j) << endl;
 
 			int p4[5] = {1, 2, 3, 4, 5};
-			char *p = "pppp";
+			char *p = "ppppp";
 			char c = 0xff;
 			// 根据ascii表，十六进制的a对应LF(换行键) 不可显示字符
 			unsigned char cc = 0xa;
@@ -148,7 +148,7 @@ int main(int argc, char *argv[])
 			cout << "get p1-1:" << p1 - 1 << endl;
 			cout << "get p1[4]:" << p1[4] << endl;
 			cout << "get *p1+1:" << *p1+1 << endl;
-			cout << "get p2:" << *p2+1 << endl;
+			cout << "get *p2+1:" << *p2+1 << endl;
 			cout << "get type p4:" << typeid(p4).name() << endl;
 
 			// 'a' ascii转换成十进制97后加1
@@ -699,26 +699,26 @@ int main(int argc, char *argv[])
 
 	if (cSwitch == 'p')
 	{
-		pthread_t pthsend, pthrecv;
+		//pthread_t pthsend, pthrecv;
 
-		try
-		{
-			int nPort = 5099;
-			char *szIP = "";
-			myWinsocket objmyWinsocket(nPort, szIP, '0');
+		//try
+		//{
+		//	int nPort = 5099;
+		//	char *szIP = "";
+		//	myWinsocket objmyWinsocket(nPort, szIP, '0');
 
-		// 把函数加入线程中 发送与接受消息各开启一个线程
-		pthread_create(&pthrecv, NULL, pthdRecvMsg, (void*)&objmyWinsocket);
-		pthread_create(&pthsend, NULL, pthdsendMsg, (void*)&objmyWinsocket);
+		//// 把函数加入线程中 发送与接受消息各开启一个线程
+		//pthread_create(&pthrecv, NULL, pthdRecvMsg, (void*)&objmyWinsocket);
+		//pthread_create(&pthsend, NULL, pthdsendMsg, (void*)&objmyWinsocket);
 
-		// Pthread创建线程后必须使用join或detach释放线程资源
-		pthread_join(pthrecv, NULL);
-		pthread_join(pthsend, NULL);
-		}
-		catch (const std::exception& e)
-		{
-			cout << "错误信息:" << e.what() << endl;
-		}
+		//// Pthread创建线程后必须使用join或detach释放线程资源
+		//pthread_join(pthrecv, NULL);
+		//pthread_join(pthsend, NULL);
+		//}
+		//catch (const std::exception& e)
+		//{
+		//	cout << "错误信息:" << e.what() << endl;
+		//}
 
 		return true;
 	}

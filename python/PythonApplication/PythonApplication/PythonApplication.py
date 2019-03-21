@@ -44,6 +44,16 @@ myFunc.name = 'myFunc'
 def hello(sno:int, name:str)->list:
     return [1,2,3]
 
+def func(y=[]):
+    y.append(1)
+func()
+# 由于没有传入实际参数，函数使用默认参数y
+# 这时因为第一次调用已经使得默认参数y改变了，
+# 所以第二次调用会使得y在第一次的基础上改变
+# 而不像预期的两次结果都一样
+func()
+    
+
 # 获取数字对应的ascii码
 chr(98)
 
@@ -151,6 +161,19 @@ print(z())
 x.getSomeMsg()
 # 但通过以下这种隐秘的方式却是可以访问私有方法
 x._myclass__privateFunc()
+
+class LimitClass():
+    # 规定类实例只能绑定哪些属性
+    # 但不会限制子类实例的绑定，如果
+    # 子类中也有__slots__，那么限制的
+    # 返回包括子类中的slots与父类中的slots
+    # 范围之合
+    __slots__ = ('name', 'age')
+l = LimitClass()
+l.name = 'jack'
+l.age = 23
+# 绑定限制外的属性会报错
+l.address = 'shenzhen'
 
 def myfunc2(*args):
     return [1, 2, 3, 4]
@@ -260,6 +283,21 @@ print(x.width)
 print("get size by __getattr__:")
 # 其实是调用特殊方法__getattr__
 print(x.size)
+
+# 可用于with的特殊方法, 常用于资源的上下文管理
+class withClass():
+    def __init__(self, filename):
+        self.filename = filename
+    # with 进入后调用
+    def __enter__(self):
+        self.f = open(self.filename)
+        # 返回的值会赋值给as后面的变量
+        return self.f
+    # with结束后调用
+    def __exit__(self)：
+        self.f.close()
+with withClass('hello.txt') as w:
+    pass
 
 # 同时继承于两个类
 class ssubClass(myclass, myClass1):
@@ -637,17 +675,44 @@ def Singleton(cls):
 class A:
     name = 'kk'
 
-# 闭包，内部返回函数引用
-def outer(x):
-    y = 2
-    def inter(z):
-        return x + y + z
-    return inter
+# 闭包=函数+引用环境，内部返回函数引用
+def exFunc(arg):
+    n = arg
+    a = 1
+    b = 1
+    def innerFunc(inArg=1):
+        # 这里的a其实是本函数内部定义的，并不是
+        # 外部定义的，所以这里并没有改变外部的a
+        a = 123
+        # 这里认为b已经在本函数内定义了, 所以找
+        # 不到报错，但使用nonlocal声明其为非局部
+        # 量可以使用
+        # b = b + 1
+        # 对非全局的外部作用域变量进行引用，由此产生闭包
+        return n + 1 + inArg
+    # 由于内部函数引用了外部变量，因此会把所引用的对象
+    # 与环境打包成一个整体返回
+    return innerFunc
+# 会产生两个不同的函数实例
+f1 = exFunc(1)
+f2 = exFunc(2)
+print(f1())
+print(f2())
+# 参数3会和函数打包进一个环境变量中返回给f3
+# 因此闭包可以保持所需的环境变量
+f3 = exFunc(3)
+print(f3(3))
 
-f = outer(1)
-# 两者使用outer函数中同一个变量y
-f(1)
-f(2)
+flist = []
+for i in range(3):
+    # i只有在func执行时才会去赋值
+    # 所以所有的func都会取到最后一个迭代的i值
+    # 可以改成func(x, y=i)形式
+    def func(x): print(x + i)
+    flist.append(func)
+
+for f in flist:
+    f(2)
 
 from functools import wraps
 
@@ -859,6 +924,12 @@ print(n)
 # 降序排序后返回堆前两个元素
 n = nsmallest(2, y)
 print(n)
+
+# 字典排序
+d = {'k5':5, 'k6':6, 'k1':1}
+newD = sorted(d.items(), key=lambda d: d[1], reverse=True)
+print(newD)
+print(dict(newD))
 
 from collections import deque
 # 建立一个双端队列，可在列头或列尾增减元素
@@ -1533,6 +1604,32 @@ asyncio.run_coroutine_threadsafe(work(4), new_loop)
 
 #new_loop.call_soon_threadsafe(work, 3)
 #new_loop.call_soon_threadsafe(work, 4)
+
+# 协程原理
+def consumer():
+    r = ''
+    while True:
+        n = yield r
+        if not n:
+            return
+        print('[CONSUMER] Consuming %s...' % n)
+        r = '200 OK'
+
+def produce(c):
+    # 启动生成器
+    c.send(None)
+    n = 0
+    while n < 5:
+        n = n + 1
+        print('[PRODUCER] Producing %s...' % n)
+        # 切换到consumer执行，consumer会返回yield的内容
+        r = c.send(n)
+        print('[PRODUCER] Consumer return: %s' % r)
+    # 生成器关闭
+    c.close()
+
+c = consumer()
+produce(c)
 
 from urllib.request import urlopen
 from HTMLParser import HTMLParser
@@ -2257,6 +2354,9 @@ headlines = []
 
 # 由于传headlines是可变的对象，相当于传引用，
 # 传不可变对象时，如数字，字符串，相当于传值
+# a = 1, b = 1刚开始两者指向同一个内存，但如果
+# a += 1 后，a就会指向不同的内存，可通过id(a)
+# 进行查看
 parse('myfile/myxml.xml', myXMlHandler(headlines))
 print(headlines)
 
@@ -4464,6 +4564,63 @@ if __name__ == '__main__':
 #    process_crawler('http://localhost/html/myzip.zip', delay=3, timeout=20, user_agent='wswp', max_threads=5, proxies=None, num_retries=1, scrape_callback=GetUrlCallback(), cache=None)
 # 子进程会首先打印出这句话，因为其不在__main__命令空间中
 #print('enter pro')
+
+from multiprocessing import Queue, Lock, Pipe, Manager
+
+def putf(q, arg):
+    # 队列满时阻塞等待,为False则抛出full异常，
+    q.put(arg)
+
+def getf(q):
+    print('.....')
+    print(q.get())
+
+def sendf(pipe):
+    pipe.send('hello, this is pro1')
+
+def recvf(pipe):
+    while True:
+        print('pro2 recv:', pipe.recv())
+
+# 在某段执行阶段加锁，使得该进程执行到这个
+# 地方得时候不会切换到其他进程
+lock = Lock()
+def lockf():
+    print('next need lock')
+    global lock
+    # 申请锁
+    lock.acquire()
+    print('enter locked to exec')
+    # 释放锁
+    lock.release()
+    print('lock release')
+
+def setData(dt, lt):
+    dt['key'] = 'value'
+    lt.append(1)
+
+# 进程可通过Queue，Pipe进行通信
+# 队列长度为10
+# q = Queue(block=True, maxsize=10)
+# 创建单向管道，默认为双向(管道两边都可以进行数据的读写)
+# pipe = Pipe(duplex)
+# Queue与Pipe分别只支持Array与Value操作，
+# 而Manager则支持dict, list, value, Lock等多种对象
+# manager = Manager()
+# dt = manager.dict()
+# lt = manager.list()
+# p1 = multiprocessing.Process(target=putf, args=(q, 'hello'))
+# pipe[0]为发送端
+# p1 = multiprocessing.Process(target=sendf, args=(pipe[0],))
+# p1 = multiprocessing.Process(target=setData, args=(dt, lt))
+# p1.start()
+# 执行时间最多为2秒
+# p1.join(2)
+# p2 = multiprocessing.Process(target=getf, args=(q, ))
+# pipe[0]为接收端
+# p2 = multiprocessing.Process(target=recvf, args=(pipe[1],))
+# p2.start()
+# p2.join()
 
 import json, string
 countries = set()

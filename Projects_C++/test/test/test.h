@@ -13,8 +13,8 @@
 #include<WinSock2.h>
 #pragma comment(lib, "ws2_32.lib")
 
-#include<pthread.h>
-#pragma comment(lib, "pthreadVC2.lib")
+//#include<pthread.h>
+//#pragma comment(lib, "pthreadVC2.lib")
 
 using   namespace   std;
 
