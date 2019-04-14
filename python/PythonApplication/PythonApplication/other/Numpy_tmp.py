@@ -1,4 +1,5 @@
 import numpy as np
+import numpy.matlib as nm
 
 def createArray():
     # 创建一个空数组, 存储方式为C风格的行存储
@@ -138,5 +139,36 @@ def iter():
         print('\n')
     iterArray()
 
+def dupView():
+    a = np.array([[10, 10], [2, 3], [4, 5]])
+    # 创建数组的拷贝
+    b = a.copy()
+    # copy方式的拷贝的修改不会影响到原来的数组
+    b[0, 0] = 100
+    print(b)
+
+def matrix():
+    # 创建空矩阵
+    a = nm.empty((2, 2))
+    # 创建0填充的矩阵
+    b = nm.zeros((2, 2))
+    # 创建1填充的矩阵
+    c = nm.ones((2, 2))
+    # 创建对角线元素为1，行数为3，列数为4
+    # 开始的1索引从1开始
+    d = nm.eye(n=3, M=4, k=1, dtype=float)
+    # 创建五行五列，对角线元素为1的矩阵
+    e = nm.identity(5, dtype=float)
+    # 创建给定形状的，元素为随机的矩阵
+    f = nm.rand((3, 3))
+    # 创建len(str.split(';'))行，
+    # len(str.split(';')[0].split(','))
+    # 列的矩阵
+    g = np.matrix('1,2;3,4')
+    # 矩阵与数组可以相互切换
+    h = np.asarray(g)
+    i = np.asmatrix(h)
+    print(i)
+
 if __name__ == '__main__':
-    iter()
+    matrix()
