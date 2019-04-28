@@ -2,7 +2,6 @@ import pandas as pd
 import numpy as np
 import time
 
-
 def createData():
     """
     创建数据
@@ -46,15 +45,25 @@ def selData():
     d = b[0:3]
     # 值范围切片
     e = b['20130102':'20130104']
-    # 值索引
+    # 按索引名选择
     f = b.loc['2013-01-01']
     # 先筛选出行，再筛选出列
     g = b.loc['2013-01-01', ['A', 'B']]
     h = b.loc['2013-01-01', 'A']
-    # 获取获取每一列的第四个数
-    i = b.iloc[3]
+    # 比loc更快速度定位到某个元素
+    i = b.at[a[0], 'A']
+    # 获取每一列的第四个数
+    j = b.iloc[3]
+    # 数字分片索引
+    k = b.iloc[3:5, 0:2]
+    # 与numpy一样用法的数组索引
+    l = b.iloc[[1,2,4], [0,2]]
+    m = b.iloc[1:3,:]
+    n = b.iloc[1,1]
+    # 比loc更快速度定位到某个元素
+    o = b.iat[1,1]
     print(b)
-    print(i)
+    print(o)
 
 if __name__ == '__main__':
     starttime = time.time()
