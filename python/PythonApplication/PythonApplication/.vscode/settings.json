@@ -1,5 +1,9 @@
 {
+<<<<<<< Updated upstream
     "python.pythonPath": "E:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python36\\python.exe",
+=======
+    "python.pythonPath": "E:\\anaconda3\\envs\\py36\\python.exe",
+>>>>>>> Stashed changes
     "python.linting.pylintEnabled": true,
     "python.linting.enabled": true
 }

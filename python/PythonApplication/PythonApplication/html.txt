@@ -1,0 +1,1723 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml" class="result_doc all_height"><head>
+<meta name="renderer" content="webkit" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="keywords" content="i问财、股票、量化投资、选股、诊股、如何选股，智能选股、选股策略、条件选股、IPO、资金、AI、股市、智能投顾" />
+	<meta name="description" content="同花顺旗下专业的机器人智能选股问答平台，致力于为投资者提供宏观数据、新闻资讯、A股、港美股、新三板、基金等各类理财方案。i问财，爱理财" />
+		<title>涨停,概念 - 股票 - 问财财经搜索</title>
+	<script type="text/javascript" src="//s.thsi.cn/js/chameleon/chameleon.min.1554943.js"></script> <script type="text/javascript" src="//s.thsi.cn/js/chameleon/chameleon.min.1554944.js"></script>
+	<script type="text/javascript">
+    var global_pa_start_time = new Date().getTime(); // PA日志统计起始时间
+</script>
+<link href="//ws1.thsi.cn/public42278/externcss/common.css" rel="stylesheet" type="text/css" />
+	<link href="//ws1.thsi.cn/public42278/externcss/stockpick.css" rel="stylesheet" type="text/css" />
+			<link href="//ws1.thsi.cn/public42278/externcss/stockpick_search.css" rel="stylesheet" type="text/css" />
+	
+	            	<!--           	<link href="//ws3.thsi.cn/public42278/externcss/stockpick_search_stock.css" rel="stylesheet" type="text/css"> -->
+            	    	        
+                    <link href="//ws3.thsi.cn/public42278/externcss/stockpick_search_main.css" rel="stylesheet" type="text/css" />
+                <link rel="stylesheet" type="text/css" media="only screen" href="//ws3.thsi.cn/public42278/externcss/stockpick_iphone.css" />
+
+	<link rel="Shortcut Icon" type="image/ico" href="/favicon.ico" />
+
+
+
+<!-- 一般没有改动，推荐用最新的css版本 -->
+<link rel="stylesheet" href="//s.thsi.cn/cb?/js/webHQ/basic/latest/hq.css" />
+<!-- <script src="//s.thsi.cn/js/webHQ/resources/excanvas.min.js"></script> -->
+<!--<script src="//s.thsi.cn/cb?/js/webHQ/basic/v1.1.4/hxc3.min.js"></script>-->
+<script src="//s.thsi.cn/js/webHQ/resources/excanvas-v2.js"></script>
+<script src="//s.thsi.cn/js/webHQ/basic/1.2.0/hxc3.js"></script>
+<!-- <script src="/public42278/js/hxc3.min.js" type="text/javascript"></script> -->
+<link href="//s.thsi.cn/js/webHQ/1.1.5/main.min.css" rel="stylesheet" />
+<script type="text/javascript">var __if_detect_mobile_device__=true;</script>
+<script src="//s.thsi.cn/js/webHQ/resources/require.min.js"></script>
+
+<script src="//s.thsi.cn/js/common/cefapi/1.0/cefApi.min.js"></script>
+<script src="//ws3.thsi.cn/lib/jquery/jquery-1.8.0.min.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+    
+    var GLOBAL = GLOBAL || {};
+    GLOBAL.pageData = GLOBAL.pageData || {};
+    GLOBAL.pageData.get = {"typed":"1","preParams":"","ts":"1","f":"1","qs":"index_rewrite","selfsectsn":"             ","querytype":"stock","searchfilter":"","tid":"stockpick","w":"\u6da8\u505c,\u6982\u5ff5","my":0,"ordersignal":0,"qid":"185035ce4e261b58f05fc9762e282e30"} || {};
+    GLOBAL.pageData.post = [] || {};
+    
+	domainCfg = {"key":"iwencai","domain":"www.iwencai.com","record":"\u6d59ICP\u590709003598\u53f7","siteName":"\u95ee\u8d22\u8d22\u7ecf\u641c\u7d22","siteNameShort":"\u95ee\u8d22","showAboutUs":"0"};
+	GLOBAL.staticHostA = "//ws3.thsi.cn";
+	GLOBAL.staticHostB = "//ws2.thsi.cn";
+	GLOBAL.staticHostC = "//ws1.thsi.cn";
+	GLOBAL.staticJs = "/public42278/externcss/njs";
+	GLOBAL.logType = "image";
+	GLOBAL.qid = "185035ce4e261b58f05fc9762e282e30";
+	GLOBAL.cid = "dead2b0e07eef906bc3311d68120eb3b1554943917";
+	global_svnVersion = "42278";
+</script>
+
+<script src="//ws3.thsi.cn/public42278/js/??lib/jquery.ba-resize.js,lib/jquery.dragsort-0.5.2.js" type="text/javascript"></script>
+<script src="//ws2.thsi.cn/public42278/externcss/njs/??src/common/json2.min.js,src/init.js,src/common/util.js,src/common/Interface.js,getQuickLoginInfo.js,mylogajax.js,spFun.js" type="text/javascript"></script>
+
+	</head>
+<body class="stockpick_mainbody all_height" style="min-width: 1230px;">
+
+<div class="adaptive_top all_height inner_bg">
+	<div class="adaptive_con clearfix">
+		<!--用户登录信息同步脚本-->
+<script type="text/javascript" src="//s.thsi.cn/js/sso_https.min.js"></script>
+<script type="text/javascript">
+var php_uname = "";
+var ifindAuth = null;
+
+var sso = new htsso;
+var modifyUserInfo = function(name){
+	var infoStr = '&lt;span class="wel_word left_sub_elem"&gt;欢迎您！&lt;/span&gt;';
+	if(name != ""){
+		var uid = sso.getCookie("userid");
+		infoStr += '&lt;a href="//t.10jqka.com.cn/'+uid+'/" target="_blank" class="u_name left_sub_elem" id="topbar_uname"&gt;'+name+'&lt;/a&gt;&lt;a title="退出" href="javascript:;" onclick="this.href=\'//upass.10jqka.com.cn/logout?redir=\' + encodeURIComponent(\'http://\' + \'upass.\' + window.location.host.split(\'.\').slice(1).join(\'.\').split(\':\').shift() + \'/logout?redir=\' + encodeURIComponent(\'http://\' + window.location.host + \'/user/logout?redir=\' + encodeURIComponent(window.location.href)))" target="_self" rel="nofollow" class="left_sub_elem logout"&gt;[退出]&lt;/a&gt;';
+	}else{
+		infoStr += '&lt;a href="//upass.10jqka.com.cn/login?redir=HTTP_REFERER" onclick="javascript:mylog(\'ts|1、qs|login、w|登录、tid|static\',\'activity\',\'loginUrl\')" class="login left_sub_elem" loginType="yhzx"&gt;登录&lt;/a&gt;&lt;a href="//upass.10jqka.com.cn/register/index/?fromapp=search';
+		if(typeof global_controller_name === "string"){
+			var app_str = "";
+			switch (global_controller_name){
+				case "stockpick":{
+					app_str = "stock";
+					break;
+				}
+				case "yike":{
+					app_str = "yike";
+					break;
+				}
+				default:{
+					app_str = "";
+					break;
+				}
+			}
+			infoStr += app_str;
+		}
+		
+		infoStr += '" class="register left_sub_elem"&gt;注册&lt;/a&gt;';
+	}
+	$("#top_left_bar").html(infoStr);
+};
+function onSsoLogin(){
+    var escapename = sso.getCookie('escapename');
+    var uname;
+    if (escapename === null) {
+        uname = "";
+    } else {
+        uname = unescape(escapename);
+    }
+//    if(global_source != "client"){
+	
+	        modifyUserInfo(uname);
+		
+//	}
+
+    /*js前端登录信息同步*/
+	if (uname != '') {
+        window.username = username = uname;
+    } else {
+        window.username = username = '';
+    }
+    
+    if (typeof sp == 'object' &amp;&amp; sp) {
+        sp.userid = sso.getCookie('userid');
+    }
+	//同步信息完成后 无论是否是已登录状态需要执行的额外脚本
+	if (typeof sn.afterSync === "object" &amp;&amp; sn.afterSync !== null) {
+	    for (var i in sn.afterSync) {
+	        sn.afterSync[i]();
+	    }
+    }
+	//同步信息完成后 若是已登录状态需要执行的额外脚本
+    if (typeof window.username != 'undefined' &amp;&amp; window.username != '') {
+	    for (var i in sp.afterLoginRender) {
+	        sp.afterLoginRender[i]();
+	    }
+    }
+}
+var sn = window.sn || {};
+sn.afterSync = sn.afterSync || {};
+
+var sp = window.sp || {};
+sp.afterLoginRender = sp.afterLoginRender || {};
+window.onload = function(){
+    onSsoLogin();
+    if (ifindAuth) {
+        return;
+    }
+    sso.login('//' + window.location.hostname + (window.location.port == '80' || window.location.port == '' ? '' : ':' + window.location.port) + '/moreinfo/reload');
+}
+
+</script><!--由于fixed原因产生了30px的缺失，作为占位符补充30px高度-->
+<div class="topbarFixedCon"></div>
+<!--isSyncSubscribable为是否开启收藏问句异动选股的开关标识，在js中获取并判断-->
+<div id="topbarCon" class="topbar_con clearfix stockpick_topbar" issyncsubscribable="1" style="width: 1190px;">
+	<!--页面顶部左侧内容--><div class="top_left_bar" id="top_left_bar"><span class="wel_word left_sub_elem">欢迎您！</span><a href="//upass.10jqka.com.cn/login?redir=HTTP_REFERER" onclick="javascript:mylog('ts|1、qs|login、w|登录、tid|static','activity','loginUrl')" class="login left_sub_elem" logintype="yhzx">登录</a><a href="//upass.10jqka.com.cn/register/index/?fromapp=searchstock" class="register left_sub_elem">注册</a></div><!--页面顶部右侧内容--><div id="top_right_bar" class="top_right_bar"><a controller="/robot-index?" qs="pc_~soniu~others~homepage~return~new" tid="other" class="sub_elem to_new_version pick_collect" id="version_change"><span class="new_index_common_icon btn_icon"></span><span class="btn_word">切换到试用版首页</span></a><!--根据action判断是否需要展示对应的返回首页链接内容--><a class="sub_elem back_index_link" href="/stockpick?qs=return_stock" target="_self">i问财首页</a><span class="separator">|</span><span id="top_bar_info_link_con"></span><span id="top_bar_yike_link_con"></span><a class="sub_elem msgconsule_link" href="/msgconsule?qs=pc_~soniu~info~all~homepage~enter&amp;tid=msgzg" target="_self" id="top_bar_msgconsule_link"><span class="btn_icon"></span><span class="btn_word ">消息监控</span></a><span class="separator">|</span><a class="sub_elem tcwj_link" href="/extract?cs=wh" target="_self"><span class="btn_icon"></span><span class="btn_word ">题材挖掘</span></a><span class="separator">|</span><a class="sub_elem znxg_link" href="/stockpick?tid=stockpick&amp;ts=1&amp;qs=pc_~soniu~stock~stock~znxg~topbar&amp;zhineng=opened" target="_self"><span class="btn_icon"></span><span class="btn_word ">智能查找</span></a><span class="separator">|</span><a class="sub_elem tzcl_link" href="//backtest.10jqka.com.cn/backtest/app.html#/strategysquare?qs=backtest_square" target="_self"><span class="btn_icon"></span><span class="btn_word ">投资策略</span></a><span class="separator">|</span><a class="sub_elem clhc_link" href="//backtest.10jqka.com.cn/backtest/app.html#/backtest?qs=backtest_menu2" target="_self"><span class="btn_icon"></span><span class="btn_word ">策略回测</span></a><span class="separator">|</span><a href="/yuqingmonitor/query-favorites?type=0&amp;qs=favorite_entry" target="_self" id="q_collect" class="sub_elem q_collect login"><em class="btn_icon"></em><span class="btn_word ">我的策略</span><em class="q_num"> </em></a><span class="separator">|</span><a class="sub_elem gmxx_link" href="//t.10jqka.com.cn/school/home/index/?qs=pc_~soniu~stock~stock~gmxx~topbar" target="_self"><span class="btn_icon"></span><span class="btn_word ">股民学校</span></a><span class="separator">|</span><a href="/helpcenter?qs=Helpcenter_clickin" class="sub_elem help_center" id="help_center" target="_self"><span class="btn_icon"></span><span class="btn_word ">意见反馈</span></a><span class="separator">|</span></div>
+</div>
+<!--[if IE 8]><div class="clear"></div><![endif]-->
+
+<script>
+    global_topBarCfg = {"channelConfig":{"DataExtraction":{"isHidden":false},"DataRobot":{"isHidden":true},"MsgConsule":{"isHidden":false},"Extract":{"isHidden":false},"TraceBack":{"isHidden":false},"QueryFavorite":{"isHidden":false,"queryType":0},"HelpCenter":{"isHidden":false},"School":{"isHidden":false},"MindGo":{"isHidden":false},"SmartStocks":{"isHidden":false,"isNew":false},"Contribution":{"isHidden":false},"Viewswf":{"isHidden":false},"InfoSearch":{"isHidden":false},"YikiFinance":{"isHidden":false},"WencaiIndex":{"isHidden":false}},"nowChannel":"Stock","isIndex":false,"queryType":"stock","childChannel":"stock"};
+
+</script>
+<script type="text/javascript">
+    
+    var consoleFuntionsNoop = function(){};
+    var console = window['console'] || {
+        "debug": consoleFuntionsNoop,
+        "error": consoleFuntionsNoop,
+        "info": consoleFuntionsNoop,
+        "log": consoleFuntionsNoop,
+        "warn": consoleFuntionsNoop,
+        "dir": consoleFuntionsNoop,
+        "dirxml": consoleFuntionsNoop,
+        "table": consoleFuntionsNoop,
+        "trace": consoleFuntionsNoop,
+        "group": consoleFuntionsNoop,
+        "groupCollapsed": consoleFuntionsNoop,
+        "groupEnd": consoleFuntionsNoop,
+        "clear": consoleFuntionsNoop,
+        "count": consoleFuntionsNoop,
+        "assert": consoleFuntionsNoop,
+        "markTimeline": consoleFuntionsNoop,
+        "profile": consoleFuntionsNoop,
+        "profileEnd": consoleFuntionsNoop,
+        "timeline": consoleFuntionsNoop,
+        "timelineEnd": consoleFuntionsNoop,
+        "time": consoleFuntionsNoop,
+        "timeEnd": consoleFuntionsNoop,
+        "timeStamp": consoleFuntionsNoop,
+        "context": consoleFuntionsNoop,
+        "memory": consoleFuntionsNoop
+    };
+    $("#top_right_bar").on("click",".pick_collect",function () {
+        var href= $(this).attr("controller");
+        var qs= $(this).attr("qs");
+        var tid = $(this).attr("tid");
+        mylog('ts|1、qs|'+qs+'、tid|'+tid, 'pick', '');
+        setTimeout(function () {
+            window.location.href = href;
+        },100)
+    });
+    
+</script>
+        
+<div class="suspend_top_box" id="suspend_top_box">
+    <div class="container">
+        <div class="container2">
+            <div class="toplogo" title="问财"></div>
+            <div class="clearfix">
+                <div class="topsearch">
+                    <input type="text" maxlength="300" autocomplete="off" id="topword" class="toptextinput" name="w" value="" />
+                    <div id="topword_suggest_wrap" class="topword_suggest_wrap pub_suggest_con suggest_con_qa_system" style="width: 0px; top: 37px; left: 20px; position: absolute; z-index: 400;"><ul class="pub_suggest_list"></ul></div>
+                </div>
+                <div class="topbtns">
+                    <div class="topsearchbtn scrollBarBtn" link="/stockpick/search?ts=1&amp;f=1&amp;qs=stockhome_topbar_click"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+		<div class="topnav_border topnav_stockpick topnav_stockpick_search clearfix">
+			<div class="topnav_border_orange topnav_stockpick_search_inner clearfix">
+				<a href="/stockpick?qs=return_stock" class="inner_logo"></a>
+				<div class="topnav topnav_stockpick_autoheight" id="topnavCon">
+	<div id="sn_search_module" class="snsearch clearfix">
+		<!--根据域名配置判断是否输出频道列表-->
+		<ul class="channel_list clearfix" id="bar">
+																					
+                        
+                                                
+									
+                                                                                                                                                                                                                                                                                                                                                                    			              									<li class="channel_item " id="info_bar"><a href="/search?tid=info&amp;ts=1&amp;qs=result_channel"><span class="new_channel_word">信息</span></a></li>
+                                            
+			              									<li class="channel_item snli01 " id="stockpick_bar"><a href="/stockpick?tid=stockpick&amp;ts=1&amp;qs=result_channel"><span class="new_channel_word">股票</span></a></li>
+                                            
+			              									<li class="channel_item " id="fund_bar"><a href="/stockpick/fund?tid=stockpick&amp;ts=1&amp;qs=result_channel"><span class="new_channel_word">基金</span></a></li>
+                                            
+			              									<li class="channel_item " id="hkstock_bar"><a href="/stockpick/hkstock?tid=stockpick&amp;ts=1&amp;qs=result_channel"><span class="new_channel_word">港股</span></a></li>
+                                            
+			              									<li class="channel_item " id="usstock_bar"><a href="/stockpick/usstock?tid=usstock&amp;ts=1&amp;qs=result_channel"><span class="new_channel_word">美股</span></a></li>
+                                            
+			              									<li class="channel_item " id="threeboard_bar"><a href="/stockpick/threeboard?tid=threeboard&amp;ts=1&amp;qs=result_channel"><span class="new_channel_word">新三板</span></a></li>
+                                            
+			              									<li class="channel_item " id="bond_bar"><a href="/stockpick/bond?tid=bond&amp;ts=1&amp;qs=result_channel"><span class="new_channel_word">债券</span></a></li>
+                                            
+			              				                                                                        <li class="channel_item channel_more " id="more">
+                                <a>
+                                    <span>更多</span>
+                                    <span class="icon_more"></span>
+                                </a>
+                                <ul class="channel_list_more clearfix" id="channel_more_list" style="width: 200px;*width: 205px;">
+                                    <li class="channel_item " id="insurance_bar"><a class="more_a " href="/stockpick/insurance?tid=insurance&amp;ts=1&amp;qs=result_channel"><span class="new_channel_word">保险</span></a></li>
+                                             				                            
+			              				                                                                        <li class="channel_item " id="futures_bar"><a class="more_a " href="/stockpick/futures?tid=futures&amp;ts=1&amp;qs=result_channel"><span class="new_channel_word">期货</span></a></li>
+                                             				                            
+			              				                                                                        <li class="channel_item " id="yike_bar"><a class="more_a " href="/yike?tid=yike&amp;ts=1&amp;qs=result_channel"><span class="new_channel_word">百科</span></a></li>
+                                             				                            
+			              				                                                                                <li class="channel_item " id="law_bar"><a class="more_a " href="/stockpick/law?tid=law&amp;ts=1&amp;qs=result_channel"><span class="new_channel_word">法律法规</span></a></li>
+                                </ul>
+                            </li>
+                                             				                            
+								</ul>
+		<!-- insearch start -->
+									<form name="f" action="/stockpick/search?ts=1&amp;f=1&amp;qs=1&amp;tid=stockpick" id="searchform" jumptype="auto" class="snform clearfix" method="get" autocomplete="off">
+			<div class="clearfix relative">
+									<script>
+						
+						if(typeof(global_source) != "undefined" &amp;&amp; global_source != ""){
+							document.write('&lt;input type="hidden" name="source" value="'+global_source+'"/&gt;');
+						}
+						
+					</script>
+								<input type="hidden" name="typed" value="0" />
+				<input type="hidden" name="preParams" value="" />
+				<input type="hidden" name="ts" value="1" />
+				<input type="hidden" name="f" value="1" />
+				<input type="hidden" name="qs" value="1" />
+				<input type="hidden" name="selfsectsn" value="" />
+				<input type="hidden" name="querytype" value="stock" />
+								
+				<!-- start：知识图谱隐藏字段 -->
+				<input type="hidden" name="searchfilter" value="" />
+
+				<!-- end：知识图谱隐藏字段 -->
+
+				<!--tid隐藏域的内容保存了搜索的目标频道，默认是当前$tid变量，如果未定义则是信息频道，频道切换时需要修改此隐藏域的值-->
+				<input type="hidden" id="tid" name="tid" value="stockpick" />
+				<div class="input_con insearch insearch_on" id="focusin">
+																	<div class="check_height_box">涨停,概念</div>
+						<div class="check_width_box">涨停,概念</div>
+						<div class="scroll_con">
+							<textarea maxlength="300" draggable="false" type="text" name="w" autocomplete="off" id="auto" class="search_input favorit_input" defaultvalue="" style="height: 19px;">涨停,概念</textarea>
+						</div>
+						<div class="animate"></div>
+                        							<div class="clearInput"></div>
+                        										<p class="hidden">
+						<label>kIndex</label>
+						<input class="hidden" type="text" id="keyIndex" value="-1" />
+					</p>
+					<p class="hidden">
+						<label>rev</label>
+						<input class="nodisplayd" type="text" id="sortIndex" />
+					</p>
+				</div>
+				<input type="submit" class="search_btn search_btn_hover" value="" id="qs-enter" />
+								
+				<!--选股频道需要的扩展表单元素-->
+									<em id="stockpick_time" class="stockpick_time"></em>
+											</div>
+						
+					<div class="sp_form_foot clearfix">
+											<div class="search_radio fl dwzq_search_radio">
+							<span><input name="queryarea" id="queryarea_selfstock" type="checkbox" value="selfstock" /></span>
+							<span><label for="queryarea_selfstock">我的自选股</label></span>
+
+							<a href="###" selected_plates="" class="aGray3 nn queryarea_selfplate" id="queryarea_selfplate"><div class="selfplate_box" id="selfplate_box">
+								<h4 class="intro">勾选后您将在<em class="orange">自己板块股范围内</em>选择：</h4>
+								<div class="plate_table_outer clearfix"></div>
+								<div class="btn_box"><span type="button" class="sure_plate_btn btn mr20" id="sure_plate_btn">确定</span><span type="button" class="cancel_plate_btn btn" id="cancel_plate_btn">取消</span></div>
+							</div><em class="icon ctrl_icon"></em><em class="selected_words">(已选)</em><em class="label_word">我的板块股</em></a>
+						</div>
+																																		<div class="fr favorit_box">
+						<a class="" id="favorit_btn" href="###">设为收藏问句</a>
+						<span class="favorited_word hidden">
+							已设为收藏问句，
+							<a id="favorited_btn" href="/yuqingmonitor/query-favorites?type=0&amp;qs=favorite_entry_search" target="_blank">查看</a>						</span>
+					</div>
+					                                                                    	<div class="fr hidden custom_block_placeholder" id="custom_block_placeholder"><span class="add_sub_area">加入动态板块</span><span class="see_sub_area"><em class="see_btn">查看动态板块</em></span></div>
+                                            									</div>
+
+					</form>
+	</div>
+					</div>				                	                        <div class="new_backTest fl hidden" id="back_test_new_link">
+                          <em class="back_icon"></em>
+                          <a href="/regression/report" target="_blank" class="backtest_mylog" qs="backtest_intro">寻找最赚钱的问句</a>
+                        </div>
+                    							</div>
+			<div class="appHref"><span class="phone bg_img"></span>手机客户端下载</div>
+		</div>
+
+		<div class="adaptive_left_outer">
+			<div class="adaptive_left">
+				<!--智能选股模块-->
+									<div class="wc_new_zhineng_cn zhineng_result" id="wcNewZhinengCon" pageflag="zhineng_result" openflag="n"></div>
+										<div class="all_active_con hidden" id="jump_con_box">
+				<div class="iavtive_left pic_box bg"></div>
+				<div class="trangle"><div class="inner_trangle"></div></div>
+				<div class="iavtive_right">
+					<div id="jump_con" class="word_con">问句已按<span class="word_span">股票频道</span>搜索 </div>
+				</div>
+			</div>
+								<div class="async_load_con parse_iactive_con" once="yes" id="spellquery"></div>
+				<div id="all_active_con" class="all_active_con">
+					<div class="iavtive_left pic_box bg"></div>
+					<div class="trangle"><div class="inner_trangle"></div></div>
+					<div class="iavtive_right">
+						<div id="word_con" class="word_con"><div class="iactive_box analysis_one">问句中的<span class="word_span">涨停</span> 已按<span class="word_span">涨停</span>搜索  
+        也可换用<a href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=stockpick_ambiguity_index&amp;selfsectsn=&amp;querytype=stock&amp;searchfilter=&amp;tid=stockpick&amp;multiIndex=%E6%B6%A8%E5%81%9C%E6%AC%A1%E6%95%B0&amp;stockpick&amp;w=%E6%B6%A8%E5%81%9C%E6%AC%A1%E6%95%B0%20%E6%A6%82%E5%BF%B5%20" class="multiIndex">涨停次数</a>  <a href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=stockpick_ambiguity_index&amp;selfsectsn=&amp;querytype=stock&amp;searchfilter=&amp;tid=stockpick&amp;multiIndex=%E5%B0%81%E6%9D%BF%E6%AC%A1%E6%95%B0&amp;stockpick&amp;w=%E5%B0%81%E6%9D%BF%E6%AC%A1%E6%95%B0%20%E6%A6%82%E5%BF%B5%20" class="multiIndex">封板次数</a>  <a href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=stockpick_ambiguity_index&amp;selfsectsn=&amp;querytype=stock&amp;searchfilter=&amp;tid=stockpick&amp;multiIndex=%E6%B6%A8%E5%81%9C%E4%BB%B7&amp;stockpick&amp;w=%E6%B6%A8%E5%81%9C%E4%BB%B7%20%E6%A6%82%E5%BF%B5%20" class="multiIndex">涨停价</a>  </div></div>
+					</div>
+				</div>
+
+				
+<div id="timeoutWrap" style="display: none;">
+    <div style="width:348px; margin:0 auto; padding:150px 0 100px;">
+        <div style=""><img style="width:348px; height:222px; border:0px none;" src="//ws2.thsi.cn/public/temp/wencai_collapse.png" /></div>
+        <div style="height:26px; padding-top:56px; line-height:26px; text-align:center;"><a style="color:#3c78d1; font-size:16px; text-decoration:none;" href="/?tid=info" target="_self">去 i 问财首页看看</a></div>
+    </div>
+</div>
+
+<div id="newworkWrap" style="">
+            <div id="asyncXgBtn"></div>
+        <div id="robotCtlBtn"></div>
+
+    <!--JS特效中的提示元素、弹出层等特效的元素-->
+
+    <!---编辑条件或交互式诊股处理的遮罩层和“正在为您计算”文案提示层--->
+    <div frameborder="0" scrolling="no" id="resultShadow"></div>
+    <div frameborder="0" scrolling="no" id="robotShadow"></div>
+    <div id="resultTip"><span class="word">正在为您计算，请稍候</span></div>
+    <div id="robotresultTip"><span class="robotLoading"></span><span class="word">正在为您加载，请稍候... ...</span></div>
+    <div id="robotFail"></div>
+
+    <!--弹出层、提示层结束-->
+
+    <!--选股左侧主体容器-->
+    <div class="stockpick_main">
+        <!--问句解析容器-->
+        <div id="qinfo" class="analysis_outer"><div class="natl_conds_main_outer">
+<div class="natl_conds_main2 clearfix">
+<div class="natl_box" title="涨停 （100 个）" status="0" resultnum="100 个"><div class="natl_words ">涨停 （<span class="natl_num">100 个</span>）</div></div><div class="natl_box" title="所属概念 （3693 个）" status="0" resultnum="3693 个"><div class="natl_words ">所属概念 （<span class="natl_num">3693 个</span>）</div></div>
+<div class="add_box" id="open_add_form"><span class="icon"></span>添加条件</div>
+</div>
+</div>
+<div class="no_result_cue" defaultstr="您修改或增加的条件无匹配结果,目前显示的是修改或增加条件前的结果。">您修改或增加的条件无匹配结果,目前显示的是修改或增加条件前的结果。</div></div>
+
+
+        <!--概念龙头股炒作原因-->
+        
+                
+        <!--选股结果-->
+        <div id="resultWrap" class="contentX  stock_result ">
+            <!-- 加入自选股 -->
+
+                                                
+                                    <div id="table_top_bar" class="clearfix table_top_bar">
+                <table class="table_top_bar_table stock_table_top_bar_table" width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tbody><tr>
+                        <td class="left_col">
+                            <div class="action_group">
+                                <div id="boxTitle" class="top_box clearfix fl">
+                                    选出<span class="type">股票</span>数：<span class="num">100</span>
+                                </div>
+                                <ul class="selfstock fl clearfix">
+                                                                        <li class="addSelfStock actionBtn"><b class="stockpick_png icon"></b>加自选</li>
+                                    <li class="addPlate actionBtn"><b class="stockpick_png icon"></b>加板块</li>
+                                                                        <li class="export actionBtn do btn_bg_png"><b class="stockpick_png icon exportIconDo"></b>导数据</li>
+                                                                                                        </ul>
+                            </div>
+                                                        <!-- 绑定指标相关HTML容器 -->
+                                                        <div class="fl showListWrapBox">
+                                <table id="bindIndexWrap" class="showListWrap fl hidden has_other_list" border="0" cellspacing="0" cellpadding="0" style="display: table;">
+                                    <tbody><tr>
+                                        <td class="intro">添加指标到表格：</td>
+                                        <td class="defaultList"><table class="default_list_table"><tbody><tr><td class="item"><label for="dynamicList_2"><input index_id="最新价" id="dynamicList_2" colnum="2" class="showListCheckbox" type="checkbox" checked="checked" /><em class="index_str">现价(元)</em></label></td><td class="item"><label for="dynamicList_3"><input index_id="最新涨跌幅" id="dynamicList_3" colnum="3" class="showListCheckbox" type="checkbox" checked="checked" /><em class="index_str">涨跌幅(%)</em></label></td></tr></tbody></table></td>
+                                        <td class="otherWrapOuter">
+                                            <div class="otherWrap" style="display: block;">
+                                                <div class="showListTrigger"><b class="icon stockpick_png "></b></div>
+                                                <ul class="showList"><li class="item "><label for="dynamicList_4"><input index_id="涨停" id="dynamicList_4" colnum="4" class="showListCheckbox" type="checkbox" checked="checked" /><em class="index_str">涨停</em></label></li><li class="item "><label for="dynamicList_5"><input index_id="所属概念" id="dynamicList_5" colnum="5" class="showListCheckbox" type="checkbox" checked="checked" /><em class="index_str">所属概念</em></label></li><li class="item "><label for="dynamicList_6"><input index_id="首次涨停时间" id="dynamicList_6" colnum="6" class="showListCheckbox" type="checkbox" checked="checked" /><em class="index_str">首次涨停时间</em></label></li><li class="item "><label for="dynamicList_7"><input index_id="最终涨停时间" id="dynamicList_7" colnum="7" class="showListCheckbox" type="checkbox" checked="checked" /><em class="index_str">最终涨停时间</em></label></li><li class="item "><label for="dynamicList_8"><input index_id="涨停明细数据" id="dynamicList_8" colnum="8" class="showListCheckbox" type="checkbox" checked="checked" /><em class="index_str">涨停明细数据</em></label></li><li class="item "><label for="dynamicList_9"><input index_id="连续涨停天数" id="dynamicList_9" colnum="9" class="showListCheckbox" type="checkbox" checked="checked" /><em class="index_str">连续涨停天数(天)</em></label></li><li class="item "><label for="dynamicList_10"><input index_id="涨停原因类别" id="dynamicList_10" colnum="10" class="showListCheckbox" type="checkbox" checked="checked" /><em class="index_str">涨停原因类别</em></label></li><li class="item "><label for="dynamicList_11"><input index_id="涨停封单量" id="dynamicList_11" colnum="11" class="showListCheckbox" type="checkbox" checked="checked" /><em class="index_str">涨停封单量(股)</em></label></li><li class="item "><label for="dynamicList_12"><input index_id="涨停封单额" id="dynamicList_12" colnum="12" class="showListCheckbox" type="checkbox" checked="checked" /><em class="index_str">涨停封单额(元)</em></label></li><li class="item "><label for="dynamicList_13"><input index_id="涨停封单量占成交量比" id="dynamicList_13" colnum="13" class="showListCheckbox" type="checkbox" checked="checked" /><em class="index_str">涨停封成比(%)</em></label></li><li class="item "><label for="dynamicList_14"><input index_id="涨停封单量占流通a股比" id="dynamicList_14" colnum="14" class="showListCheckbox" type="checkbox" checked="checked" /><em class="index_str">涨停封流比(%)</em></label></li><li class="item "><label for="dynamicList_15"><input index_id="涨停开板次数" id="dynamicList_15" colnum="15" class="showListCheckbox" type="checkbox" checked="checked" /><em class="index_str">涨停开板次数(次)</em></label></li><li class="item "><label for="dynamicList_16"><input index_id="a股市值(不含限售股)" id="dynamicList_16" colnum="16" class="showListCheckbox" type="checkbox" checked="checked" /><em class="index_str">a股流通市值
+(元)</em></label></li><li class="item "><label for="dynamicList_17"><input index_id="所属概念数量" id="dynamicList_17" colnum="17" class="showListCheckbox" type="checkbox" checked="checked" /><em class="index_str">所属概念数量(个)</em></label></li><li class="item "><label for="dynamicList_18"><input index_id="上市天数" id="dynamicList_18" colnum="18" class="showListCheckbox" type="checkbox" checked="checked" /><em class="index_str">上市天数(天)</em></label></li><li class="item "><label for="dynamicList_19"><input index_id="所属同花顺行业" id="dynamicList_19" colnum="19" class="showListCheckbox" type="checkbox" checked="checked" /><em class="index_str">所属同花顺行业</em></label></li></ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody></table>
+                            </div>
+                                                                                </td>
+                        <td class="right_col">
+                                                        	        		<div class="blk_stock fr searchInResult" service="/spell/searchSuggest" fill="code" type="/stock:1">
+    <div class="blk_text fr">
+        <input class="searchInput inputText" type="text" placeholder="股票代码/名称 快速搜" />
+    </div>
+    <b class="stockpick_png searchIcon searchBtn"></b>
+    <ul class="blk_stock_resultWrap">
+    </ul>
+</div>                                                                                                                <div class="xuangu_table_praise_bar public_praise_bar" id="xuangu_table_praise_bar" syntactics="">
+                                <table id="" class="" border="0" cellspacing="0" cellpadding="0">
+                                    <tbody><tr>
+                                        <td class="choose_td"><span btntype="1" class="choose_btn set_use_btn" title="有用" set_title="有用" un_title="取消有用"><em class="icon use_icon"></em><em class="word use_word">有用</em><em class="num use_num">0</em></span></td>
+                                        <td class="choose_td"><span btntype="2" class="choose_btn set_unuse_btn" title="没用" set_title="没用" un_title="取消没用"><em class="icon unuse_icon"></em><em class="word unuse_word">没用</em><em class="num unuse_num">0</em></span></td>
+                                        <td><span class="public_advise_btn"><em class="icon"></em><em class="word">提建议</em></span></td>
+                                    </tr>
+                                </tbody></table>
+                            </div>
+                                                    </td>
+                    </tr>
+                </tbody></table>
+            </div>
+                        <!-- 表格 -->
+            <div id="tableWrap" class="stock_table_outer tableWrap">
+                <div class="shadow hidden"></div>
+
+                <div class="table_templ_box"><div class="atomic_table_con clearfix">
+<div class="scroll_con_outer">
+<div class="scroll_con_wrap theadScrollConWrap" style="margin-left:243px;"><a class="thTrackBtnL trackBtn poleTrackBtn" href="javascript:;" style="height:46px;"><span class="arrows"></span></a><a class="thTrackBtnR trackBtn" href="javascript:;" style="height:46px;"><span class="arrows"></span></a>
+<div class="scroll_viewport_con">
+<div class="thead_table_wrap scroll_thead_table_wrap" style="width: 651px;">
+<ul class="clearfix scroll_table thead_table scroll_thead_table" style="width:2346px;height:46px;" data-listidx="0">
+<li style="width: 62px; height: 46px; line-height: 36px; cursor: pointer;" colnum="2" class="item sort" sortof="DESC" index_id="最新价" big_title="现价(元)">
+<div class="em">现价(元)</div>
+<div style="top:16px" class="flag icon"></div>
+</li>
+<li style="width: 73px; height: 46px; line-height: 36px; cursor: pointer;" colnum="3" class="item sort" sortof="DESC" index_id="最新涨跌幅" big_title="涨跌幅(%)">
+<div class="em">涨跌幅(%)</div>
+<div style="top:16px" class="flag icon"></div>
+</li>
+<li style="width: 112px; height: 46px; line-height: 18px; cursor: pointer;" colnum="4" class="item sort sorted down" sortof="ASC" index_id="涨停" big_title="涨停">
+<div class="em"><span explain="现价=涨停价，且卖一量为0，为涨停">涨停<br />2019.04.10</span>
+</div>
+<div style="top:16px" class="flag icon"></div>
+<span style="top:15px" class="showExplain stateIcon"></span>
+</li>
+<li style="width: 293px; height: 46px; line-height: 36px; cursor: pointer;" colnum="5" class="item sort" sortof="DESC" index_id="所属概念" big_title="所属概念">
+<div class="em">所属概念</div>
+<div style="top:16px" class="flag icon"></div>
+</li>
+<li style="width: 122px; height: 46px; line-height: 18px; cursor: pointer;" colnum="6" class="item sort" sortof="DESC" index_id="首次涨停时间" big_title="首次涨停时间">
+<div class="em"><span explain="首次涨停的时间。">首次涨停时间<br />2019.04.10</span>
+</div>
+<div style="top:16px" class="flag icon"></div>
+<span style="top:15px" class="showExplain stateIcon"></span>
+</li>
+<li style="width: 122px; height: 46px; line-height: 18px; cursor: pointer;" colnum="7" class="item sort" sortof="DESC" index_id="最终涨停时间" big_title="最终涨停时间">
+<div class="em"><span explain="最终涨停的时间。">最终涨停时间<br />2019.04.10</span>
+</div>
+<div style="top:16px" class="flag icon"></div>
+<span style="top:15px" class="showExplain stateIcon"></span>
+</li>
+<li style="width: 122px; height: 46px; line-height: 18px; cursor: pointer;" colnum="8" class="item sort" sortof="DESC" index_id="涨停明细数据" big_title="涨停明细数据">
+<div class="em"><span explain="当天发生过涨停的明细数据">涨停明细数据<br />2019.04.10</span>
+</div>
+<div style="top:16px" class="flag icon"></div>
+<span style="top:15px" class="showExplain stateIcon"></span>
+</li>
+<li style="width: 142px; height: 46px; line-height: 18px; cursor: pointer;" colnum="9" class="item sort" sortof="DESC" index_id="连续涨停天数" big_title="连续涨停天数(天)">
+<div class="em"><span explain="截止当前时刻，连续涨停的天数。停牌期间则显示最近一个交易日的连续涨停的天数">连续涨停天数(天)<br />2019.04.10</span>
+</div>
+<div style="top:16px" class="flag icon"></div>
+<span style="top:15px" class="showExplain stateIcon"></span>
+</li>
+<li style="width: 90px; height: 46px; line-height: 18px; cursor: pointer;" colnum="10" class="item sort" sortof="DESC" index_id="涨停原因类别" big_title="涨停原因类别">
+<div class="em">涨停原因类别<br />2019.04.10</div>
+<div style="top:16px" class="flag icon"></div>
+</li>
+<li style="width: 130px; height: 46px; line-height: 18px; cursor: pointer;" colnum="11" class="item sort" sortof="DESC" index_id="涨停封单量" big_title="涨停封单量(股)">
+<div class="em"><span explain="当前时刻涨停的股票，当前时刻的买一量。">涨停封单量(股)<br />2019.04.10</span>
+</div>
+<div style="top:16px" class="flag icon"></div>
+<span style="top:15px" class="showExplain stateIcon"></span>
+</li>
+<li style="width: 130px; height: 46px; line-height: 18px; cursor: pointer;" colnum="12" class="item sort" sortof="DESC" index_id="涨停封单额" big_title="涨停封单额(元)">
+<div class="em"><span explain="当前时刻涨停的股票，最新买一量*买一价。">涨停封单额(元)<br />2019.04.10</span>
+</div>
+<div style="top:16px" class="flag icon"></div>
+<span style="top:15px" class="showExplain stateIcon"></span>
+</li>
+<li style="width: 129px; height: 46px; line-height: 18px; cursor: pointer;" colnum="13" class="item sort" sortof="DESC" index_id="涨停封单量占成交量比" big_title="涨停封成比(%)">
+<div class="em"><span explain="最新的涨停封单量占最新成交量比例">涨停封成比(%)<br />2019.04.10</span>
+</div>
+<div style="top:16px" class="flag icon"></div>
+<span style="top:15px" class="showExplain stateIcon"></span>
+</li>
+<li style="width: 129px; height: 46px; line-height: 18px; cursor: pointer;" colnum="14" class="item sort" sortof="DESC" index_id="涨停封单量占流通a股比" big_title="涨停封流比(%)">
+<div class="em"><span explain="最新的涨停封单量占最新流通a股比例">涨停封流比(%)<br />2019.04.10</span>
+</div>
+<div style="top:16px" class="flag icon"></div>
+<span style="top:15px" class="showExplain stateIcon"></span>
+</li>
+<li style="width: 142px; height: 46px; line-height: 18px; cursor: pointer;" colnum="15" class="item sort" sortof="DESC" index_id="涨停开板次数" big_title="涨停开板次数(次)">
+<div class="em"><span explain="今天首次涨停后开板的次数。">涨停开板次数(次)<br />2019.04.10</span>
+</div>
+<div style="top:16px" class="flag icon"></div>
+<span style="top:15px" class="showExplain stateIcon"></span>
+</li>
+<li style="width: 117px; height: 46px; line-height: 18px; cursor: pointer;" colnum="16" class="item sort" sortof="DESC" index_id="a股市值(不含限售股)" big_title="a股流通市值&#13;(元)">
+<div class="em">a股流通市值
+(元)<br />2019.04.10</div>
+<div style="top:16px" class="flag icon"></div>
+</li>
+<li style="width: 110px; height: 46px; line-height: 36px; cursor: pointer;" colnum="17" class="item sort" sortof="DESC" index_id="所属概念数量" big_title="所属概念数量(个)">
+<div class="em">所属概念数量(个)</div>
+<div style="top:16px" class="flag icon"></div>
+</li>
+<li style="width: 86px; height: 46px; line-height: 18px; cursor: pointer;" colnum="18" class="item sort" sortof="DESC" index_id="上市天数" big_title="上市天数(天)">
+<div class="em">上市天数(天)<br />2019.04.10</div>
+<div style="top:16px" class="flag icon"></div>
+</li>
+<li style="width: 216px; height: 46px; line-height: 36px; cursor: pointer;" colnum="19" class="item sort" sortof="DESC" index_id="所属同花顺行业" big_title="所属同花顺行业">
+<div class="em">所属同花顺行业</div>
+<div style="top:16px" class="flag icon"></div>
+</li>
+</ul>
+</div>
+<div class="scroll_tbody_con" style="width: 651px;">
+<table class="scroll_table tbody_table scroll_tbody_table" border="0" cellspacing="0" cellpadding="0" style="width:2346px">
+<tbody>
+<tr class="even_row">
+<td width="62" colnum="2" class="item">
+<div class="em alignRight alignRight">23.84</div>
+</td>
+<td width="73" colnum="3" class="item">
+<div class="em _x_ red alignRight alignRight">10.01</div>
+</td>
+<td width="112" colnum="4" class="item sortCol">
+<div class="em red">涨停</div>
+</td>
+<td width="293" colnum="5" class="item">
+<div class="em alignCenter split"><span class="fl"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E7%BD%91%E7%BB%9C%E6%B8%B8%E6%88%8F">网络游戏</a> ;</span><span class="fl"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E7%94%9F%E7%89%A9%E5%8C%BB%E8%8D%AF">生物医药</a> ;</span><span class="fl"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E5%A3%B3%E8%B5%84%E6%BA%90">壳资源</a> ;</span><span class="fl"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E4%B8%AD%E7%A7%91%E7%B3%BB">中科系</a>
+</span></div>
+</td>
+<td width="122" colnum="6" class="item">
+<div class="em">09:30:00</div>
+</td>
+<td width="122" colnum="7" class="item">
+<div class="em">09:30:00</div>
+</td>
+<td width="122" colnum="8" class="item">
+<div class="em"><a class="btn_detail" href="javascript:void(0)">查看详情</a></div>
+</td>
+<td width="142" colnum="9" class="item">
+<div class="em alignRight">2</div>
+</td>
+<td width="90" colnum="10" class="item">
+<div class="em"><a target="_blank" href="/stockpick/search?preParams=&amp;ts=1&amp;f=1&amp;qs=stockpick_ztyy&amp;querytype=&amp;tid=stockpick&amp;w=000004%20%20%E6%B6%A8%E5%81%9C%E5%8E%9F%E5%9B%A0&amp;queryarea=all">资产重组</a></div>
+</td>
+<td width="130" colnum="11" class="item">
+<div class="em red alignRight alignRight">164.01万</div>
+</td>
+<td width="130" colnum="12" class="item">
+<div class="em red alignRight alignRight">3,909.89万</div>
+</td>
+<td width="129" colnum="13" class="item">
+<div class="em alignRight alignRight">476.28</div>
+</td>
+<td width="129" colnum="14" class="item">
+<div class="em alignRight alignRight">1.98</div>
+</td>
+<td width="142" colnum="15" class="item">
+<div class="em alignRight">0</div>
+</td>
+<td width="117" colnum="16" class="item">
+<div class="em alignRight alignRight"><a target="_blank" href="/stockpick/search?preParams=&amp;ts=1&amp;qs=zgxgrh_ltsz&amp;tid=stockpick&amp;w=000004+2019.04.10+%E6%B5%81%E9%80%9A%E5%B8%82%E5%80%BC">19.79亿</a></div>
+</td>
+<td width="110" colnum="17" class="item">
+<div class="em alignRight"><a target="_blank" href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=result_rewrite&amp;selfsectsn=&amp;querytype=&amp;searchfilter=&amp;tid=stockpick&amp;w=000004+%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5">4</a></div>
+</td>
+<td width="86" colnum="18" class="item">
+<div class="em alignRight"><a target="_blank" href="/stockpick/search?preParams=&amp;ts=1&amp;f=1&amp;qs=zgxgrh_ssts&amp;querytype=&amp;tid=stockpick&amp;w=000004+2019.04.10+上市天数">1.03万</a></div>
+</td>
+<td width="216" colnum="19" class="item">
+<div class="em split"><span class="fl"><a target="_blank" href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=1&amp;selfsectsn=&amp;querytype=&amp;searchfilter=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E5%90%8C%E8%8A%B1%E9%A1%BA%E8%A1%8C%E4%B8%9A%E5%8C%85%E5%90%AB%E5%8C%BB%E8%8D%AF%E7%94%9F%E7%89%A9">医药生物</a> -</span><span class="fl"><a target="_blank" href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=1&amp;selfsectsn=&amp;querytype=&amp;searchfilter=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E5%90%8C%E8%8A%B1%E9%A1%BA%E8%A1%8C%E4%B8%9A%E5%8C%85%E5%90%AB%E7%94%9F%E7%89%A9%E5%88%B6%E5%93%81">生物制品</a> -</span><span class="fl"><a target="_blank" href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=1&amp;selfsectsn=&amp;querytype=&amp;searchfilter=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E5%90%8C%E8%8A%B1%E9%A1%BA%E8%A1%8C%E4%B8%9A%E5%8C%85%E5%90%AB%E7%94%9F%E7%89%A9%E5%88%B6%E5%93%81%E2%85%A2">生物制品Ⅲ</a>
+</span></div>
+</td>
+<td class="addList"></td>
+</tr>
+<tr class="odd_row">
+<td width="62" colnum="2" class="item">
+<div class="em alignRight alignRight">22.58</div>
+</td>
+<td width="73" colnum="3" class="item">
+<div class="em _x_ red alignRight alignRight">5.02</div>
+</td>
+<td width="112" colnum="4" class="item sortCol">
+<div class="em red">涨停</div>
+</td>
+<td width="293" colnum="5" class="item">
+<div class="em alignCenter split"><span class="fl"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E5%9C%9F%E5%9C%B0%E5%A2%9E%E5%80%BC">土地增值</a> ;</span><span class="fl"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%ABST%E6%9D%BF%E5%9D%97">ST板块</a> ;</span><span class="fl"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E7%8C%AA%E8%82%89">猪肉</a> ;</span><span class="fl"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E5%9C%9F%E5%9C%B0%E6%B5%81%E8%BD%AC">土地流转</a>
+</span></div>
+</td>
+<td width="122" colnum="6" class="item">
+<div class="em">10:08:00</div>
+</td>
+<td width="122" colnum="7" class="item">
+<div class="em">10:08:00</div>
+</td>
+<td width="122" colnum="8" class="item">
+<div class="em"><a class="btn_detail" href="javascript:void(0)">查看详情</a></div>
+</td>
+<td width="142" colnum="9" class="item">
+<div class="em alignRight">2</div>
+</td>
+<td width="90" colnum="10" class="item">
+<div class="em"><a target="_blank" href="/stockpick/search?preParams=&amp;ts=1&amp;f=1&amp;qs=stockpick_ztyy&amp;querytype=&amp;tid=stockpick&amp;w=000048%20%20%E6%B6%A8%E5%81%9C%E5%8E%9F%E5%9B%A0&amp;queryarea=all">ST板块</a></div>
+</td>
+<td width="130" colnum="11" class="item">
+<div class="em red alignRight alignRight">15.25万</div>
+</td>
+<td width="130" colnum="12" class="item">
+<div class="em red alignRight alignRight">344.35万</div>
+</td>
+<td width="129" colnum="13" class="item">
+<div class="em alignRight alignRight">17.75</div>
+</td>
+<td width="129" colnum="14" class="item">
+<div class="em alignRight alignRight">0.04</div>
+</td>
+<td width="142" colnum="15" class="item">
+<div class="em alignRight">0</div>
+</td>
+<td width="117" colnum="16" class="item">
+<div class="em alignRight alignRight"><a target="_blank" href="/stockpick/search?preParams=&amp;ts=1&amp;qs=zgxgrh_ltsz&amp;tid=stockpick&amp;w=000048+2019.04.10+%E6%B5%81%E9%80%9A%E5%B8%82%E5%80%BC">87.02亿</a></div>
+</td>
+<td width="110" colnum="17" class="item">
+<div class="em alignRight"><a target="_blank" href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=result_rewrite&amp;selfsectsn=&amp;querytype=&amp;searchfilter=&amp;tid=stockpick&amp;w=000048+%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5">4</a></div>
+</td>
+<td width="86" colnum="18" class="item">
+<div class="em alignRight"><a target="_blank" href="/stockpick/search?preParams=&amp;ts=1&amp;f=1&amp;qs=zgxgrh_ssts&amp;querytype=&amp;tid=stockpick&amp;w=000048+2019.04.10+上市天数">8,927</a></div>
+</td>
+<td width="216" colnum="19" class="item">
+<div class="em split"><span class="fl"><a target="_blank" href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=1&amp;selfsectsn=&amp;querytype=&amp;searchfilter=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E5%90%8C%E8%8A%B1%E9%A1%BA%E8%A1%8C%E4%B8%9A%E5%8C%85%E5%90%AB%E5%86%9C%E6%9E%97%E7%89%A7%E6%B8%94">农林牧渔</a> -</span><span class="fl"><a target="_blank" href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=1&amp;selfsectsn=&amp;querytype=&amp;searchfilter=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E5%90%8C%E8%8A%B1%E9%A1%BA%E8%A1%8C%E4%B8%9A%E5%8C%85%E5%90%AB%E5%86%9C%E4%BA%A7%E5%93%81%E5%8A%A0%E5%B7%A5">农产品加工</a> -</span><span class="fl"><a target="_blank" href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=1&amp;selfsectsn=&amp;querytype=&amp;searchfilter=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E5%90%8C%E8%8A%B1%E9%A1%BA%E8%A1%8C%E4%B8%9A%E5%8C%85%E5%90%AB%E9%A5%B2%E6%96%99%E2%85%A2">饲料Ⅲ</a>
+</span></div>
+</td>
+<td class="addList"></td>
+</tr>
+<tr class="even_row">
+<td width="62" colnum="2" class="item">
+<div class="em alignRight alignRight">5.07</div>
+</td>
+<td width="73" colnum="3" class="item">
+<div class="em _x_ red alignRight alignRight">9.98</div>
+</td>
+<td width="112" colnum="4" class="item sortCol">
+<div class="em red">涨停</div>
+</td>
+<td width="293" colnum="5" class="item">
+<div class="em alignCenter split"><a href="" class="ml5 moreSplit fr" num="3">更多</a><span class="fl"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E5%A4%9A%E8%82%BD%E8%8D%AF">多肽药</a> ;</span><span class="fl"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E6%89%8B%E8%B6%B3%E5%8F%A3%E7%97%85">手足口病</a> ;</span><span class="fl"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E6%8A%97%E7%99%8C">抗癌</a> ;</span><span class="fl"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E7%A6%BD%E6%B5%81%E6%84%9F">禽流感</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E8%BE%BE%E8%8F%B2">达菲</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E7%94%9F%E7%89%A9%E7%96%AB%E8%8B%97">生物疫苗</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E7%99%BB%E9%9D%A9%E7%83%AD">登革热</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%ABMERS%E6%A6%82%E5%BF%B5">MERS概念</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E9%98%B2%E8%BE%90%E5%B0%84">防辐射</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E6%89%8B%E8%B6%B3%E5%8F%A3%E7%97%85%E7%96%AB%E8%8B%97">手足口病疫苗</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E8%9E%8D%E8%B5%84%E8%9E%8D%E5%88%B8">融资融券</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E5%9B%BD%E4%BA%A7%E4%BC%9F%E5%93%A5">国产伟哥</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E6%B7%B1%E8%82%A1%E9%80%9A">深股通</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E8%BD%AC%E8%9E%8D%E5%88%B8%E6%A0%87%E7%9A%84">转融券标的</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E5%8C%BB%E4%BF%9D%E7%9B%AE%E5%BD%95">医保目录</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E5%8C%BB%E7%96%97%E6%94%B9%E9%9D%A9">医疗改革</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E5%8C%BB%E7%96%97%E5%99%A8%E6%A2%B0%E6%A6%82%E5%BF%B5">医疗器械概念</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E6%B5%81%E6%84%9F">流感</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E8%B6%85%E7%BA%A7%E7%9C%9F%E8%8F%8C">超级真菌</a>
+</span></div>
+</td>
+<td width="122" colnum="6" class="item">
+<div class="em">10:04:00</div>
+</td>
+<td width="122" colnum="7" class="item">
+<div class="em">10:47:00</div>
+</td>
+<td width="122" colnum="8" class="item">
+<div class="em"><a class="btn_detail" href="javascript:void(0)">查看详情</a></div>
+</td>
+<td width="142" colnum="9" class="item">
+<div class="em alignRight">1</div>
+</td>
+<td width="90" colnum="10" class="item">
+<div class="em"><a target="_blank" href="/stockpick/search?preParams=&amp;ts=1&amp;f=1&amp;qs=stockpick_ztyy&amp;querytype=&amp;tid=stockpick&amp;w=000078%20%20%E6%B6%A8%E5%81%9C%E5%8E%9F%E5%9B%A0&amp;queryarea=all">超级真菌</a></div>
+</td>
+<td width="130" colnum="11" class="item">
+<div class="em red alignRight alignRight">908.81万</div>
+</td>
+<td width="130" colnum="12" class="item">
+<div class="em red alignRight alignRight">4,607.68万</div>
+</td>
+<td width="129" colnum="13" class="item">
+<div class="em alignRight alignRight">5.93</div>
+</td>
+<td width="129" colnum="14" class="item">
+<div class="em alignRight alignRight">0.49</div>
+</td>
+<td width="142" colnum="15" class="item">
+<div class="em alignRight">2</div>
+</td>
+<td width="117" colnum="16" class="item">
+<div class="em alignRight alignRight"><a target="_blank" href="/stockpick/search?preParams=&amp;ts=1&amp;qs=zgxgrh_ltsz&amp;tid=stockpick&amp;w=000078+2019.04.10+%E6%B5%81%E9%80%9A%E5%B8%82%E5%80%BC">94.13亿</a></div>
+</td>
+<td width="110" colnum="17" class="item">
+<div class="em alignRight"><a target="_blank" href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=result_rewrite&amp;selfsectsn=&amp;querytype=&amp;searchfilter=&amp;tid=stockpick&amp;w=000078+%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5">19</a></div>
+</td>
+<td width="86" colnum="18" class="item">
+<div class="em alignRight"><a target="_blank" href="/stockpick/search?preParams=&amp;ts=1&amp;f=1&amp;qs=zgxgrh_ssts&amp;querytype=&amp;tid=stockpick&amp;w=000078+2019.04.10+上市天数">7,419</a></div>
+</td>
+<td width="216" colnum="19" class="item">
+<div class="em split"><span class="fl"><a target="_blank" href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=1&amp;selfsectsn=&amp;querytype=&amp;searchfilter=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E5%90%8C%E8%8A%B1%E9%A1%BA%E8%A1%8C%E4%B8%9A%E5%8C%85%E5%90%AB%E5%8C%BB%E8%8D%AF%E7%94%9F%E7%89%A9">医药生物</a> -</span><span class="fl"><a target="_blank" href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=1&amp;selfsectsn=&amp;querytype=&amp;searchfilter=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E5%90%8C%E8%8A%B1%E9%A1%BA%E8%A1%8C%E4%B8%9A%E5%8C%85%E5%90%AB%E5%8C%BB%E8%8D%AF%E5%95%86%E4%B8%9A">医药商业</a> -</span><span class="fl"><a target="_blank" href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=1&amp;selfsectsn=&amp;querytype=&amp;searchfilter=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E5%90%8C%E8%8A%B1%E9%A1%BA%E8%A1%8C%E4%B8%9A%E5%8C%85%E5%90%AB%E5%8C%BB%E8%8D%AF%E5%95%86%E4%B8%9A%E2%85%A2">医药商业Ⅲ</a>
+</span></div>
+</td>
+<td class="addList"></td>
+</tr>
+<tr class="odd_row">
+<td width="62" colnum="2" class="item">
+<div class="em alignRight alignRight">3.75</div>
+</td>
+<td width="73" colnum="3" class="item">
+<div class="em _x_ red alignRight alignRight">9.97</div>
+</td>
+<td width="112" colnum="4" class="item sortCol">
+<div class="em red">涨停</div>
+</td>
+<td width="293" colnum="5" class="item">
+<div class="em alignCenter split"><a href="" class="ml5 moreSplit fr" num="3">更多</a><span class="fl"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E8%A5%BF%E9%83%A8%E5%BC%80%E5%8F%91">西部开发</a> ;</span><span class="fl"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E7%A5%A8%E4%BA%A4%E6%89%80">票交所</a> ;</span><span class="fl"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E8%82%A1%E6%9D%83%E8%BD%AC%E8%AE%A9">股权转让</a> ;</span><span class="fl"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E5%9B%AD%E6%9E%97%E5%BC%80%E5%8F%91">园林开发</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E6%88%90%E6%B8%9D%E7%89%B9%E5%8C%BA">成渝特区</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E5%A3%B3%E8%B5%84%E6%BA%90">壳资源</a>
+</span></div>
+</td>
+<td width="122" colnum="6" class="item">
+<div class="em">10:00:30</div>
+</td>
+<td width="122" colnum="7" class="item">
+<div class="em">10:31:45</div>
+</td>
+<td width="122" colnum="8" class="item">
+<div class="em"><a class="btn_detail" href="javascript:void(0)">查看详情</a></div>
+</td>
+<td width="142" colnum="9" class="item">
+<div class="em alignRight">2</div>
+</td>
+<td width="90" colnum="10" class="item">
+<div class="em"><a target="_blank" href="/stockpick/search?preParams=&amp;ts=1&amp;f=1&amp;qs=stockpick_ztyy&amp;querytype=&amp;tid=stockpick&amp;w=000509%20%20%E6%B6%A8%E5%81%9C%E5%8E%9F%E5%9B%A0&amp;queryarea=all">成渝城市群</a></div>
+</td>
+<td width="130" colnum="11" class="item">
+<div class="em red alignRight alignRight">468.90万</div>
+</td>
+<td width="130" colnum="12" class="item">
+<div class="em red alignRight alignRight">1,758.38万</div>
+</td>
+<td width="129" colnum="13" class="item">
+<div class="em alignRight alignRight">3.96</div>
+</td>
+<td width="129" colnum="14" class="item">
+<div class="em alignRight alignRight">0.57</div>
+</td>
+<td width="142" colnum="15" class="item">
+<div class="em alignRight">2</div>
+</td>
+<td width="117" colnum="16" class="item">
+<div class="em alignRight alignRight"><a target="_blank" href="/stockpick/search?preParams=&amp;ts=1&amp;qs=zgxgrh_ltsz&amp;tid=stockpick&amp;w=000509+2019.04.10+%E6%B5%81%E9%80%9A%E5%B8%82%E5%80%BC">30.96亿</a></div>
+</td>
+<td width="110" colnum="17" class="item">
+<div class="em alignRight"><a target="_blank" href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=result_rewrite&amp;selfsectsn=&amp;querytype=&amp;searchfilter=&amp;tid=stockpick&amp;w=000509+%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5">6</a></div>
+</td>
+<td width="86" colnum="18" class="item">
+<div class="em alignRight"><a target="_blank" href="/stockpick/search?preParams=&amp;ts=1&amp;f=1&amp;qs=zgxgrh_ssts&amp;querytype=&amp;tid=stockpick&amp;w=000509+2019.04.10+上市天数">9,470</a></div>
+</td>
+<td width="216" colnum="19" class="item">
+<div class="em split"><span class="fl"><a target="_blank" href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=1&amp;selfsectsn=&amp;querytype=&amp;searchfilter=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E5%90%8C%E8%8A%B1%E9%A1%BA%E8%A1%8C%E4%B8%9A%E5%8C%85%E5%90%AB%E5%95%86%E4%B8%9A%E8%B4%B8%E6%98%93">商业贸易</a> -</span><span class="fl"><a target="_blank" href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=1&amp;selfsectsn=&amp;querytype=&amp;searchfilter=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E5%90%8C%E8%8A%B1%E9%A1%BA%E8%A1%8C%E4%B8%9A%E5%8C%85%E5%90%AB%E8%B4%B8%E6%98%93">贸易</a> -</span><span class="fl"><a target="_blank" href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=1&amp;selfsectsn=&amp;querytype=&amp;searchfilter=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E5%90%8C%E8%8A%B1%E9%A1%BA%E8%A1%8C%E4%B8%9A%E5%8C%85%E5%90%AB%E8%B4%B8%E6%98%93%E2%85%A2">贸易Ⅲ</a>
+</span></div>
+</td>
+<td class="addList"></td>
+</tr>
+<tr class="even_row">
+<td width="62" colnum="2" class="item">
+<div class="em alignRight alignRight">6.82</div>
+</td>
+<td width="73" colnum="3" class="item">
+<div class="em _x_ red alignRight alignRight">10.00</div>
+</td>
+<td width="112" colnum="4" class="item sortCol">
+<div class="em red">涨停</div>
+</td>
+<td width="293" colnum="5" class="item">
+<div class="em alignCenter split"><a href="" class="ml5 moreSplit fr" num="3">更多</a><span class="fl"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E4%B8%A4%E6%B1%9F%E6%96%B0%E5%8C%BA">两江新区</a> ;</span><span class="fl"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E6%88%90%E6%B8%9D%E7%89%B9%E5%8C%BA">成渝特区</a> ;</span><span class="fl"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E9%87%8D%E5%BA%86%E8%87%AA%E8%B4%B8%E5%8C%BA">重庆自贸区</a> ;</span><span class="fl"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E9%87%91%E6%94%B9">金改</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E9%95%BF%E6%B1%9F%E7%BB%8F%E6%B5%8E%E5%B8%A6">长江经济带</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E9%87%8D%E5%BA%86%E5%9B%BD%E8%B5%84%E6%94%B9%E9%9D%A9">重庆国资改革</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E5%9C%B0%E6%96%B9%E5%9B%BD%E8%B5%84%E6%94%B9%E9%9D%A9">地方国资改革</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E5%80%BA%E8%BD%AC%E8%82%A1">债转股</a>
+</span></div>
+</td>
+<td width="122" colnum="6" class="item">
+<div class="em">09:39:00</div>
+</td>
+<td width="122" colnum="7" class="item">
+<div class="em">13:16:45</div>
+</td>
+<td width="122" colnum="8" class="item">
+<div class="em"><a class="btn_detail" href="javascript:void(0)">查看详情</a></div>
+</td>
+<td width="142" colnum="9" class="item">
+<div class="em alignRight">3</div>
+</td>
+<td width="90" colnum="10" class="item">
+<div class="em"><a target="_blank" href="/stockpick/search?preParams=&amp;ts=1&amp;f=1&amp;qs=stockpick_ztyy&amp;querytype=&amp;tid=stockpick&amp;w=000514%20%20%E6%B6%A8%E5%81%9C%E5%8E%9F%E5%9B%A0&amp;queryarea=all">成渝城市群</a></div>
+</td>
+<td width="130" colnum="11" class="item">
+<div class="em red alignRight alignRight">680.96万</div>
+</td>
+<td width="130" colnum="12" class="item">
+<div class="em red alignRight alignRight">4,644.17万</div>
+</td>
+<td width="129" colnum="13" class="item">
+<div class="em alignRight alignRight">8.74</div>
+</td>
+<td width="129" colnum="14" class="item">
+<div class="em alignRight alignRight">0.81</div>
+</td>
+<td width="142" colnum="15" class="item">
+<div class="em alignRight">2</div>
+</td>
+<td width="117" colnum="16" class="item">
+<div class="em alignRight alignRight"><a target="_blank" href="/stockpick/search?preParams=&amp;ts=1&amp;qs=zgxgrh_ltsz&amp;tid=stockpick&amp;w=000514+2019.04.10+%E6%B5%81%E9%80%9A%E5%B8%82%E5%80%BC">57.55亿</a></div>
+</td>
+<td width="110" colnum="17" class="item">
+<div class="em alignRight"><a target="_blank" href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=result_rewrite&amp;selfsectsn=&amp;querytype=&amp;searchfilter=&amp;tid=stockpick&amp;w=000514+%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5">8</a></div>
+</td>
+<td width="86" colnum="18" class="item">
+<div class="em alignRight"><a target="_blank" href="/stockpick/search?preParams=&amp;ts=1&amp;f=1&amp;qs=zgxgrh_ssts&amp;querytype=&amp;tid=stockpick&amp;w=000514+2019.04.10+上市天数">9,404</a></div>
+</td>
+<td width="216" colnum="19" class="item">
+<div class="em split"><span class="fl"><a target="_blank" href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=1&amp;selfsectsn=&amp;querytype=&amp;searchfilter=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E5%90%8C%E8%8A%B1%E9%A1%BA%E8%A1%8C%E4%B8%9A%E5%8C%85%E5%90%AB%E6%88%BF%E5%9C%B0%E4%BA%A7">房地产</a> -</span><span class="fl"><a target="_blank" href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=1&amp;selfsectsn=&amp;querytype=&amp;searchfilter=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E5%90%8C%E8%8A%B1%E9%A1%BA%E8%A1%8C%E4%B8%9A%E5%8C%85%E5%90%AB%E6%88%BF%E5%9C%B0%E4%BA%A7%E5%BC%80%E5%8F%91">房地产开发</a> -</span><span class="fl"><a target="_blank" href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=1&amp;selfsectsn=&amp;querytype=&amp;searchfilter=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E5%90%8C%E8%8A%B1%E9%A1%BA%E8%A1%8C%E4%B8%9A%E5%8C%85%E5%90%AB%E6%88%BF%E5%9C%B0%E4%BA%A7%E5%BC%80%E5%8F%91%E2%85%A2">房地产开发Ⅲ</a>
+</span></div>
+</td>
+<td class="addList"></td>
+</tr>
+<tr class="odd_row">
+<td width="62" colnum="2" class="item">
+<div class="em alignRight alignRight">4.57</div>
+</td>
+<td width="73" colnum="3" class="item">
+<div class="em _x_ red alignRight alignRight">10.12</div>
+</td>
+<td width="112" colnum="4" class="item sortCol">
+<div class="em red">涨停</div>
+</td>
+<td width="293" colnum="5" class="item">
+<div class="em alignCenter split"><a href="" class="ml5 moreSplit fr" num="3">更多</a><span class="fl"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E8%82%BE%E9%80%8F%E6%9E%90">肾透析</a> ;</span><span class="fl"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E5%B9%B2%E7%BB%86%E8%83%9E">干细胞</a> ;</span><span class="fl"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E6%8A%97%E7%99%8C">抗癌</a> ;</span><span class="fl"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E5%A4%96%E8%B4%B8">外贸</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E7%99%BB%E9%9D%A9%E7%83%AD">登革热</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E4%BD%93%E5%A4%96%E8%AF%8A%E6%96%AD">体外诊断</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E5%8C%BB%E4%BF%9D%E7%9B%AE%E5%BD%95">医保目录</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E7%94%9F%E7%89%A9%E5%8C%BB%E8%8D%AF">生物医药</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E8%B6%85%E7%BA%A7%E7%9C%9F%E8%8F%8C">超级真菌</a>
+</span></div>
+</td>
+<td width="122" colnum="6" class="item">
+<div class="em">09:39:15</div>
+</td>
+<td width="122" colnum="7" class="item">
+<div class="em">09:39:15</div>
+</td>
+<td width="122" colnum="8" class="item">
+<div class="em"><a class="btn_detail" href="javascript:void(0)">查看详情</a></div>
+</td>
+<td width="142" colnum="9" class="item">
+<div class="em alignRight">1</div>
+</td>
+<td width="90" colnum="10" class="item">
+<div class="em"><a target="_blank" href="/stockpick/search?preParams=&amp;ts=1&amp;f=1&amp;qs=stockpick_ztyy&amp;querytype=&amp;tid=stockpick&amp;w=000518%20%20%E6%B6%A8%E5%81%9C%E5%8E%9F%E5%9B%A0&amp;queryarea=all">超级真菌</a></div>
+</td>
+<td width="130" colnum="11" class="item">
+<div class="em red alignRight alignRight">2,375.51万</div>
+</td>
+<td width="130" colnum="12" class="item">
+<div class="em red alignRight alignRight">1.09亿</div>
+</td>
+<td width="129" colnum="13" class="item">
+<div class="em alignRight alignRight">62.62</div>
+</td>
+<td width="129" colnum="14" class="item">
+<div class="em alignRight alignRight">2.31</div>
+</td>
+<td width="142" colnum="15" class="item">
+<div class="em alignRight">0</div>
+</td>
+<td width="117" colnum="16" class="item">
+<div class="em alignRight alignRight"><a target="_blank" href="/stockpick/search?preParams=&amp;ts=1&amp;qs=zgxgrh_ltsz&amp;tid=stockpick&amp;w=000518+2019.04.10+%E6%B5%81%E9%80%9A%E5%B8%82%E5%80%BC">47.05亿</a></div>
+</td>
+<td width="110" colnum="17" class="item">
+<div class="em alignRight"><a target="_blank" href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=result_rewrite&amp;selfsectsn=&amp;querytype=&amp;searchfilter=&amp;tid=stockpick&amp;w=000518+%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5">9</a></div>
+</td>
+<td width="86" colnum="18" class="item">
+<div class="em alignRight"><a target="_blank" href="/stockpick/search?preParams=&amp;ts=1&amp;f=1&amp;qs=zgxgrh_ssts&amp;querytype=&amp;tid=stockpick&amp;w=000518+2019.04.10+上市天数">9,346</a></div>
+</td>
+<td width="216" colnum="19" class="item">
+<div class="em split"><span class="fl"><a target="_blank" href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=1&amp;selfsectsn=&amp;querytype=&amp;searchfilter=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E5%90%8C%E8%8A%B1%E9%A1%BA%E8%A1%8C%E4%B8%9A%E5%8C%85%E5%90%AB%E5%8C%BB%E8%8D%AF%E7%94%9F%E7%89%A9">医药生物</a> -</span><span class="fl"><a target="_blank" href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=1&amp;selfsectsn=&amp;querytype=&amp;searchfilter=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E5%90%8C%E8%8A%B1%E9%A1%BA%E8%A1%8C%E4%B8%9A%E5%8C%85%E5%90%AB%E7%94%9F%E7%89%A9%E5%88%B6%E5%93%81">生物制品</a> -</span><span class="fl"><a target="_blank" href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=1&amp;selfsectsn=&amp;querytype=&amp;searchfilter=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E5%90%8C%E8%8A%B1%E9%A1%BA%E8%A1%8C%E4%B8%9A%E5%8C%85%E5%90%AB%E7%94%9F%E7%89%A9%E5%88%B6%E5%93%81%E2%85%A2">生物制品Ⅲ</a>
+</span></div>
+</td>
+<td class="addList"></td>
+</tr>
+<tr class="even_row">
+<td width="62" colnum="2" class="item">
+<div class="em alignRight alignRight">7.88</div>
+</td>
+<td width="73" colnum="3" class="item">
+<div class="em _x_ red alignRight alignRight">10.06</div>
+</td>
+<td width="112" colnum="4" class="item sortCol">
+<div class="em red">涨停</div>
+</td>
+<td width="293" colnum="5" class="item">
+<div class="em alignCenter split"><a href="" class="ml5 moreSplit fr" num="3">更多</a><span class="fl"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E4%B9%99%E4%BA%8C%E9%86%87">乙二醇</a> ;</span><span class="fl"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E6%88%90%E6%B8%9D%E7%89%B9%E5%8C%BA">成渝特区</a> ;</span><span class="fl"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E9%87%8D%E5%BA%86%E8%87%AA%E8%B4%B8%E5%8C%BA">重庆自贸区</a> ;</span><span class="fl"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E4%B8%A4%E6%B1%9F%E6%96%B0%E5%8C%BA">两江新区</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E8%9E%8D%E8%B5%84%E8%9E%8D%E5%88%B8">融资融券</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E5%BB%BA%E7%AD%91%E6%B6%82%E6%96%99">建筑涂料</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E8%BD%AC%E8%9E%8D%E5%88%B8%E6%A0%87%E7%9A%84">转融券标的</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E9%87%91%E6%94%B9">金改</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E9%87%8D%E5%BA%86%E5%9B%BD%E8%B5%84%E6%94%B9%E9%9D%A9">重庆国资改革</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E5%9C%B0%E6%96%B9%E5%9B%BD%E8%B5%84%E6%94%B9%E9%9D%A9">地方国资改革</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E7%9F%B3%E5%A2%A8%E7%83%AF">石墨烯</a>
+</span></div>
+</td>
+<td width="122" colnum="6" class="item">
+<div class="em">14:22:45</div>
+</td>
+<td width="122" colnum="7" class="item">
+<div class="em">14:54:02</div>
+</td>
+<td width="122" colnum="8" class="item">
+<div class="em"><a class="btn_detail" href="javascript:void(0)">查看详情</a></div>
+</td>
+<td width="142" colnum="9" class="item">
+<div class="em alignRight">1</div>
+</td>
+<td width="90" colnum="10" class="item">
+<div class="em"><a target="_blank" href="/stockpick/search?preParams=&amp;ts=1&amp;f=1&amp;qs=stockpick_ztyy&amp;querytype=&amp;tid=stockpick&amp;w=000565%20%20%E6%B6%A8%E5%81%9C%E5%8E%9F%E5%9B%A0&amp;queryarea=all">成渝城市群</a></div>
+</td>
+<td width="130" colnum="11" class="item">
+<div class="em red alignRight alignRight">201.26万</div>
+</td>
+<td width="130" colnum="12" class="item">
+<div class="em red alignRight alignRight">1,585.89万</div>
+</td>
+<td width="129" colnum="13" class="item">
+<div class="em alignRight alignRight">4.31</div>
+</td>
+<td width="129" colnum="14" class="item">
+<div class="em alignRight alignRight">0.46</div>
+</td>
+<td width="142" colnum="15" class="item">
+<div class="em alignRight">1</div>
+</td>
+<td width="117" colnum="16" class="item">
+<div class="em alignRight alignRight"><a target="_blank" href="/stockpick/search?preParams=&amp;ts=1&amp;qs=zgxgrh_ltsz&amp;tid=stockpick&amp;w=000565+2019.04.10+%E6%B5%81%E9%80%9A%E5%B8%82%E5%80%BC">34.17亿</a></div>
+</td>
+<td width="110" colnum="17" class="item">
+<div class="em alignRight"><a target="_blank" href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=result_rewrite&amp;selfsectsn=&amp;querytype=&amp;searchfilter=&amp;tid=stockpick&amp;w=000565+%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5">11</a></div>
+</td>
+<td width="86" colnum="18" class="item">
+<div class="em alignRight"><a target="_blank" href="/stockpick/search?preParams=&amp;ts=1&amp;f=1&amp;qs=zgxgrh_ssts&amp;querytype=&amp;tid=stockpick&amp;w=000565+2019.04.10+上市天数">9,134</a></div>
+</td>
+<td width="216" colnum="19" class="item">
+<div class="em split"><span class="fl"><a target="_blank" href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=1&amp;selfsectsn=&amp;querytype=&amp;searchfilter=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E5%90%8C%E8%8A%B1%E9%A1%BA%E8%A1%8C%E4%B8%9A%E5%8C%85%E5%90%AB%E5%8C%96%E5%B7%A5">化工</a> -</span><span class="fl"><a target="_blank" href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=1&amp;selfsectsn=&amp;querytype=&amp;searchfilter=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E5%90%8C%E8%8A%B1%E9%A1%BA%E8%A1%8C%E4%B8%9A%E5%8C%85%E5%90%AB%E5%8C%96%E5%AD%A6%E5%88%B6%E5%93%81">化学制品</a> -</span><span class="fl"><a target="_blank" href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=1&amp;selfsectsn=&amp;querytype=&amp;searchfilter=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E5%90%8C%E8%8A%B1%E9%A1%BA%E8%A1%8C%E4%B8%9A%E5%8C%85%E5%90%AB%E6%B6%82%E6%96%99%E6%B2%B9%E6%BC%86%E6%B2%B9%E5%A2%A8%E5%88%B6%E9%80%A0">涂料油漆油墨制造</a>
+</span></div>
+</td>
+<td class="addList"></td>
+</tr>
+<tr class="odd_row">
+<td width="62" colnum="2" class="item">
+<div class="em alignRight alignRight">7.52</div>
+</td>
+<td width="73" colnum="3" class="item">
+<div class="em _x_ red alignRight alignRight">9.94</div>
+</td>
+<td width="112" colnum="4" class="item sortCol">
+<div class="em red">涨停</div>
+</td>
+<td width="293" colnum="5" class="item">
+<div class="em alignCenter split"><span class="fl"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E5%A3%B3%E8%B5%84%E6%BA%90">壳资源</a>
+</span></div>
+</td>
+<td width="122" colnum="6" class="item">
+<div class="em">10:34:15</div>
+</td>
+<td width="122" colnum="7" class="item">
+<div class="em">13:38:00</div>
+</td>
+<td width="122" colnum="8" class="item">
+<div class="em"><a class="btn_detail" href="javascript:void(0)">查看详情</a></div>
+</td>
+<td width="142" colnum="9" class="item">
+<div class="em alignRight">1</div>
+</td>
+<td width="90" colnum="10" class="item">
+<div class="em"><a target="_blank" href="/stockpick/search?preParams=&amp;ts=1&amp;f=1&amp;qs=stockpick_ztyy&amp;querytype=&amp;tid=stockpick&amp;w=000622%20%20%E6%B6%A8%E5%81%9C%E5%8E%9F%E5%9B%A0&amp;queryarea=all">强势股反抽</a></div>
+</td>
+<td width="130" colnum="11" class="item">
+<div class="em red alignRight alignRight">122.81万</div>
+</td>
+<td width="130" colnum="12" class="item">
+<div class="em red alignRight alignRight">923.53万</div>
+</td>
+<td width="129" colnum="13" class="item">
+<div class="em alignRight alignRight">2.07</div>
+</td>
+<td width="129" colnum="14" class="item">
+<div class="em alignRight alignRight">0.29</div>
+</td>
+<td width="142" colnum="15" class="item">
+<div class="em alignRight">3</div>
+</td>
+<td width="117" colnum="16" class="item">
+<div class="em alignRight alignRight"><a target="_blank" href="/stockpick/search?preParams=&amp;ts=1&amp;qs=zgxgrh_ltsz&amp;tid=stockpick&amp;w=000622+2019.04.10+%E6%B5%81%E9%80%9A%E5%B8%82%E5%80%BC">31.98亿</a></div>
+</td>
+<td width="110" colnum="17" class="item">
+<div class="em alignRight"><a target="_blank" href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=result_rewrite&amp;selfsectsn=&amp;querytype=&amp;searchfilter=&amp;tid=stockpick&amp;w=000622+%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5">1</a></div>
+</td>
+<td width="86" colnum="18" class="item">
+<div class="em alignRight"><a target="_blank" href="/stockpick/search?preParams=&amp;ts=1&amp;f=1&amp;qs=zgxgrh_ssts&amp;querytype=&amp;tid=stockpick&amp;w=000622+2019.04.10+上市天数">8,190</a></div>
+</td>
+<td width="216" colnum="19" class="item">
+<div class="em split"><span class="fl"><a target="_blank" href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=1&amp;selfsectsn=&amp;querytype=&amp;searchfilter=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E5%90%8C%E8%8A%B1%E9%A1%BA%E8%A1%8C%E4%B8%9A%E5%8C%85%E5%90%AB%E4%BA%A4%E8%BF%90%E8%AE%BE%E5%A4%87">交运设备</a> -</span><span class="fl"><a target="_blank" href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=1&amp;selfsectsn=&amp;querytype=&amp;searchfilter=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E5%90%8C%E8%8A%B1%E9%A1%BA%E8%A1%8C%E4%B8%9A%E5%8C%85%E5%90%AB%E6%B1%BD%E8%BD%A6%E9%9B%B6%E9%83%A8%E4%BB%B6">汽车零部件</a> -</span><span class="fl"><a target="_blank" href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=1&amp;selfsectsn=&amp;querytype=&amp;searchfilter=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E5%90%8C%E8%8A%B1%E9%A1%BA%E8%A1%8C%E4%B8%9A%E5%8C%85%E5%90%AB%E6%B1%BD%E8%BD%A6%E9%9B%B6%E9%83%A8%E4%BB%B6%E2%85%A2">汽车零部件Ⅲ</a>
+</span></div>
+</td>
+<td class="addList"></td>
+</tr>
+<tr class="even_row">
+<td width="62" colnum="2" class="item">
+<div class="em alignRight alignRight">57.12</div>
+</td>
+<td width="73" colnum="3" class="item">
+<div class="em _x_ red alignRight alignRight">9.99</div>
+</td>
+<td width="112" colnum="4" class="item sortCol">
+<div class="em red">涨停</div>
+</td>
+<td width="293" colnum="5" class="item">
+<div class="em alignCenter split"><a href="" class="ml5 moreSplit fr" num="3">更多</a><span class="fl"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E5%A4%AE%E8%A7%86%E8%B4%A2%E7%BB%8F50">央视财经50</a> ;</span><span class="fl"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E8%9E%8D%E8%B5%84%E8%9E%8D%E5%88%B8">融资融券</a> ;</span><span class="fl"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E5%A4%AA%E9%98%B3%E8%83%BD">太阳能</a> ;</span><span class="fl"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E6%B7%B1%E8%82%A1%E9%80%9A">深股通</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E8%BD%AC%E8%9E%8D%E5%88%B8%E6%A0%87%E7%9A%84">转融券标的</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%ABMSCI%E6%A6%82%E5%BF%B5">MSCI概念</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E6%9C%BA%E5%99%A8%E4%BA%BA%E6%A6%82%E5%BF%B5">机器人概念</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E5%B7%A5%E4%B8%9A%E4%BA%92%E8%81%94%E7%BD%91">工业互联网</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E7%99%BD%E9%A9%AC%E7%88%86%E9%9B%B7">白马爆雷</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E5%B9%BF%E4%B8%9C%E5%9B%BD%E8%B5%84%E6%94%B9%E9%9D%A9">广东国资改革</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E7%8F%A0%E6%B5%B7%E5%9B%BD%E8%B5%84%E6%94%B9%E9%9D%A9">珠海国资改革</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E5%9C%B0%E6%96%B9%E5%9B%BD%E8%B5%84%E6%94%B9%E9%9D%A9">地方国资改革</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E6%99%BA%E8%83%BD%E5%AE%B6%E5%B1%85">智能家居</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E5%A4%A7%E6%B6%88%E8%B4%B9">大消费</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E5%AE%B6%E7%94%A8%E7%94%B5%E5%99%A8">家用电器</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E5%AE%9D%E8%83%BD%E7%B3%BB">宝能系</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E8%B6%85%E7%BA%A7%E5%93%81%E7%89%8C">超级品牌</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E5%8E%9A%E6%9C%B4%E7%B3%BB">厚朴系</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E8%82%A1%E6%9D%83%E8%BD%AC%E8%AE%A9">股权转让</a>
+</span></div>
+</td>
+<td width="122" colnum="6" class="item">
+<div class="em">13:10:45</div>
+</td>
+<td width="122" colnum="7" class="item">
+<div class="em">14:49:30</div>
+</td>
+<td width="122" colnum="8" class="item">
+<div class="em"><a class="btn_detail" href="javascript:void(0)">查看详情</a></div>
+</td>
+<td width="142" colnum="9" class="item">
+<div class="em alignRight">2</div>
+</td>
+<td width="90" colnum="10" class="item">
+<div class="em"><a target="_blank" href="/stockpick/search?preParams=&amp;ts=1&amp;f=1&amp;qs=stockpick_ztyy&amp;querytype=&amp;tid=stockpick&amp;w=000651%20%20%E6%B6%A8%E5%81%9C%E5%8E%9F%E5%9B%A0&amp;queryarea=all">国企改革</a></div>
+</td>
+<td width="130" colnum="11" class="item">
+<div class="em red alignRight alignRight">66.25万</div>
+</td>
+<td width="130" colnum="12" class="item">
+<div class="em red alignRight alignRight">3,784.08万</div>
+</td>
+<td width="129" colnum="13" class="item">
+<div class="em alignRight alignRight">0.21</div>
+</td>
+<td width="129" colnum="14" class="item">
+<div class="em alignRight alignRight">0.01</div>
+</td>
+<td width="142" colnum="15" class="item">
+<div class="em alignRight">4</div>
+</td>
+<td width="117" colnum="16" class="item">
+<div class="em alignRight alignRight"><a target="_blank" href="/stockpick/search?preParams=&amp;ts=1&amp;qs=zgxgrh_ltsz&amp;tid=stockpick&amp;w=000651+2019.04.10+%E6%B5%81%E9%80%9A%E5%B8%82%E5%80%BC">3,409.96亿</a></div>
+</td>
+<td width="110" colnum="17" class="item">
+<div class="em alignRight"><a target="_blank" href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=result_rewrite&amp;selfsectsn=&amp;querytype=&amp;searchfilter=&amp;tid=stockpick&amp;w=000651+%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5">19</a></div>
+</td>
+<td width="86" colnum="18" class="item">
+<div class="em alignRight"><a target="_blank" href="/stockpick/search?preParams=&amp;ts=1&amp;f=1&amp;qs=zgxgrh_ssts&amp;querytype=&amp;tid=stockpick&amp;w=000651+2019.04.10+上市天数">8,179</a></div>
+</td>
+<td width="216" colnum="19" class="item">
+<div class="em split"><span class="fl"><a target="_blank" href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=1&amp;selfsectsn=&amp;querytype=&amp;searchfilter=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E5%90%8C%E8%8A%B1%E9%A1%BA%E8%A1%8C%E4%B8%9A%E5%8C%85%E5%90%AB%E5%AE%B6%E7%94%A8%E7%94%B5%E5%99%A8">家用电器</a> -</span><span class="fl"><a target="_blank" href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=1&amp;selfsectsn=&amp;querytype=&amp;searchfilter=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E5%90%8C%E8%8A%B1%E9%A1%BA%E8%A1%8C%E4%B8%9A%E5%8C%85%E5%90%AB%E7%99%BD%E8%89%B2%E5%AE%B6%E7%94%B5">白色家电</a> -</span><span class="fl"><a target="_blank" href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=1&amp;selfsectsn=&amp;querytype=&amp;searchfilter=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E5%90%8C%E8%8A%B1%E9%A1%BA%E8%A1%8C%E4%B8%9A%E5%8C%85%E5%90%AB%E7%A9%BA%E8%B0%83">空调</a>
+</span></div>
+</td>
+<td class="addList"></td>
+</tr>
+<tr class="odd_row">
+<td width="62" colnum="2" class="item">
+<div class="em alignRight alignRight">7.15</div>
+</td>
+<td width="73" colnum="3" class="item">
+<div class="em _x_ red alignRight alignRight">10.00</div>
+</td>
+<td width="112" colnum="4" class="item sortCol">
+<div class="em red">涨停</div>
+</td>
+<td width="293" colnum="5" class="item">
+<div class="em alignCenter split"><a href="" class="ml5 moreSplit fr" num="3">更多</a><span class="fl"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E7%BD%91%E7%BB%9C%E7%94%B5%E8%A7%86">网络电视</a> ;</span><span class="fl"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E4%BA%92%E8%81%94%E7%BD%91%E7%94%B5%E8%A7%86">互联网电视</a> ;</span><span class="fl"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E6%96%87%E5%8C%96%E4%BC%A0%E5%AA%92">文化传媒</a> ;</span><span class="fl"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E6%B7%B1%E8%82%A1%E9%80%9A">深股通</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E5%A4%A7%E6%95%B0%E6%8D%AE">大数据</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E9%9F%B3%E4%B9%90%E4%BA%A7%E4%B8%9A">音乐产业</a> ;</span><span class="fl hidden"><a target="_blank" href="/stockpick/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB%E5%BD%B1%E8%A7%86%E5%A8%B1%E4%B9%90">影视娱乐</a>
+</span></div>
+</td>
+<td width="122" colnum="6" class="item">
+<div class="em">11:13:15</div>
+</td>
+<td width="122" colnum="7" class="item">
+<div class="em">13:03:00</div>
+</td>
+<td width="122" colnum="8" class="item">
+<div class="em"><a class="btn_detail" href="javascript:void(0)">查看详情</a></div>
+</td>
+<td width="142" colnum="9" class="item">
+<div class="em alignRight">2</div>
+</td>
+<td width="90" colnum="10" class="item">
+<div class="em"><a target="_blank" href="/stockpick/search?preParams=&amp;ts=1&amp;f=1&amp;qs=stockpick_ztyy&amp;querytype=&amp;tid=stockpick&amp;w=000673%20%20%E6%B6%A8%E5%81%9C%E5%8E%9F%E5%9B%A0&amp;queryarea=all">超跌反弹</a></div>
+</td>
+<td width="130" colnum="11" class="item">
+<div class="em red alignRight alignRight">141.79万</div>
+</td>
+<td width="130" colnum="12" class="item">
+<div class="em red alignRight alignRight">1,013.80万</div>
+</td>
+<td width="129" colnum="13" class="item">
+<div class="em alignRight alignRight">1.35</div>
+</td>
+<td width="129" colnum="14" class="item">
+<div class="em alignRight alignRight">0.18</div>
+</td>
+<td width="142" colnum="15" class="item">
+<div class="em alignRight">6</div>
+</td>
+<td width="117" colnum="16" class="item">
+<div class="em alignRight alignRight"><a target="_blank" href="/stockpick/search?preParams=&amp;ts=1&amp;qs=zgxgrh_ltsz&amp;tid=stockpick&amp;w=000673+2019.04.10+%E6%B5%81%E9%80%9A%E5%B8%82%E5%80%BC">56.29亿</a></div>
+</td>
+<td width="110" colnum="17" class="item">
+<div class="em alignRight"><a target="_blank" href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=result_rewrite&amp;selfsectsn=&amp;querytype=&amp;searchfilter=&amp;tid=stockpick&amp;w=000673+%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5">7</a></div>
+</td>
+<td width="86" colnum="18" class="item">
+<div class="em alignRight"><a target="_blank" href="/stockpick/search?preParams=&amp;ts=1&amp;f=1&amp;qs=zgxgrh_ssts&amp;querytype=&amp;tid=stockpick&amp;w=000673+2019.04.10+上市天数">8,112</a></div>
+</td>
+<td width="216" colnum="19" class="item">
+<div class="em split"><span class="fl"><a target="_blank" href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=1&amp;selfsectsn=&amp;querytype=&amp;searchfilter=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E5%90%8C%E8%8A%B1%E9%A1%BA%E8%A1%8C%E4%B8%9A%E5%8C%85%E5%90%AB%E4%BF%A1%E6%81%AF%E6%9C%8D%E5%8A%A1">信息服务</a> -</span><span class="fl"><a target="_blank" href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=1&amp;selfsectsn=&amp;querytype=&amp;searchfilter=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E5%90%8C%E8%8A%B1%E9%A1%BA%E8%A1%8C%E4%B8%9A%E5%8C%85%E5%90%AB%E4%BC%A0%E5%AA%92">传媒</a> -</span><span class="fl"><a target="_blank" href="/stockpick/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=1&amp;selfsectsn=&amp;querytype=&amp;searchfilter=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E5%90%8C%E8%8A%B1%E9%A1%BA%E8%A1%8C%E4%B8%9A%E5%8C%85%E5%90%AB%E5%BD%B1%E8%A7%86%E5%8A%A8%E6%BC%AB">影视动漫</a>
+</span></div>
+</td>
+<td class="addList"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="static_con_outer" style="width:243px;">
+<div class="static_con">
+<div class="thead_table_wrap static_thead_table_wrap" style="width: 243px;">
+<ul class="clearfix static_table thead_table static_thead_table">
+<li style="width:56px;height:46px;line-height:36px" class="item thSort">
+<div class="est_order em">序号</div>
+</li>
+<li style="width:28px;height:46px;line-height:36px" class="item thCheckbox">
+<div style="padding:0 7px;"><input style="margin-top:15.5px" class="checkAll" type="checkbox" /></div>
+</li>
+<li style="width:66px;height:46px;line-height:36px" colnum="0" class="item sort" sortof="DESC">
+<div class="em">股票代码</div>
+<div style="top:16px" class="flag icon"></div>
+</li>
+<li style="width:90px;height:46px;line-height:36px" colnum="1" class="item sort" sortof="DESC">
+<div class="em">股票简称</div>
+<div style="top:16px" class="flag icon"></div>
+</li>
+</ul>
+</div>
+<table border="0" cellspacing="0" cellpadding="0" class="static_table tbody_table static_tbody_table">
+<tbody>
+<tr class="even_row">
+<td width="56">
+<div class="em">1</div>
+</td>
+<td class="tdCheckbox" width="28">
+<div style="padding:0 6px;"><input class="checkbox" type="checkbox" /></div>
+</td>
+<td width="66" colnum="0" class="item">
+<div class="em">000004</div>
+</td>
+<td width="90" colnum="1" class="item">
+<div class="em graph alignCenter graph"><a target="_blank" href="/stockpick/search?tid=stockpick&amp;qs=stockpick_diag&amp;ts=1&amp;w=000004">国农科技</a></div>
+</td>
+<td class="addList"></td>
+</tr>
+<tr class="odd_row">
+<td width="56">
+<div class="em">2</div>
+</td>
+<td class="tdCheckbox" width="28">
+<div style="padding:0 6px;"><input class="checkbox" type="checkbox" /></div>
+</td>
+<td width="66" colnum="0" class="item">
+<div class="em">000048</div>
+</td>
+<td width="90" colnum="1" class="item">
+<div class="em graph alignCenter graph"><a target="_blank" href="/stockpick/search?tid=stockpick&amp;qs=stockpick_diag&amp;ts=1&amp;w=000048">*ST康达</a></div>
+</td>
+<td class="addList"></td>
+</tr>
+<tr class="even_row">
+<td width="56">
+<div class="em">3</div>
+</td>
+<td class="tdCheckbox" width="28">
+<div style="padding:0 6px;"><input class="checkbox" type="checkbox" /></div>
+</td>
+<td width="66" colnum="0" class="item">
+<div class="em">000078</div>
+</td>
+<td width="90" colnum="1" class="item">
+<div class="em graph alignCenter graph"><a target="_blank" href="/stockpick/search?tid=stockpick&amp;qs=stockpick_diag&amp;ts=1&amp;w=000078">海王生物</a></div>
+</td>
+<td class="addList"></td>
+</tr>
+<tr class="odd_row">
+<td width="56">
+<div class="em">4</div>
+</td>
+<td class="tdCheckbox" width="28">
+<div style="padding:0 6px;"><input class="checkbox" type="checkbox" /></div>
+</td>
+<td width="66" colnum="0" class="item">
+<div class="em">000509</div>
+</td>
+<td width="90" colnum="1" class="item">
+<div class="em graph alignCenter graph"><a target="_blank" href="/stockpick/search?tid=stockpick&amp;qs=stockpick_diag&amp;ts=1&amp;w=000509">华塑控股</a></div>
+</td>
+<td class="addList"></td>
+</tr>
+<tr class="even_row">
+<td width="56">
+<div class="em">5</div>
+</td>
+<td class="tdCheckbox" width="28">
+<div style="padding:0 6px;"><input class="checkbox" type="checkbox" /></div>
+</td>
+<td width="66" colnum="0" class="item">
+<div class="em">000514</div>
+</td>
+<td width="90" colnum="1" class="item">
+<div class="em graph alignCenter graph"><a target="_blank" href="/stockpick/search?tid=stockpick&amp;qs=stockpick_diag&amp;ts=1&amp;w=000514">渝开发</a></div>
+</td>
+<td class="addList"></td>
+</tr>
+<tr class="odd_row">
+<td width="56">
+<div class="em">6</div>
+</td>
+<td class="tdCheckbox" width="28">
+<div style="padding:0 6px;"><input class="checkbox" type="checkbox" /></div>
+</td>
+<td width="66" colnum="0" class="item">
+<div class="em">000518</div>
+</td>
+<td width="90" colnum="1" class="item">
+<div class="em graph alignCenter graph"><a target="_blank" href="/stockpick/search?tid=stockpick&amp;qs=stockpick_diag&amp;ts=1&amp;w=000518">四环生物</a></div>
+</td>
+<td class="addList"></td>
+</tr>
+<tr class="even_row">
+<td width="56">
+<div class="em">7</div>
+</td>
+<td class="tdCheckbox" width="28">
+<div style="padding:0 6px;"><input class="checkbox" type="checkbox" /></div>
+</td>
+<td width="66" colnum="0" class="item">
+<div class="em">000565</div>
+</td>
+<td width="90" colnum="1" class="item">
+<div class="em graph alignCenter graph"><a target="_blank" href="/stockpick/search?tid=stockpick&amp;qs=stockpick_diag&amp;ts=1&amp;w=000565">渝三峡A</a></div>
+</td>
+<td class="addList"></td>
+</tr>
+<tr class="odd_row">
+<td width="56">
+<div class="em">8</div>
+</td>
+<td class="tdCheckbox" width="28">
+<div style="padding:0 6px;"><input class="checkbox" type="checkbox" /></div>
+</td>
+<td width="66" colnum="0" class="item">
+<div class="em">000622</div>
+</td>
+<td width="90" colnum="1" class="item">
+<div class="em graph alignCenter graph"><a target="_blank" href="/stockpick/search?tid=stockpick&amp;qs=stockpick_diag&amp;ts=1&amp;w=000622">恒立实业</a></div>
+</td>
+<td class="addList"></td>
+</tr>
+<tr class="even_row">
+<td width="56">
+<div class="em">9</div>
+</td>
+<td class="tdCheckbox" width="28">
+<div style="padding:0 6px;"><input class="checkbox" type="checkbox" /></div>
+</td>
+<td width="66" colnum="0" class="item">
+<div class="em">000651</div>
+</td>
+<td width="90" colnum="1" class="item">
+<div class="em graph alignCenter graph"><a target="_blank" href="/stockpick/search?tid=stockpick&amp;qs=stockpick_diag&amp;ts=1&amp;w=000651">格力电器</a></div>
+</td>
+<td class="addList"></td>
+</tr>
+<tr class="odd_row">
+<td width="56">
+<div class="em">10</div>
+</td>
+<td class="tdCheckbox" width="28">
+<div style="padding:0 6px;"><input class="checkbox" type="checkbox" /></div>
+</td>
+<td width="66" colnum="0" class="item">
+<div class="em">000673</div>
+</td>
+<td width="90" colnum="1" class="item">
+<div class="em graph alignCenter graph"><a target="_blank" href="/stockpick/search?tid=stockpick&amp;qs=stockpick_diag&amp;ts=1&amp;w=000673">当代东方</a></div>
+</td>
+<td class="addList"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div></div>
+
+                            </div>
+                            <div id="table_foot_bar" class="clearfix btn_layer table_foot_bar">
+                    <!--分页条-->
+                    <div id="pageBar" class="page_bar fl"><div id="ID63017701570421" class="pagination" back="undefined"><a onclick="mylog('ts|1、qs|flip、tid|stockpick','pick','')" class="previous disable disable_previous" href="javascript:;" id="previous">上页</a><a onclick="mylog('ts|1、qs|flip、tid|stockpick','pick','')" href="javascript:;" class="num current">1</a><a onclick="mylog('ts|1、qs|flip、tid|stockpick','pick','')" href="javascript:;" class="num ">2</a><a onclick="mylog('ts|1、qs|flip、tid|stockpick','pick','')" href="javascript:;" class="num ">3</a><a onclick="mylog('ts|1、qs|flip、tid|stockpick','pick','')" href="javascript:;" class="num ">4</a><a onclick="mylog('ts|1、qs|flip、tid|stockpick','pick','')" href="javascript:;" class="num ">5</a> ... <a onclick="mylog('ts|1、qs|flip、tid|stockpick','pick','')" href="javascript:;" class="num ">10</a><a onclick="mylog('ts|1、qs|flip、tid|stockpick','pick','')" class="next " href="javascript:;" id="next">下页</a><span class="total">共10页</span></div></div>
+                    <!-- 自定义显示 -->
+                    <div id="showPerpage" class="showPerpage fl">
+                        <select>
+                            <option value="10">显示10条/页</option>
+                            <option value="30">显示30条/页</option>
+                            <option value="50">显示50条/页</option>
+                            <option value="70">显示70条/页</option>
+                        </select>
+                    </div>
+                </div>
+            
+                        
+                        
+
+            <div id="footWrap" class="foot_tool_con clearfix">
+                <div id="selfstock_noresult" class="selfstock_noresult_info f14 hidden" style="display: none;">
+                    <div>建议您：</div>
+                    <div>1. 查查您的自选股是否有数据</div>
+                    <div>2. 试试换成<a class="aBlue" href="javascript:;" onclick="$('#auto').val(&quot;\u6da8\u505c,\u6982\u5ff5&quot;);$('#queryarea_selfstock').click();$('.snform').submit();">全部股票</a></div>
+                </div>
+            </div>
+        </div>
+
+                
+                
+                <div id="xuanguAppendBlock" class="apppendBlock">
+        </div>
+            </div>
+    <div id="global_share" style="display:none;"></div>
+</div>
+
+<!--<div class="kLine_wrap">
+    <ul class="kLine_tab_wrap">
+        <li class="kLine_tab kLine_first_tab">
+            <a href="javascript:void(0);">分时图</a>
+        </li>
+        <li class="kLine_tab kLine_tab_current">
+            <a href="javascript:void(0);">日K线</a>
+        </li>
+        <li class="kLine_tab">
+            <a href="javascript:void(0);">前复权<span class="canvas-list-arrow">arrow</span></a>
+            <div class="kLine_hover">
+                <a data-type="1" href="javascript:;">前复权</a>
+                <a data-type="2" href="javascript:;">后复权</a>
+                <a data-type="0" href="javascript:;">不复权</a>
+            </div>
+        </li>
+    </ul>
+    <div class="kLine_cont_wrap">
+        <div id="timeSplitChar" class="kLine_canvas current_canvas"></div>
+        <div id="bfqKLineChar" class="kLine_canvas"></div>
+        <div id="afqKLineChar" class="kLine_canvas"></div>
+        <div id="nfqKLineChar" class="kLine_canvas"></div>
+    </div>
+</div>-->
+
+<script language="javascript">
+	
+	var sp = window.sp || {};
+	sp.page = sp.page || {};
+	sp.page.type = 'result';
+	
+
+	/*est结果标识*/
+	var estStr = 'null';
+
+	
+	if(estStr.length&gt;0){
+		var estObj = eval('('+estStr+')');
+	}else{
+		var estObj = false;
+	}
+	
+	/*将问句解析中自然句对应结果数量信息保存到JS中*/
+	sp.natlNumInfo = {"ck0":"100","ck1":"3693"};
+
+	var tagInfo = null;
+	/*过滤方式 默认为不过滤-全部*/
+	var filterArr = [];
+	var allFlag = false;
+	var xdialog = null;
+
+	// 智能选股
+	var global_zhinengXgFlag = false;
+
+    var asyncFlag = true;
+
+	var enterFlag = true;
+	//此信号为出发问一下财按钮的来源，true为通过从机器人内输入触发，false为其他触发情况
+	var submitTypeFlag = false;
+	// 顶部数据提取按钮点击后的空问句页才可能有效的用户提取配置，本质上就是用户最后一次成功的配置
+	</script>
+<div class="zb_loading_popup" id="zb_loading_popup">
+	<div class="info">正在为您加载</div>
+	<div class="zs_trangle_s"><div class="trangle_inner"></div></div>
+</div>
+
+<div class="zb_nosource_popup" id="zb_nosource_popup">
+	<div class="info">暂无数据来源</div>
+	<div class="zs_trangle_s"><div class="trangle_inner"></div></div>
+</div>
+<div id="zbss_con" class="zbss_con"></div>
+<div id="zbss_trangle" class="zbss_trangle trangle_left">
+	<div class="trangle_inner"></div>
+</div>
+
+<div id="gpxggn_con" class="gpxggn_con"></div>
+<div id="gpxggn_trangle" class="zbss_trangle trangle_left">
+	<div class="trangle_inner"></div>
+</div>
+<div id="lhb_con" class="lhb_con lhb_con_scroll">
+	<ul class="main_head">
+		<li class="sbrq">上榜日期</li>
+		<li class="spj">收盘价</li>
+		<li class="zdf">涨跌幅(%)</li>
+		<li class="hsl">换手率(%)</li>
+		<li class="cje">成交额(万元)</li>
+		<li class="sbyy">上榜原因</li>
+		<li class="yybmx">营业部明细</li>
+	</ul>
+	<div class="main_con">
+		<table border="0" cellspacing="0" cellpadding="0" class="main_table">
+
+		</table>
+	</div>
+	<div class="more_link_box"></div>
+</div>
+
+<div id="tag_filter_pop_con" class="tag_filter_pop_con"></div>
+<div id="tag_filter_pop_trangle" class="tag_filter_pop_trangle">
+	<div class="trangle_inner"></div>
+</div>
+
+
+                        </div>
+                </div>
+                <div class="adaptive_right">
+                        <div class="inner_right_con" id="sp_inner_right">
+	<div class="inner_detail_con" id="inner_detail_con">
+		<a class="right_control_btn opened_right_control_btn" id="right_control_btn" href="####" title="收起" hidefocus="true"></a>
+																
+
+
+
+
+
+						
+						<div class="r_list_box hidden" id="zhuantiQuesBox">
+<div class="r_list_top opened_list_top clearfix"><span class="name"></span></div>
+<div class="r_list_main">
+<ul class="r_d_rem r_list" id="zhuantiQues"></ul>
+</div>
+</div>
+									
+										<div class="r_list_box related_query_list_box hidden" id="relQuesBox" style="display: block;">
+<div class="r_list_top opened_list_top clearfix"><span class="name">推荐问句</span></div>
+<div class="r_list_main"><ul class="r_list r_d_rem" id="" once="yes">
+<li class="bg_off">
+<div class="clearfix"><i class="icon first"></i><a class="r_d_query" href="/stockpick/search?tid=stockpick&amp;hc_link=1&amp;w=%E5%B9%BF%E4%B8%9C%E6%A6%82%E5%BF%B5%EF%BC%8C%E6%B5%81%E9%80%9A%E5%B8%82%E5%80%BC%E5%B0%8F%E4%BA%8E30%E4%BA%BF%EF%BC%8C&amp;qs=stockpick_rq_backest&amp;querytype=&amp;qsc=ALGMOD2" title="广东概念，流通市值小于30亿，" target="_blank"><span></span>广东概念，流通市值小于30亿，</a></div>
+<p class="r_d_p"><span class="r_d_span">成功率：<em>53.85%</em></span><span class="r_d_span">年化收益：<em>62.57%</em></span></p>
+<a class="r_d_detail" href="/traceback/strategy?query=%E5%B9%BF%E4%B8%9C%E6%A6%82%E5%BF%B5%EF%BC%8C%E6%B5%81%E9%80%9A%E5%B8%82%E5%80%BC%E5%B0%8F%E4%BA%8E30%E4%BA%BF%EF%BC%8C&amp;daysForSaleStrategy=3&amp;startDate=20160102&amp;endDate=20170101&amp;stockHoldCount=3&amp;fallIncome=10&amp;upperIncome=20&amp;lowerIncome=10&amp;fell=0.001" target="_blank">查看回测详情</a>
+</li>
+<li class="bg_off"><i class="icon"></i><a class="r_d_query" href="/stockpick/search?tid=stockpick&amp;w=%E5%8F%82%E8%82%A1%E9%87%91%E8%9E%8D%E6%A6%82%E5%BF%B5%E8%82%A1+%E4%BB%B7%E6%A0%BC%E4%BD%8E%E4%BA%8E10+%E6%9C%AA%E6%B6%A8%E5%81%9C&amp;qs=stockpick_rq&amp;rq_uid=e1232a845e2e0822&amp;querytype=&amp;qsc=ALGMOD2" title="参股金融概念股 价格低于10 未涨停" target="_blank"><span>【参股金融】</span>参股金融概念股 价格低于10 未涨停</a></li>
+<li class="bg_off"><i class="icon"></i><a class="r_d_query" href="/stockpick/search?tid=stockpick&amp;w=%E6%96%B0%E6%9D%90%E6%96%99%E6%A6%82%E5%BF%B5+2015-03-03+%E6%B6%A8%E5%81%9C&amp;qs=stockpick_rq&amp;rq_uid=7282e91403fec955&amp;querytype=&amp;qsc=ALGMOD2" title="新材料概念 2015-03-03 涨停" target="_blank"><span>【消息面】</span>新材料概念 2015-03-03 涨停</a></li>
+<li class="bg_off"><i class="icon"></i><a class="r_d_query" href="/stockpick/search?tid=stockpick&amp;w=10%E5%A4%A9%E6%88%90%E4%BA%A4%E9%87%8F%E5%88%9B%E6%96%B0%E4%BD%8E%3B120%E5%A4%A9%E5%86%85%E6%9C%89%E6%B6%A8%E5%81%9C%3B%E6%A6%82%E5%BF%B5&amp;qs=stockpick_rq&amp;rq_uid=519fabdfb25377c2&amp;querytype=&amp;qsc=ALGMOD2" title="10天成交量创新低;120天内有涨停;概念" target="_blank"><span>【消息面】</span>10天成交量创新低;120天内有涨停;概念</a></li>
+<li class="bg_off"><i class="icon"></i><a class="r_d_query" href="/stockpick/search?tid=stockpick&amp;w=kdj%E9%87%91%E5%8F%89%2C%E6%B6%A8%E5%81%9C%2C%E5%B8%82%E5%80%BC%2C%E6%A6%82%E5%BF%B5&amp;qs=stockpick_rq&amp;rq_uid=89677f30e942e94e&amp;querytype=&amp;qsc=ALGMOD2" title="kdj金叉,涨停,市值,概念" target="_blank"><span>【消息面】</span>kdj金叉,涨停,市值,概念</a></li>
+<li class="bg_off"><i class="icon"></i><a class="r_d_query" href="/stockpick/search?tid=stockpick&amp;w=10%E5%A4%A9%E5%86%85%E5%88%9B120%E4%B8%AA%E4%BA%A4%E6%98%93%E6%97%A5%E4%BB%A5%E6%9D%A5%E6%96%B0%E9%AB%98%3B%E6%A6%82%E5%BF%B5%E8%82%A1%3B8%E5%A4%A9%E5%86%85%E6%B6%A8%E5%81%9C%E5%B0%8F%E4%BA%8E3%E6%AC%A1&amp;qs=stockpick_rq&amp;rq_uid=25cb7e54a1e91485&amp;querytype=&amp;qsc=ALGMOD2" title="10天内创120个交易日以来新高;概念股;8天内涨停小于3次" target="_blank"><span>【消息面】</span>10天内创120个交易日以来新高;概念股;8天内涨停小于3次</a></li>
+</ul></div>
+</div>			
+									</div>
+</div>                                                <div class="clearfix nav_right_con hidden">
+                                <ul class="nav_right_ul"></ul>
+                                <div class="line"><div class="pionter_top"></div></div>
+                        </div>
+                </div>
+        </div>
+
+        <div id="stockpick_shadow" class="hidden"></div>
+        <iframe id="stockpick_shadow_iframe" frameborder="0" scrolling="no"></iframe>
+</div>
+        <div id="footbarCon" class="foot_con nu adaptive_foot">
+	    	<div class="foot_left fl">
+		<div class="fl logo_box"><a href="/stockpick" class="logo"></a></div>		<div class="fl word_box"><a href="javascript:void(0);" id="foot_HomeBtn" endstr="/stockpick/" class="">设问财为首页</a></div>
+	</div>
+	<div class="foot_right fr">© 2019 浙江核新同花顺 浙ICP备09003598号</div>
+	<div class="clear"></div>
+    </div>
+<div style="display:none" id="ajax_info_con"></div>
+
+<div id="all_favorit_box" class="all_favorit_box hidden">
+        <div class="total_con">最近收藏问句(<em id="all_favorit_num"></em>)</div>
+        <ul id="all_favorit_list" class="all_favorit_list nn aDBlue"></ul>
+        <div class="f_page_box page_bar" id="f_page_box"></div>
+</div>
+
+                                                
+<input type="hidden" value="1" id="new_stockInfo_con_btnFlag" />
+<input type="hidden" value="stock" id="new_stockInfo_con_tagMap" />
+<input type="hidden" value="id=&quot;new_stockInfo_con_hqType&quot;" />        
+
+
+<img id="iwencai_datav_hxc3.load" height="0" width="0" style="display:none" src="http://stat.10jqka.com.cn/q?id=iwencai_datav_hxc3.load&amp;ld=browser&amp;size=1920x1080&amp;fid=iwencai_datav&amp;version=1.2.0&amp;ref=http%3A%2F%2Fwww.iwencai.com%2Fstockpick%2Fsearch%3Ftyped%3D1%26preParams%3D%26ts%3D1%26f%3D1%26qs%3Dindex_rewrite%26selfsectsn%3D%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%26querytype%3Dstock%26searchfilter%3D%26tid%3Dstockpick%26w%3D%25E6%25B6%25A8%25E5%2581%259C%252C%25E6%25A6%2582%25E5%25BF%25B5&amp;url=http%3A%2F%2Fwww.iwencai.com%2Fstockpick%2Fsearch%3Ftyped%3D1%26preParams%3D%26ts%3D1%26f%3D1%26qs%3Dindex_rewrite%26selfsectsn%3D%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%26querytype%3Dstock%26searchfilter%3D%26tid%3Dstockpick%26w%3D%25E6%25B6%25A8%25E5%2581%259C%252C%25E6%25A6%2582%25E5%25BF%25B5&amp;cs=1000x872&amp;ts=1554943917015" /><script language="javascript">
+
+var sp = window.sp || {};
+
+sp.selfStockCodes = null;
+
+
+var globalInfo = {};
+
+
+/*找茬的建议选项数据读取 取消找茬 modify by wuxiabing at 2014-03-24*/
+//sp.suggestOptions = ;
+var global_tagMap = "stock";
+var global_shunt = "";
+var global_signal = "search";
+var global_center = "result_main";
+
+var global_qid = "185035ce4e261b58f05fc9762e282e30";
+//这个的global_query把json——encode去掉了，原因是空问句的情况会导致这个变量错误不为"",后续可以将其他地方的global_query也改掉
+var global_query = "\u6da8\u505c,\u6982\u5ff5";
+var global_controller_name = "stockpick";
+var global_source = "";
+var global_svnVersion = "42278";
+var global_bottomFeedbackStatus = '0';	//是否需要展开底部意见反馈条
+var global_replyTipFlag = "";
+//连续三天访问当前问句信号
+var global_favGuideSta = "";
+
+
+var global_dp_obj = {};
+
+global_dp_obj.questionType = '';
+global_dp_obj.questionTopic = '';
+
+var pickComplementApi = "http://search.10jqka.com.cn/solr/queans/queryhint";
+//var qinfo = eval('('+document.getElementById("parse_info_con").innerHTML+')');
+var qinfo = {"original":[{"opName":"and","opProperty":"","sonSize":2,"chunkedResult":"\u6da8\u505c,_&amp;_\u6982\u5ff5","relatedSize":0},{"indexName":"\u6da8\u505c","indexProperties":["nodate 1","\u4ea4\u6613\u65e5\u671f 20190410"],"indexPropertiesMap":{"\u4ea4\u6613\u65e5\u671f":"20190410","nodate":"1"},"type":"index","sonSize":0,"reportType":"TRADE_DAILY","valueType":"_\u662f\u5426","domain":"abs_\u80a1\u7968\u9886\u57df","source":"new_parser","dateType":"\u4ea4\u6613\u65e5\u671f","tag":"\u6da8\u505c","uiText":"\u6da8\u505c","queryText":"\u6da8\u505c","relatedSize":0},{"indexName":"\u6240\u5c5e\u6982\u5ff5","indexProperties":[],"indexPropertiesMap":[],"type":"index","sonSize":0,"reportType":"null","valueType":"_\u6240\u5c5e\u6982\u5ff5","domain":"abs_\u80a1\u7968\u9886\u57df","source":"new_parser","tag":"\u6240\u5c5e\u6982\u5ff5","uiText":"\u6240\u5c5e\u6982\u5ff5","queryText":"\u6240\u5c5e\u6982\u5ff5","relatedSize":0}],"parseStat":"SUCCESS","queryType":"stock","natConds":[{"natSent":"\u6da8\u505c ","key":"ck0","needShow":true,"parseStat":"SUCCESS","status":0},{"natSent":"\u6240\u5c5e\u6982\u5ff5 ","key":"ck1","needShow":true,"parseStat":"SUCCESS","status":0}],"originQuery":"\u6da8\u505c,\u6982\u5ff5","action":"search","natural":{"ck0":"100","ck1":"3693"}} || {};
+var popupInterview = false;
+var outputInterview = false;
+var interviewPopup;
+var username = '';
+/*自选股、板块股信息定义*/
+sp.queryarea = "all";
+sp.selfsectsn = "";
+var innerRightAreaVisible = {"hisQuesBox":null,"favQuesBox":null};
+
+/*将问句搜索返回的json数据传入到JS中*/
+var allResult = {"queryType":"stock","total":100,"indexID":["_stk-code_","_stk-name_","\u6700\u65b0\u4ef7","\u6700\u65b0\u6da8\u8dcc\u5e45","\u6da8\u505c","\u6240\u5c5e\u6982\u5ff5","\u9996\u6b21\u6da8\u505c\u65f6\u95f4","\u6700\u7ec8\u6da8\u505c\u65f6\u95f4","\u6da8\u505c\u660e\u7ec6\u6570\u636e","\u8fde\u7eed\u6da8\u505c\u5929\u6570","\u6da8\u505c\u539f\u56e0\u7c7b\u522b","\u6da8\u505c\u5c01\u5355\u91cf","\u6da8\u505c\u5c01\u5355\u989d","\u6da8\u505c\u5c01\u5355\u91cf\u5360\u6210\u4ea4\u91cf\u6bd4","\u6da8\u505c\u5c01\u5355\u91cf\u5360\u6d41\u901aa\u80a1\u6bd4","\u6da8\u505c\u5f00\u677f\u6b21\u6570","a\u80a1\u5e02\u503c(\u4e0d\u542b\u9650\u552e\u80a1)","\u6240\u5c5e\u6982\u5ff5\u6570\u91cf","\u4e0a\u5e02\u5929\u6570","\u6240\u5c5e\u540c\u82b1\u987a\u884c\u4e1a"],"title":["\u80a1\u7968\u4ee3\u7801","\u80a1\u7968\u7b80\u79f0","\u73b0\u4ef7(\u5143)","\u6da8\u8dcc\u5e45(%)","\u6da8\u505c&lt;br&gt;2019.04.10","\u6240\u5c5e\u6982\u5ff5","\u9996\u6b21\u6da8\u505c\u65f6\u95f4&lt;br&gt;2019.04.10","\u6700\u7ec8\u6da8\u505c\u65f6\u95f4&lt;br&gt;2019.04.10","\u6da8\u505c\u660e\u7ec6\u6570\u636e&lt;br&gt;2019.04.10","\u8fde\u7eed\u6da8\u505c\u5929\u6570(\u5929)&lt;br&gt;2019.04.10","\u6da8\u505c\u539f\u56e0\u7c7b\u522b&lt;br&gt;2019.04.10","\u6da8\u505c\u5c01\u5355\u91cf(\u80a1)&lt;br&gt;2019.04.10","\u6da8\u505c\u5c01\u5355\u989d(\u5143)&lt;br&gt;2019.04.10","\u6da8\u505c\u5c01\u6210\u6bd4(%)&lt;br&gt;2019.04.10","\u6da8\u505c\u5c01\u6d41\u6bd4(%)&lt;br&gt;2019.04.10","\u6da8\u505c\u5f00\u677f\u6b21\u6570(\u6b21)&lt;br&gt;2019.04.10","a\u80a1\u6d41\u901a\u5e02\u503c\r(\u5143)&lt;br&gt;2019.04.10","\u6240\u5c5e\u6982\u5ff5\u6570\u91cf(\u4e2a)","\u4e0a\u5e02\u5929\u6570(\u5929)&lt;br&gt;2019.04.10","\u6240\u5c5e\u540c\u82b1\u987a\u884c\u4e1a"],"sortSign":{"sortCol":4,"sortType":"DESC","sortQuery":false,"sortFrom":"Original","colNum":4},"indexGroup":{"fixed_index":{"_stk-code_":"fixed_index","_stk-name_":"fixed_index"},"new_parser":{"\u6da8\u505c":"new_parser","\u6240\u5c5e\u6982\u5ff5":"new_parser"},"mx_add":[],"ext_add":[],"study_add":{"\u4e0a\u5e02\u5929\u6570":0,"\u6240\u5c5e\u540c\u82b1\u987a\u884c\u4e1a":0},"opt_add":{"\u9996\u6b21\u6da8\u505c\u65f6\u95f4":0,"\u6700\u7ec8\u6da8\u505c\u65f6\u95f4":1,"\u6da8\u505c\u660e\u7ec6\u6570\u636e":2,"\u8fde\u7eed\u6da8\u505c\u5929\u6570":3,"\u6da8\u505c\u539f\u56e0\u7c7b\u522b":4,"\u6da8\u505c\u5c01\u5355\u91cf":5,"\u6da8\u505c\u5c01\u5355\u989d":6,"\u6da8\u505c\u5c01\u5355\u91cf\u5360\u6210\u4ea4\u91cf\u6bd4":7,"\u6da8\u505c\u5c01\u5355\u91cf\u5360\u6d41\u901aa\u80a1\u6bd4":8,"\u6da8\u505c\u5f00\u677f\u6b21\u6570":9,"a\u80a1\u5e02\u503c(\u4e0d\u542b\u9650\u552e\u80a1)":10,"\u6240\u5c5e\u6982\u5ff5\u6570\u91cf":0},"user_add":[],"yy_add":{"\u6700\u65b0\u4ef7":"yy_add","\u6700\u65b0\u6da8\u8dcc\u5e45":"yy_add"}},"columnTotal":20,"extra":[],"isLargeNum":false,"chunksInfo":["\u6da8\u505c (100)","\u6240\u5c5e\u6982\u5ff5 (3693)"],"studyIndexArr":["\u4e0a\u5e02\u5929\u6570","\u6240\u5c5e\u540c\u82b1\u987a\u884c\u4e1a"],"filterInfo":{"0":{"filterKeys":"\u6da8\u505c\u5f00\u677f\u6b21\u6570[20190410]","filterOper":"&gt;","filterValue":"-1","columnNum":false},"6":{"columnNum":6,"index_name":"\u9996\u6b21\u6da8\u505c\u65f6\u95f4","filterValue":["0,1,2,3,4,5,6,7,8,9"],"filterKeys":"\u9996\u6b21\u6da8\u505c\u65f6\u95f4"},"7":{"columnNum":7,"index_name":"\u6700\u7ec8\u6da8\u505c\u65f6\u95f4","filterValue":["0,1,2,3,4,5,6,7,8,9"],"filterKeys":"\u6700\u7ec8\u6da8\u505c\u65f6\u95f4"}},"code_count":100,"oriToNew":{"0":0,"1":1,"2":2,"3":3,"4":4,"5":5,"7":6,"8":7,"9":8,"10":9,"11":10,"12":11,"13":12,"14":13,"15":14,"16":15,"17":16,"19":17,"6":18,"18":19},"availableQuery":null,"new_detail_info":[{"update":"0 6,16 1,2,3,8,21 * * *","nextupdate":"20190411 21:06:00","isValidData":true,"queryTime":0},{"update":"0 6,16 1,2,3,8,21 * * *","nextupdate":"20190411 21:06:00","isValidData":true,"queryTime":0},{"update":"0\/5 * 9-11 * * 1-5||0\/5 * 13-15 * * 1-5||0 10 15,17,22 * * *","nextupdate":"20190411 09:00:00","isValidData":true,"queryTime":0},{"update":"0\/5 * 9-11 * * 1-5||0\/5 * 13-15 * * 1-5||0 10 15,17,22 * * *","nextupdate":"20190411 09:00:00","isValidData":true,"queryTime":0},{"update":"0 30 18 * * *||0 30 8 * * *||0 15,18 9 * * 1-5","tag":"\u6da8\u505c","nextupdate":"20190411 09:15:00","isValidData":true,"Highlight":"Binary","queryTime":4,"size":100},{"update":"0 0 23 * * *||0 *\/15 9-21 * * *","tag":"\u6240\u5c5e\u6982\u5ff5","nextupdate":"20190411 09:00:00","isValidData":true,"queryTime":1,"size":3693},{"update":"0 25 1,5,9 * * *||0 30 3,8,9,15,16,22 * * *","nextupdate":"20190411 09:25:00","isValidData":true,"queryTime":22},{"update":"0 20 16 * * *||0 20 21 * * *||0 30,33 9 * * 1-5","nextupdate":"20190411 09:30:00","isValidData":true,"queryTime":3},{"update":"0 20 16 * * *||0 20 21 * * *||0 30,33 9 * * 1-5","nextupdate":"20190411 09:30:00","isValidData":true,"queryTime":3},{"update":"0 20 16 * * *||0 20 21 * * *||0 30,33 9 * * 1-5","nextupdate":"20190411 09:30:00","isValidData":true,"queryTime":6},{"isValidData":true,"queryTime":71},{"update":"0\/30 * 9-11 * * 1-5||0\/30 * 13-14 * * 1-5||0 20 16 * * *||0 20 21 * * *","nextupdate":"20190411 09:00:00","isValidData":true,"queryTime":4},{"update":"0 20 16 * * *||0 20 21 * * *||0 25,28,35 9 * * 1-5","nextupdate":"20190411 09:25:00","isValidData":true,"Highlight":"Binary","queryTime":7},{"update":"0 20 16 * * *||0 20 21 * * *||0 25,28,35 9 * * 1-5","nextupdate":"20190411 09:25:00","isValidData":true,"Highlight":"Binary","queryTime":3},{"update":"0 25,28,35 9 * * 1-5||0 20 16 * * *||0 20 21 * * *||0 0\/30 * * * 1-5||0 15,18 9 * * 1-5","nextupdate":"20190411 09:00:00","isValidData":true,"queryTime":-1},{"update":"0 25,28,35 9 * * 1-5||0 20 16 * * *||0 20 21 * * *||0 14,24 0,2,7,9,15,21 * * *||0 30,33,36 9 * * 1-5","nextupdate":"20190411 09:14:00","isValidData":true,"queryTime":-1},{"update":"0 20 16 * * *||0 20 21 * * *||0 30,33 9 * * 1-5","nextupdate":"20190411 09:30:00","isValidData":true,"queryTime":5},{"update":"0 31,41 * * * *||0 30,33,36 9 * * 1-5","nextupdate":"20190411 09:30:00","isValidData":true,"queryTime":24},{"update":"0 10 15,17,22 * * *","nextupdate":"20190411 15:10:00","isValidData":true,"queryTime":5},{"update":"0 0 23 * * *||0 *\/15 9-21 * * *","nextupdate":"20190411 09:00:00","isValidData":true,"queryTime":23}],"extSort":[],"isExtSort":false,"userAddShowType":[],"extractShowType":[],"columnsIndexID":[{"unit":"","index_name":"\u80a1\u7968\u4ee3\u7801","source":"fixed_index","domain":"abs_\u80a1\u7968\u9886\u57df","type":"STR","key":"\u80a1\u7968\u4ee3\u7801","realIndexName":"\u80a1\u7968\u4ee3\u7801"},{"unit":"","index_name":"\u80a1\u7968\u7b80\u79f0","source":"fixed_index","domain":"abs_\u80a1\u7968\u9886\u57df","type":"STR","key":"\u80a1\u7968\u7b80\u79f0","realIndexName":"\u80a1\u7968\u7b80\u79f0"},{"timestamp":"","unit":"\u5143","index_name":"\u6700\u65b0\u4ef7","source":"fixed_index","indexId":null,"subtype":null,"domain":"abs_\u80a1\u7968\u9886\u57df","type":"DOUBLE","key":"\u6700\u65b0\u4ef7","realIndexName":"\u6700\u65b0\u4ef7"},{"timestamp":"","unit":"%","index_name":"\u6700\u65b0\u6da8\u8dcc\u5e45","source":"fixed_index","indexId":null,"subtype":null,"domain":"abs_\u80a1\u7968\u9886\u57df","type":"DOUBLE","key":"\u6700\u65b0\u6da8\u8dcc\u5e45","realIndexName":"\u6700\u65b0\u6da8\u8dcc\u5e45"},{"timestamp":"20190410","unit":"","index_name":"\u6da8\u505c","source":"new_parser","indexId":null,"subtype":null,"domain":"abs_\u80a1\u7968\u9886\u57df","type":"STR","key":"\u6da8\u505c[20190410]","realIndexName":"\u6da8\u505c"},{"timestamp":"","unit":"","index_name":"\u6240\u5c5e\u6982\u5ff5","source":"new_parser","indexId":null,"subtype":"split","domain":"abs_\u80a1\u7968\u9886\u57df","type":"STR","key":"\u6240\u5c5e\u6982\u5ff5","realIndexName":"\u6240\u5c5e\u6982\u5ff5"},{"timestamp":"20190410","unit":"","index_name":"\u9996\u6b21\u6da8\u505c\u65f6\u95f4","source":"add_condition","indexId":null,"subtype":"timestamp","domain":"abs_\u80a1\u7968\u9886\u57df","type":"STR","key":"\u9996\u6b21\u6da8\u505c\u65f6\u95f4[20190410]","realIndexName":"\u9996\u6b21\u6da8\u505c\u65f6\u95f4"},{"timestamp":"20190410","unit":"","index_name":"\u6700\u7ec8\u6da8\u505c\u65f6\u95f4","source":"add_condition","indexId":null,"subtype":"timestamp","domain":"abs_\u80a1\u7968\u9886\u57df","type":"STR","key":"\u6700\u7ec8\u6da8\u505c\u65f6\u95f4[20190410]","realIndexName":"\u6700\u7ec8\u6da8\u505c\u65f6\u95f4"},{"timestamp":"20190410","unit":"","index_name":"\u6da8\u505c\u660e\u7ec6\u6570\u636e","source":"add_condition","indexId":null,"subtype":"JSON","domain":"abs_\u80a1\u7968\u9886\u57df","type":"STR","key":"\u6da8\u505c\u660e\u7ec6\u6570\u636e[20190410]","realIndexName":"\u6da8\u505c\u660e\u7ec6\u6570\u636e"},{"timestamp":"20190410","unit":"\u5929","index_name":"\u8fde\u7eed\u6da8\u505c\u5929\u6570","source":"add_condition","indexId":null,"subtype":null,"domain":"abs_\u80a1\u7968\u9886\u57df","type":"LONG","key":"\u8fde\u7eed\u6da8\u505c\u5929\u6570[20190410]","realIndexName":"\u8fde\u7eed\u6da8\u505c\u5929\u6570"},{"timestamp":"20190410","unit":"","index_name":"\u6da8\u505c\u539f\u56e0\u7c7b\u522b","source":"add_condition","indexId":null,"subtype":null,"domain":"abs_\u80a1\u7968\u9886\u57df","type":"STR","key":"\u6da8\u505c\u539f\u56e0\u7c7b\u522b[20190410]","realIndexName":"\u6da8\u505c\u539f\u56e0\u7c7b\u522b"},{"timestamp":"20190410","unit":"\u80a1","index_name":"\u6da8\u505c\u5c01\u5355\u91cf","source":"add_condition","indexId":null,"subtype":null,"domain":"abs_\u80a1\u7968\u9886\u57df","type":"DOUBLE","key":"\u6da8\u505c\u5c01\u5355\u91cf[20190410]","realIndexName":"\u6da8\u505c\u5c01\u5355\u91cf"},{"timestamp":"20190410","unit":"\u5143","index_name":"\u6da8\u505c\u5c01\u5355\u989d","source":"add_condition","indexId":null,"subtype":null,"domain":"abs_\u80a1\u7968\u9886\u57df","type":"DOUBLE","key":"\u6da8\u505c\u5c01\u5355\u989d[20190410]","realIndexName":"\u6da8\u505c\u5c01\u5355\u989d"},{"timestamp":"20190410","unit":"%","index_name":"\u6da8\u505c\u5c01\u5355\u91cf\u5360\u6210\u4ea4\u91cf\u6bd4","source":"add_condition","indexId":null,"subtype":null,"domain":"abs_\u80a1\u7968\u9886\u57df","type":"DOUBLE","key":"\u6da8\u505c\u5c01\u5355\u91cf\u5360\u6210\u4ea4\u91cf\u6bd4[20190410]","realIndexName":"\u6da8\u505c\u5c01\u5355\u91cf\u5360\u6210\u4ea4\u91cf\u6bd4"},{"timestamp":"20190410","unit":"%","index_name":"\u6da8\u505c\u5c01\u5355\u91cf\u5360\u6d41\u901aa\u80a1\u6bd4","source":"add_condition","indexId":null,"subtype":null,"domain":"abs_\u80a1\u7968\u9886\u57df","type":"DOUBLE","key":"\u6da8\u505c\u5c01\u5355\u91cf\u5360\u6d41\u901aa\u80a1\u6bd4[20190410]","realIndexName":"\u6da8\u505c\u5c01\u5355\u91cf\u5360\u6d41\u901aa\u80a1\u6bd4"},{"timestamp":"20190410","unit":"\u6b21","index_name":"\u6da8\u505c\u5f00\u677f\u6b21\u6570","source":"add_condition","indexId":null,"subtype":null,"domain":"abs_\u80a1\u7968\u9886\u57df","type":"LONG","key":"\u6da8\u505c\u5f00\u677f\u6b21\u6570[20190410]","realIndexName":"\u6da8\u505c\u5f00\u677f\u6b21\u6570"},{"timestamp":"20190410","unit":"\u5143","index_name":"a\u80a1\u5e02\u503c(\u4e0d\u542b\u9650\u552e\u80a1)","source":"add_condition","indexId":null,"subtype":null,"domain":"abs_\u80a1\u7968\u9886\u57df","type":"DOUBLE","key":"a\u80a1\u5e02\u503c(\u4e0d\u542b\u9650\u552e\u80a1)[20190410]","realIndexName":"a\u80a1\u5e02\u503c(\u4e0d\u542b\u9650\u552e\u80a1)"},{"timestamp":"","unit":"\u4e2a","index_name":"\u6240\u5c5e\u6982\u5ff5\u6570\u91cf","source":"add_condition","indexId":null,"subtype":null,"domain":"abs_\u80a1\u7968\u9886\u57df","type":"LONG","key":"\u6240\u5c5e\u6982\u5ff5\u6570\u91cf","realIndexName":"\u6240\u5c5e\u6982\u5ff5\u6570\u91cf"},{"timestamp":"20190410","unit":"\u5929","index_name":"\u4e0a\u5e02\u5929\u6570","source":"add_condition","indexId":null,"subtype":null,"domain":"abs_\u80a1\u7968\u9886\u57df","type":"LONG","key":"\u4e0a\u5e02\u5929\u6570[20190410]","realIndexName":"\u4e0a\u5e02\u5929\u6570"},{"timestamp":"","unit":"","index_name":"\u6240\u5c5e\u540c\u82b1\u987a\u884c\u4e1a","source":"add_condition","indexId":null,"subtype":"split","domain":"abs_\u80a1\u7968\u9886\u57df","type":"STR","key":"\u6240\u5c5e\u540c\u82b1\u987a\u884c\u4e1a","realIndexName":"\u6240\u5c5e\u540c\u82b1\u987a\u884c\u4e1a"}],"addConditionInsurance":{"nonAddConditionIndexs":[],"oriInsuranceAddConditions":null},"diagSuccess":false,"staticList":2,"tagMap":"stock","showType":["","","onTable","onTable","onTable","onTable","onTable","onTable","onTable","onTable","onTable","onTable","onTable","onTable","onTable","onTable","onTable","onTable","onTable","onTable"],"extraShowType":["","","","","","","","","","","","","","","","","","","",""],"classIdx":["\u6da8\u505c","\u6240\u5c5e\u6982\u5ff5"],"indexList":"\u6da8\u505c\u0003\u6240\u5c5e\u6982\u5ff5","natural":{"ck0":"100","ck1":"3693"},"token":"bfc6271606cc496c86131530f44940df","perpage":10,"page":1,"wccode2hq":{"000004.SZ":["000004","33"],"000048.SZ":["000048","33"],"000078.SZ":["000078","33"],"000509.SZ":["000509","33"],"000514.SZ":["000514","33"],"000518.SZ":["000518","33"],"000565.SZ":["000565","33"],"000622.SZ":["000622","33"],"000651.SZ":["000651","33"],"000673.SZ":["000673","33"]},"orresProcess":[{"code":{"comp_relation":"","comp_with":"","effect":""}},{"align":[{"comp_relation":"","comp_with":"","effect":"center"}],"class":[{"comp_relation":"","comp_with":"","effect":"graph"}],"link":[{"comp_relation":"","comp_with":"","effect":"\/stockpick\/search?tid=stockpick&amp;qs=stockpick_diag&amp;ts=1&amp;w=(_stk-code_)"}]},{"accuracy":[{"comp_relation":"any","comp_with":"*","effect":"2"}],"align":[{"comp_relation":"any","comp_with":"*","effect":"right"}],"unit":[{"comp_relation":"&gt;=","comp_with":"10000","effect":"{\"unit\":\"\\u4e07\",\"isInclude\":true,\"type\":\"DOUBLE\"}"},{"comp_relation":"&gt;=","comp_with":"100000000","effect":"{\"unit\":\"\\u4ebf\",\"isInclude\":true,\"type\":\"DOUBLE\"}"}]},{"accuracy":[{"comp_relation":"any","comp_with":"*","effect":"2 "}],"hl":[{"comp_relation":"&lt;","comp_with":"0","effect":"green"},{"comp_relation":"&gt;","comp_with":"0","effect":"red"}],"special_unit":[{"comp_relation":"any","comp_with":"*","effect":"%"}],"align":[{"comp_relation":"any","comp_with":"*","effect":"right"}],"unit":[{"comp_relation":"&gt;=","comp_with":"10000","effect":"{\"unit\":\"\\u4e07\",\"isInclude\":false,\"type\":\"DOUBLE\"}"},{"comp_relation":"&gt;=","comp_with":"100000000","effect":"{\"unit\":\"\\u4ebf\",\"isInclude\":false,\"type\":\"DOUBLE\"}"}]},{"hl":[{"comp_relation":"=","comp_with":"\u6da8\u505c","effect":"red"}]},{"align":[{"comp_relation":"any","comp_with":"-","effect":"center"}],"link":[{"comp_relation":"include","comp_with":"*","effect":"\/stockpick\/search?ts=1&amp;f=1&amp;qs=gnsy&amp;querytype=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5%E5%8C%85%E5%90%AB(current)"}],"request":[{"comp_relation":"include","comp_with":"*","effect":"\/stockpick\/concept-stock-rela"}],"split":[{"comp_relation":"include","comp_with":";","effect":"{\"num\":3,\"str\":\"@@ \",\"split_char\":\";\"}"}]},{"timestamp":[{"comp_relation":"any","comp_with":"*","effect":"H:i:s"}]},{"timestamp":[{"comp_relation":"any","comp_with":"*","effect":"H:i:s"}]},{"templ":[{"comp_relation":"any","comp_with":"-","effect":"{\n\t\"templ\":\"&lt;a class=\\\"btn_detail\\\" href=\\\"javascript:void(0)\\\"&gt;\u67e5\u770b\u8be6\u60c5&lt;\/a&gt;\",\n\t\"ux\":[\n\t\t{\n\t\t\t\"selector\":\".btn_detail\",\n\t\t\t\"event\":\"click\",\n\t\t\t\"bind\":\"dialog\",\n\t\t\t\"data\":\"local\",\n\t\t\t\"view\":\"table\",\n\t\t\t\"seq\":true,\n\t\t\t\"table\":[\n\t\t\t\t\n\t\t\t\t{\n\t\t\t\t\t\"field\":\"time\",\n\t\t\t\t\t\"label\":\"\u6da8\u505c\u65f6\u95f4\",\n\t\t\t\t\t\"width\":120,\n\t\t\t\t\t\"dataType\":\"timestamp\"\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"field\":\"openTime\",\n\t\t\t\t\t\"label\":\"\u6da8\u505c\u6253\u5f00\u65f6\u95f4\",\n\t\t\t\t\t\"width\":120,\n\t\t\t\t\t\"dataType\":\"timestamp\"\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"field\":\"duration\",\n\t\t\t\t\t\"label\":\"\u6301\u7eed\u65f6\u95f4\",\n\t\t\t\t\t\"width\":80,\n\t\t\t\t\t\"fixedNum\":2,\n\t\t\t\t\t\"dataType\":\"format\",\n\t\t\t\t\t\"format\":{\n\t\t\t\t\t\t\"fenzi\":1,\n\t\t\t\t\t\t\"fenmu\":60000,\n\t\t\t\t\t\t\"unit\":\"\u5206\"\n\t\t\t\t\t}\n\t\t\t\t},\n                                {\n\t\t\t\t\t\"field\":\"firstVol\",\n\t\t\t\t\t\"label\":\"\u9996\u6b21\u5c01\u5355\u91cf\",\n\t\t\t\t\t\"width\":80,\n\t\t\t\t\t\"fixedNum\":0,\n                    \"dataType\":\"format\",\n\t\t\t\t\t\"format\":{\n\t\t\t\t\t\t\"fenzi\":1,\n\t\t\t\t\t\t\"fenmu\":100,\n\t\t\t\t\t\t\"unit\":\"\u624b\"\n                        }\n\t\t\t\t},\n{\n\t\t\t\t\t\"field\":\"firstVolDivLTGB\",\n\t\t\t\t\t\"label\":\"\u5360\u5b9e\u9645\u6d41\u901a\u6bd4\",\n\t\t\t\t\t\"width\":80,\n\t\t\t\t\t\"fixedNum\":4,\n                    \"dataType\":\"format\",\n\t\t\t\t\t\"format\":{\n\t\t\t\t\t\t\"fenzi\":100,\n\t\t\t\t\t\t\"fenmu\":1,\n\t\t\t\t\t\t\"unit\":\"%\"\n                              }\n\t\t\t\t},\n{\n\t\t\t\t\t\"field\":\"firstVolDivVol\",\n\t\t\t\t\t\"label\":\"\u5360\u6210\u4ea4\u91cf\u6bd4\",\n\t\t\t\t\t\"width\":80,\n\t\t\t\t\t\"fixedNum\":2,\n                    \"dataType\":\"format\",\n\t\t\t\t\t\"format\":{\n\t\t\t\t\t\t\"fenzi\":100,\n\t\t\t\t\t\t\"fenmu\":1,\n\t\t\t\t\t\t\"unit\":\"%\"\n                                                 }\n\t\t\t\t},\n{\n\t\t\t\t\t\"field\":\"highestVol\",\n\t\t\t\t\t\"label\":\"\u6700\u9ad8\u5c01\u5355\u91cf\",\n\t\t\t\t\t\"width\":80,\n\t\t\t\t\t\"fixedNum\":0,\n                    \"dataType\":\"format\",\n\t\t\t\t\t\"format\":{\n\t\t\t\t\t\t\"fenzi\":1,\n\t\t\t\t\t\t\"fenmu\":100,\n\t\t\t\t\t\t\"unit\":\"\u624b\"\n                                                 }\n\t\t\t\t},\n{\n\t\t\t\t\t\"field\":\"highestVolDivLTGB\",\n\t\t\t\t\t\"label\":\"\u5360\u5b9e\u9645\u6d41\u901a\u6bd4\",\n\t\t\t\t\t\"width\":80,\n\t\t\t\t\t\"fixedNum\":4,\n                    \"dataType\":\"format\",\n\t\t\t\t\t\"format\":{\n\t\t\t\t\t\t\"fenzi\":100,\n\t\t\t\t\t\t\"fenmu\":1,\n\t\t\t\t\t\t\"unit\":\"%\"\n                                                }\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"field\":\"highestVolDivVol\",\n\t\t\t\t\t\"label\":\"\u5360\u6210\u4ea4\u91cf\u6bd4\",\n\t\t\t\t\t\"width\":80,\n\t\t\t\t\t\"fixedNum\":2,\n                    \"dataType\":\"format\",\n\t\t\t\t\t\"format\":{\n\t\t\t\t\t\t\"fenzi\":100,\n\t\t\t\t\t\t\"fenmu\":1,\n\t\t\t\t\t\t\"unit\":\"%\"\n                                                 }\n\t\t\t\t}\n\t\t\t]\n\t\t}\n\t]\n}"}]},{"align":[{"comp_relation":"any","comp_with":"*","effect":"right"}],"unit":[{"comp_relation":"&gt;=","comp_with":"10000","effect":"{\"unit\":\"\\u4e07\",\"isInclude\":false,\"type\":\"LONG\"}"},{"comp_relation":"&gt;=","comp_with":"100000000","effect":"{\"unit\":\"\\u4ebf\",\"isInclude\":false,\"type\":\"LONG\"}"}]},{"link":[{"comp_relation":"","comp_with":"","effect":"\/stockpick\/search?preParams=&amp;ts=1&amp;f=1&amp;qs=stockpick_ztyy&amp;querytype=&amp;tid=stockpick&amp;w=(_stk-code_)%20%20%E6%B6%A8%E5%81%9C%E5%8E%9F%E5%9B%A0&amp;queryarea=all"}]},{"hl":[{"comp_relation":"&gt;","comp_with":"0","effect":"red"}],"unit":[{"comp_relation":"&gt;","comp_with":"10000","effect":"{\"unit\":\"\\u4e07\",\"isInclude\":false,\"type\":\"DOUBLE\"}"},{"comp_relation":"&gt;=","comp_with":"100000000","effect":"{\"unit\":\"\\u4ebf\",\"isInclude\":false,\"type\":\"DOUBLE\"}"}],"align":[{"comp_relation":"any","comp_with":"*","effect":"right"}]},{"hl":[{"comp_relation":"&gt;","comp_with":"0","effect":"red"}],"unit":[{"comp_relation":"&gt;","comp_with":"10000","effect":"{\"unit\":\"\\u4e07\",\"isInclude\":true,\"type\":\"DOUBLE\"}"},{"comp_relation":"&gt;=","comp_with":"100000000","effect":"{\"unit\":\"\\u4ebf\",\"isInclude\":true,\"type\":\"DOUBLE\"}"}],"align":[{"comp_relation":"any","comp_with":"*","effect":"right"}]},{"align":[{"comp_relation":"any","comp_with":"*","effect":"right"}],"unit":[{"comp_relation":"&gt;=","comp_with":"10000","effect":"{\"unit\":\"\\u4e07\",\"isInclude\":false,\"type\":\"DOUBLE\"}"},{"comp_relation":"&gt;=","comp_with":"100000000","effect":"{\"unit\":\"\\u4ebf\",\"isInclude\":false,\"type\":\"DOUBLE\"}"}]},{"align":[{"comp_relation":"any","comp_with":"*","effect":"right"}],"unit":[{"comp_relation":"&gt;=","comp_with":"10000","effect":"{\"unit\":\"\\u4e07\",\"isInclude\":false,\"type\":\"DOUBLE\"}"},{"comp_relation":"&gt;=","comp_with":"100000000","effect":"{\"unit\":\"\\u4ebf\",\"isInclude\":false,\"type\":\"DOUBLE\"}"}]},{"align":[{"comp_relation":"any","comp_with":"*","effect":"right"}],"unit":[{"comp_relation":"&gt;=","comp_with":"10000","effect":"{\"unit\":\"\\u4e07\",\"isInclude\":false,\"type\":\"LONG\"}"},{"comp_relation":"&gt;=","comp_with":"100000000","effect":"{\"unit\":\"\\u4ebf\",\"isInclude\":false,\"type\":\"LONG\"}"}]},{"link":[{"comp_relation":"include","comp_with":"*","effect":"\/stockpick\/search?preParams=&amp;ts=1&amp;qs=zgxgrh_ltsz&amp;tid=stockpick&amp;w=(_stk-code_)+(time)+%E6%B5%81%E9%80%9A%E5%B8%82%E5%80%BC"}],"unit":[{"comp_relation":"&gt;=","comp_with":"10000","effect":"{\"unit\":\"\\u4e07\",\"isInclude\":true,\"type\":\"DOUBLE\"}"},{"comp_relation":"&gt;=","comp_with":"100000000","effect":"{\"unit\":\"\\u4ebf\",\"isInclude\":true,\"type\":\"DOUBLE\"}"}],"align":[{"comp_relation":"any","comp_with":"*","effect":"right"}]},{"link":[{"comp_relation":"include","comp_with":"*","effect":" \/stockpick\/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=result_rewrite&amp;selfsectsn=&amp;querytype=&amp;searchfilter=&amp;tid=stockpick&amp;w=(_stk-code_)+%E6%89%80%E5%B1%9E%E6%A6%82%E5%BF%B5"}],"align":[{"comp_relation":"any","comp_with":"*","effect":"right"}],"unit":[{"comp_relation":"&gt;=","comp_with":"10000","effect":"{\"unit\":\"\\u4e07\",\"isInclude\":false,\"type\":\"LONG\"}"},{"comp_relation":"&gt;=","comp_with":"100000000","effect":"{\"unit\":\"\\u4ebf\",\"isInclude\":false,\"type\":\"LONG\"}"}]},{"link":[{"comp_relation":"include","comp_with":"*","effect":"\/stockpick\/search?preParams=&amp;ts=1&amp;f=1&amp;qs=zgxgrh_ssts&amp;querytype=&amp;tid=stockpick&amp;w=(_stk-code_)+(time)+\u4e0a\u5e02\u5929\u6570"}],"align":[{"comp_relation":"any","comp_with":"*","effect":"right"}],"unit":[{"comp_relation":"&gt;=","comp_with":"10000","effect":"{\"unit\":\"\\u4e07\",\"isInclude\":false,\"type\":\"LONG\"}"},{"comp_relation":"&gt;=","comp_with":"100000000","effect":"{\"unit\":\"\\u4ebf\",\"isInclude\":false,\"type\":\"LONG\"}"}]},{"link":[{"comp_relation":"include","comp_with":"*","effect":"\/stockpick\/search?typed=1&amp;preParams=&amp;ts=1&amp;f=1&amp;qs=1&amp;selfsectsn=&amp;querytype=&amp;searchfilter=&amp;tid=stockpick&amp;w=%E6%89%80%E5%B1%9E%E5%90%8C%E8%8A%B1%E9%A1%BA%E8%A1%8C%E4%B8%9A%E5%8C%85%E5%90%AB(current)"}],"split":[{"comp_relation":"include","comp_with":"-","effect":"{\"num\":2,\"str\":\"@@ \",\"split_char\":\"-\"}"}]}],"extresProcess":{"1":{"graph":["trend","time-share","stockAction"]}},"result":[["000004.SZ","\u56fd\u519c\u79d1\u6280","23.84","10.014","\u6da8\u505c","\u7f51\u7edc\u6e38\u620f;\u751f\u7269\u533b\u836f;\u58f3\u8d44\u6e90;\u4e2d\u79d1\u7cfb","1554859800000","1554859800000",[{"code":"000004.SZ","time":1554859800000,"openTime":null,"duration":14399502,"updatedTime":1554879600000,"firstVol":3427600,"highestVol":3427600,"firstVolDivLTGB":0.041289826926768643,"firstVolDivVol":86.337531486146091,"highestVolDivLTGB":0.041289826926768643,"highestVolDivVol":86.337531486146091}],2,"\u8d44\u4ea7\u91cd\u7ec4",1640056,39098935.039999999,476.28418093534373,1.9756572642726244,0,1979034306.5599999,4,10314,"\u533b\u836f\u751f\u7269-\u751f\u7269\u5236\u54c1-\u751f\u7269\u5236\u54c1\u2162"],["000048.SZ","*ST\u5eb7\u8fbe","22.58","5.023","\u6da8\u505c","\u571f\u5730\u589e\u503c;ST\u677f\u5757;\u732a\u8089;\u571f\u5730\u6d41\u8f6c","1554862080177","1554862080177",[{"code":"000048.SZ","time":1554862080177,"openTime":null,"duration":12119325,"updatedTime":1554879600000,"firstVol":111300,"highestVol":307887,"firstVolDivLTGB":0.00028879666129886307,"firstVolDivVol":0.13714158975812316,"highestVolDivLTGB":0.00079889252162913794,"highestVolDivVol":0.36048838344751039}],2,"ST\u677f\u5757",152500,3443449.9999999995,17.751486177703434,0.03957007263978133,0,8702157388.8600006,4,8927,"\u519c\u6797\u7267\u6e14-\u519c\u4ea7\u54c1\u52a0\u5de5-\u9972\u6599\u2162"],["000078.SZ","\u6d77\u738b\u751f\u7269","5.07","9.978","\u6da8\u505c","\u591a\u80bd\u836f;\u624b\u8db3\u53e3\u75c5;\u6297\u764c;\u79bd\u6d41\u611f;\u8fbe\u83f2;\u751f\u7269\u75ab\u82d7;\u767b\u9769\u70ed;MERS\u6982\u5ff5;\u9632\u8f90\u5c04;\u624b\u8db3\u53e3\u75c5\u75ab\u82d7;\u878d\u8d44\u878d\u5238;\u56fd\u4ea7\u4f1f\u54e5;\u6df1\u80a1\u901a;\u8f6c\u878d\u5238\u6807\u7684;\u533b\u4fdd\u76ee\u5f55;\u533b\u7597\u6539\u9769;\u533b\u7597\u5668\u68b0\u6982\u5ff5;\u6d41\u611f;\u8d85\u7ea7\u771f\u83cc","1554861840176","1554864420192",[{"code":"000078.SZ","time":1554861840176,"openTime":1554863970190,"duration":2130014,"updatedTime":1554863970190,"firstVol":33144131,"highestVol":66008906,"firstVolDivLTGB":0.017851532228485126,"firstVolDivVol":0.3230708543127761,"highestVolDivLTGB":0.035552602444941017,"highestVolDivVol":0.63267506591800382},{"code":"000078.SZ","time":1554864135190,"openTime":1554864255190,"duration":120000,"updatedTime":1554864255190,"firstVol":15687297,"highestVol":20268997,"firstVolDivLTGB":0.0084492270433434522,"firstVolDivVol":0.1164726494921207,"highestVolDivLTGB":0.010916944939198085,"highestVolDivVol":0.1498793400516418},{"code":"000078.SZ","time":1554864420192,"openTime":null,"duration":9779310,"updatedTime":1554879600000,"firstVol":14711410,"highestVol":24279260,"firstVolDivLTGB":0.0079236112644334653,"firstVolDivVol":0.10104735053620366,"highestVolDivLTGB":0.013076885086345146,"highestVolDivVol":0.16612128235854526}],1,"\u8d85\u7ea7\u771f\u83cc",9088117,46076753.190000005,5.9269660446412837,0.48948881333393107,2,9413239268.1599998,19,7419,"\u533b\u836f\u751f\u7269-\u533b\u836f\u5546\u4e1a-\u533b\u836f\u5546\u4e1a\u2162"],["000509.SZ","\u534e\u5851\u63a7\u80a1","3.75","9.971","\u6da8\u505c","\u897f\u90e8\u5f00\u53d1;\u7968\u4ea4\u6240;\u80a1\u6743\u8f6c\u8ba9;\u56ed\u6797\u5f00\u53d1;\u6210\u6e1d\u7279\u533a;\u58f3\u8d44\u6e90","1554861630175","1554863505186",[{"code":"000509.SZ","time":1554861630175,"openTime":1554863280185,"duration":1650010,"updatedTime":1554863280185,"firstVol":30010800,"highestVol":39224464,"firstVolDivLTGB":0.036355580531519514,"firstVolDivVol":0.39417118189255546,"highestVolDivLTGB":0.047517165812230533,"highestVolDivVol":0.46090089878372204},{"code":"000509.SZ","time":1554863355185,"openTime":1554863460186,"duration":105001,"updatedTime":1554863460186,"firstVol":21226700,"highestVol":22558700,"firstVolDivLTGB":0.025714376200181441,"firstVolDivVol":0.20964091214986352,"highestVolDivLTGB":0.027327983077305145,"highestVolDivVol":0.22202994703060155},{"code":"000509.SZ","time":1554863505186,"openTime":null,"duration":10694316,"updatedTime":1554879600000,"firstVol":12815300,"highestVol":17595650,"firstVolDivLTGB":0.015524666826128661,"firstVolDivVol":0.11714333090246426,"highestVolDivLTGB":0.021315662047643891,"highestVolDivVol":0.15644143112757938}],2,"\u6210\u6e1d\u57ce\u5e02\u7fa4",4689000,17583750,3.9558817190859803,0.56803323174422204,2,3095549523.75,6,9470,"\u5546\u4e1a\u8d38\u6613-\u8d38\u6613-\u8d38\u6613\u2162"],["000514.SZ","\u6e1d\u5f00\u53d1","6.82","10.000","\u6da8\u505c","\u4e24\u6c5f\u65b0\u533a;\u6210\u6e1d\u7279\u533a;\u91cd\u5e86\u81ea\u8d38\u533a;\u91d1\u6539;\u957f\u6c5f\u7ecf\u6d4e\u5e26;\u91cd\u5e86\u56fd\u8d44\u6539\u9769;\u5730\u65b9\u56fd\u8d44\u6539\u9769;\u503a\u8f6c\u80a1","1554860340118","1554873405261",[{"code":"000514.SZ","time":1554860340118,"openTime":1554860355118,"duration":15000,"updatedTime":1554860355118,"firstVol":1592711,"highestVol":1592711,"firstVolDivLTGB":0.0018876105792523922,"firstVolDivVol":0.059436731609128962,"highestVolDivLTGB":0.0018876105792523922,"highestVolDivVol":0.059436731609128962},{"code":"000514.SZ","time":1554861120147,"openTime":1554861165147,"duration":45000,"updatedTime":1554861165147,"firstVol":4029969,"highestVol":4029969,"firstVolDivLTGB":0.0047761408808372546,"firstVolDivVol":0.087072926427110856,"highestVolDivLTGB":0.0047761408808372546,"highestVolDivVol":0.087072926427110856},{"code":"000514.SZ","time":1554873405261,"openTime":null,"duration":6194739,"updatedTime":1554879600000,"firstVol":15312750,"highestVol":15679750,"firstVolDivLTGB":0.01814799351385598,"firstVolDivVol":0.20130308970910446,"highestVolDivLTGB":0.01858294566938553,"highestVolDivVol":0.20610224316950765}],3,"\u6210\u6e1d\u57ce\u5e02\u7fa4",6809640,46441744.800000004,8.7423405152953979,0.80704839138426632,2,5754517981.3000002,8,9404,"\u623f\u5730\u4ea7-\u623f\u5730\u4ea7\u5f00\u53d1-\u623f\u5730\u4ea7\u5f00\u53d1\u2162"],["000518.SZ","\u56db\u73af\u751f\u7269","4.57","10.121","\u6da8\u505c","\u80be\u900f\u6790;\u5e72\u7ec6\u80de;\u6297\u764c;\u5916\u8d38;\u767b\u9769\u70ed;\u4f53\u5916\u8bca\u65ad;\u533b\u4fdd\u76ee\u5f55;\u751f\u7269\u533b\u836f;\u8d85\u7ea7\u771f\u83cc","1554860355118","1554860355118",[{"code":"000518.SZ","time":1554860355118,"openTime":null,"duration":13844384,"updatedTime":1554879600000,"firstVol":43516900,"highestVol":55557599,"firstVolDivLTGB":0.042268471405002568,"firstVolDivVol":1.9719005005639938,"highestVolDivLTGB":0.05396374246929582,"highestVolDivVol":2.1889437566861019}],1,"\u8d85\u7ea7\u771f\u83cc",23755071,108560674.47000001,62.621465641071339,2.3073576915802958,0,4704978117.0100002,9,9346,"\u533b\u836f\u751f\u7269-\u751f\u7269\u5236\u54c1-\u751f\u7269\u5236\u54c1\u2162"],["000565.SZ","\u6e1d\u4e09\u5ce1A","7.88","10.056","\u6da8\u505c","\u4e59\u4e8c\u9187;\u6210\u6e1d\u7279\u533a;\u91cd\u5e86\u81ea\u8d38\u533a;\u4e24\u6c5f\u65b0\u533a;\u878d\u8d44\u878d\u5238;\u5efa\u7b51\u6d82\u6599;\u8f6c\u878d\u5238\u6807\u7684;\u91d1\u6539;\u91cd\u5e86\u56fd\u8d44\u6539\u9769;\u5730\u65b9\u56fd\u8d44\u6539\u9769;\u77f3\u58a8\u70ef","1554877365338","1554879242458",[{"code":"000565.SZ","time":1554877365338,"openTime":1554877995403,"duration":630065,"updatedTime":1554877995403,"firstVol":4936700,"highestVol":5906100,"firstVolDivLTGB":0.011385582518062709,"firstVolDivVol":0.12828028156647409,"highestVolDivLTGB":0.013621323740541286,"highestVolDivVol":0.15304900405681832},{"code":"000565.SZ","time":1554879242458,"openTime":null,"duration":357542,"updatedTime":1554879600000,"firstVol":2039320,"highestVol":2331720,"firstVolDivLTGB":0.0047033131729162488,"firstVolDivVol":0.044082006989803434,"highestVolDivLTGB":0.0053776795164820991,"highestVolDivVol":0.050245267074134611}],1,"\u6210\u6e1d\u57ce\u5e02\u7fa4",2012550,15858894,4.3051197094093929,0.46415731352375283,1,3416706693.5999999,11,9134,"\u5316\u5de5-\u5316\u5b66\u5236\u54c1-\u6d82\u6599\u6cb9\u6f06\u6cb9\u58a8\u5236\u9020"],["000622.SZ","\u6052\u7acb\u5b9e\u4e1a","7.52","9.942","\u6da8\u505c","\u58f3\u8d44\u6e90","1554863655189","1554874680269",[{"code":"000622.SZ","time":1554863655189,"openTime":1554864015190,"duration":360001,"updatedTime":1554864015190,"firstVol":24389100,"highestVol":24389100,"firstVolDivLTGB":0.057355617953746947,"firstVolDivVol":0.70990010123217184,"highestVolDivLTGB":0.057355617953746947,"highestVolDivVol":0.70990010123217184},{"code":"000622.SZ","time":1554864030190,"openTime":1554864075190,"duration":45000,"updatedTime":1554864075190,"firstVol":2065797,"highestVol":16617597,"firstVolDivLTGB":0.0048581154491964271,"firstVolDivVol":0.046969753053970595,"highestVolDivLTGB":0.039079447164566607,"highestVolDivVol":0.37416796383474676},{"code":"000622.SZ","time":1554864090190,"openTime":1554874665269,"duration":5174581,"updatedTime":1554874665269,"firstVol":742700,"highestVol":14568900,"firstVolDivLTGB":0.0017466006311937653,"firstVolDivVol":0.016186458940661536,"highestVolDivLTGB":0.034261545625149922,"highestVolDivVol":0.31531322511826332},{"code":"000622.SZ","time":1554874680269,"openTime":null,"duration":4919731,"updatedTime":1554879600000,"firstVol":401600,"highestVol":5150400,"firstVolDivLTGB":0.00094443895716630685,"firstVolDivVol":0.0072672614288000559,"highestVolDivLTGB":0.012112147422782238,"highestVolDivVol":0.092157666049133002}],1,"\u5f3a\u52bf\u80a1\u53cd\u62bd",1228100,9235312,2.0696675616070315,0.28881112631871053,3,3197699520,1,8190,"\u4ea4\u8fd0\u8bbe\u5907-\u6c7d\u8f66\u96f6\u90e8\u4ef6-\u6c7d\u8f66\u96f6\u90e8\u4ef6\u2162"],["000651.SZ","\u683c\u529b\u7535\u5668","57.12","9.994","\u6da8\u505c","\u592e\u89c6\u8d22\u7ecf50;\u878d\u8d44\u878d\u5238;\u592a\u9633\u80fd;\u6df1\u80a1\u901a;\u8f6c\u878d\u5238\u6807\u7684;MSCI\u6982\u5ff5;\u673a\u5668\u4eba\u6982\u5ff5;\u5de5\u4e1a\u4e92\u8054\u7f51;\u767d\u9a6c\u7206\u96f7;\u5e7f\u4e1c\u56fd\u8d44\u6539\u9769;\u73e0\u6d77\u56fd\u8d44\u6539\u9769;\u5730\u65b9\u56fd\u8d44\u6539\u9769;\u667a\u80fd\u5bb6\u5c45;\u5927\u6d88\u8d39;\u5bb6\u7528\u7535\u5668;\u5b9d\u80fd\u7cfb;\u8d85\u7ea7\u54c1\u724c;\u539a\u6734\u7cfb;\u80a1\u6743\u8f6c\u8ba9","1554873045256","1554878970712",[{"code":"000651.SZ","time":1554873045256,"openTime":1554873510261,"duration":465005,"updatedTime":1554873510261,"firstVol":8918681,"highestVol":20558600,"firstVolDivLTGB":0.0014939625175421577,"firstVolDivVol":0.034517728403761716,"highestVolDivLTGB":0.0034437578620809743,"highestVolDivVol":0.078798184528708959},{"code":"000651.SZ","time":1554877305338,"openTime":1554878790457,"duration":1485119,"updatedTime":1554878790457,"firstVol":1493732,"highestVol":10795085,"firstVolDivLTGB":0.00025021408650598474,"firstVolDivVol":0.0047962481087704244,"highestVolDivLTGB":0.0018082777446218319,"highestVolDivVol":0.03461946547902043},{"code":"000651.SZ","time":1554878820457,"openTime":1554878850711,"duration":30254,"updatedTime":1554878850711,"firstVol":11388,"highestVol":23302,"firstVolDivLTGB":1.9075965548908065e-6,"firstVolDivVol":3.5737274919186307e-5,"highestVolDivLTGB":3.9033030314423579e-6,"highestVolDivVol":7.3100834699098402e-5},{"code":"000651.SZ","time":1554878865711,"openTime":1554878940712,"duration":75001,"updatedTime":1554878940712,"firstVol":128602,"highestVol":140002,"firstVolDivLTGB":2.1542038299268309e-5,"firstVolDivVol":0.00040292700927817439,"highestVolDivLTGB":2.3451644966440349e-5,"highestVolDivVol":0.00043851006806299434},{"code":"000651.SZ","time":1554878970712,"openTime":null,"duration":629288,"updatedTime":1554879600000,"firstVol":5202,"highestVol":1256385,"firstVolDivLTGB":8.7138367391482046e-7,"firstVolDivVol":1.6252523601073092e-5,"highestVolDivLTGB":0.00021045624320481962,"highestVolDivVol":0.0039086699310029388}],2,"\u56fd\u4f01\u6539\u9769",662479,37840800.479999997,0.20518124049194836,0.011097143116328648,4,340995876896.64001,19,8179,"\u5bb6\u7528\u7535\u5668-\u767d\u8272\u5bb6\u7535-\u7a7a\u8c03"],["000673.SZ","\u5f53\u4ee3\u4e1c\u65b9","7.15","10.000","\u6da8\u505c","\u7f51\u7edc\u7535\u89c6;\u4e92\u8054\u7f51\u7535\u89c6;\u6587\u5316\u4f20\u5a92;\u6df1\u80a1\u901a;\u5927\u6570\u636e;\u97f3\u4e50\u4ea7\u4e1a;\u5f71\u89c6\u5a31\u4e50","1554865995200","1554872580249",[{"code":"000673.SZ","time":1554865995200,"openTime":1554866025200,"duration":30000,"updatedTime":1554866025200,"firstVol":986100,"highestVol":986100,"firstVolDivLTGB":0.0012524747601282528,"firstVolDivVol":0.011219731088953239,"highestVolDivLTGB":0.0012524747601282528,"highestVolDivVol":0.011219731088953239},{"code":"000673.SZ","time":1554866610204,"openTime":1554866670204,"duration":60000,"updatedTime":1554866670204,"firstVol":1193316,"highestVol":2650816,"firstVolDivLTGB":0.0015156659272459246,"firstVolDivVol":0.0123761531393227,"highestVolDivLTGB":0.0033668797624420797,"highestVolDivVol":0.027408079343904913},{"code":"000673.SZ","time":1554866700204,"openTime":1554866745204,"duration":45000,"updatedTime":1554866745204,"firstVol":580100,"highestVol":580100,"firstVolDivLTGB":0.00073680215835148508,"firstVolDivVol":0.0059368353265875015,"highestVolDivLTGB":0.00073680215835148508,"highestVolDivVol":0.0059368353265875015},{"code":"000673.SZ","time":1554866835204,"openTime":1554866865204,"duration":30000,"updatedTime":1554866865204,"firstVol":7700,"highestVol":84600,"firstVolDivLTGB":9.7799976199042148e-6,"firstVolDivVol":7.7859891650781477e-5,"highestVolDivLTGB":0.00010745296086284372,"highestVolDivVol":0.00085478988128029462},{"code":"000673.SZ","time":1554866880204,"openTime":1554872415249,"duration":134547,"updatedTime":1554872415249,"firstVol":392600,"highestVol":765800,"firstVolDivLTGB":0.00049865286565901239,"firstVolDivVol":0.003959629489622014,"highestVolDivLTGB":0.00097266521783411018,"highestVolDivVol":0.0077088094569234336},{"code":"000673.SZ","time":1554872445249,"openTime":1554872475249,"duration":30000,"updatedTime":1554872475249,"firstVol":52400,"highestVol":87200,"firstVolDivLTGB":6.6554788997789723e-5,"firstVolDivVol":0.00051907300574602919,"highestVolDivLTGB":0.00011075529772151268,"highestVolDivVol":0.00086342796487325513},{"code":"000673.SZ","time":1554872580249,"openTime":null,"duration":7019751,"updatedTime":1554879600000,"firstVol":72100,"highestVol":5924200,"firstVolDivLTGB":9.1576341350012199e-5,"firstVolDivVol":0.0007098371646343057,"highestVolDivLTGB":0.0075245015454333186,"highestVolDivVol":0.05807498833613433}],2,"\u8d85\u8dcc\u53cd\u5f39",1417898,10137970.700000001,1.3500011373006793,0.1800914164320383,6,5629346973.25,7,8112,"\u4fe1\u606f\u670d\u52a1-\u4f20\u5a92-\u5f71\u89c6\u52a8\u6f2b"]],"isEmpty":null,"oriIndexID":["_stk-code_","_stk-name_","\u6700\u65b0\u4ef7","\u6700\u65b0\u6da8\u8dcc\u5e45","\u6da8\u505c","\u6240\u5c5e\u6982\u5ff5","\u9996\u6b21\u6da8\u505c\u65f6\u95f4","\u6700\u7ec8\u6da8\u505c\u65f6\u95f4","\u6da8\u505c\u660e\u7ec6\u6570\u636e","\u8fde\u7eed\u6da8\u505c\u5929\u6570","\u6da8\u505c\u539f\u56e0\u7c7b\u522b","\u6da8\u505c\u5c01\u5355\u91cf","\u6da8\u505c\u5c01\u5355\u989d","\u6da8\u505c\u5c01\u5355\u91cf\u5360\u6210\u4ea4\u91cf\u6bd4","\u6da8\u505c\u5c01\u5355\u91cf\u5360\u6d41\u901aa\u80a1\u6bd4","\u6da8\u505c\u5f00\u677f\u6b21\u6570","a\u80a1\u5e02\u503c(\u4e0d\u542b\u9650\u552e\u80a1)","\u6240\u5c5e\u6982\u5ff5\u6570\u91cf","\u4e0a\u5e02\u5929\u6570","\u6240\u5c5e\u540c\u82b1\u987a\u884c\u4e1a"],"oriColPos":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],"query":"\u6da8\u505c,\u6982\u5ff5","isDialog":false,"isVertical":false};
+
+// 是否出添加概念按钮
+var webParse = null;
+// 获取模版的参数信息
+var asynReqJson = {"qnas":{"content_id":["suggest","spellquery"],"params":{"recommend":{"addClass":"","attr":{"once":"yes","qs_block":"y"},"pos":"","weight":13}},"url":"\/asyn\/search?q=%E6%B6%A8%E5%81%9C%2C%E6%A6%82%E5%BF%B5&amp;queryType=stock&amp;app=qnas&amp;qid="}};
+
+var blockResult = null;
+//var xuanguBlocks = null;
+var center = "result_main";
+var conceptLtgSpecReason = null;
+var userGuide = "a";
+var xgblocksResult = {"blocks":[{"lazy_load":1,"T_id":20,"P_id":24,"title":"\u878d\u8d44\u878d\u5238\u4f59\u989d\u76f8\u5173\u5206\u6790","url":"\/xgblock\/block-detail?token=bfc6271606cc496c86131530f44940df&amp;info=&amp;querytype=stockpick&amp;pid=24&amp;tid=20"}],"global":{"pidRefTid":{"24":20},"configTag":"24"}};
+var global_indexOrderIsVisible = "true";
+var global_data_extraction_config = null;	// 数据提取跳转页中才会保存的提取时的配置信息
+
+
+
+    $('body').off('click','.intention').on('click','.intention',function(){
+        //uid|'+sso.getCookie('userid')+'    '、cid|'+GLOBAL.cid+
+        mylog('ts|1、tid|'+GLOBAL.pageData.get.tid+'、qs|pc_~soniu~others~resultpage~resultpage~transition、w|'+GLOBAL.pageData.get.w,'pick','')
+    });
+
+
+
+</script>
+
+<script src="//ws1.thsi.cn/public42278/externcss/njs/??src/plugin/inputChangeListener.js,src/blocks/guideNav.js,initSearchBarModule.js,src/plugin/popup.js,src/plugin/tip.js,src/plugin/selectShade.js,src/plugin/autoComple.js,src/plugin/suggest.js,src/plugin/form/textareaMaxlength.js,src/blocks/QAsuggestModel.js,sp_page.js,popup.class.js,src/plugin/form/Text.js" type="text/javascript"></script><div class="guide_con" style="display:none;"><div class="guide_tip">添加其他条件，选出更优质的股票</div><ul class="guide_list"></ul></div>
+<script src="//ws3.thsi.cn/public42278/externcss/njs/??src/plugin/clientTools.js" type="text/javascript"></script>
+<script src="//ws2.thsi.cn/public42278/externcss/njs/??src/blocks/elemLog.js,src/plugin/dropdownMenu.js,src/plugin/tabs.js,src/plugin/pageNav.js,src/plugin/pageNavWithInputJump.js,src/plugin/listByTplWithPageNav.js,collectWarn/confirmDialog.js,src/blocks/collect.js,src/plugin/ajaxTimeoutTip.js,src/plugin/fixed.js,src/blocks/advisePanel.js,src/blocks/feedback.js,src/blocks/sourceRepair.js,src/blocks/searchInPlate.js,src/pages/stockpick.js" type="text/javascript"></script>
+<script src="//ws1.thsi.cn/public42278/externcss/njs/??src/blocks/zhuantiQuery.js,src/blocks/AsyncLoadBlocks.js,src/blocks/searchRight.js,src/pages/spOtherStart.js" type="text/javascript"></script>
+<script src="//ws3.thsi.cn/public42278/externcss/njs/??initBackTop.js,src/blocks/userGaozhiLog.js,src/blocks/scrollTopbar.js,src/blocks/appHref.js,src/pages/global.js,src/pages/sp_search_base.js,src/blocks/search/company.js,collectWarn/collectChangeRemind.js" type="text/javascript"></script>
+
+<script src="//ws3.thsi.cn/lib/echarts/echarts-2.2.1-rw/echarts.js" type="text/javascript"></script>	<script type="text/javascript">
+        var pageId = "iwencai_stock_resultpage_xuangu";
+        var pageFId = "iwencai_pc,iwencai_stock,info_gather";
+	</script>
+	   <script src="//s.thsi.cn/cb?/js/;md5.js;ta_https.min.js;pa.min.js"></script>
+
+<script type="text/javascript">
+   var eve_id= "iwencai_stock_resultpage_xuangu";
+   var f_id= "iwencai_stock";
+   var ex = "[['psc',''],['psct','0']]";
+   var allfid = "";
+
+   
+   var sn = sn || {};
+      sn.util = sn.util || {};
+      sn.util.getScreenZoomRatio = sn.util.getScreenZoomRatio || function(){return 1000};
+   if($.trim(eve_id) !== "" &amp;&amp; typeof eve_id === "string" &amp;&amp; eve_id !== null){
+      if(allfid) {
+        f_id = allfid;
+      } else if($.trim(f_id) !==""&amp;&amp; typeof f_id ==="string" &amp;&amp; f_id !== null){
+         f_id = "iwencai_pc" +"," + f_id + ","+ "info_gather";
+      }else{
+         f_id = "iwencai_pc"+ ","+ "info_gather";
+      }
+       var TAlogObj = {id : eve_id ,fid : f_id};
+       if(ex){
+           try{
+               ex =JSON.parse(ex.replace(/'/ig,"\""));
+           }catch(e){
+               ex = null;
+               console.warn(e)
+           }
+           if(ex &amp;&amp; ex instanceof Array){
+               var len = ex.length;
+               for(var i = len-1;i&gt;-1;i--){
+                   var key = ex[i][0],val = ex[i][1];
+                   if(key){
+                       if(key === 'psc'){
+                           val = sn.util.getScreenZoomRatio();
+                       }
+                       TAlogObj[key] = val;
+                   }
+               }
+           }
+       }
+      if(typeof global_pa_start_time === "number"){
+          PA.setStartTime(global_pa_start_time);
+          PA.init(TAlogObj);
+      }else{
+
+          TA.log(TAlogObj);
+      }
+   }
+   
+</script>
+
+<script src="//ws1.thsi.cn/public42278/externcss/njs/??src/blocks/quotation/quotation.js,src/blocks/quotation/quotationTab.js,src/blocks/quotation/quotationConfig.js,src/blocks/quotation/quotationPopup.js"></script>
+
+<script src="//ws3.thsi.cn/public42278/externcss/njs/??src/plugin/areaTopFixed.js,lib/jquery.mousewheel.js,src/plugin/drag.js,src/plugin/pagination.js,lib/jquery.ba-resize.js,src/plugin/scrollbar.js,src/plugin/form/Stock.js,src/plugin/limitTextBoxWords.js,src/plugin/multiNodeSelectionPanel.js,sp_stockInfo.js,src/blocks/zhuanti_new_new/drawChart.js,src/blocks/resultMain/appZhuanti.js,src/blocks/resultMain/baikeBlock.js,src/blocks/resultMain/xuanguAppend.js" type="text/javascript"></script>
+
+<script src="//ws3.thsi.cn/public42278/externcss/njs/??src/blocks/resultMain/graph.js,src/blocks/resultMain/addPlateStock.js,src/blocks/resultMain/addSelfStock.js,src/blocks/resultMain/dataExport.js,src/blocks/resultMain/dataDetail.js,src/blocks/resultMain/indexSearch.js,src/blocks/resultMain/pubnoteAbstract.js,src/blocks/resultMain/templIndexCfgParse.js,src/blocks/resultMain/titleExplain.js,src/blocks/resultMainXxg/addTableEvent.js,src/blocks/resultMainXxg/IndexBindRecommend.js,src/blocks/atomicTable.js,src/blocks/resultMainXxg/searchInResult.js,src/blocks/praiseAdvice.js,src/blocks/resultMainXxg/tableColDrag.js,src/plugin/dragdrop.js,src/blocks/resultMainXxg/customThead.js,src/blocks/resultMainXxg/dataExtract.js,src/blocks/resultMainXxg/customBlockStock.js,src/blocks/resultMainXxg/resultMain.js,src/blocks/resultMainXxg/shareBtn.js,src/blocks/resultMainXxg/asyncXg.js,src/blocks/intelligentCommon.js,src/pages/spMainArea.js" type="text/javascript"></script>
+
+<script src="//ws2.thsi.cn/public42278/externcss/njs/??lib/ajaxfileupload.js,src/blocks/shareBar.js,src/blocks/circleShare.js,src/blocks/zhuanti_new_new/conceptLtgReason.js" type="text/javascript"></script>
+<script src="//ws1.thsi.cn/public42278/externcss/njs/??src/plugin/webHQ.js" type="text/javascript"></script>
+
+
+<!--<script src="//s.thsi.cn/js/webHQ/1.2.2.2/dataProvider.js?"></script>-->
+
+
+<script type="text/javascript">
+    
+    var sn = sn || {};
+    sn.util = sn.util ||{};
+    sn.util.getScreenZoomRatio = sn.util.getScreenZoomRatio || function(){return 1000;};
+    var pageId = pageId || "iwencai_stock_resultpage_xuangu";
+    var pageFId = pageFId || "iwencai_pc,iwencai_stock,info_gather";
+    var initZoomRatio = sn.util.getScreenZoomRatio();
+    var windowZoomTimer = null;
+    function windowZoom(){
+        var that = this;
+        if(!windowZoomTimer){
+            that.oldZoomRatio = initZoomRatio;
+        }
+        clearTimeout(windowZoomTimer);
+        windowZoomTimer = setTimeout(function(){
+            var nowZoomRatio = sn.util.getScreenZoomRatio();
+            if(nowZoomRatio != that.oldZoomRatio){
+                TA.log({"id" : pageId ,"fid" : pageFId,"psc" : nowZoomRatio,'psct':'1'});
+                that.oldZoomRatio = nowZoomRatio;
+            }
+        },500);
+    }
+    $(window).on('resize',function(){
+        windowZoom();
+    });
+    
+</script>
+<div class="popup_win hidden popup_tip_orange popup_tip"><div class="popup_win_inner with_close_icon"><div class="box_main clearfix"><div class="pt5 pb5">换个问法结果更精确，试试看~</div></div><span class="icon_close icon7 icon7_close_orange"></span></div></div><span class="top_anchor tip_anchor top_anchor_small top_anchor_orange hidden"><span class="anchor_inner"></span></span><div class="suggest_con suggest_con_qa_system" id="suggest_con_40" style="display: none; width: 513px; top: 106px; left: 155px; z-index: 400; position: absolute;"><ul id="suggest_list_40" class="suggest_list"></ul></div><div class="bottom_feedback_btn_box" style="display: block;"><a href="javascript:void(0);" title="提意见" id="bottomFeedbackBtn" class="bottom_feedback_btn"><span class="back_bg img_bg"></span><span class="icon img_bg"></span></a></div><a id="sn_back_top_btn" class="sn_back_top_btn" href="javascript:void(0);" title="返回顶部" style="position: fixed; top: 722px; display: none;"><span class="black_bg"></span><span class="icon"></span></a><a href="javascript:void(0);" id="bottomShareBtn" class="bottom_share_btn"><span class="back_bg img_bg"></span><span class="icon img_bg"></span></a><div class="popup_win hidden popup_tip_orange thead_drag_tip popup_tip" style="display: block; width: 175px; margin: 0px; top: 266px; left: 254px;"><div class="popup_win_inner with_close_icon"><div class="box_main clearfix"><div class="index_order_intro_box">表格中指标的位置不理想？<br />左右拖动表头可以调整指标位置！<a class="more_link" href="/yike/detail/auid/d7fbbf5d0b8fdfa8" target="_blank">了解详情</a></div></div><span class="icon_close icon7 icon7_close_orange"></span></div></div><span class="bottom_anchor tip_anchor bottom_anchor_small bottom_anchor_orange thead_drag_tip_anchor hidden" style="display: inline; margin: 0px; top: 324px; right: auto; bottom: auto; left: 259px;"><span class="anchor_inner"></span></span><iframe id="_sso_frame_" height="0" width="0" style="display:none" src="http://www.10jqka.com.cn/sso.html#//www.iwencai.com/moreinfo/reload"></iframe><img id="__ths_stat__" height="0" width="0" style="display:none" src="http://stat.10jqka.com.cn/q?dt=0&amp;tt=0&amp;rt=462&amp;bt=469&amp;sp=1&amp;id=iwencai_stock_resultpage_xuangu&amp;ld=browser&amp;size=1920x1080&amp;fid=iwencai_pc%2Ciwencai_stock%2Cinfo_gather&amp;psct=0&amp;psc=1&amp;url=http%3A%2F%2Fwww.iwencai.com%2Fstockpick%2Fsearch%3Ftyped%3D1%26preParams%3D%26ts%3D1%26f%3D1%26qs%3Dindex_rewrite%26selfsectsn%3D%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%26querytype%3Dstock%26searchfilter%3D%26tid%3Dstockpick%26w%3D%25E6%25B6%25A8%25E5%2581%259C%252C%25E6%25A6%2582%25E5%25BF%25B5&amp;mode=1&amp;lt=594&amp;ref=http%3A%2F%2Fwww.iwencai.com%2Fstockpick%2Fsearch%3Ftyped%3D1%26preParams%3D%26ts%3D1%26f%3D1%26qs%3Dindex_rewrite%26selfsectsn%3D%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%26querytype%3Dstock%26searchfilter%3D%26tid%3Dstockpick%26w%3D%25E6%25B6%25A8%25E5%2581%259C%252C%25E6%25A6%2582%25E5%25BF%25B5&amp;cs=1230x872&amp;ts=1554943917322" /></body></html>
