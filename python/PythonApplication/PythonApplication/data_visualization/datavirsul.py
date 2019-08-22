@@ -2606,14 +2606,14 @@ if __name__ == "__main__":
     print()
     starttime = time.time()
 
-    os.chdir(r'E:\git\Olaful\Olaful.github.io\python\PythonApplication\PythonApplication\myfile')
+    # os.chdir(r'E:\git\Olaful\Olaful.github.io\python\PythonApplication\PythonApplication\myfile')
 
     # 能显示中文
     matplotlib.rcParams['font.sans-serif'] = ['SimHei']
     # 能显示负号
     matplotlib.rcParams['axes.unicode_minus'] = False
 
-    showAnimation()
+    showErrorBar()
 
     #---------------------------------------------------end
     endtime = time.time()
