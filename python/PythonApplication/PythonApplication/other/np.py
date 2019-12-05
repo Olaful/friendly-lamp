@@ -302,7 +302,7 @@ def oper3():
     g = np.hstack((a, b))
     # 垂直叠加数组
     h = np.vstack((a, b))
-    print(h)
+    print(g)
 
 def oper4():
     """
@@ -682,4 +682,4 @@ def linearAlgebra2():
     print(d)
 
 if __name__ == '__main__':
-    strfunc()
+    oper3()

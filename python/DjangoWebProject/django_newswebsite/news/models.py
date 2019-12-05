@@ -1,10 +1,11 @@
 from django.db import models
 from django.utils import timezone
-#from django.template.defaultfilters import slugify
+# from django.template.defaultfilters import slugify
 from uuslug import slugify
 from django.contrib.auth.models import User
 
 import datetime
+
 
 # 一个类对应一个模型, 模型对应数据库中的表
 # 数据库类型不需要关心，因为ORM会自动根据
@@ -35,6 +36,7 @@ class Category(models.Model):
 
     def is_outdate(self):
         return self.pub_date <= timezone.now() - datetime.timedelta(days=3)
+
     is_outdate.admin_order_field = 'pub_date'
     is_outdate.boolean = True
     # 字段显示名称
@@ -45,6 +47,7 @@ class Category(models.Model):
         self.slug = slugify(self.name)
         self.views = self.views
         super(Category, self).save(*args, **kwargs)
+
 
 # 页面类
 class Page(models.Model):
@@ -61,6 +64,7 @@ class Page(models.Model):
     def __str__(self):
         return self.title
 
+
 # 用户模型扩展
 class UserProfile(models.Model):
     # 建立与User模型之间的联系,User模型默认用username, password, email等属性
@@ -76,32 +80,37 @@ class UserProfile(models.Model):
     def __str__(self):
         return self.user.username
 
+
 from django.db.models.signals import pre_save
 from django.dispatch import receiver, Signal
 
 mysig = Signal(providing_args=['arg1', 'arg2'])
 mysig.send(sender='tbq', arg1='hello', arg2='world')
 
+
 # 接收装饰器监听保存前发送的信号
 @receiver(pre_save)
 # 监听自定义信号发送函数发送的信号
 # @receiver(mysig)
 def my_callback(sender, **kwargs):
-    print('保存前的操作')
+    print('保存前的操作', sender, kwargs)
+
 
 class myAbsModel(models.Model):
     name = models.CharField(max_length=100)
     age = models.IntegerField()
-    
+
     class Meta:
         # 抽象model，指示该类不能创建数据表
         abstract = True
 
         ordering = ['name']
 
+
 # 继承抽象model类，其中的字段名不能与基类相同
 class TestModel(myAbsModel):
     address = models.CharField(max_length=100)
+
 
 class Model1(models.Model):
     name = models.CharField(max_length=100)
@@ -111,14 +120,15 @@ class Model1(models.Model):
     # auto_now_add=True以后修改对象时不会被更新
     createTime = models.DateTimeField(auto_now=True)
 
+
 # 不会包含父类的字段，外键约束Model1的id
 class Model2(Model1):
     address = models.CharField(max_length=100)
     mail = models.CharField(max_length=100)
 
     class Meta:
-        #  
-        #app_label = 'hello'
+        #
+        # app_label = 'hello'
         db_table = 'model22'
         # 有些数据库有表空间如oracle,可以指定表空间名称
         db_tablespace = 'ts'
@@ -127,17 +137,20 @@ class Model2(Model1):
         # 唯一索引字段
         unique_together = ('address', 'mail')
 
+
 class Model3(Model2):
     class Meta:
         # 使用代理，Model3与Model2操作的都是同一张表
         proxy = True
+
 
 class Model4(Model2):
     # 多对多字段，会额外生成第三张表appname_model4_model1用以记录
     # 两个表之间的关系
     name = models.ManyToManyField('Model1')
     # 手动生成第三张表
-    #name = models.ManyToManyField(to='Model1', through='Model42Model1', through_fields=('name', 'name'),)
+    # name = models.ManyToManyField(to='Model1', through='Model42Model1', through_fields=('name', 'name'),)
+
 
 def ModelOper():
     # 可以使用父表的字段进行查询，返回父表中的结果
@@ -151,11 +164,11 @@ def ModelOper():
     # 且动态更改条件字段的值
     Model1.objects.filter(age_gt=F('other'))
     # 对字段进行操作
-    Model1.objects.filter(age_gt=F('age')*2)
+    Model1.objects.filter(age_gt=F('age') * 2)
 
     # 使用Q构造复杂查询
-    Model1.objects.filter(Q(name='mike')|Q(name='jack'))
-    Model1.objects.filter(Q(name='mike')&Q(name='jack'))
+    Model1.objects.filter(Q(name='mike') | Q(name='jack'))
+    Model1.objects.filter(Q(name='mike') & Q(name='jack'))
     # 取反操作
     Model1.objects.filter(~Q(name='mike'))
     # 排除某列数据
@@ -171,3 +184,26 @@ def ModelOper():
     # 一次插入10条数据
     model_lsit = [Model1(name='mike'), Model1(name='jack')]
     Model1.objects.bulk_create(model_lsit, 10)
+
+# This is an auto-generated Django model module.
+# You'll have to do the following manually to clean this up:
+#   * Rearrange models' order
+#   * Make sure each model has one field with primary_key=True
+#   * Make sure each ForeignKey has `on_delete` set to the desired behavior.
+#   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
+# Feel free to rename the models, but don't rename db_table values or field names.
+
+
+class NewsStrategies(models.Model):
+    client_id = models.PositiveIntegerField()
+    str_type = models.PositiveIntegerField()
+    str_id = models.PositiveIntegerField()
+    stock_acc = models.CharField(max_length=64)
+    market = models.CharField(max_length=8)
+    created_at = models.DateTimeField(blank=True, null=True)
+    updated_at = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        # managed = False
+        db_table = 'news_strategies'
+        unique_together = (('str_type', 'str_id', 'stock_acc'),)

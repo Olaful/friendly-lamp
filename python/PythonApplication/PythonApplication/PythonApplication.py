@@ -3646,7 +3646,9 @@ z = 'hello' if x > y else 'world'
 # 实现抽象类的模块
 import abc
 
-# 抽象类：子类必须实现超类中的所有方法，否则抛NotImplementedError异常
+# 抽象类：所有子类中必须全部实现超类中@abc.abstractmethod修饰的方法，
+# 只要在所有子类中找到全部被修饰的方法就可以了，不要其中任何一个子类
+# 全部重写,否则抛NotImplementedError异常
 class parClass(abc.ABC):
     # 声明元类为ABCMeta类,
     #__metaclass__ = abc.ABCMeta
@@ -5038,7 +5040,7 @@ class CaptChaAPI:
     "9kw其实是由各个用户进行人工检查验证码的"
     "如果发送相同的图像数据，9kw服务器会从缓存读取数据"
     "可以帮别人验证验证码，获取积分"
-    "注：9kw帐户:176..@qq.com/6ZJ34BHNXT8P6XT"
+    "注：9kw帐户:...@qq.com/6ZJ34BHNXT8P6XT"
 
     def __init__(self, api_key=None, timeout=60):
         self.api_key = api_key if api_key is not None else 'X8BOZF05VI5GZGCGH1'

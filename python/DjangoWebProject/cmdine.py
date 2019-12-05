@@ -1,4 +1,4 @@
-from subprocess import Popen
+from subprocess import Popen, PIPE
 import os
 
 # 开启轻量级服务
@@ -40,6 +40,7 @@ coverage_report = 'coverage report'
 # 清理会话数据库,由于随着连接用户的增加，数据库会越来越大
 clear_session_data = 'python manage.py clearsessions'
 
+create_model_with_db = 'python manage.py inspectdb --database default news_strategies >> news/models.py'
 
 # shell中的命令
 # 查看所有表
@@ -51,5 +52,5 @@ clear_session_data = 'python manage.py clearsessions'
 # c.title
 
 if __name__ == '__main__':
-    os.chdir(r'DjangoWebProject/django_newswebsite')
-    Popen(start_server, stdout = None, stderr = None, shell=True)
+    os.chdir(r'django_newswebsite')
+    Popen(create_or_up__appdata, stdout = PIPE, stderr = PIPE, shell=True)

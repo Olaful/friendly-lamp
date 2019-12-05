@@ -115,15 +115,23 @@ WSGI_APPLICATION = 'django_newswebsite.wsgi.application'
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
 DATABASES = {
+    # 'default': {
+    #     # 默认使用sqlite3数据库引擎，也可以使用其它数据库引擎如postgresql
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    #     # 如果使用其它需要认证的数据库，则配置如下信息
+    #     # USER
+    #     # PASSWORD
+    #     # HOST
+    #     # PORT
+    # },
     'default': {
-        # 默认使用sqlite3数据库引擎，也可以使用其它数据库引擎如postgresql
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        # 如果使用其它需要认证的数据库，则配置如下信息
-        # USER 
-        # PASSWORD
-        # HOST
-        # PORT
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'dj',
+        'USER': 'root',
+        'PASSWORD': '123',
+        'HOST': 'localhost',
+        'PORT': 3306
     }
 }
 
@@ -171,7 +179,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)

@@ -7,7 +7,9 @@ from django_newswebsite.settings import STATIC_DIR
 import io
 import base64
 
-def saveToBarh(datalist):    
+def saveToBarh(datalist):
+    if not datalist:
+        return base64.b64encode(io.BytesIO().getvalue()).decode()
     if platform.system() == 'Windows':
         img = STATIC_DIR + r'\images\topviews.png'
         fname = STATIC_DIR + r'\fonts\wqydkzh.ttf'
