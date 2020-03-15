@@ -129,7 +129,7 @@ def cal_score():
     rtn_w = CONFIG['weight']['return']
     rtn_score = sum([INDICATOR[rn] * w for rn, w in rtn_w.items()
      if INDICATOR.get(rn)]) * rtn_w['total']
-    pf_score = INDICATOR['perform']['avg'] * CONFIG['weight']['perform']
+    pf_score = INDICATOR['perform']['avg'] / 100 * CONFIG['weight']['perform']
     std_dt_score = -INDICATOR['std_dt'] * CONFIG['weight']['std_dt']
     sharp_ratio_score = INDICATOR['sharp_ratio'] * CONFIG['weight']['sharp_ratio']
 
