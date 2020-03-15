@@ -4,12 +4,15 @@ import json
 import lxml.html
 import re
 import pypinyin
+import pprint
+from selenium import webdriver
 
 
 BASIC_PAGE = ''
 OVERVIEW_PAGE = ''
 CONFIG = {}
 INDICATOR = {}
+RANGE = []
 
 
 def load_config():
@@ -23,28 +26,44 @@ def return_1y(tree):
     path = '//dl[@class="dataItem01"]/dd/span[contains(@class, "ui-font-middle")]'
     rtn_e = tree.xpath(path)
     rtn = rtn_e[1].text_content()
-    rtn = float(rtn[:-1]) / 100
+    try:
+        rtn = float(rtn[:-1]) / 100
+    except Exception:
+        rtn = 0
+        print(f"{INDICATOR['fund']} return_1y is None")
     INDICATOR['rtn_1y'] = round(rtn, 5)
 
 def return_6m(tree):
     path = '//dl[@class="dataItem03"]/dd/span[contains(@class, "ui-font-middle")]'
     rtn_e = tree.xpath(path)
     rtn = rtn_e[0].text_content()
-    rtn = float(rtn[:-1]) / 100
+    try:
+        rtn = float(rtn[:-1]) / 100
+    except Exception:
+        rtn = 0
+        print(f"{INDICATOR['fund']} return_6m is None")
     INDICATOR['rtn_6m'] = rtn
 
 def return_3m(tree):
     path = '//dl[@class="dataItem02"]/dd/span[contains(@class, "ui-font-middle")]'
     rtn_e = tree.xpath(path)
     rtn = rtn_e[1].text_content()
-    rtn = float(rtn[:-1]) / 100
+    try:
+        rtn = float(rtn[:-1]) / 100
+    except Exception:
+        rtn = 0
+        print(f"{INDICATOR['fund']} return_3m is None")
     INDICATOR['rtn_3m'] = rtn
 
 def return_1m(tree):
     path = '//dl[@class="dataItem01"]/dd/span[contains(@class, "ui-font-middle")]'
     rtn_e = tree.xpath(path)
     rtn = rtn_e[0].text_content()
-    rtn = float(rtn[:-1]) / 100
+    try:
+        rtn = float(rtn[:-1]) / 100
+    except Exception:
+        rtn = 0
+        print(f"{INDICATOR['fund']} return_1m is None")
     INDICATOR['rtn_1m'] = rtn
 
 def basic_info():
@@ -58,14 +77,22 @@ def std_dt(tree):
     path = '//table[@class="fxtb"]/tr/td'
     risk_e = tree.xpath(path)
     risk_ind = risk_e[1].text_content()
-    risk_ind = float(risk_ind[:-1]) / 100
+    try:
+        risk_ind = float(risk_ind[:-1]) / 100
+    except Exception:
+        risk_ind = 0
+        print(f"{INDICATOR['fund']} std_dt is None")
     INDICATOR['std_dt'] = round(risk_ind, 5)
 
 def sharp_ratio(tree):
     path = '//table[@class="fxtb"]/tr/td'
     risk_e = tree.xpath(path)
     risk_ind = risk_e[5].text_content()
-    risk_ind = float(risk_ind)
+    try:
+        risk_ind = float(risk_ind)
+    except Exception:
+        risk_ind = 0
+        print(f"{INDICATOR['fund']} sharp_ratio is None")
     INDICATOR['sharp_ratio'] = risk_ind
 
 def perform(page):
@@ -82,7 +109,11 @@ def perform(page):
     score_map = dict(zip(scorename_list, score_list))
 
     scoreavg = re.search('var avg = "(.*?)"', page)[1]
-    scoreavg = float(scoreavg)
+    if scoreavg:
+        scoreavg = float(scoreavg)
+    else:
+        scoreavg = 0
+        print(f"{INDICATOR['fund']} pf is None")
 
     score_map['avg'] = scoreavg
 
@@ -102,11 +133,62 @@ def cal_score():
     std_dt_score = -INDICATOR['std_dt'] * CONFIG['weight']['std_dt']
     sharp_ratio_score = INDICATOR['sharp_ratio'] * CONFIG['weight']['sharp_ratio']
 
-    INDICATOR['score'] = round(sum([rtn_score, pf_score, std_dt_score, sharp_ratio_score]))
+    INDICATOR['score'] = round(sum([rtn_score, pf_score, std_dt_score, sharp_ratio_score]), 5)
 
+def get_fcode_with_theme():
+    f_theme_url = 'http://fund.eastmoney.com/api/FundTopicInterface.ashx? \
+    callbackname=topicFundData&sort=SYL_6Y&sorttype=DESC&ft=&pageindex=1 \
+    &pagesize={0}&dt=10&tp={1}&isbuy=1'
+    req_headers = {
+            'User-Agent':'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
+            + 'Chrome/71.0.3578.98 Safari/537.36'
+        }
+    
+    f_code = []
+    for theme, data in CONFIG['f_theme'].items():
+        if not data['enabled']:
+            continue
+        print(f"{theme}")
+
+        resp = requests.get(f_theme_url.format(data['num'], data['tp']), headers=req_headers)
+        rls = re.search(r'"Datas":(.*?),"PageSize"', resp.text)
+        json_rls = json.loads(rls[1])
+        f_code_list = [r['FCODE'] for r in json_rls]
+        f_code.extend(f_code_list)
+
+    return f_code
+
+def get_fcode_with_rating():
+    f_rating_url = 'http://fund.eastmoney.com/data/fundrating.html#{0}'
+    f_rating_url = f_rating_url.format(CONFIG['f_rating']['type'])
+
+    chrome_options = webdriver.ChromeOptions()
+    chrome_options.add_argument('--headless')
+    driver = webdriver.Chrome(chrome_options=chrome_options)
+    driver.get(f_rating_url)
+
+    tree = lxml.html.fromstring(driver.page_source)
+    path = '//table[@id="lbtable"]/tbody/tr/td[@class="dm"]/a'
+    f_e = tree.xpath(path)
+    f_e = f_e[:CONFIG['f_rating']['num']]
+
+    f_code = [e.text_content() for e in f_e]
+
+    return f_code
+
+def fetch_f_code():
+    if CONFIG['f_code']:
+        return CONFIG['f_code']
+
+    theme_code = get_fcode_with_theme()
+    if theme_code:
+        return theme_code
+
+    rating_code = get_fcode_with_rating()
+    return rating_code
 
 def main():
-    global BASIC_PAGE, OVERVIEW_PAGE, INDICATOR
+    global BASIC_PAGE, OVERVIEW_PAGE, INDICATOR, RANGE
     load_config()
 
     basic_url = 'http://fund.eastmoney.com/{0}.html?spm=search'
@@ -115,8 +197,10 @@ def main():
             'User-Agent':'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
             + 'Chrome/71.0.3578.98 Safari/537.36'
         }
+    
+    f_code = fetch_f_code()
 
-    for fund in CONFIG['f_code']:
+    for fund in f_code:
         INDICATOR = {}
         INDICATOR['fund'] = fund
 
@@ -130,7 +214,12 @@ def main():
 
         cal_score()
 
+        RANGE.append(INDICATOR)
+
         print(INDICATOR, '\n')
+    
+    RANGE.sort(key=lambda x: x['score'], reverse=True)
+    pprint.pprint(RANGE)
 
 
 if __name__ == '__main__':

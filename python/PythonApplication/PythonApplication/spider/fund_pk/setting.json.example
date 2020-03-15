@@ -1,5 +1,16 @@
 {
     "f_code": ["005777"],
+    "f_theme": {
+        "Quantum communication": {
+            "enabled": false,
+            "num": 20,
+            "tp": "3164a1b721fc3464"
+        }
+    },
+    "f_rating": {
+        "type": "ftgp",
+        "num": 50
+    },
     "weight": {
         "return": {
             "total": 0.5,
