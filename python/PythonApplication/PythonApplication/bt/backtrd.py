@@ -32,10 +32,14 @@ def final_value():
     print("Final Portfolio Value: %.2f" % cerebro.broker.get_value())
 
 
-def set_cash(cash=0):
+def set_cash(cash=0.0):
     cash = cash or 100000.0
     print("set cash: ", cash)
     cerebro.broker.setcash(cash)
+
+
+def add_sizer(sizer=None, stake=10):
+    cerebro.addsizer(sizer, stake=stake)
 
 
 def set_commission(commission=0.001):
@@ -44,6 +48,7 @@ def set_commission(commission=0.001):
 
 def add_data_feed():
     import datetime, os
+
     modpath = os.path.dirname(__file__)
     data_path = r'datas/orcl-1995-2014.txt'
     full_name = os.path.join(modpath, data_path)
@@ -60,15 +65,41 @@ def add_data_feed():
     cerebro.adddata(data)
 
 
-def add_strategy():
-    cerebro.addstrategy(TestStrategy)
+def add_strategy(add_type=0, **kwargs):
+    if add_type == 0:
+        cerebro.addstrategy(TestStrategy)
+    else:
+        # opt strategy
+        cerebro.optstrategy(
+            TestStrategy,
+            **kwargs
+        )
+
+
+def plot():
+    cerebro.plot()
 
 
 class TestStrategy(bt.Strategy):
+    """ 
+    use param with self.params.name,
+    you can try any param value
+    until found the best value
+    """
+    params = (
+        ('exitbars', 5),
+        ('maperiod', 15),
+        ('emaperiod', 25),
+        ('wmaperiod', 25),
+        ('smarsiperiod', 10),
+        ('tmprsi', None),
+        ('printlog', False),
+    )
     
-    def log(self, txt, dt=None):
-        dt = dt or self.datas[0].datetime.date(0)
-        print('%s, %s' % (dt.isoformat(), txt))
+    def log(self, txt, dt=None, doprint=False):
+        if self.params.printlog or doprint:
+            dt = dt or self.datas[0].datetime.date(0)
+            print('%s, %s' % (dt.isoformat(), txt))
 
     def __init__(self):
         # first data change everyday
@@ -76,6 +107,73 @@ class TestStrategy(bt.Strategy):
         self.order = None
         self.buyprice = None
         self.buycomm = None
+
+        self.sma = None
+
+        self._init_indicator()
+
+    def _init_indicator(self):
+        indicator_enabled = {
+            'sma': 1,
+            'ema': 0,
+            'wma': 0,
+            'stochastic_slow': 0,
+            'macd': 0,
+            'rsi': 0,
+            'smarsi': 0,
+            'atr': 0
+        }
+
+        for ind, enabled in indicator_enabled.items():
+            if not enabled:
+                continue
+            init_ind_method = getattr(self, '_init_'+ind, None)
+            if callable(init_ind_method):
+                init_ind_method()
+            else:
+                self.log('_init_%s method is not callable' % ind)
+
+    def _init_sma(self):
+        """
+        sma indicator added to the strategy
+        so the first trading day will be maperiod bars occurs
+        """
+        self.sma = bt.indicators.MovingAverageSimple(
+            self.datas[0],
+            period=self.params.maperiod
+        )
+
+    def _init_ema(self):
+        """
+        because of using self.datas, so indicators will autoregister with the strategy
+        and will have a influence to the first trading day
+        """
+        bt.indicators.ExponentialMovingAverage(self.datas[0], period=self.params.emaperiod)
+
+    def _init_wma(self):
+        bt.indicators.WeightedMovingAverage(self.datas[0], period=self.params.wmaperiod, subplot=True)
+
+    def _init_stochastic_slow(self):
+        """
+        RSV = (CLOSE-MIN(N)) / (MAX(N) - MIN(N))*100
+        MARSV = EMA(RSV)
+        K = MA(MARSV)
+        D = MA(K)
+        general param: N = 9, M = 3
+        """
+        bt.indicators.StochasticSlow(self.datas[0])
+
+    def _init_macd(self):
+        bt.indicators.MACDHisto(self.datas[0])
+
+    def _init_rsi(self):
+        self.params.tmprsi = bt.indicators.RSI(self.datas[0])
+
+    def _init_smarsi(self):
+        bt.indicators.SmoothedMovingAverage(self.params.tmprsi, period=self.params.smarsiperiod)
+
+    def _init_atr(self):
+        bt.indicators.RSI(self.datas[0], plot=False)
 
     def falling_buy(self):
         """
@@ -86,11 +184,29 @@ class TestStrategy(bt.Strategy):
         many bars passed
         """
         if not (self.dataclose[0] < self.dataclose[-1]):
-            return
+            return False
         if self.dataclose[-1] < self.dataclose[-2]:
-            self.log('Buy create, %.2f' % self.dataclose[0])
-            # if order at the last day, executed next trading day 
-            self.order = self.buy()
+            return True
+        
+        return False
+
+    def gt_sma_buy(self):
+        if self.dataclose[0] > self.sma[0]:
+            self.log('Sma: %.2f' % self.sma[0])
+            return True
+        return False
+
+    def pass_bars_sell(self):
+        # pos up to 5 d
+        if len(self) >= self.bar_executed + self.params.exitbars:
+            return True
+        return False
+
+    def lt_sma_sell(self):
+        if self.dataclose[0] < self.sma[0]:
+            self.log('Sma: %.2f' % self.sma[0])
+            return True
+        return False
 
     def notify_order(self, order):
         # nofify order next day
@@ -113,6 +229,7 @@ class TestStrategy(bt.Strategy):
                 (order.executed.price, order.executed.value, order.executed.comm)
                 )
             self.bar_executed = len(self)
+        # broker could reject order if not enough cash
         elif order.status in [order.Canceled, order.Margin, order.Rejected]:
             self.log('Order Canceled/Margin/Rejected')
 
@@ -127,6 +244,10 @@ class TestStrategy(bt.Strategy):
         (trade.pnl, trade.pnlcomm)
         )
 
+    def stop(self):
+        self.log('(MA period %2d) Ending Value %.2f'
+        % (self.params.maperiod, self.broker.getvalue()), doprint=True)
+
     def next(self):
         self.log('Close, %.2f' % self.dataclose[0])
 
@@ -136,20 +257,30 @@ class TestStrategy(bt.Strategy):
 
         # if not yet in market, might buy
         if not self.position:
-            self.falling_buy()
+            if self.gt_sma_buy():
+                self.log('Buy create, %.2f' % self.dataclose[0])
+                # if order at the last day, executed next trading day 
+                self.order = self.buy()
         else:
-            # pos up to 5 d
-            if len(self) >= self.bar_executed + 5:
+            if self.lt_sma_sell():
                 self.log('Sell Create, %.2f' % self.dataclose[0])
                 self.order = self.sell()
 
 
 def main():
     start_value()
-    add_strategy()
+    """
+    The system will execute the strategy for each value of the range
+    """
+    add_strategy(add_type=1, maperiod=range(10, 31))
     add_data_feed()
-    set_cash(100000.0)
-    set_commission(0.001)
+    set_cash(cash=1000.0)
+    """
+    Multiplied cash for order, so the profit and loss
+    will mutiplied
+    """
+    add_sizer(sizer=bt.sizers.FixedSize, stake=10)
+    set_commission(commission=0.00)
 
     run()
 
