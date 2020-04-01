@@ -82,9 +82,12 @@ def plot():
 
 class TestStrategy(bt.Strategy):
     """ 
-    use param with self.params.name,
+    use param with self.params.name
+    or self.p.name
     you can try any param value
     until found the best value
+    also can using dict like params
+    = dict(exitbars=5, maperiod=15)
     """
     params = (
         ('exitbars', 5),
@@ -137,6 +140,11 @@ class TestStrategy(bt.Strategy):
         """
         sma indicator added to the strategy
         so the first trading day will be maperiod bars occurs
+        self.datas[0] can be None, default self.datas[0]
+        other usage: self.simplema = bt.indicators.MovingAverageSimple
+        sma value can be used with self.simplema.lines.sma[0] or
+        self.simplema.sma[0]
+        lines can be shortened to l
         """
         self.sma = bt.indicators.MovingAverageSimple(
             self.datas[0],
@@ -170,10 +178,11 @@ class TestStrategy(bt.Strategy):
         self.params.tmprsi = bt.indicators.RSI(self.datas[0])
 
     def _init_smarsi(self):
+        # ind can use other ind as data
         bt.indicators.SmoothedMovingAverage(self.params.tmprsi, period=self.params.smarsiperiod)
 
     def _init_atr(self):
-        bt.indicators.RSI(self.datas[0], plot=False)
+        bt.indicators.ATR(self.datas[0], plot=False)
 
     def falling_buy(self):
         """
@@ -182,6 +191,9 @@ class TestStrategy(bt.Strategy):
         self.dataclose[-2] pre of pre
         len(self.dataclose) tell you how
         many bars passed
+        buflen: total bars
+        not supporting slice, you can get array with usging
+        self.dataclose.get[ago=0, size=num]
         """
         if not (self.dataclose[0] < self.dataclose[-1]):
             return False
@@ -191,6 +203,18 @@ class TestStrategy(bt.Strategy):
         return False
 
     def gt_sma_buy(self):
+        """
+        can use like that: if self.dataclose > self.sma
+        if init the variable:
+        close_cover_sma = self.data.close > self.sma
+        close_cover_sma is a lines obj
+        comparision can be like this: if close_cover_sma
+        if exist multi cond, can be that:
+        buy_sig = bt.And(cond1, cond2)
+        other operator for example: high_or_low =
+        bt.If(self.sma > self.data.close, self.data
+        .low, self.data.high)
+        """
         if self.dataclose[0] > self.sma[0]:
             self.log('Sma: %.2f' % self.sma[0])
             return True
