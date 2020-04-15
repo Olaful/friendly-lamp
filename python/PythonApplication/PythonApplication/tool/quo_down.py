@@ -37,14 +37,14 @@ req_headers = {
 }
 
 
-def fetch_his_quo(symbol):
+def fetch_his_quo(symbol, is_index=False, startdate='', enddate=''):
     """
     fetch hisquo
     :param symbol:
     :return:
     """
     print(f"Get hisquo of {symbol}")
-    symbol = 'cn_' + symbol if symbol.find('000300') == -1 else 'zs_' + symbol
+    symbol = 'cn_' + symbol if not is_index else 'zs_' + symbol
 
     today = datetime.datetime.today()
     before_3_days = today - datetime.timedelta(days=360)
@@ -52,8 +52,14 @@ def fetch_his_quo(symbol):
     today = str(today.date()).replace('-', '')
     before_3_days = str(before_3_days.date()).replace('-', '')
 
+    startdate = startdate or before_3_days
+    enddate = enddate or today
+
+    startdate = startdate.replace('-', '')
+    enddate = enddate.replace('-', '')
+
     url = f'http://q.stock.sohu.com/hisHq?code={symbol}' \
-          f'&start={before_3_days}&end={today}&stat=1&order=D' \
+          f'&start={startdate}&end={enddate}&stat=1&order=D' \
           '&period=d'
     resp = requests.get(url, headers=req_headers)
     rls = resp.json()
@@ -85,7 +91,7 @@ def to_db(hqs, symbol):
     conn.commit()
 
 
-def his_quo(symbol, startdate=None, enddate=None, num=180):
+def his_quo(symbol, startdate=None, enddate=None, num=180, is_index=False):
     """
     history quotation
     :param symbol:
@@ -103,7 +109,7 @@ def his_quo(symbol, startdate=None, enddate=None, num=180):
     hisquo_info = db.fetchall()
 
     if not hisquo_info:
-        hq = fetch_his_quo(symbol)
+        hq = fetch_his_quo(symbol, is_index, startdate, enddate)
         to_db(hq, symbol + ' CH Equity')
 
         db.execute(query_sql)
@@ -150,7 +156,7 @@ def last_quo(symbol):
 
 
 def main():
-    rls = his_quo('000001')
+    rls = his_quo('000001', is_index=False)
     test = 1
 
 
