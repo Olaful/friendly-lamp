@@ -1,7 +1,7 @@
 import pandas as pd
 from tushare import get_realtime_quotes
 from quotool import his_quo, last_quo
-from stk_data import ma, pre_ma
+from stk_data import ma, pre_ma, day_bars
 
 
 def is_look_up_from_bottom(symbol, down_days=4):
@@ -15,28 +15,16 @@ def is_look_up_from_bottom(symbol, down_days=4):
     if last_price < last_open:
         return False
 
-    last_date = last_quo.date.iloc[0] 
-    day_bars = his_quo(symbol, num=4+down_days)
-    first_his_date = str(day_bars[0]['date'])
+    day_line_bars = day_bars(symbol, num=4+down_days)
 
-    if first_his_date < last_date:
-        day_bars.insert(
-            {
-                'date': last_date, 
-                'open': last_open,
-                'close': last_price
-            },
-            0
-        )
-
-    last_1_bar = day_bars[0]
-    last_2_bar = day_bars[1]
+    last_1_bar = day_line_bars[0]
+    last_2_bar = day_line_bars[1]
 
     if last_1_bar['close'] > last_1_bar['open'] and \
      last_2_bar['close'] > last_2_bar['open']:
-        pre_bars = day_bars[2:]
+        pre_bars = day_line_bars[2:]
     else:
-        pre_bars = day_bars[1:]
+        pre_bars = day_line_bars[1:]
 
     closes = [bar['close'] for bar in pre_bars]
     shift_closes = closes[1:]
@@ -61,10 +49,10 @@ def is_kdj_gf(symbol):
     :param symbol:
     :return:
     """
-    day_bars = his_quo(symbol)
+    day_line_bars = day_bars(symbol)
 
     date, open, high, low, close = [], [], [], [], []
-    for bar in day_bars:
+    for bar in day_line_bars:
         date.append(bar['date'])
         open.append(bar['open'])
         high.append(bar['high'])
@@ -76,19 +64,6 @@ def is_kdj_gf(symbol):
     high.reverse()
     low.reverse()
     close.reverse()
-
-    quo_info = last_quo(symbol)
-    last_date, last_open, last_high, last_low, last_close = quo_info['date'],\
-                                                            quo_info['open'],\
-                                                            quo_info['high'],\
-                                                            quo_info['low'],\
-                                                            quo_info['close']
-
-    date.append(last_date)
-    open.append(float(last_open))
-    high.append(float(last_high))
-    low.append(float(last_low))
-    close.append(float(last_close))
 
     df_kdj = pd.DataFrame({'date': date, 'open': open,
                            'high': high, 'low': low, 'close': close})
@@ -104,7 +79,7 @@ def is_kdj_gf(symbol):
 
     tmp_df_kdj = df_kdj[1:]
 
-    for idx, row in tmp_df_kdj.iterrows():
+    for _, row in tmp_df_kdj.iterrows():
         rsv = (row['close'] - row['min']) /\
               (row['max'] - row['min']) * 100
         k = rsv / 3 + tmp_k * 2 / 3
@@ -137,7 +112,7 @@ def is_kdj_gf(symbol):
     print(f'PRE_K:{df_kdj["k"].iloc[-2]}, PRE_D:{df_kdj["d"].iloc[-2]}')
     print(f'    K:{df_kdj["k"].iloc[-1]},     D:{df_kdj["d"].iloc[-1]}')
 
-    return df_kdj['buy_sig'].iloc[-1]
+    return True if df_kdj['buy_sig'].iloc[-1] else False
 
 
 def is_last_price_gt_ma30(symbol):
@@ -164,23 +139,15 @@ def is_break_through_ma5(symbol, pre_days=3):
     """
     assert pre_days >= 0
 
-    quo = get_realtime_quotes(symbol)
-    last_price = float(quo.price.iloc[0])
-    last_date = str(quo.date.iloc[0])
-
-    day_bars = his_quo(symbol, startdate=None, enddate=None, num=5+pre_days, is_index=False)
+    day_line_bars = day_bars(symbol, num=5+pre_days)
 
     dates, closes = [], [],
-    for bar in day_bars:
+    for bar in day_line_bars:
         dates.append(bar['date'])
         closes.append(bar['close'])
 
     dates.reverse()
     closes.reverse()
-
-    if last_date != dates[-1]:
-        dates.append(last_date)
-        closes.append(last_price)
 
     df_ma = pd.DataFrame({'date': dates, 'close': closes})
 
@@ -191,19 +158,19 @@ def is_break_through_ma5(symbol, pre_days=3):
 
     cross_up = False
 
-    for i in range(pre_days):
-        ma_info = df_ma.iloc[-pre_days]
+    for days in reversed(range(1, pre_days + 1)):
+        ma_info = df_ma.iloc[-days]
         if ma_info.cross_up == 0:
             continue
 
-        print(f"{symbol} {ma_info.date} last price({last_price}) cross up ma5({ma_info.ma5})")
+        print(f"{symbol} {ma_info.date} close price({ma_info.close}) cross up ma5({ma_info.ma5})")
         cross_up = True
         break
 
     return cross_up
 
 
-def is_moderate_heavy_vol(symbol, heavy_percent=0.13):
+def is_moderate_heavy_vol(symbol, heavy_percent=0.27):
     """
     if moderate heavy volume
     :param symbol:
@@ -218,8 +185,23 @@ def is_moderate_heavy_vol(symbol, heavy_percent=0.13):
     if last_price < open_price:
         return False
 
-    day_bars = his_quo(symbol, num=1)
-    yesday_bar = day_bars[0]
+    day_bars = his_quo(symbol, num=2)
+
+    last_date = quo.date.iloc[0] 
+    first_his_date = str(day_bars[0]['date'])
+
+    if first_his_date < last_date:
+        day_bars.insert(
+            {
+                'date': last_date, 
+                'open': open_price,
+                'close': last_price,
+                'volume': int(quo.volume.iloc[0]) / 100
+            },
+            0
+        )
+
+    yesday_bar = day_bars[1]
 
     yesday_close = float(yesday_bar['close'])
     yesday_open = float(yesday_bar['open'])
@@ -227,8 +209,8 @@ def is_moderate_heavy_vol(symbol, heavy_percent=0.13):
     if yesday_close < yesday_open:
         return False
 
-    last_volume = float(quo.volume.iloc[0])
-    yesday_volume = float(yesday_bar['volume']) * 100
+    last_volume = float(day_bars[0]['volume'])
+    yesday_volume = float(yesday_bar['volume'])
 
     if last_volume < yesday_volume:
         return False
@@ -241,6 +223,61 @@ def is_moderate_heavy_vol(symbol, heavy_percent=0.13):
     return True
 
 
+def is_rise_with_sector(symbol, sectors=[], percent=0.6):
+    """
+    if related sectors general rise 
+    """
+    if not sectors:
+        return False
+
+    all_symbol = [symbol] + sectors
+    rise_num = 0
+
+    for s in all_symbol:
+        day_line_bars = day_bars(s, num=3)
+
+        last_day_bar = day_line_bars[0]
+        pre_day_bar = day_line_bars[1]
+
+        if last_day_bar['close'] > pre_day_bar['close']:
+            rise_num += 1
+
+    rise_percent = rise_num / len(all_symbol)
+    
+    if rise_percent >= percent:
+        return True
+    
+    return False
+
+
+def is_gap(symbol, percent=0.01):
+    """
+    if product a gap
+    :param symbol:
+    :param percent:
+    :return:
+    """
+    day_line_bars = day_bars(symbol, num=3)
+    last_day_bar = day_line_bars[0]
+    pre_day_bar = day_line_bars[1]
+
+    open_change = last_day_bar['open'] / pre_day_bar['close'] - 1
+
+    if open_change >= percent:
+        return True
+
+    return False
+
+
 if __name__ == "__main__":
-    rls = is_look_up_from_bottom('000960', down_days=2)
+    symbol = '603707'
+    # rls = {
+    #     'is_look_up_from_bottom': is_look_up_from_bottom(symbol),
+    #     'is_kdj_gf': is_kdj_gf(symbol),
+    #     'is_last_price_gt_ma30': is_last_price_gt_ma30(symbol),
+    #     'is_break_through_ma5': is_break_through_ma5(symbol),
+    #     'is_moderate_heavy_vol': is_moderate_heavy_vol(symbol),
+    # }
+    rls = is_gap('603601')
+    print(rls)
     pass
