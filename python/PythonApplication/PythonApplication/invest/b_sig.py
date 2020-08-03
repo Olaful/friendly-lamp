@@ -275,7 +275,7 @@ def is_rise_with_sector(symbol, sectors=[], percent=0.6):
     return False
 
 
-def is_gap(symbol, percent=0.01):
+def is_gap(symbol, percent=0.00):
     """
     if product a gap
     :param symbol:
@@ -286,9 +286,9 @@ def is_gap(symbol, percent=0.01):
     last_day_bar = day_line_bars[0]
     pre_day_bar = day_line_bars[1]
 
-    open_change = last_day_bar['open'] / pre_day_bar['close'] - 1
+    open_change = last_day_bar['low'] / pre_day_bar['high'] - 1
 
-    if open_change >= percent:
+    if open_change > percent:
         return True
 
     return False
@@ -336,6 +336,41 @@ def is_rise_slow_with_ma5(symbol, rise_days=3, percent=0.015):
     return False
 
 
+def is_big_barehead_red_line(symbol, percent=0.05):
+    """
+    if close is the high and the gain is big
+    """
+    day_line_bars = day_bars(symbol, num=2)
+    last_day_bar = day_line_bars[0]
+
+    if last_day_bar['close'] < last_day_bar['high'] - 0.0101:
+        return False
+
+    change = last_day_bar['close'] / last_day_bar['open'] - 1
+
+    if change >= percent:
+        return True
+
+    return False
+
+
+def is_gain_limit_with_decrease_vol(symbol, percent=0.1):
+    day_line_bars = day_bars(symbol, num=2)
+
+    last_day_bar = day_line_bars[0]
+    pre_day_bar = day_line_bars[1]
+
+    if last_day_bar['volume'] > pre_day_bar['volume']:
+        return False
+
+    day_rtn = last_day_bar['close'] / pre_day_bar['close'] - 1
+
+    if day_rtn > percent - 0.0001:
+        return True
+
+    return False 
+
+
 if __name__ == "__main__":
     symbol = '603707'
     # rls = {
@@ -345,6 +380,6 @@ if __name__ == "__main__":
     #     'is_break_through_ma5': is_break_through_ma5(symbol),
     #     'is_moderate_heavy_vol': is_moderate_heavy_vol(symbol),
     # }
-    rls = is_rise_slow_with_ma5('603707', percent=0.02)
+    rls = is_gain_limit_with_decrease_vol('600211')
     print(rls)
     pass
