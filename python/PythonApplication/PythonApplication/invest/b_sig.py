@@ -1,6 +1,5 @@
 import pandas as pd
 from tushare import get_realtime_quotes
-from quotool import his_quo, last_quo
 from stk_data import ma, pre_ma, day_bars
 
 
@@ -151,7 +150,7 @@ def is_break_through_ma5(symbol, pre_days=3):
 
     df_ma = pd.DataFrame({'date': dates, 'close': closes})
 
-    df_ma['ma5'] = df_ma['close'].rolling(window=5, min_periods=1).mean()
+    df_ma['ma5'] = df_ma['close'].rolling(window=5, min_periods=5).mean()
     df_ma['diff'] = df_ma['close'] - df_ma['ma5']
     df_ma['pre_diff'] = df_ma['diff'].shift(1)
     df_ma['cross_up'] = df_ma.apply(lambda x: 1 if x['pre_diff'] <= 0 < x['diff'] else 0, axis=1)
@@ -164,6 +163,46 @@ def is_break_through_ma5(symbol, pre_days=3):
             continue
 
         print(f"{symbol} {ma_info.date} close price({ma_info.close}) cross up ma5({ma_info.ma5})")
+        cross_up = True
+        break
+
+    return cross_up
+
+
+def is_break_through_ma30(symbol, pre_days=3):
+    """
+    if break through ma30
+    :param symbol:
+    :param pre_days
+    :return:
+    """
+    assert pre_days >= 0
+
+    day_line_bars = day_bars(symbol, num=30+pre_days)
+
+    dates, closes = [], [],
+    for bar in day_line_bars:
+        dates.append(bar['date'])
+        closes.append(bar['close'])
+
+    dates.reverse()
+    closes.reverse()
+
+    df_ma = pd.DataFrame({'date': dates, 'close': closes})
+
+    df_ma['ma30'] = df_ma['close'].rolling(window=30, min_periods=30).mean()
+    df_ma['diff'] = df_ma['close'] - df_ma['ma30']
+    df_ma['pre_diff'] = df_ma['diff'].shift(1)
+    df_ma['cross_up'] = df_ma.apply(lambda x: 1 if x['pre_diff'] <= 0 < x['diff'] else 0, axis=1)
+
+    cross_up = False
+
+    for days in reversed(range(1, pre_days + 1)):
+        ma_info = df_ma.iloc[-days]
+        if ma_info.cross_up == 0:
+            continue
+
+        print(f"{symbol} {ma_info.date} close price({ma_info.close}) cross up ma5({ma_info.ma30})")
         cross_up = True
         break
 
@@ -185,23 +224,9 @@ def is_moderate_heavy_vol(symbol, heavy_percent=0.27):
     if last_price < open_price:
         return False
 
-    day_bars = his_quo(symbol, num=2)
+    day_line_bars = day_bars(symbol, num=2)
 
-    last_date = quo.date.iloc[0] 
-    first_his_date = str(day_bars[0]['date'])
-
-    if first_his_date < last_date:
-        day_bars.insert(
-            {
-                'date': last_date, 
-                'open': open_price,
-                'close': last_price,
-                'volume': int(quo.volume.iloc[0]) / 100
-            },
-            0
-        )
-
-    yesday_bar = day_bars[1]
+    yesday_bar = day_line_bars[1]
 
     yesday_close = float(yesday_bar['close'])
     yesday_open = float(yesday_bar['open'])
@@ -209,7 +234,7 @@ def is_moderate_heavy_vol(symbol, heavy_percent=0.27):
     if yesday_close < yesday_open:
         return False
 
-    last_volume = float(day_bars[0]['volume'])
+    last_volume = float(day_line_bars[0]['volume'])
     yesday_volume = float(yesday_bar['volume'])
 
     if last_volume < yesday_volume:
@@ -269,6 +294,48 @@ def is_gap(symbol, percent=0.01):
     return False
 
 
+def is_rise_slow_with_ma5(symbol, rise_days=3, percent=0.015):
+    """
+    if price rise slowly follow ma5
+    :param symbol:
+    :param rise_days:
+    :param percent:
+    :return:
+    """
+    day_line_bars = day_bars(symbol, num=5+rise_days+1)
+
+    tmp_ma5 = 0.0
+    first_assign_ma5 = True
+
+    gain_days = 0
+
+    for i in range(len(day_line_bars)):
+        day_change = day_line_bars[i]['close'] / day_line_bars[i]['open'] - 1
+
+        if abs(day_change) > percent:
+            return False
+        if day_line_bars[i]['close'] < day_line_bars[i+1]['close']:
+            return False
+
+        ma5_closes = [bar['close'] for bar in day_line_bars[i:i+5]]
+        ma5 = sum(ma5_closes) / len(ma5_closes)
+
+        if first_assign_ma5:
+            tmp_ma5 = ma5
+            first_assign_ma5 = False
+
+        if ma5 > tmp_ma5:
+            return False
+
+        tmp_ma5 = ma5
+
+        gain_days += 1
+        if gain_days == rise_days:
+            return True
+
+    return False
+
+
 if __name__ == "__main__":
     symbol = '603707'
     # rls = {
@@ -278,6 +345,6 @@ if __name__ == "__main__":
     #     'is_break_through_ma5': is_break_through_ma5(symbol),
     #     'is_moderate_heavy_vol': is_moderate_heavy_vol(symbol),
     # }
-    rls = is_gap('603601')
+    rls = is_rise_slow_with_ma5('603707', percent=0.02)
     print(rls)
     pass

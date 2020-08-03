@@ -1,5 +1,4 @@
 from tushare import get_realtime_quotes
-from quotool import his_quo
 from stk_data import day_bars
 
 

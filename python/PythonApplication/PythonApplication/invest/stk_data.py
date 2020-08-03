@@ -65,6 +65,7 @@ def day_bars(symbol, num=180, qfq=True):
 
     if first_his_date < last_date:
         day_line_bars.insert(
+            0,
             {
                 'date': last_date, 
                 'open': float(quo.open.iloc[0]),
@@ -72,8 +73,7 @@ def day_bars(symbol, num=180, qfq=True):
                 'low': float(quo.low.iloc[0]),
                 'close': float(quo.price.iloc[0]),
                 'volume': float(quo.volume.iloc[0]) / 100,
-            },
-            0
+            }
         )
 
     if not qfq:
