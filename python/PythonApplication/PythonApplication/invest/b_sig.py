@@ -336,12 +336,16 @@ def is_rise_slow_with_ma5(symbol, rise_days=3, percent=0.015):
     return False
 
 
-def is_big_barehead_red_line(symbol, percent=0.05):
+def is_big_barehead_red_line_with_increase_vol(symbol, percent=0.05):
     """
     if close is the high and the gain is big
     """
-    day_line_bars = day_bars(symbol, num=2)
+    day_line_bars = day_bars(symbol, num=3)
     last_day_bar = day_line_bars[0]
+    pre_day_bar = day_line_bars[1]
+
+    if last_day_bar['volume'] < pre_day_bar['volume']:
+        return False
 
     if last_day_bar['close'] < last_day_bar['high'] - 0.0101:
         return False
@@ -368,8 +372,24 @@ def is_gain_limit_with_decrease_vol(symbol, percent=0.1):
     if day_rtn > percent - 0.0001:
         return True
 
-    return False 
+    return False
 
+
+def is_new_high(symbol, days=360):
+    """
+    if make a new high
+    """
+    day_line_bars = day_bars(symbol, num=days)
+
+    last_close = day_line_bars[0]['close']
+    highest_day = max(day_line_bars[1:], key=lambda bar: bar['close'])
+    his_highest = highest_day['close']
+
+    if last_close > his_highest:
+        return True
+
+    return False
+    
 
 if __name__ == "__main__":
     symbol = '603707'
@@ -380,6 +400,6 @@ if __name__ == "__main__":
     #     'is_break_through_ma5': is_break_through_ma5(symbol),
     #     'is_moderate_heavy_vol': is_moderate_heavy_vol(symbol),
     # }
-    rls = is_gain_limit_with_decrease_vol('600211')
+    rls = is_new_high('603986')
     print(rls)
     pass
