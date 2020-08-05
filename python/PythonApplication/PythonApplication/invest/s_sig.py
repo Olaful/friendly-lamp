@@ -119,6 +119,36 @@ def is_vol_decrease_after_rise(symbol, rise_days=3):
     return False
 
 
+def is_begin_dead_triangle(symbol, days=30):
+    day_line_bars = day_bars(symbol, num=days+1)
+
+    closes = [bar['close'] for bar in day_line_bars]
+
+    last_5_bars = closes[:5]
+    last_10_bars = closes[:10]
+    last_ma5 = sum(last_5_bars) / len(last_5_bars)
+    last_ma10 = sum(last_10_bars) / len(last_10_bars)
+
+    if last_ma5 > last_ma10:
+        return False
+
+    last_20_bars = closes[:20]
+    last_ma20 = sum(last_20_bars) / len(last_20_bars)
+
+    if last_ma20 > last_ma5:
+        return False
+
+    pre_5_bars = closes[1:6]
+    pre_10_bars = closes[1:11]
+    pre_ma5 = sum(pre_5_bars) / len(pre_5_bars)
+    pre_ma10 = sum(pre_10_bars) / len(pre_10_bars)
+
+    if pre_ma5 > pre_ma10:
+        return True
+
+    return False
+
+
 if __name__ == "__main__":
     rls = is_vol_decrease_after_rise('603667')
     pass

@@ -389,7 +389,7 @@ def is_new_high(symbol, days=360):
         return True
 
     return False
-    
+
 
 if __name__ == "__main__":
     symbol = '603707'
