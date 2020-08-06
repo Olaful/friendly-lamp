@@ -149,6 +149,26 @@ def is_begin_dead_triangle(symbol, days=30):
     return False
 
 
+def is_rise_close_to_ma180(symbol, percent=0.015):
+    day_line_bars = day_bars(symbol, num=180+1)
+
+    closes = [bar['close'] for bar in day_line_bars]
+    last_price = closes[0]
+    closes_180 = closes[:180]
+
+    ma180 = sum(closes_180) / len(closes_180)
+    
+    if last_price > ma180:
+        return False
+
+    distance = ma180 / last_price - 1
+
+    if distance < percent:
+        return True
+
+    return False
+
+
 if __name__ == "__main__":
-    rls = is_vol_decrease_after_rise('603667')
+    rls = is_rise_close_to_ma180('601318')
     pass

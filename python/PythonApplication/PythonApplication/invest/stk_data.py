@@ -99,6 +99,11 @@ def day_bars(symbol, num=180, qfq=True):
     cash_dividend = float(cash_dividend) if cash_dividend else 0.0
     stock_dividend = result_dividend.dividReserveToStockPs.iloc[0]
     stock_dividend = float(stock_dividend) if stock_dividend else 0.0
+
+    if not stock_dividend:
+        stock_dividend = result_dividend.dividStocksPs.iloc[0]
+        stock_dividend = float(stock_dividend) if stock_dividend else 0.0
+
     date_dividend = result_dividend.dividPayDate.iloc[0]
 
     for day_bar in day_line_bars:
