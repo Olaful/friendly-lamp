@@ -1,11 +1,7 @@
-import pandas as pd
+import datetime
 from quotool import his_quo
-from tushare import get_realtime_quotes
-from baostock import query_dividend_data
-from baostock import login as bao_stk_login
-
-
-_BAOSTOCK_LOGIN = False
+from tushare import get_realtime_quotes, get_index
+from common import get_last_dvd_info
 
 
 def ma(symbol, freq='D', ma_num=10):
@@ -53,15 +49,29 @@ def pre_ma(symbol, freq='D', ma_num=10, pre_days=1):
     return ma_value
 
 
-def day_bars(symbol, num=180, qfq=True):
+def day_bars(symbol, num=180, qfq=True, is_index=False):
     """
     day bar
     """
-    quo = get_realtime_quotes(symbol)
-    last_date = quo.date.iloc[0]
-
-    day_line_bars = his_quo(symbol, num=num)
+    day_line_bars = his_quo(symbol, num=num, is_index=is_index)
     first_his_date = str(day_line_bars[0]['date'])
+
+    if not is_index:
+        vol_zoom_mul = 100
+        quo = get_realtime_quotes(symbol)
+        last_date = quo.date.iloc[0]
+    else:
+        vol_zoom_mul = 1
+        all_index_quo = get_index()
+        quo = all_index_quo[all_index_quo.code == symbol]
+        last_volume = int(quo.volume.iloc[0])
+        first_his_volume = int(day_line_bars[0]['volume'])
+        now = datetime.datetime.now()
+
+        if abs(last_volume - first_his_volume) > 10:
+            last_date = str(now.date())
+        else:
+            last_date = first_his_date
 
     if first_his_date < last_date:
         day_line_bars.insert(
@@ -72,39 +82,24 @@ def day_bars(symbol, num=180, qfq=True):
                 'high': float(quo.high.iloc[0]),
                 'low': float(quo.low.iloc[0]),
                 'close': float(quo.price.iloc[0]),
-                'volume': float(quo.volume.iloc[0]) / 100,
+                'volume': float(quo.volume.iloc[0]) / vol_zoom_mul,
             }
         )
+    
+    if is_index:
+        return day_line_bars[:num]
 
     if not qfq:
         return day_line_bars[:num]
 
-    global _BAOSTOCK_LOGIN
-    if not _BAOSTOCK_LOGIN:
-        _BAOSTOCK_LOGIN = bao_stk_login()
+    last_dvd_info = get_last_dvd_info(symbol)
 
-    year = first_his_date[:4]
-    rs_list = []
-    code = f"sh.{symbol}" if symbol.startswith('60') else f"sz.{symbol}"
-    rs_dividend = query_dividend_data(code=code, year=year, yearType="report")
-
-    while (rs_dividend.error_code == '0') & rs_dividend.next():
-        rs_list.append(rs_dividend.get_row_data())
-
-    if not rs_list:
+    if not last_dvd_info:
         return day_line_bars[:num]
 
-    result_dividend = pd.DataFrame(rs_list, columns=rs_dividend.fields)
-    cash_dividend = result_dividend.dividCashPsBeforeTax.iloc[0]
-    cash_dividend = float(cash_dividend) if cash_dividend else 0.0
-    stock_dividend = result_dividend.dividReserveToStockPs.iloc[0]
-    stock_dividend = float(stock_dividend) if stock_dividend else 0.0
-
-    if not stock_dividend:
-        stock_dividend = result_dividend.dividStocksPs.iloc[0]
-        stock_dividend = float(stock_dividend) if stock_dividend else 0.0
-
-    date_dividend = result_dividend.dividPayDate.iloc[0]
+    date_dividend = last_dvd_info['divid_pay_date']
+    cash_dividend = last_dvd_info['divid_cash_ps_before_tax']
+    stock_dividend = last_dvd_info['divid_reserve_to_stock_ps'] or last_dvd_info['divid_stocks_ps']
 
     for day_bar in day_line_bars:
         if not day_bar['date'] < date_dividend:

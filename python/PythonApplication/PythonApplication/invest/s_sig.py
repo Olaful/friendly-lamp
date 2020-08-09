@@ -1,6 +1,35 @@
-from tushare import get_realtime_quotes
+from tushare import get_realtime_quotes, get_index
 from stk_data import day_bars
 
+
+def is_index_in_down_trend(index='000001', down_days=3):
+    """
+    if index is in the down trend
+    """
+    day_line_bars = day_bars(index, num=5, is_index=True)
+
+    begin_down_day_bar = day_line_bars[down_days]
+    first_down_day_bar = day_line_bars[down_days - 1]
+
+    if begin_down_day_bar['close'] < first_down_day_bar['close']:
+        return False
+
+    closes = [bar['close'] for bar in day_line_bars]
+    shift_closes = closes[1:]
+    pair_closes = list(zip(closes, shift_closes))
+
+    decline_days = 0
+    for p_c in pair_closes:
+        day_rtn = p_c[0] / p_c[1] - 1
+        if day_rtn > 0:
+            return False
+
+        decline_days += 1
+        if decline_days == down_days:
+            return True
+
+    return False
+    
 
 def is_dead_fork_vol_ma5_ma10(symbol):
     """
@@ -169,6 +198,72 @@ def is_rise_close_to_ma180(symbol, percent=0.015):
     return False
 
 
+def is_down_ma5_after_rise(symbol, rise_days=3):
+    """
+    if cross down ma5 after rising
+    """
+    last_quo = get_realtime_quotes(symbol)
+    last_price = float(last_quo.price.iloc[0])
+
+    day_line_bars = day_bars(symbol, num=4+rise_days)
+    last_5_bars = day_line_bars[:5]
+    closes = [bar['close'] for bar in last_5_bars]
+    ma5 = sum(closes) / len(closes)
+
+    if last_price > ma5:
+        return False
+
+    pre_bars = day_line_bars[1:]
+
+    closes = [bar['close'] for bar in pre_bars]
+    shift_closes = closes[1:]
+    pair_closes = list(zip(closes, shift_closes))
+
+    gain_days = 0
+    for p_c in pair_closes:
+        day_rtn = p_c[0] / p_c[1] - 1
+        if day_rtn < 0:
+            return False
+
+        gain_days += 1
+        if gain_days == rise_days:
+            return True
+
+    return False
+
+
+def is_gain_limit_after_rise(symbol, rise_days=3):
+    """
+    if gain to limited after rise
+    """
+    day_line_bars = day_bars(symbol, num=rise_days+2)
+
+    last_close = day_line_bars[0]['close']
+    pre_close = day_line_bars[1]['close']
+
+    day_rtn = last_close / pre_close - 1
+    if day_rtn < 0.099:
+        return False
+
+    pre_bars = day_line_bars[1:]
+
+    closes = [bar['close'] for bar in pre_bars]
+    shift_closes = closes[1:]
+    pair_closes = list(zip(closes, shift_closes))
+
+    gain_days = 0
+    for p_c in pair_closes:
+        day_rtn = p_c[0] / p_c[1] - 1
+        if day_rtn < 0:
+            return False
+
+        gain_days += 1
+        if gain_days == rise_days:
+            return True
+
+    return False
+
+
 if __name__ == "__main__":
-    rls = is_rise_close_to_ma180('601318')
+    rls = is_index_in_down_trend('000001')
     pass
