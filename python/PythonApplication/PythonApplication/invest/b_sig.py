@@ -455,6 +455,37 @@ def is_ma_vol_rise_in_parallel(symbol, diff=0.055):
         return True
 
     return False
+
+
+def is_rise_in_good_condition(symbol, days=180, step=30, percent=0.6):
+    """
+    if rise in good condition
+    """
+    day_line_bars = day_bars(symbol, num=days+step)
+    
+    step_day_bars = []
+    for i in range(0, len(day_line_bars), step):
+        step_day_bars.append(day_line_bars[i])
+    
+    closes = [bar['close'] for bar in step_day_bars]
+    shift_closes = closes[1:]
+    pair_closes = list(zip(closes, shift_closes))
+    
+    rise_cnt = 0
+    for p_c in pair_closes:
+        rtn = p_c[0] / p_c[1] - 1
+
+        if rtn > 0:
+            rise_cnt += 1
+    
+    total_cnt = days / step
+
+    rise_percent = rise_cnt / total_cnt
+
+    if rise_percent >= percent:
+        return True
+
+    return False
     
 
 if __name__ == "__main__":
@@ -466,6 +497,6 @@ if __name__ == "__main__":
     #     'is_break_through_ma5': is_break_through_ma5(symbol),
     #     'is_moderate_heavy_vol': is_moderate_heavy_vol(symbol),
     # }
-    rls = is_break_through_ma5('000788')
+    rls = is_rise_in_good_condition('001979')
     print(rls)
     pass
