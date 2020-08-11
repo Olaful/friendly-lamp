@@ -389,6 +389,103 @@ def is_new_high(symbol, days=360):
         return True
 
     return False
+
+
+def is_shock_pos_and_break_through(symbol, shock_days=2):
+    """
+    if shock pos and break through shock price
+    """
+    day_line_bars = day_bars(symbol, num=shock_days+3)
+
+    last_day_bar = day_line_bars[0]
+    begin_shock_day_bar = day_line_bars[shock_days+1]
+
+    if last_day_bar['close'] < begin_shock_day_bar['close']:
+        return False
+
+    pre_bars = day_line_bars[1:]
+
+    closes = [bar['close'] for bar in pre_bars]
+    shift_closes = closes[1:]
+    pair_closes = list(zip(closes, shift_closes))
+
+    decline_days = 0
+    for p_c in pair_closes:
+        day_rtn = p_c[0] / p_c[1] - 1
+        if day_rtn > 0:
+            return False
+
+        decline_days += 1
+        if decline_days == shock_days:
+            return True
+
+
+def is_ma_vol_rise_in_parallel(symbol, diff=0.055):
+    """
+    if double mavol rise in parallel
+    """
+    day_line_bars = day_bars(symbol, num=11)
+
+    volumes = [bar['volume'] for bar in day_line_bars]
+
+    last_5_volumes = volumes[:5]
+    pre_5_volumes = volumes[1:6]
+
+    last_vol_ma5 = sum(last_5_volumes) / len(last_5_volumes)
+    pre_vol_ma5 = sum(pre_5_volumes) / len(pre_5_volumes)
+
+    if last_vol_ma5 < pre_vol_ma5:
+        return False
+
+    last_10_volumes = volumes[:10]
+    pre_10_volumes = volumes[1:11]
+
+    last_vol_ma10 = sum(last_10_volumes) / len(last_10_volumes)
+    pre_vol_ma10 = sum(pre_10_volumes) / len(pre_10_volumes)
+
+    if last_vol_ma10 < pre_vol_ma10:
+        return False
+
+    last_vol_ma5_ma10_diff = last_vol_ma5 / last_vol_ma10 - 1
+    pre_vol_ma5_ma10_diff = pre_vol_ma5 / pre_vol_ma10 - 1
+
+    two_day_vol_ma_diff = last_vol_ma5_ma10_diff - pre_vol_ma5_ma10_diff
+
+    if abs(two_day_vol_ma_diff) <= diff:
+        return True
+
+    return False
+
+
+def is_rise_in_good_condition(symbol, days=180, step=30, percent=0.6):
+    """
+    if rise in good condition
+    """
+    day_line_bars = day_bars(symbol, num=days+step)
+    
+    step_day_bars = []
+    for i in range(0, len(day_line_bars), step):
+        step_day_bars.append(day_line_bars[i])
+    
+    closes = [bar['close'] for bar in step_day_bars]
+    shift_closes = closes[1:]
+    pair_closes = list(zip(closes, shift_closes))
+    
+    rise_cnt = 0
+    for p_c in pair_closes:
+        rtn = p_c[0] / p_c[1] - 1
+
+        if rtn > 0:
+            rise_cnt += 1
+    
+    total_cnt = days / step
+
+    rise_percent = rise_cnt / total_cnt
+
+    if rise_percent >= percent:
+        return True
+
+    return False
     
 
 if __name__ == "__main__":
@@ -400,6 +497,6 @@ if __name__ == "__main__":
     #     'is_break_through_ma5': is_break_through_ma5(symbol),
     #     'is_moderate_heavy_vol': is_moderate_heavy_vol(symbol),
     # }
-    rls = is_new_high('603986')
+    rls = is_rise_in_good_condition('001979')
     print(rls)
     pass
