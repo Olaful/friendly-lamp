@@ -264,6 +264,47 @@ def is_gain_limit_after_rise(symbol, rise_days=3):
     return False
 
 
+def is_ma5_turn_down_in_high_position(symbol, rise_days=9):
+    """
+    if ma5 turn down in high position
+    """
+    day_line_bars = day_bars(symbol, num=1+rise_days+5+1)
+
+    closes = [bar['close'] for bar in day_line_bars]
+    
+    last_5_bars = closes[:5]
+    pre_5_bars = closes[1:6]
+
+    last_ma5 = sum(last_5_bars) / len(last_5_bars)
+    pre_ma5 = sum(pre_5_bars) / len(pre_5_bars)
+
+    if last_ma5 > pre_ma5:
+        return False
+
+    pre_closes = closes[1:]
+    ma5_list = []
+
+    for i in range(0, rise_days+1):
+        five_closes = pre_closes[i:i+5]
+        day_ma5 = sum(five_closes) / len(five_closes)
+        ma5_list.append(day_ma5)
+
+    shift_ma5_list = ma5_list[1:]
+    pair_ma5 = list(zip(ma5_list, shift_ma5_list))
+
+    gain_days = 0
+    for p_m in pair_ma5:
+        day_ma_rtn = p_m[0] / p_m[1] - 1
+        if day_ma_rtn < 0:
+            return False
+
+        gain_days += 1
+        if gain_days == rise_days:
+            return True
+
+    return False
+
+
 if __name__ == "__main__":
     rls = is_index_in_down_trend('000001')
     pass
