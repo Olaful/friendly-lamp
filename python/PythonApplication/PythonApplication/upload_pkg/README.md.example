@@ -1,0 +1,70 @@
+# Example Package
+
+This is a simple example package, You can use
+[Github flavored Markdown](https://guides.github.com/features/mastering-markdown/)
+to write you content
+
+**bold**
+*italic*
+
+1. one
+2. Two
+3. Three
+    1. sub list
+
+* Start a line with a star
+* Profit!
+    * sub Profit
+
+- Dashes work just as well:
+ - Sub point1
+ - Sub point2
+ 
+# level1 title
+## level2 title
+### level3 title
+
+> quote of luxun said: I never said this sentence,
+>  I said the sentence pre
+
+# style code
+## single line with backticks
+`var example = True`
+
+## block code with four spaces
+    if is_exist:
+        print('hello world')
+        
+## block code with three backticks
+```
+if is_exist:
+        print('hello world')
+
+```
+## highlighing
+```python
+if is_exist:
+    print('hello world')
+
+```
+    
+- [x] select 1
+- [ ] select 2
+
+<del>delete content</del>
+
+
+# table
+header1 | header2
+------- | -------
+cell1 | cell2
+cell11 | cell22
+ 
+~~delete~~
+ 
+@someone
+
+emoji
+:smiley:
+ 
+![Image](https://octodex.github.com/images/yaktocat.png)

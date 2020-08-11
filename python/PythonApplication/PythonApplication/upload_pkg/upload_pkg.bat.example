@@ -1,0 +1,1 @@
+python -m twine upload dist/quotool-0.0.3.tar.gz dist/quotool-0.0.3-py3-none-any.whl
