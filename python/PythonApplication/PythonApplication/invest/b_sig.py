@@ -486,7 +486,48 @@ def is_rise_in_good_condition(symbol, days=180, step=30, percent=0.6):
         return True
 
     return False
-    
+
+
+def is_start_up_after_adj(symbol, adj_days=7, percent=0.02):
+    """
+    if start up after adjustment
+    """
+    day_line_bars = day_bars(symbol, num=1+adj_days+5)
+
+    closes = [bar['close'] for bar in day_line_bars]
+
+    last_5_closes = closes[:5]
+    last_ma5 = sum(last_5_closes) / len(last_5_closes)
+    last_close = closes[0]
+
+    ma5_close_change = last_close / last_ma5 - 1
+    if ma5_close_change < percent:
+        return False
+
+    pre_1_5_closes = closes[1:6]
+    pre_1_ma5 = sum(pre_1_5_closes) / len(pre_1_5_closes)
+
+    mid_idx = (adj_days + 1) // 2
+    mid_5_closes = closes[mid_idx:mid_idx+5]
+    mid_ma5 = sum(mid_5_closes) / len(mid_5_closes)
+
+    pre_1_mid_ma5_change = pre_1_ma5 / mid_ma5 - 1
+    if abs(pre_1_mid_ma5_change) > percent:
+        return False
+
+    tail_5_closes = closes[adj_days:adj_days+5]
+    tail_ma5 = sum(tail_5_closes) / len(tail_5_closes)
+
+    mid_tail_ma5_change = mid_ma5 / tail_ma5 - 1
+    if abs(mid_tail_ma5_change) > percent:
+        return False
+
+    pre_1_tail_ma5_change = pre_1_ma5 / tail_ma5 - 1
+    if abs(pre_1_tail_ma5_change) <= percent:
+        return True
+
+    return False
+
 
 if __name__ == "__main__":
     symbol = '603707'
