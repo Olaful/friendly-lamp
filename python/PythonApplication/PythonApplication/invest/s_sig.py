@@ -346,6 +346,49 @@ def is_ma5_turn_down_in_high_position(symbol, rise_days=9):
     return False
 
 
+def is_product_cross_star_in_high_position(symbol, rise_days=6, open_close_change=0.0025, high_low_change=0.025):
+    """
+    if product a cross star in high position
+    """
+    day_line_bars = day_bars(symbol, num=1+rise_days+5+1)
+
+    last_day_bar = day_line_bars[0]
+
+    openclose_change = last_day_bar['open'] / last_day_bar['close'] - 1
+    if abs(openclose_change) > open_close_change:
+        return False
+
+    highlow_change = last_day_bar['high'] / last_day_bar['low'] - 1
+    if highlow_change < high_low_change:
+        return False
+
+    closes = [bar['close'] for bar in day_line_bars]
+
+    pre_closes = closes[1:]
+    ma5_list = []
+
+    for i in range(0, rise_days+1):
+        five_closes = pre_closes[i:i+5]
+        day_ma5 = sum(five_closes) / len(five_closes)
+        ma5_list.append(day_ma5)
+
+    shift_ma5_list = ma5_list[1:]
+    pair_ma5 = list(zip(ma5_list, shift_ma5_list))
+
+    gain_days = 0
+    for p_m in pair_ma5:
+        day_ma_rtn = p_m[0] / p_m[1] - 1
+        if day_ma_rtn < 0:
+            return False
+
+        gain_days += 1
+        if gain_days == rise_days:
+            return True
+
+    return False
+    
+
+
 if __name__ == "__main__":
     rls = is_index_in_down_trend('000001')
     pass
