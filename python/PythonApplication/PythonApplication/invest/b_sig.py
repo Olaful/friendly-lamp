@@ -529,6 +529,25 @@ def is_start_up_after_adj(symbol, adj_days=7, percent=0.02):
     return False
 
 
+def is_gain_limit_after_yin_line(symbol, percent=0.095):
+    """
+    if gain limit after product a yin line
+    """
+    day_line_bars = day_bars(symbol, num=3)
+
+    last_day_bar = day_line_bars[0]
+    pre_day_bar = day_line_bars[1]
+
+    day_rth = last_day_bar['close'] / pre_day_bar['close'] - 1
+    if day_rth < percent:
+        return False
+
+    if pre_day_bar['close'] < pre_day_bar['open']:
+        return True
+
+    return False
+
+
 if __name__ == "__main__":
     symbol = '603707'
     # rls = {
