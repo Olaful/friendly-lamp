@@ -108,7 +108,7 @@ def is_kdj_gf(symbol):
     df_kdj['buy_sig'] = df_kdj.apply(jude_buy, axis=1)
     df_kdj['sell_sig'] = df_kdj.apply(jude_sell, axis=1)
 
-    print(f'PRE_K:{df_kdj["k"].iloc[-2]}, PRE_D:{df_kdj["d"].iloc[-2]}')
+    print(f'{symbol} PRE_K:{df_kdj["k"].iloc[-2]}, PRE_D:{df_kdj["d"].iloc[-2]}')
     print(f'    K:{df_kdj["k"].iloc[-1]},     D:{df_kdj["d"].iloc[-1]}')
 
     return True if df_kdj['buy_sig'].iloc[-1] else False
@@ -202,7 +202,7 @@ def is_break_through_ma30(symbol, pre_days=3):
         if ma_info.cross_up == 0:
             continue
 
-        print(f"{symbol} {ma_info.date} close price({ma_info.close}) cross up ma5({ma_info.ma30})")
+        print(f"{symbol} {ma_info.date} close price({ma_info.close}) cross up ma30({ma_info.ma30})")
         cross_up = True
         break
 

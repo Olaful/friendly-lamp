@@ -4,6 +4,7 @@ import re
 import pandas as pd
 from baostock import query_dividend_data
 from baostock import login as bao_stk_login
+import util
 
 _DB_SQLITE = {}
 _DB_FILE = 'sqlite.db'
@@ -22,6 +23,7 @@ def _get_sqllite(name="test"):
         def execute(self, sql):
             is_insert_sql = sql.strip().lower().startswith('select') | \
                             sql.strip().lower().startswith('replace')
+            # is_insert_sql = False
 
             begin = "BEGIN IMMEDIATE"
             commit = "COMMIT"
@@ -175,3 +177,20 @@ def get_last_dvd_info(symbol):
         'divid_stocks_ps': dvd_info[2],
         'divid_reserve_to_stock_ps': dvd_info[3]
     }
+
+
+def get_stock_pool(pool_name):
+    """
+    get symbol list from pool
+    :param pool_name:
+    :return:
+    """
+    db = util.get_mysql("pool_db")
+    query_sql = "SELECT `code` FROM `code_pool` " \
+                f" WHERE `pool` = '{pool_name}'"
+    db.execute(query_sql)
+
+    pool_info = db.fetchall()
+    code_list = [code['code'] for code in pool_info]
+
+    return code_list

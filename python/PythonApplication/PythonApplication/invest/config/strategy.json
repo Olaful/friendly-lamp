@@ -1,0 +1,42 @@
+{
+  "buy_sig_weight":
+  {
+    "is_look_up_from_bottom": 0.0625,
+    "is_kdj_gf": 0.0625,
+    "is_last_price_gt_ma30": 0.0625,
+    "is_break_through_ma5": 0.0625,
+    "is_break_through_ma30": 0.0625,
+    "is_moderate_heavy_vol": 0.0625,
+    "is_rise_with_sector": 0,
+    "is_gap": 0.0625,
+    "is_rise_slow_with_ma5": 0.0625,
+    "is_big_barehead_red_line_with_increase_vol": 0.0625,
+    "is_gain_limit_with_decrease_vol": 0.0625,
+    "is_new_high": 0.0625,
+    "is_shock_pos_and_break_through": 0.0625,
+    "is_ma_vol_rise_in_parallel": 0.0625,
+    "is_rise_in_good_condition": 0.0625,
+    "is_start_up_after_adj": 0.0625,
+    "is_gain_limit_after_yin_line": 0.0625
+  },
+  "sell_sig_weight":
+  {
+    "is_dead_fork_vol_ma5_ma10": 0.1,
+    "is_reach_rtn_3_days": 0.1,
+    "is_yin_line_after_rise": 0.1,
+    "is_vol_decrease_after_rise": 0.1,
+    "is_begin_dead_triangle": 0.1,
+    "is_rise_close_to_ma180": 0.1,
+    "is_down_ma5_after_rise": 0.1,
+    "is_gain_limit_after_rise": 0.1,
+    "is_ma5_turn_down_in_high_position": 0.1,
+    "is_product_cross_star_in_high_position": 0.1
+  },
+  "index_sell_sig_weight":
+  {
+    "is_index_in_down_trend": 0,
+    "is_index_ma5_turn_down_in_high_position": 0
+  },
+
+  "pool": ["tmp"]
+}
