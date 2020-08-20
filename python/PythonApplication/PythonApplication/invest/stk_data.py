@@ -81,7 +81,7 @@ def day_bars(symbol, num=180, qfq=True, is_index=False):
                 'open': float(quo.open.iloc[0]),
                 'high': float(quo.high.iloc[0]),
                 'low': float(quo.low.iloc[0]),
-                'close': float(quo.price.iloc[0]),
+                'close': float(quo['close' if is_index else 'price'].iloc[0]),
                 'volume': float(quo.volume.iloc[0]) / vol_zoom_mul,
             }
         )

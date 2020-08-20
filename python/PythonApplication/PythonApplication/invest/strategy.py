@@ -89,13 +89,13 @@ class MyStrategy:
         return sell_sig, score
 
     @staticmethod
-    def index_sell_sig(index):
+    def index_sig():
         """
-        index sell sig
-        :param index:
+        index trending
         :return:
         """
         indicator = util.get_config('strategy', 'index_sell_sig_weight')
+        index = util.get_config('strategy', 'index')
 
         sell_sig = {}
         score = 0
@@ -116,7 +116,13 @@ class MyStrategy:
             score += (weight if is_sig else 0)
             sell_sig[ind] = is_sig
 
-        return sell_sig, score
+        return {'index': [
+            {
+                'symbol': index,
+                'score': -score,
+                's_sig': sell_sig
+            }
+        ]}
 
     def predict(self, symbol):
         """
@@ -126,6 +132,9 @@ class MyStrategy:
         """
         buy_sig, b_score = self.buy_sig(symbol)
         sell_sig, s_score = self.sell_sig(symbol)
+
+        buy_sig = sorted(list(buy_sig.items()), key=lambda x: x[1], reverse=True)
+        sell_sig = sorted(list(sell_sig.items()), key=lambda x: x[1], reverse=True)
 
         total_score = b_score - s_score
 
@@ -155,14 +164,22 @@ class MyStrategy:
             rank_list.sort(key=lambda x: x['score'], reverse=True)
             sector[pool] = rank_list
 
-        pprint(sector)
+        return sector
 
     def run(self):
         """
         run
         :return:
         """
-        self.sector_rank()
+        sig_info = {}
+
+        share_rank = self.sector_rank()
+        sig_info.update(share_rank)
+
+        index_sig = self.index_sig()
+        sig_info.update(index_sig)
+
+        pprint(sig_info)
 
 
 def main():

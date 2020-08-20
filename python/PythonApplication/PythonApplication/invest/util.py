@@ -151,3 +151,36 @@ def get_mysql(name):
 
 def get_logger():
     return _LOGGER
+
+
+def distrib_weight(d_type='decre', num=10, per=0.3, front_num=5, is_round=False, aligh_obj=None):
+    total = 1
+    com = []
+
+    if d_type == 'avg':
+        com = [1 / num] * num
+    elif d_type == 'decre':
+        for i in range(num - 2):
+            com.append(total * per)
+            total -= total * per
+        left = 1 - sum(com)
+        com.append(left * (1 - per))
+        com.append(left * per)
+    elif d_type == 'decre_avg':
+        for i in range(front_num):
+            com.append(total * per)
+            total -= total * per
+        left = 1 - sum(com)
+        back_num = num - front_num
+        com.extend([left / back_num] * back_num)
+
+    if is_round:
+        com = list(map(lambda x: round(x, 4), com))
+    if aligh_obj and isinstance(aligh_obj, (dict, list, tuple)):
+        new_aligh_dict = dict(zip(aligh_obj, com))
+        new_aligh_json = json.dumps(new_aligh_dict)
+        new_aligh_json = new_aligh_json.replace(',', ',\n')
+
+        return new_aligh_json
+
+    return com

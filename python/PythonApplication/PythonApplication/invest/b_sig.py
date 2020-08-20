@@ -548,6 +548,53 @@ def is_gain_limit_after_yin_line(symbol, percent=0.095):
     return False
 
 
+def is_red_swallow_green_line_after_down(symbol, down_days=2, percent=0.002):
+    """
+    if the red line swallow the green line after down
+    :param symbol:
+    :param down_days:
+    :param percent:
+    :return:
+    """
+    day_line_bars = day_bars(symbol, num=1+down_days+2)
+
+    last_day_bar = day_line_bars[0]
+    if last_day_bar['close'] < last_day_bar['open']:
+        return False
+
+    pre_day_bar = day_line_bars[1]
+    if pre_day_bar['close'] > pre_day_bar['open']:
+        return False
+
+    upper_change = last_day_bar['close'] / pre_day_bar['open'] - 1
+    if upper_change < 0:
+        if abs(upper_change) > percent:
+            return False
+
+    lower_change = last_day_bar['open'] / pre_day_bar['close'] - 1
+    if lower_change > 0:
+        if abs(lower_change) > percent:
+            return False
+
+    pre_bars = day_line_bars[1:]
+
+    closes = [bar['close'] for bar in pre_bars]
+    shift_closes = closes[1:]
+    pair_closes = list(zip(closes, shift_closes))
+
+    decline_days = 0
+    for p_c in pair_closes:
+        day_rtn = p_c[0] / p_c[1] - 1
+        if day_rtn > 0:
+            return False
+
+        decline_days += 1
+        if decline_days == down_days:
+            return True
+
+    return False
+
+
 if __name__ == "__main__":
     symbol = '603707'
     # rls = {
