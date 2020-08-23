@@ -1,7 +1,11 @@
 import datetime
+import time
 from quotool import his_quo
 from tushare import get_realtime_quotes, get_index
 from common import get_last_dvd_info
+
+
+_REALTIME_QUOTES = {}
 
 
 def ma(symbol, freq='D', ma_num=10):
@@ -49,6 +53,37 @@ def pre_ma(symbol, freq='D', ma_num=10, pre_days=1):
     return ma_value
 
 
+def get_real_time_quo(symbol, refresh_inteval=30, refresh_now=False, is_index=False):
+    """
+    get realtime quo, timed refresh
+    """
+    is_refresh = False
+
+    quo_info = _REALTIME_QUOTES.get(symbol, None)
+
+    if not quo_info:
+        is_refresh = True
+    else:
+        is_refresh = time.time() > quo_info['updatetime'] + refresh_inteval or refresh_now
+    
+    if not is_refresh:
+        return quo_info['quo']
+
+    if not is_index:
+        quo = get_realtime_quotes(symbol)
+    else:
+        all_index_quo = get_index()
+        quo = all_index_quo[all_index_quo.code == symbol]
+
+    _REALTIME_QUOTES.update(
+        {
+            symbol: {'quo': quo, 'updatetime': time.time()}
+        }
+    )
+
+    return _REALTIME_QUOTES[symbol]['quo']
+
+
 def day_bars(symbol, num=180, qfq=True, is_index=False):
     """
     day bar
@@ -58,12 +93,11 @@ def day_bars(symbol, num=180, qfq=True, is_index=False):
 
     if not is_index:
         vol_zoom_mul = 100
-        quo = get_realtime_quotes(symbol)
+        quo = get_real_time_quo(symbol)
         last_date = quo.date.iloc[0]
     else:
         vol_zoom_mul = 1
-        all_index_quo = get_index()
-        quo = all_index_quo[all_index_quo.code == symbol]
+        quo = get_real_time_quo(symbol)
         last_volume = int(quo.volume.iloc[0])
         first_his_volume = int(day_line_bars[0]['volume'])
         now = datetime.datetime.now()

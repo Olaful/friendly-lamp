@@ -1,6 +1,8 @@
 import pandas as pd
 from tushare import get_realtime_quotes
 from stk_data import ma, pre_ma, day_bars
+import util
+import common
 
 
 def is_look_up_from_bottom(symbol, down_days=4):
@@ -44,7 +46,7 @@ def is_look_up_from_bottom(symbol, down_days=4):
 
 def is_kdj_gf(symbol):
     """
-    if product fork of kdj
+    if produce fork of kdj
     :param symbol:
     :return:
     """
@@ -277,7 +279,7 @@ def is_rise_with_sector(symbol, sectors=[], percent=0.6):
 
 def is_gap(symbol, percent=0.00):
     """
-    if product a gap
+    if produce a gap
     :param symbol:
     :param percent:
     :return:
@@ -531,7 +533,7 @@ def is_start_up_after_adj(symbol, adj_days=7, percent=0.02):
 
 def is_gain_limit_after_yin_line(symbol, percent=0.095):
     """
-    if gain limit after product a yin line
+    if gain limit after produce a yin line
     """
     day_line_bars = day_bars(symbol, num=3)
 
@@ -591,6 +593,292 @@ def is_red_swallow_green_line_after_down(symbol, down_days=2, percent=0.002):
         decline_days += 1
         if decline_days == down_days:
             return True
+
+    return False
+
+
+def is_produce_hammer_line_after_down(symbol, down_days=2, mul=1, up_percent=0.002):
+    """
+    if prodcut a hammer line after down
+    """
+    day_line_bars = day_bars(symbol, num=1+down_days+2)
+
+    last_day_bar = day_line_bars[0]
+
+    if last_day_bar['close'] == last_day_bar['open']:
+        return False
+
+    upper_shadow_change = last_day_bar['high'] / max(last_day_bar['close'], last_day_bar['open']) - 1
+    if upper_shadow_change > up_percent:
+        return False
+
+    lower_shadow_diff = min(last_day_bar['close'], last_day_bar['open']) - last_day_bar['low']
+    if lower_shadow_diff == 0:
+        return False
+
+    entity_part_diff = abs(last_day_bar['close'] - last_day_bar['open'])
+    
+    mul_diff = lower_shadow_diff / entity_part_diff
+    if mul_diff < mul:
+        return False
+
+    pre_closes = [bar['close'] for bar in day_line_bars[1:]]
+    decline_days = util.continuous_decline_or_gain(pre_closes, direction='down')
+
+    if decline_days >= down_days:
+        return True
+
+    return False
+
+
+def is_red_line_after_upside_down_hammer_line_after_down(symbol, down_days=2, mul=1, low_percent=0.009):
+    """
+    if produce red line after upside down hammer line afer down
+    """
+    day_line_bars = day_bars(symbol, num=2+down_days+2)
+
+    last_day_bar = day_line_bars[0]
+    if last_day_bar['close'] < last_day_bar['open']:
+        return False
+
+    pre_day_bar = day_line_bars[1]
+
+    if pre_day_bar['close'] == pre_day_bar['open']:
+        return False
+
+    lower_shadow_change =  min(pre_day_bar['close'], pre_day_bar['open']) / pre_day_bar['low'] - 1
+    if lower_shadow_change > low_percent:
+        return False
+
+    upper_shadow_diff = pre_day_bar['high'] - max(pre_day_bar['close'], pre_day_bar['open'])
+    if upper_shadow_diff == 0:
+        return False
+
+    entity_part_diff = abs(pre_day_bar['close'] - pre_day_bar['open'])
+    
+    mul_diff = upper_shadow_diff / entity_part_diff
+    if mul_diff < mul:
+        return False
+
+    pre_pre_closes = [bar['close'] for bar in day_line_bars[2:]]
+    decline_days = util.continuous_decline_or_gain(pre_pre_closes, direction='down')
+
+    if decline_days >= down_days:
+        return True
+
+    return False
+
+
+def is_produce_cross_star_after_ma5_down(symbol, down_days=6, open_close_change=0.0025, high_low_change=0.025):
+    """
+    if produce a cross star in low position
+    """
+    day_line_bars = day_bars(symbol, num=1+down_days+5+1)
+
+    last_day_bar = day_line_bars[0]
+
+    openclose_change = last_day_bar['open'] / last_day_bar['close'] - 1
+    if abs(openclose_change) > open_close_change:
+        return False
+
+    highlow_change = last_day_bar['high'] / last_day_bar['low'] - 1
+    if highlow_change < high_low_change:
+        return False
+
+    closes = [bar['close'] for bar in day_line_bars]
+
+    pre_closes = closes[1:]
+    ma5_list = []
+
+    for i in range(0, down_days+1):
+        five_closes = pre_closes[i:i+5]
+        day_ma5 = sum(five_closes) / len(five_closes)
+        ma5_list.append(day_ma5)
+
+    shift_ma5_list = ma5_list[1:]
+    pair_ma5 = list(zip(ma5_list, shift_ma5_list))
+
+    decline_days = 0
+    for p_m in pair_ma5:
+        day_ma_rtn = p_m[0] / p_m[1] - 1
+        if day_ma_rtn > 0:
+            return False
+
+        decline_days += 1
+        if decline_days == down_days:
+            return True
+
+    return False
+
+
+def is_produce_pierce_line_after_down(symbol, down_days=2, percent=0.009):
+    """
+    if produce a pierce line after down
+    """
+    day_line_bars = day_bars(symbol, num=1+down_days+2)
+
+    last_day_bar = day_line_bars[0]
+    if last_day_bar['close'] < last_day_bar['open']:
+        return False
+
+    pre_day_bar = day_line_bars[1]
+    if pre_day_bar['close'] > pre_day_bar['open']:
+        return False
+
+    lower_change = last_day_bar['open'] / pre_day_bar['close'] - 1
+    if lower_change > 0:
+        if abs(lower_change) > percent:
+            return False
+
+    if last_day_bar['close'] > pre_day_bar['open']:
+        return False
+    
+    pre_day_bar_mid_price = (pre_day_bar['open'] + pre_day_bar['close']) / 2
+
+    if last_day_bar['close'] < pre_day_bar_mid_price:
+        return False
+
+    pre_closes = [bar['close'] for bar in day_line_bars[1:]]
+    decline_days = util.continuous_decline_or_gain(pre_closes, direction='down')
+
+    if decline_days >= down_days:
+        return True
+
+    return False
+
+
+def is_red_line_after_bullish_pregnant_line_after_down(symbol, down_days=2, percent=0.009):
+    """
+    if produce a red line after pregnant line after down
+    """
+    day_line_bars = day_bars(symbol, num=2+down_days+2)
+
+    last_day_bar = day_line_bars[0]
+    if last_day_bar['close'] < last_day_bar['open']:
+        return False
+
+    pre_day_bar = day_line_bars[1]
+    if pre_day_bar['close'] < pre_day_bar['open']:
+        return False
+
+    pre_pre_day_bar = day_line_bars[2]
+    if pre_pre_day_bar['close'] > pre_pre_day_bar['open']:
+        return False
+
+    lower_change = pre_day_bar['open'] / pre_pre_day_bar['close'] - 1
+    if lower_change > 0:
+        if abs(lower_change) > percent:
+            return False
+
+    if pre_day_bar['close'] > pre_pre_day_bar['open']:
+        return False
+    
+    pre_pre_day_bar_mid_price = (pre_pre_day_bar['open'] + pre_pre_day_bar['close']) / 2
+
+    if pre_day_bar['close'] > pre_pre_day_bar_mid_price:
+        return False
+
+    pre_pre_closes = [bar['close'] for bar in day_line_bars[2:]]
+    decline_days = util.continuous_decline_or_gain(pre_pre_closes, direction='down')
+
+    if decline_days >= down_days:
+        return True
+
+    return False
+
+
+def is_produce_start_morrow_star_after_down(symbol, down_days=2, percent=0.002):
+    """
+    if produce start morrow star after down
+    """
+    day_line_bars = day_bars(symbol, num=3+down_days+2)
+
+    last_day_bar = day_line_bars[0]
+
+    if last_day_bar['close'] < last_day_bar['open']:
+        return False
+
+    pre_day_bar = day_line_bars[1]
+
+    if not common.is_cross_star(pre_day_bar):
+        return False
+
+    pre_pre_day_bar = day_line_bars[2]
+    if pre_pre_day_bar['close'] > pre_pre_day_bar['open']:
+        return False
+
+    lower_change = last_day_bar['open'] / pre_pre_day_bar['close'] - 1
+    if lower_change > 0:
+        if abs(lower_change) > percent:
+            return False
+
+    pre_pre_day_bar_mid_price = (pre_pre_day_bar['open'] + pre_pre_day_bar['close']) / 2
+
+    if last_day_bar['close'] < pre_pre_day_bar_mid_price:
+        return False
+
+    pre_pre_closes = [bar['close'] for bar in day_line_bars[2:]]
+    decline_days = util.continuous_decline_or_gain(pre_pre_closes, direction='down')
+
+    if decline_days >= down_days:
+        return True
+
+    return False
+
+
+def is_produce_go_ahead_red_three_soldier_after_down(symbol, down_days=0):
+    """
+    if produce red three soldier that go ahead after down
+    """
+    day_line_bars = day_bars(symbol, num=3+down_days+2)
+
+    is_go_ahead_red_three_soldier = common.is_go_ahead_red_three_soldier(day_line_bars[:3])
+    if not is_go_ahead_red_three_soldier:
+        return False
+
+    closes = [bar['close'] for bar in day_line_bars[3:]]
+    decline_days = util.continuous_decline_or_gain(closes, direction='down')
+
+    if decline_days >= down_days:
+        return True
+
+    return False
+
+
+def is_produce_stagnant_black_three_soldier_after_down(symbol, down_days=0):
+    """
+    if produce stagnant black three soldier after down
+    """
+    day_line_bars = day_bars(symbol, num=3+down_days+2)
+
+    is_stagnant_black_three_soldier = common.is_stagnant_black_three_soldier(day_line_bars[:3])
+    if not is_stagnant_black_three_soldier:
+        return False
+
+    closes = [bar['close'] for bar in day_line_bars[3:]]
+    decline_days = util.continuous_decline_or_gain(closes, direction='down')
+
+    if decline_days >= down_days:
+        return True
+
+    return False
+
+
+def is_produce_stagnant_down_black_three_soldier_after_down(symbol, down_days=0):
+    """
+    if produce stagnant down black three soldier after down
+    """
+    day_line_bars = day_bars(symbol, num=3+down_days+2)
+
+    is_stagnant_down_black_three_soldier = common.is_stagnant_down_black_three_soldier(day_line_bars[:3])
+    if not is_stagnant_down_black_three_soldier:
+        return False
+
+    closes = [bar['close'] for bar in day_line_bars[3:]]
+    decline_days = util.continuous_decline_or_gain(closes, direction='down')
+
+    if decline_days >= down_days:
+        return True
 
     return False
 

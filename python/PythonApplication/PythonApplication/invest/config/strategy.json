@@ -25,7 +25,7 @@
     "is_reach_rtn_3_days": 0.3,
     "is_yin_line_after_rise": 0.21,
     "is_vol_decrease_after_rise": 0.147,
-    "is_product_cross_star_in_high_position": 0.1029,
+    "is_produce_cross_star_after_ma5_rise": 0.1029,
     "is_gain_limit_after_rise": 0.072,
     "is_rise_close_to_ma180": 0.0504,
     "is_down_ma5_after_rise": 0.0353,

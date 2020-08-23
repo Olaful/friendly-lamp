@@ -194,3 +194,277 @@ def get_stock_pool(pool_name):
     code_list = [code['code'] for code in pool_info]
 
     return code_list
+
+
+def is_cross_star(day_bar, open_close_change=0.0025, high_low_change=0.025):
+    """
+    if it is a cross star
+    """
+    openclose_change = day_bar['open'] / day_bar['close'] - 1
+    if abs(openclose_change) > open_close_change:
+        return False
+
+    if day_bar['high'] == max(day_bar['close'], day_bar['open']):
+        return False
+
+    if day_bar['low'] == min(day_bar['close'], day_bar['open']):
+        return False
+
+    highlow_change = day_bar['high'] / day_bar['low'] - 1
+    if highlow_change >= high_low_change:
+        return True
+
+    return False
+
+
+def is_hang_line(day_bar, mul=1, up_percent=0.009):
+    """
+    if it is a hang line
+    """
+    if day_bar['close'] == day_bar['open']:
+        return False
+
+    upper_shadow_change = day_bar['high'] / max(day_bar['close'], day_bar['open']) - 1
+    if upper_shadow_change > up_percent:
+        return False
+
+    lower_shadow_diff = min(day_bar['close'], day_bar['open']) - day_bar['low']
+    if lower_shadow_diff == 0:
+        return False
+
+    entity_part_diff = abs(day_bar['close'] - day_bar['open'])
+    
+    mul_diff = lower_shadow_diff / entity_part_diff
+    if mul_diff >= mul:
+        return True
+
+    return False
+
+
+def is_meteor_line(day_bar, mul=1, down_percent=0.009):
+    """
+    if it is a meteor line
+    """
+    if day_bar['close'] == day_bar['open']:
+        return False
+
+    lower_shadow_change = min(day_bar['close'], day_bar['open']) / day_bar['low'] - 1
+    if lower_shadow_change > down_percent:
+        return False
+
+    upper_shadow_diff = day_bar['high'] - max(day_bar['close'], day_bar['open'])
+    if upper_shadow_diff == 0:
+        return False
+
+    entity_part_diff = abs(day_bar['close'] - day_bar['open'])
+    
+    mul_diff = upper_shadow_diff / entity_part_diff
+    if mul_diff >= mul:
+        return True
+
+    return False
+
+
+def is_T_line(day_bar, open_close_change=0.0025, high_low_change=0.025, up_percent=0.009):
+    """
+    if it is a cross star
+    """
+    openclose_change = day_bar['open'] / day_bar['close'] - 1
+    if abs(openclose_change) > open_close_change:
+        return False
+
+    upper_shadow_change = day_bar['high'] / max(day_bar['close'], day_bar['open']) - 1
+    if upper_shadow_change > up_percent:
+        return False
+
+    highlow_change = day_bar['high'] / day_bar['low'] - 1
+    if highlow_change >= high_low_change:
+        return True
+
+    return False
+
+
+def is_go_ahead_red_three_soldier(day_bars):
+    """
+    if it is a red three soldier that go ahead
+    """
+    if len(day_bars) < 3:
+        return False
+
+    first_day_bar = day_bars[0]
+    first_day_change = first_day_bar['close'] / first_day_bar['open'] - 1
+    if first_day_change < 0:
+        return False
+
+    pre_day_bar = day_bars[1]
+    pre_day_change = pre_day_bar['close'] / pre_day_bar['open'] - 1
+    if pre_day_change < 0:
+        return False
+
+    if first_day_change < pre_day_change:
+        return False
+
+    pre_pre_day_bar = day_bars[2]
+    pre_pre_day_change = pre_pre_day_bar['close'] / pre_pre_day_bar['open'] - 1
+    if pre_pre_day_change < 0:
+        return False
+
+    if pre_day_change > pre_pre_day_change:
+        return True
+
+    return False
+
+
+def is_stagnant_red_three_soldier(day_bars):
+    """
+    if it is a stagnant red three soldier
+    """
+    if len(day_bars) < 3:
+        return False
+
+    first_day_bar = day_bars[0]
+    first_day_change = first_day_bar['close'] / first_day_bar['open'] - 1
+    if first_day_change < 0:
+        return False
+
+    pre_day_bar = day_bars[1]
+    pre_day_change = pre_day_bar['close'] / pre_day_bar['open'] - 1
+    if pre_day_change < 0:
+        return False
+
+    if first_day_change > pre_day_change:
+        return False
+
+    pre_pre_day_bar = day_bars[2]
+    pre_pre_day_change = pre_pre_day_bar['close'] / pre_pre_day_bar['open'] - 1
+    if pre_pre_day_change < 0:
+        return False
+
+    if pre_day_change < pre_pre_day_change:
+        return True
+
+    return False
+
+
+def is_stagnant_rise_red_three_soldier(day_bars):
+    """
+    if it is a stagnant rise red three soldier
+    """
+    if len(day_bars) < 3:
+        return False
+
+    first_day_bar = day_bars[0]
+    first_day_change = first_day_bar['close'] / first_day_bar['open'] - 1
+    if first_day_change < 0:
+        return False
+
+    pre_day_bar = day_bars[1]
+    pre_day_change = pre_day_bar['close'] / pre_day_bar['open'] - 1
+    if pre_day_change < 0:
+        return False
+
+    if first_day_change > pre_day_change:
+        return False
+
+    pre_pre_day_bar = day_bars[2]
+    pre_pre_day_change = pre_pre_day_bar['close'] / pre_pre_day_bar['open'] - 1
+    if pre_pre_day_change < 0:
+        return False
+
+    if pre_day_change > pre_pre_day_change:
+        return True
+
+    return False
+    
+    
+def is_go_ahead_black_three_soldier(day_bars):
+    """
+    if it is a black three soldier that go ahead
+    """
+    if len(day_bars) < 3:
+        return False
+
+    first_day_bar = day_bars[0]
+    first_day_change = first_day_bar['close'] / first_day_bar['open'] - 1
+    if first_day_change >= 0:
+        return False
+
+    pre_day_bar = day_bars[1]
+    pre_day_change = pre_day_bar['close'] / pre_day_bar['open'] - 1
+    if pre_day_change >= 0:
+        return False
+
+    if abs(first_day_change) < abs(pre_day_change):
+        return False
+
+    pre_pre_day_bar = day_bars[2]
+    pre_pre_day_change = pre_pre_day_bar['close'] / pre_pre_day_bar['open'] - 1
+    if pre_pre_day_change >= 0:
+        return False
+
+    if abs(pre_day_change) > abs(pre_pre_day_change):
+        return True
+
+    return False
+
+
+def is_stagnant_black_three_soldier(day_bars):
+    """
+    if it is a stagnant black three soldier
+    """
+    if len(day_bars) < 3:
+        return False
+
+    first_day_bar = day_bars[0]
+    first_day_change = first_day_bar['close'] / first_day_bar['open'] - 1
+    if first_day_change >= 0:
+        return False
+
+    pre_day_bar = day_bars[1]
+    pre_day_change = pre_day_bar['close'] / pre_day_bar['open'] - 1
+    if pre_day_change >= 0:
+        return False
+
+    if abs(first_day_change) > abs(pre_day_change):
+        return False
+
+    pre_pre_day_bar = day_bars[2]
+    pre_pre_day_change = pre_pre_day_bar['close'] / pre_pre_day_bar['open'] - 1
+    if pre_pre_day_change >= 0:
+        return False
+
+    if abs(pre_day_change) < abs(pre_pre_day_change):
+        return True
+
+    return False
+
+
+def is_stagnant_down_black_three_soldier(day_bars):
+    """
+    if it is a stagnant down black three soldier
+    """
+    if len(day_bars) < 3:
+        return False
+
+    first_day_bar = day_bars[0]
+    first_day_change = first_day_bar['close'] / first_day_bar['open'] - 1
+    if first_day_change >= 0:
+        return False
+
+    pre_day_bar = day_bars[1]
+    pre_day_change = pre_day_bar['close'] / pre_day_bar['open'] - 1
+    if pre_day_change >= 0:
+        return False
+
+    if abs(first_day_change) > abs(pre_day_change):
+        return False
+
+    pre_pre_day_bar = day_bars[2]
+    pre_pre_day_change = pre_pre_day_bar['close'] / pre_pre_day_bar['open'] - 1
+    if pre_pre_day_change >= 0:
+        return False
+
+    if abs(pre_day_change) > abs(pre_pre_day_change):
+        return True
+
+    return False

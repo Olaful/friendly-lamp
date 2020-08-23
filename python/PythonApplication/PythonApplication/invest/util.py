@@ -184,3 +184,24 @@ def distrib_weight(d_type='decre', num=10, per=0.3, front_num=5, is_round=False,
         return new_aligh_json
 
     return com
+
+
+def shift_list(list_obj, num=1):
+    shift_closes = list_obj[num:]
+    pair_closes = list(zip(list_obj, shift_closes))
+    return pair_closes
+
+
+def continuous_decline_or_gain(list_obj, direction='down'):
+    pair_closes = shift_list(list_obj)
+    decline_or_gain_days = 0
+
+    for p_c in pair_closes:
+        day_rtn = p_c[0] / p_c[1] - 1
+        if day_rtn > 0 if direction == 'down' else day_rtn < 0:
+            return decline_or_gain_days
+
+        decline_or_gain_days += 1
+
+    return decline_or_gain_days
+
