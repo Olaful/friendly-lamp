@@ -1,6 +1,7 @@
 import pymysql
 import json
 import os
+import datetime
 from functools import wraps
 import logging
 from logging.handlers import RotatingFileHandler
@@ -9,6 +10,7 @@ from logging.handlers import RotatingFileHandler
 _CONFIG = {}
 _DB_CACHE = {}
 _LOGGER = None
+_HOLIDAYS = []
 
 
 def _use_default_cursor(func):
@@ -205,3 +207,34 @@ def continuous_decline_or_gain(list_obj, direction='down'):
 
     return decline_or_gain_days
 
+
+def traday_diff(from_date, to_date):
+    global _HOLIDAYS
+    if not _HOLIDAYS:
+        db = get_mysql('test')
+        query_sql = "SELECT `holiday` FROM `holidays`"
+        db.execute(query_sql)
+        _HOLIDAYS = db.fetchall()
+
+    def is_weenkend(day):
+        if day in (5, 6):
+            return True
+        return False
+    def is_holiday(date):
+        if date in _HOLIDAYS:
+            return True
+        return False
+
+    f_date =  datetime.datetime.strptime(str(from_date), '%Y-%m-%d').date()
+    t_date = datetime.datetime.strptime(str(to_date), '%Y-%m-%d').date()
+    diff_day = 0
+
+    while f_date < t_date:
+        f_date = f_date + datetime.timedelta(days=1)
+        if is_weenkend(f_date.day) or is_holiday(f_date):
+            continue
+        diff_day += 1
+
+    return diff_day
+
+        

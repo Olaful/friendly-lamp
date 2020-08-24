@@ -2,29 +2,11 @@ import b_sig
 import s_sig
 import util
 import common
-from stk_data import get_real_time_quo
+import datetime
 from pprint import pprint
+from stk_data import get_real_time_quo
 
-logger = None
-
-
-def _init_config():
-    util.init_config('database')
-    util.init_config('strategy')
-
-
-def _init_db():
-    util.create_mysql('pool_db')
-
-
-def _init_logger():
-    util.init_logger()
-
-
-def _init():
-    _init_config()
-    _init_db()
-    _init_logger()
+logger = util.get_logger()
 
 
 class MyStrategy:
@@ -189,6 +171,43 @@ class MyStrategy:
 
         return False
 
+    def take_profit(self, pos):
+        """
+        take profit
+        :return:
+        """
+        quo = get_real_time_quo(pos['symbol'])
+        last_price = float(quo['price'].iloc[0])
+
+        if last_price <= 0:
+            logger.error(f"{pos['symbol']} last price({last_price}) abnormal")
+            return False
+        if pos['avg_price'] <= 0:
+            logger.error(f"{pos['avg_price']} last price({pos['avg_price']}) abnormal")
+            return False
+
+        pos_rtn = pos['avg_price'] / last_price - 1
+
+        if pos_rtn >= util.get_config('strategy', 'take_profit'):
+            return True
+
+        return False
+
+    def max_hold_day_sell(self, pos):
+        """
+        sell if reach max hold day
+        """
+        addpos_date = str(pos['addpos_date'])[:10]
+        today = str(datetime.datetime.today().date())
+
+        hold_day = util.traday_diff(addpos_date, today)
+        
+        if hold_day >= util.get_config('strategy', 'max_hold_day'):
+            return True
+
+        return False
+        
+
     def run(self):
         """
         run
@@ -205,16 +224,6 @@ class MyStrategy:
         pprint(sig_info)
 
 
-def main():
-    _init()
-
-    global logger
-    logger = util.get_logger()
-
-    ms = MyStrategy()
-    ms.run()
-
-
 if __name__ == '__main__':
-    main()
+    pass
 

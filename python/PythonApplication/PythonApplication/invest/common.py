@@ -185,7 +185,7 @@ def get_stock_pool(pool_name):
     :param pool_name:
     :return:
     """
-    db = util.get_mysql("pool_db")
+    db = util.get_mysql("test")
     query_sql = "SELECT `code` FROM `code_pool` " \
                 f" WHERE `pool` = '{pool_name}'"
     db.execute(query_sql)
