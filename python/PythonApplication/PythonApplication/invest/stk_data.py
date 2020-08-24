@@ -57,8 +57,6 @@ def get_real_time_quo(symbol, refresh_inteval=30, refresh_now=False, is_index=Fa
     """
     get realtime quo, timed refresh
     """
-    is_refresh = False
-
     quo_info = _REALTIME_QUOTES.get(symbol, None)
 
     if not quo_info:
@@ -97,7 +95,7 @@ def day_bars(symbol, num=180, qfq=True, is_index=False):
         last_date = quo.date.iloc[0]
     else:
         vol_zoom_mul = 1
-        quo = get_real_time_quo(symbol)
+        quo = get_real_time_quo(symbol, is_index=is_index)
         last_volume = int(quo.volume.iloc[0])
         first_his_volume = int(day_line_bars[0]['volume'])
         now = datetime.datetime.now()

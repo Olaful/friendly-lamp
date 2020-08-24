@@ -2,6 +2,7 @@ import b_sig
 import s_sig
 import util
 import common
+from stk_data import get_real_time_quo
 from pprint import pprint
 
 logger = None
@@ -165,6 +166,28 @@ class MyStrategy:
             sector[pool] = rank_list
 
         return sector
+
+    def stop_loss(self, pos):
+        """
+        stop loss
+        :return:
+        """
+        quo = get_real_time_quo(pos['symbol'])
+        last_price = float(quo['price'].iloc[0])
+
+        if last_price <= 0:
+            logger.error(f"{pos['symbol']} last price({last_price}) abnormal")
+            return False
+        if pos['avg_price'] <= 0:
+            logger.error(f"{pos['avg_price']} last price({pos['avg_price']}) abnormal")
+            return False
+
+        pos_rtn = pos['avg_price'] / last_price - 1
+
+        if pos_rtn <= util.get_config('strategy', 'stop_loss'):
+            return True
+
+        return False
 
     def run(self):
         """
