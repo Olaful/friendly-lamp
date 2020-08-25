@@ -4,7 +4,7 @@ import util
 import common
 import datetime
 from pprint import pprint
-from stk_data import get_real_time_quo
+from stk_data import get_real_time_quo, day_bars
 
 logger = util.get_logger()
 
@@ -166,6 +166,9 @@ class MyStrategy:
 
         pos_rtn = pos['avg_price'] / last_price - 1
 
+        logger.info(f"{pos['symbol']} avg price: {pos['avg_price']}, last price: {last_price}, "
+                    f" return: {pos_rtn}")
+
         if pos_rtn <= util.get_config('strategy', 'stop_loss'):
             return True
 
@@ -188,6 +191,9 @@ class MyStrategy:
 
         pos_rtn = pos['avg_price'] / last_price - 1
 
+        logger.info(f"{pos['symbol']} avg price: {pos['avg_price']}, last price: {last_price}, "
+                    f" return: {pos_rtn}")
+
         if pos_rtn >= util.get_config('strategy', 'take_profit'):
             return True
 
@@ -206,7 +212,67 @@ class MyStrategy:
             return True
 
         return False
-        
+
+    def trailing_stop(self, pos):
+        """
+        trailing stop
+        :param pos:
+        :return:
+        """
+        day_line_bars = day_bars(pos['symbol'], num=60)
+        addpos_date = str(pos['addpos_date'])[:10]
+
+        day_closes = [bar['close'] for bar in day_line_bars if bar['date'] >= addpos_date]
+        max_close = max(day_closes)
+
+        quo = get_real_time_quo(pos['symbol'])
+        last_price = float(quo['price'].iloc[0])
+
+        if last_price <= 0:
+            logger.error(f"{pos['symbol']} last price({last_price}) abnormal")
+            return False
+
+        stop_price = max_close * (1 + util.get_config('strategy', 'trailing_loss'))
+
+        logger.info(f"{pos['symbol']} max close: {max_close},"
+                    f" stop price: {stop_price}, last price: {last_price}")
+
+        if stop_price >= last_price:
+            return True
+
+        return False
+
+    def sell(self):
+        """
+        sell
+        :return:
+        """
+        all_pos = common.get_all_pos()
+
+        sell_list = []
+
+        for pos in all_pos:
+            sell_reason = ''
+
+            if self.stop_loss(pos):
+                sell_reason = 'stop loss'
+            if self.take_profit(pos):
+                sell_reason = 'take profit'
+            if self.max_hold_day_sell(pos):
+                sell_reason = 'max hold day'
+            if self.trailing_stop(pos):
+                sell_reason = 'trailing stop'
+
+            if sell_reason:
+                sell_list.append(f"{pos['symbol']} | {sell_reason}")
+
+        return sell_list
+
+    def buy(self):
+        """
+        buy
+        :return:
+        """
 
     def run(self):
         """
@@ -215,8 +281,8 @@ class MyStrategy:
         """
         sig_info = {}
 
-        share_rank = self.sector_rank()
-        sig_info.update(share_rank)
+        symbol_rank = self.sector_rank()
+        sig_info.update(symbol_rank)
 
         index_sig = self.index_sig()
         sig_info.update(index_sig)

@@ -8,6 +8,11 @@ import util
 
 _DB_SQLITE = {}
 _DB_FILE = 'sqlite.db'
+_POS = []
+
+
+def init_data():
+    _load_pos()
 
 
 def _get_sqllite(name="test"):
@@ -51,6 +56,18 @@ def _get_sqllite(name="test"):
     _DB_SQLITE[name] = db_instance
 
     return db_instance
+
+
+def _load_pos():
+    db = util.get_mysql('test')
+    query_sql = "SELECT * FROM `position`"
+    db.execute(query_sql)
+    global _POS
+    _POS = db.fetchall()
+
+
+def get_all_pos():
+    return _POS
 
 
 def get_last_dvd_info(symbol):

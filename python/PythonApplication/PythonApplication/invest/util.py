@@ -94,8 +94,39 @@ class MysqlClient(object):
         return self.default_cursor.mogrify(query, args)
 
 
-def init_config(file):
+def _init_config_from_db(name):
+    db = get_mysql('test')
+    query_sql = f"SELECT `key`, `value` FROM `config` " \
+        f" WHERE `name` = '{name}'"
+
+    db.execute(query_sql)
+    config_info = db.fetchall()
+
+    _CONFIG[name] = {}
+
+    for cfg in config_info:
+        value = cfg['value']
+        v_type = cfg['type']
+
+        if v_type == 'str':
+            value = str(value)
+        elif v_type == 'int':
+            value = int(value)
+        elif v_type == 'float':
+            value = float(value)
+        elif v_type == 'json':
+            value = json.loads(value, encoding='utf8')
+
+        _CONFIG[name][cfg['key']] = value
+
+
+def init_config(file, from_db=False):
     global _CONFIG
+
+    if from_db:
+        _init_config_from_db(file)
+        return
+
     path = os.path.dirname(os.path.abspath(__file__))
     full_name = os.path.join(path, 'config', f"{file}.json")
     with open(full_name, 'r', encoding='utf8') as f:
