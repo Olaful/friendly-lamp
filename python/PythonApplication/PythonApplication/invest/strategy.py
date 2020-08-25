@@ -3,16 +3,96 @@ import s_sig
 import util
 import common
 import datetime
+import time
+import enum
 from pprint import pprint
 from stk_data import get_real_time_quo, day_bars
+import quotool
 
 logger = util.get_logger()
 
 
+class ExeAction(enum.IntEnum):
+    Buy = 0
+    Sell = 1
+
+
 class MyStrategy:
     def __init__(self):
-        pass
+        self.have_sell = False
+        self.have_buy = False
 
+        self._check_config()
+        self._check_table()
+        self._download_day_bar()
+
+    @staticmethod
+    def _check_config():
+        """
+        config check
+        """
+        logger.info('config check')
+
+        assert isinstance(util.get_config('strategy', 'buy_sig_weight'), dict), \
+        'buy_sig_weight is not dict'
+        assert isinstance(util.get_config('strategy', 'sell_sig_weight'), dict), \
+        'sell_sig_weight is not dict'
+        assert isinstance(util.get_config('strategy', 'index_sell_sig_weight'), dict), \
+        'index_sell_sig_weight is not dict'
+        assert util.get_config('strategy', 'index'), \
+        'index is null'
+        assert util.get_config('strategy', 'pool') and isinstance(util.get_config('strategy', 'pool'), list), \
+        'pool is null or is not list'
+        assert util.get_config('strategy', 'stop_loss') <= 0, \
+        'stop_loss gt 0'
+        assert util.get_config('strategy', 'take_profit') >= 0, \
+        'take_profit lt 0'
+        assert util.get_config('strategy', 'max_hold_day') >= 0, \
+        'max_hold_day lt 0'
+        assert util.get_config('strategy', 'trailing_loss') <= 0, \
+        'trailing_loss gt 0'
+        assert util.get_config('strategy', 'before_close_sell') is not None, \
+        'before_close_sell is null'
+        assert util.get_config('strategy', 'before_close_buy') is not None, \
+        'before_close_buy is null'
+
+        logger.info('config check ok')
+
+    @staticmethod
+    def _check_table():
+        """
+        table check
+        """
+        logger.info('table check')
+
+        db = util.get_mysql('test')
+
+        db.execute('SELECT 1 FROM `config`')
+        db.execute('SELECT 1 FROM `code_pool`')
+        db.execute('SELECT 1 FROM `position`')
+        db.execute('SELECT 1 FROM `holidays`')
+
+        logger.info('table check ok')
+
+    @staticmethod
+    def _download_day_bar():
+        """
+        download day bar
+        """
+        all_pos = common.get_all_pos()
+        all_symbol = [pos['symbol'] for pos in all_pos]
+
+        pools = util.get_config('strategy', 'pool')
+        for pool in pools:
+            all_symbol.extend(common.get_stock_pool(pool))
+
+        all_symbol = set(all_symbol)
+
+        for symbol in all_symbol:
+            quotool.his_quo(symbol)
+
+        quotool.his_quo(util.get_config('strategy', 'index'), is_index=True)
+        
     @staticmethod
     def buy_sig(symbol):
         """
@@ -160,13 +240,13 @@ class MyStrategy:
         if last_price <= 0:
             logger.error(f"{pos['symbol']} last price({last_price}) abnormal")
             return False
-        if pos['avg_price'] <= 0:
-            logger.error(f"{pos['avg_price']} last price({pos['avg_price']}) abnormal")
+        if pos['avgprice'] <= 0:
+            logger.error(f"{pos['avgprice']} last price({pos['avgprice']}) abnormal")
             return False
 
-        pos_rtn = pos['avg_price'] / last_price - 1
+        pos_rtn =  last_price / pos['avgprice'] - 1
 
-        logger.info(f"{pos['symbol']} avg price: {pos['avg_price']}, last price: {last_price}, "
+        logger.info(f"{pos['symbol']} avg price: {pos['avgprice']}, last price: {last_price}, "
                     f" return: {pos_rtn}")
 
         if pos_rtn <= util.get_config('strategy', 'stop_loss'):
@@ -185,13 +265,13 @@ class MyStrategy:
         if last_price <= 0:
             logger.error(f"{pos['symbol']} last price({last_price}) abnormal")
             return False
-        if pos['avg_price'] <= 0:
-            logger.error(f"{pos['avg_price']} last price({pos['avg_price']}) abnormal")
+        if pos['avgprice'] <= 0:
+            logger.error(f"{pos['avgprice']} last price({pos['avgprice']}) abnormal")
             return False
 
-        pos_rtn = pos['avg_price'] / last_price - 1
+        pos_rtn = last_price / pos['avgprice'] - 1
 
-        logger.info(f"{pos['symbol']} avg price: {pos['avg_price']}, last price: {last_price}, "
+        logger.info(f"{pos['symbol']} avg price: {pos['avgprice']}, last price: {last_price}, "
                     f" return: {pos_rtn}")
 
         if pos_rtn >= util.get_config('strategy', 'take_profit'):
@@ -203,7 +283,7 @@ class MyStrategy:
         """
         sell if reach max hold day
         """
-        addpos_date = str(pos['addpos_date'])[:10]
+        addpos_date = str(pos['lastaddpostime'])[:10]
         today = str(datetime.datetime.today().date())
 
         hold_day = util.traday_diff(addpos_date, today)
@@ -220,7 +300,7 @@ class MyStrategy:
         :return:
         """
         day_line_bars = day_bars(pos['symbol'], num=60)
-        addpos_date = str(pos['addpos_date'])[:10]
+        addpos_date = str(pos['lastaddpostime'])[:10]
 
         day_closes = [bar['close'] for bar in day_line_bars if bar['date'] >= addpos_date]
         max_close = max(day_closes)
@@ -268,15 +348,28 @@ class MyStrategy:
 
         return sell_list
 
+    def is_time_exe(self, action=None):
+        """
+        if it is time to execute
+        """
+        if action == ExeAction.Sell:
+            exe_time = common.get_openclose_time()[1] - \
+             util.get_config('strategy', 'before_close_sell') * 60
+            now = time.time()
+            if now >= exe_time:
+                return True
+        elif action == ExeAction.Buy:
+            exe_time = common.get_openclose_time()[1] - \
+             util.get_config('strategy', 'before_close_buy') * 60
+            now = time.time()
+            if now >= exe_time:
+                return True
+
+        return False
+
     def buy(self):
         """
         buy
-        :return:
-        """
-
-    def run(self):
-        """
-        run
         :return:
         """
         sig_info = {}
@@ -287,7 +380,29 @@ class MyStrategy:
         index_sig = self.index_sig()
         sig_info.update(index_sig)
 
-        pprint(sig_info)
+        return sig_info
+
+    def run(self):
+        """
+        run
+        :return:
+        """
+        if not self.have_sell and self.is_time_exe(ExeAction.Sell):
+            self.have_sell = True
+
+            sell_list = self.sell()
+            sell_info = '\n'.join(sell_list)
+            print(sell_info)
+
+        if not self.have_buy and self.is_time_exe(ExeAction.Buy):
+            self.have_buy = True
+
+            buy_info = self.buy()
+            pprint(buy_info)
+
+            logger.info("strategy completed")
+
+        return self.have_buy
 
 
 if __name__ == '__main__':

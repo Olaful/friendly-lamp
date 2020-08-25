@@ -96,7 +96,7 @@ class MysqlClient(object):
 
 def _init_config_from_db(name):
     db = get_mysql('test')
-    query_sql = f"SELECT `key`, `value` FROM `config` " \
+    query_sql = f"SELECT `key`, `value`, `type` FROM `config` " \
         f" WHERE `name` = '{name}'"
 
     db.execute(query_sql)
@@ -116,6 +116,8 @@ def _init_config_from_db(name):
             value = float(value)
         elif v_type == 'json':
             value = json.loads(value, encoding='utf8')
+        elif v_type == 'list':
+            value = value.split(',')
 
         _CONFIG[name][cfg['key']] = value
 

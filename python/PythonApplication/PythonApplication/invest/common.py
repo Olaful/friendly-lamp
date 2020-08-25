@@ -9,10 +9,12 @@ import util
 _DB_SQLITE = {}
 _DB_FILE = 'sqlite.db'
 _POS = []
+_MARKET_TIME = []
 
 
 def init_data():
     _load_pos()
+    _init_market_time()
 
 
 def _get_sqllite(name="test"):
@@ -64,6 +66,28 @@ def _load_pos():
     db.execute(query_sql)
     global _POS
     _POS = db.fetchall()
+
+
+def _init_market_time():
+    open_time = util.get_config('market', 'open_time')
+    open_time_split = open_time.split(':')
+    hour = int(open_time_split[0])
+    minute = int(open_time_split[1])
+
+    open_time_ts = datetime.datetime.today().replace(hour=hour, minute=minute).timestamp()
+
+    close_time = util.get_config('market', 'close_time')
+    close_time_split = close_time.split(':')
+    hour = int(close_time_split[0])
+    minute = int(close_time_split[1])
+
+    close_time_ts = datetime.datetime.today().replace(hour=hour, minute=minute).timestamp()
+
+    _MARKET_TIME.extend([open_time_ts, close_time_ts])
+
+
+def get_openclose_time():
+    return _MARKET_TIME
 
 
 def get_all_pos():
