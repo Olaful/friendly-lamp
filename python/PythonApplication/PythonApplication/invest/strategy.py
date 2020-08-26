@@ -5,6 +5,7 @@ import common
 import datetime
 import time
 import enum
+import json
 from pprint import pprint
 from stk_data import get_real_time_quo, day_bars
 import quotool
@@ -21,6 +22,9 @@ class MyStrategy:
     def __init__(self):
         self.have_sell = False
         self.have_buy = False
+
+        self._buy_reason = []
+        self._sell_reason = []
 
         self._check_config()
         self._check_table()
@@ -229,6 +233,21 @@ class MyStrategy:
 
         return sector
 
+    def record_sell_info(self, sell_type, **remark):
+        """
+        record the info of sell
+        """
+        if len(self._sell_reason) > util.get_config('strategy', 'max_pos'):
+            self._sell_reason.clear()
+
+        rmk = {}
+        rmk['type'] = sell_type
+        rmk.update(remark)
+        j_remark = json.dumps(rmk)
+        j_remark = j_remark.replace('"', '').replace('{', '').replace('}', '')
+
+        self._sell_reason.append(j_remark)
+
     def stop_loss(self, pos):
         """
         stop loss
@@ -250,6 +269,7 @@ class MyStrategy:
                     f" return: {pos_rtn}")
 
         if pos_rtn <= util.get_config('strategy', 'stop_loss'):
+            self.record_sell_info('stop loss', symbol=pos['symbol'], avg_price=pos['avgprice'], last_price=round(last_price, 2))
             return True
 
         return False
@@ -275,6 +295,7 @@ class MyStrategy:
                     f" return: {pos_rtn}")
 
         if pos_rtn >= util.get_config('strategy', 'take_profit'):
+            self.record_sell_info('take profit', symbol=pos['symbol'], avg_price=pos['avgprice'], last_price=round(last_price, 2))
             return True
 
         return False
@@ -291,6 +312,7 @@ class MyStrategy:
         logger.info(f"{pos['symbol']} hold day: {hold_day}")
         
         if hold_day >= util.get_config('strategy', 'max_hold_day'):
+            self.record_sell_info('max hold day', symbol=pos['symbol'], addpos_date=addpos_date, hold_day=hold_day)
             return True
 
         return False
@@ -320,6 +342,8 @@ class MyStrategy:
                     f" stop price: {stop_price}, last price: {last_price}")
 
         if stop_price >= last_price:
+            self.record_sell_info('trailing stop', symbol=pos['symbol'], addpos_date=addpos_date,
+             max_close=max_close, stop_price=round(stop_price, 2), last_price=round(last_price, 2))
             return True
 
         return False
@@ -331,24 +355,15 @@ class MyStrategy:
         """
         all_pos = common.get_all_pos()
 
-        sell_list = []
-
         for pos in all_pos:
-            sell_reason = ''
-
             if self.stop_loss(pos):
-                sell_reason = 'stop loss'
+                pass
             elif self.take_profit(pos):
-                sell_reason = 'take profit'
+                pass
             elif self.max_hold_day_sell(pos):
-                sell_reason = 'max hold day'
+                pass
             elif self.trailing_stop(pos):
-                sell_reason = 'trailing stop'
-
-            if sell_reason:
-                sell_list.append(f"{pos['symbol']} | {sell_reason}")
-
-        return sell_list
+                pass
 
     def is_time_exe(self, action=None):
         """
@@ -392,9 +407,12 @@ class MyStrategy:
         if not self.have_sell and self.is_time_exe(ExeAction.Sell):
             self.have_sell = True
 
-            sell_list = self.sell()
-            sell_info = '\n'.join(sell_list)
+            self.sell()
+            sell_info = '\n'.join(self._sell_reason)
             print(sell_info)
+
+            if util.get_config('strategy', 'is_mail'):
+                util.send_mail('m_s', sell_info)
 
         if not self.have_buy and self.is_time_exe(ExeAction.Buy):
             self.have_buy = True

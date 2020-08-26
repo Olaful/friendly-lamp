@@ -292,3 +292,32 @@ def sig_not_in_using(sig_type='buy'):
     s_not_in_using = [sig for sig in valid_sig if sig not in using_sig]
 
     return s_not_in_using
+
+
+def send_mail(sub, text):
+    import smtplib
+    from email.mime.text import MIMEText
+    from email.header import Header
+    
+    mail_host = 'smtp.qq.com'
+    mail_user = '1764740905@qq.com'
+    db_pwd = get_config('mail', 'pwd')
+    mail_pwd = ''.join([chr(int(item)-12) for item in db_pwd.split(',')])
+
+    sender = '1764740905@qq.com'
+    receivers = ['1764740905@qq.com']
+
+    msg = MIMEText(text, 'plain', 'utf8')
+    msg['From'] = Header('tbq', 'utf8')
+    msg['To'] = Header('tbq', 'utf8')
+
+    msg['Subject'] = Header(sub, 'utf8')
+
+    try:
+        smtp_obj = smtplib.SMTP()
+        smtp_obj.connect(mail_host, 25)
+        smtp_obj.login(mail_user, mail_pwd)
+        smtp_obj.sendmail(sender, receivers, msg.as_string())
+        print('mail send success')
+    except smtplib.SMTPException as e:
+        print(f'mail send faild: {str(e)}')

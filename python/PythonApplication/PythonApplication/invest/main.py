@@ -9,6 +9,7 @@ def _init_config():
 def _init_db_config():
     util.init_config('strategy', from_db=True)
     util.init_config('market', from_db=True)
+    util.init_config('mail', from_db=True)
 
 
 def _init_db():
