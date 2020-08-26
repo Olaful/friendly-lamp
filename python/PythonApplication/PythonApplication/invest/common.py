@@ -62,7 +62,8 @@ def _get_sqllite(name="test"):
 
 def _load_pos():
     db = util.get_mysql('test')
-    query_sql = "SELECT * FROM `position`"
+    query_sql = "SELECT * FROM `position` " \
+                " WHERE `is_valid` = 1"
     db.execute(query_sql)
     global _POS
     _POS = db.fetchall()

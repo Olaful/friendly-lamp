@@ -287,6 +287,8 @@ class MyStrategy:
         today = str(datetime.datetime.today().date())
 
         hold_day = util.traday_diff(addpos_date, today)
+
+        logger.info(f"{pos['symbol']} hold day: {hold_day}")
         
         if hold_day >= util.get_config('strategy', 'max_hold_day'):
             return True
@@ -336,11 +338,11 @@ class MyStrategy:
 
             if self.stop_loss(pos):
                 sell_reason = 'stop loss'
-            if self.take_profit(pos):
+            elif self.take_profit(pos):
                 sell_reason = 'take profit'
-            if self.max_hold_day_sell(pos):
+            elif self.max_hold_day_sell(pos):
                 sell_reason = 'max hold day'
-            if self.trailing_stop(pos):
+            elif self.trailing_stop(pos):
                 sell_reason = 'trailing stop'
 
             if sell_reason:

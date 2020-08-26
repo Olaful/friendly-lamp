@@ -5,9 +5,11 @@ import common
 def _init_config():
     util.init_config('database')
 
+
 def _init_db_config():
     util.init_config('strategy', from_db=True)
     util.init_config('market', from_db=True)
+
 
 def _init_db():
     util.create_mysql('test')

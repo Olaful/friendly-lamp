@@ -188,7 +188,8 @@ def get_logger():
     return _LOGGER
 
 
-def distrib_weight(d_type='decre', num=10, per=0.3, front_num=5, is_round=False, aligh_obj=None):
+def distrib_weight(d_type='decre', num=10, per=0.3, front_num=5,
+                   is_round=True, aligh_obj: dict = None):
     total = 1
     com = []
 
@@ -249,10 +250,11 @@ def traday_diff(from_date, to_date):
         db.execute(query_sql)
         _HOLIDAYS = db.fetchall()
 
-    def is_weenkend(day):
+    def is_weekend(day):
         if day in (5, 6):
             return True
         return False
+
     def is_holiday(date):
         if date in _HOLIDAYS:
             return True
@@ -264,10 +266,29 @@ def traday_diff(from_date, to_date):
 
     while f_date < t_date:
         f_date = f_date + datetime.timedelta(days=1)
-        if is_weenkend(f_date.day) or is_holiday(f_date):
+        if is_weekend(f_date.weekday()) or is_holiday(f_date):
             continue
         diff_day += 1
 
     return diff_day
 
-        
+
+def sig_not_in_using(sig_type='buy'):
+    import importlib
+
+    if sig_type == 'buy':
+        lib = importlib.import_module('b_sig')
+        using_sig_cfg = get_config('strategy', 'buy_sig_weight')
+    elif sig_type == 'sell':
+        lib = importlib.import_module('s_sig')
+        using_sig_cfg = get_config('strategy', 'sell_sig_weight')
+    else:
+        lib = None
+        using_sig_cfg = {}
+
+    valid_sig = [attr for attr in dir(lib) if not attr.startswith('_') and attr.startswith('is_')]
+    using_sig = list(using_sig_cfg.keys())
+
+    s_not_in_using = [sig for sig in valid_sig if sig not in using_sig]
+
+    return s_not_in_using
