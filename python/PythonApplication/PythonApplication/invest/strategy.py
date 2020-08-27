@@ -229,11 +229,13 @@ class MyStrategy:
                 rank_list.append(prd)
 
             rank_list.sort(key=lambda x: x['score'], reverse=True)
-            sector[pool] = rank_list
+
+            if rank_list:
+                sector[pool] = rank_list
 
         return sector
 
-    def record_sell_info(self, sell_type, **remark):
+    def record_sell_info(self, symbol, sell_type, **remark):
         """
         record the info of sell
         """
@@ -241,12 +243,29 @@ class MyStrategy:
             self._sell_reason.clear()
 
         rmk = {}
+        rmk['symbol'] = symbol
         rmk['type'] = sell_type
         rmk.update(remark)
         j_remark = json.dumps(rmk)
         j_remark = j_remark.replace('"', '').replace('{', '').replace('}', '')
 
         self._sell_reason.append(j_remark)
+
+    def record_buy_info(self, symbol, pool, **remark):
+        """
+        record the info of buy
+        """
+        if len(self._buy_reason) > util.get_config('strategy', 'max_pos'):
+            self._buy_reason.clear()
+
+        rmk = {}
+        rmk['symbol'] = symbol
+        rmk['pool'] = pool
+        rmk.update(remark)
+        j_remark = json.dumps(rmk)
+        j_remark = j_remark.replace('"', '').replace('{', '').replace('}', '')
+
+        self._buy_reason.append(j_remark)
 
     def stop_loss(self, pos):
         """
@@ -269,7 +288,7 @@ class MyStrategy:
                     f" return: {pos_rtn}")
 
         if pos_rtn <= util.get_config('strategy', 'stop_loss'):
-            self.record_sell_info('stop loss', symbol=pos['symbol'], avg_price=pos['avgprice'], last_price=round(last_price, 2))
+            self.record_sell_info(pos['symbol'], 'stop loss', avg_price=pos['avgprice'], last_price=round(last_price, 2))
             return True
 
         return False
@@ -295,7 +314,7 @@ class MyStrategy:
                     f" return: {pos_rtn}")
 
         if pos_rtn >= util.get_config('strategy', 'take_profit'):
-            self.record_sell_info('take profit', symbol=pos['symbol'], avg_price=pos['avgprice'], last_price=round(last_price, 2))
+            self.record_sell_info(pos['symbol'], 'take profit', avg_price=pos['avgprice'], last_price=round(last_price, 2))
             return True
 
         return False
@@ -312,7 +331,7 @@ class MyStrategy:
         logger.info(f"{pos['symbol']} hold day: {hold_day}")
         
         if hold_day >= util.get_config('strategy', 'max_hold_day'):
-            self.record_sell_info('max hold day', symbol=pos['symbol'], addpos_date=addpos_date, hold_day=hold_day)
+            self.record_sell_info(pos['symbol'], 'max hold day', addpos_date=addpos_date, hold_day=hold_day)
             return True
 
         return False
@@ -342,7 +361,7 @@ class MyStrategy:
                     f" stop price: {stop_price}, last price: {last_price}")
 
         if stop_price >= last_price:
-            self.record_sell_info('trailing stop', symbol=pos['symbol'], addpos_date=addpos_date,
+            self.record_sell_info(pos['symbol'], 'trailing stop', addpos_date=addpos_date,
              max_close=max_close, stop_price=round(stop_price, 2), last_price=round(last_price, 2))
             return True
 
@@ -407,6 +426,20 @@ class MyStrategy:
         symbol_rank = self.sector_rank()
         sig_info.update(symbol_rank)
 
+        for pool, symbols in symbol_rank.items():
+            top_ones = symbols[:util.get_config('strategy', 'pool_top_num')]
+            for top_one in top_ones:
+                if top_one['score'] < util.get_config('strategy', 'buy_sig_threshold'):
+                    continue
+
+                sig = [s[0] for s in top_one['b_sig'] if s[1] == True]
+                sig_rmk = {}
+                sig_rmk['score'] = top_one['score']
+                sig_rmk.update({s[3:] if s.startswith('is_') else s:
+                util.get_config('strategy', 'buy_sig_weight', s) for s in sig})
+
+                self.record_buy_info(top_one['symbol'], pool, **sig_rmk)
+
         index_sig = self.index_sig()
         sig_info.update(index_sig)
 
@@ -430,8 +463,14 @@ class MyStrategy:
         if not self.have_buy and self.is_time_exe(ExeAction.Buy):
             self.have_buy = True
 
-            buy_info = self.buy()
-            pprint(buy_info)
+            sig_info = self.buy()
+            pprint(sig_info)
+
+            buy_info = '\n'.join(self._buy_reason)
+            print(buy_info)
+
+            if buy_info and util.get_config('strategy', 'is_mail'):
+                util.send_mail('m_b', buy_info)
 
             logger.info("strategy completed")
 
