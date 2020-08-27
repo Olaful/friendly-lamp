@@ -38,27 +38,27 @@ class MyStrategy:
         logger.info('config check')
 
         assert isinstance(util.get_config('strategy', 'buy_sig_weight'), dict), \
-        'buy_sig_weight is not dict'
+            'buy_sig_weight is not dict'
         assert isinstance(util.get_config('strategy', 'sell_sig_weight'), dict), \
-        'sell_sig_weight is not dict'
+            'sell_sig_weight is not dict'
         assert isinstance(util.get_config('strategy', 'index_sell_sig_weight'), dict), \
-        'index_sell_sig_weight is not dict'
+            'index_sell_sig_weight is not dict'
         assert util.get_config('strategy', 'index'), \
-        'index is null'
+            'index is null'
         assert util.get_config('strategy', 'pool') and isinstance(util.get_config('strategy', 'pool'), list), \
-        'pool is null or is not list'
+            'pool is null or is not list'
         assert util.get_config('strategy', 'stop_loss') <= 0, \
-        'stop_loss gt 0'
+            'stop_loss gt 0'
         assert util.get_config('strategy', 'take_profit') >= 0, \
-        'take_profit lt 0'
+            'take_profit lt 0'
         assert util.get_config('strategy', 'max_hold_day') >= 0, \
-        'max_hold_day lt 0'
+            'max_hold_day lt 0'
         assert util.get_config('strategy', 'trailing_loss') <= 0, \
-        'trailing_loss gt 0'
+            'trailing_loss gt 0'
         assert util.get_config('strategy', 'before_close_sell') is not None, \
-        'before_close_sell is null'
+            'before_close_sell is null'
         assert util.get_config('strategy', 'before_close_buy') is not None, \
-        'before_close_buy is null'
+            'before_close_buy is null'
 
         logger.info('config check ok')
 
@@ -362,8 +362,21 @@ class MyStrategy:
                 pass
             elif self.max_hold_day_sell(pos):
                 pass
-            elif self.trailing_stop(pos):
+            elif self.is_start_trailing_stop(pos['symbol'])\
+                    and self.trailing_stop(pos):
                 pass
+
+    def is_start_trailing_stop(self, symbol):
+        """
+        if start trailing stop
+        :return:
+        """
+        cum_day_rtn_sig = s_sig.is_reach_rtn_3_days(symbol)
+        if cum_day_rtn_sig:
+            logger.info(f"{symbol} start trailing stop")
+            return True
+
+        return False
 
     def is_time_exe(self, action=None):
         """
@@ -411,7 +424,7 @@ class MyStrategy:
             sell_info = '\n'.join(self._sell_reason)
             print(sell_info)
 
-            if util.get_config('strategy', 'is_mail'):
+            if sell_info and util.get_config('strategy', 'is_mail'):
                 util.send_mail('m_s', sell_info)
 
         if not self.have_buy and self.is_time_exe(ExeAction.Buy):

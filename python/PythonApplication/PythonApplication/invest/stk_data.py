@@ -1,11 +1,18 @@
 import datetime
 import time
-from quotool import his_quo
+import pandas as pd
+from quotool import his_quo, last_quo
 from tushare import get_realtime_quotes, get_index
 from common import get_last_dvd_info
 
 
 _REALTIME_QUOTES = {}
+_INDEX_EXCHANGE = {
+    "000001": "sh",
+    "000300": "sh",
+    "399001": "sz",
+    "399006": "sz"
+}
 
 
 def ma(symbol, freq='D', ma_num=10):
@@ -70,8 +77,10 @@ def get_real_time_quo(symbol, refresh_inteval=30, refresh_now=False, is_index=Fa
     if not is_index:
         quo = get_realtime_quotes(symbol)
     else:
-        all_index_quo = get_index()
-        quo = all_index_quo[all_index_quo.code == symbol]
+        last_quo_info = last_quo(symbol, is_index=is_index,
+                                   exchange=_INDEX_EXCHANGE[symbol])
+        quo = pd.DataFrame()
+        quo = quo.append([last_quo_info])
 
     _REALTIME_QUOTES.update(
         {
@@ -94,16 +103,10 @@ def day_bars(symbol, num=180, qfq=True, is_index=False):
         quo = get_real_time_quo(symbol)
         last_date = quo.date.iloc[0]
     else:
-        vol_zoom_mul = 1
+        vol_zoom_mul = 0.01
         quo = get_real_time_quo(symbol, is_index=is_index)
-        last_volume = int(quo.volume.iloc[0])
-        first_his_volume = int(day_line_bars[0]['volume'])
-        now = datetime.datetime.now()
 
-        if abs(last_volume - first_his_volume) > 10:
-            last_date = str(now.date())
-        else:
-            last_date = first_his_date
+        last_date = quo.date.iloc[0]
 
     if first_his_date < last_date:
         day_line_bars.insert(
