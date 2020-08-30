@@ -883,15 +883,24 @@ def is_produce_stagnant_down_black_three_soldier_after_down(symbol, down_days=0)
     return False
 
 
+def is_close_to_lowest_support_point(symbol, days=30, percent=0.015):
+    """
+    if low close to his lowest point
+    """
+    day_line_bars = day_bars(symbol, num=days+1)
+
+    find_day_bars = day_line_bars[:days]
+    lowest = min(bar['low'] for bar in find_day_bars)
+
+    last_day_bar = day_line_bars[0]
+
+    change = last_day_bar['low'] / lowest - 1
+
+    if abs(change) <= percent:
+        return True
+
+    return False
+
+
 if __name__ == "__main__":
-    symbol = '603707'
-    # rls = {
-    #     'is_look_up_from_bottom': is_look_up_from_bottom(symbol),
-    #     'is_kdj_gf': is_kdj_gf(symbol),
-    #     'is_last_price_gt_ma30': is_last_price_gt_ma30(symbol),
-    #     'is_break_through_ma5': is_break_through_ma5(symbol),
-    #     'is_moderate_heavy_vol': is_moderate_heavy_vol(symbol),
-    # }
-    rls = is_rise_in_good_condition('001979')
-    print(rls)
     pass

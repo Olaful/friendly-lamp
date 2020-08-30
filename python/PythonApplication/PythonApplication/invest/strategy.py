@@ -1,14 +1,17 @@
-import b_sig
-import s_sig
-import util
-import common
 import datetime
 import time
 import enum
 import json
+import re
 from pprint import pprint
-from stk_data import get_real_time_quo, day_bars
+
 import quotool
+
+import util
+import common
+import b_sig
+import s_sig
+from stk_data import get_real_time_quo, day_bars
 
 logger = util.get_logger()
 
@@ -29,6 +32,41 @@ class MyStrategy:
         self._check_config()
         self._check_table()
         self._download_day_bar()
+
+    @property
+    def buy_info(self):
+        """
+        buy info
+        """
+        re_score = re.compile('score:(?P<score>.*?),')
+        total_score = 0
+        buy_reason = []
+
+        for b_r in self._buy_reason:
+            search_obj = re_score.search(b_r)
+            score = float(search_obj.group('score'))
+            total_score += score
+
+            buy_reason.append([score, search_obj.start(), b_r])
+
+        buy_reason.sort(key=lambda x: x[0], reverse=True)
+
+        b_reason = []
+
+        for b_r in buy_reason:
+            weight_percent = round(b_r[0] / total_score, 4) * 100
+
+            front_text = b_r[2][:b_r[1]]
+            tail_text = b_r[2][b_r[1]:]
+            mid_text = f"ca_wei: {weight_percent}%, "
+            full_text = ''.join([front_text, mid_text, tail_text])
+
+            b_reason.append(full_text)
+
+        buy_info = '\n'.join(b_reason)
+            
+        return buy_info
+            
 
     @staticmethod
     def _check_config():
@@ -367,6 +405,25 @@ class MyStrategy:
 
         return False
 
+    def sig_sell(self, pos):
+        """
+        signal to sell
+        """
+        sell_sig, s_score = self.sell_sig(pos['symbol'])
+
+        if s_score < util.get_config('strategy', 'sell_sig_threshold'):
+            return False
+
+        sig = [s_n for s_n, s in sell_sig.items() if s == True]
+        sig_rmk = {}
+        sig_rmk['score'] = round(s_score, 4)
+        sig_rmk.update({s[3:] if s.startswith('is_') else s:
+        util.get_config('strategy', 'sell_sig_weight', s) for s in sig})
+
+        self.record_sell_info(pos['symbol'], 'sell signal', **sig_rmk)
+
+        return True
+
     def sell(self):
         """
         sell
@@ -383,6 +440,8 @@ class MyStrategy:
                 pass
             elif self.is_start_trailing_stop(pos['symbol'])\
                     and self.trailing_stop(pos):
+                pass
+            elif self.sig_sell(pos):
                 pass
 
     def is_start_trailing_stop(self, symbol):
@@ -434,7 +493,7 @@ class MyStrategy:
 
                 sig = [s[0] for s in top_one['b_sig'] if s[1] == True]
                 sig_rmk = {}
-                sig_rmk['score'] = top_one['score']
+                sig_rmk['score'] = round(top_one['score'], 4)
                 sig_rmk.update({s[3:] if s.startswith('is_') else s:
                 util.get_config('strategy', 'buy_sig_weight', s) for s in sig})
 
@@ -466,7 +525,7 @@ class MyStrategy:
             sig_info = self.buy()
             pprint(sig_info)
 
-            buy_info = '\n'.join(self._buy_reason)
+            buy_info = self.buy_info
             print(buy_info)
 
             if buy_info and util.get_config('strategy', 'is_mail'):

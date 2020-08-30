@@ -676,5 +676,4 @@ def is_produce_go_ahead_black_three_soldier_after_rise(symbol, rise_days=0):
 
 
 if __name__ == "__main__":
-    rls = is_index_in_down_trend('000001')
     pass

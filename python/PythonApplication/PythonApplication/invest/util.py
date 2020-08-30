@@ -215,7 +215,6 @@ def distrib_weight(d_type='decre', num=10, per=0.3, front_num=5,
     if aligh_obj and isinstance(aligh_obj, (dict, list, tuple)):
         new_aligh_dict = dict(zip(aligh_obj, com))
         new_aligh_json = json.dumps(new_aligh_dict)
-        new_aligh_json = new_aligh_json.replace(',', ',\n')
 
         return new_aligh_json
 
