@@ -646,7 +646,7 @@ def is_red_line_after_upside_down_hammer_line_after_down(symbol, down_days=2, mu
     if pre_day_bar['close'] == pre_day_bar['open']:
         return False
 
-    lower_shadow_change =  min(pre_day_bar['close'], pre_day_bar['open']) / pre_day_bar['low'] - 1
+    lower_shadow_change = min(pre_day_bar['close'], pre_day_bar['open']) / pre_day_bar['low'] - 1
     if lower_shadow_change > low_percent:
         return False
 
@@ -766,9 +766,8 @@ def is_red_line_after_bullish_pregnant_line_after_down(symbol, down_days=2, perc
         return False
 
     lower_change = pre_day_bar['open'] / pre_pre_day_bar['close'] - 1
-    if lower_change > 0:
-        if abs(lower_change) > percent:
-            return False
+    if abs(lower_change) > percent:
+        return False
 
     if pre_day_bar['close'] > pre_pre_day_bar['open']:
         return False
