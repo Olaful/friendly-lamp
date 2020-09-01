@@ -509,12 +509,13 @@ def is_produce_dark_cloud_cover_after_rise(symbol, rise_days=2, percent=0.002):
     return False
 
 
-def is_yin_line_after_bearish_pregnant_line_after_rise(symbol, rise_days=2, percent=0.002):
+def is_yin_line_after_bearish_pregnant_line_after_rise(symbol, rise_days=2, percent=0.002, up_percent=0.009):
     """
     if produce a yin line after pregnant line after rise
     :param symbol:
     :param rise_days:
     :param percent:
+    :param up_percent:
     :return:
     """
     day_line_bars = day_bars(symbol, num=2+rise_days+2)
@@ -525,6 +526,10 @@ def is_yin_line_after_bearish_pregnant_line_after_rise(symbol, rise_days=2, perc
 
     pre_day_bar = day_line_bars[1]
     if pre_day_bar['close'] >= pre_day_bar['open']:
+        return False
+
+    upper_shadow_change = pre_day_bar['high'] / max(pre_day_bar['close'], pre_day_bar['open']) - 1
+    if upper_shadow_change > up_percent:
         return False
 
     pre_pre_day_bar = day_line_bars[2]
