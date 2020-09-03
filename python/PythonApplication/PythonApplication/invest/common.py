@@ -30,13 +30,15 @@ def _get_sqllite(name="test"):
         def execute(self, sql):
             is_insert_sql = sql.strip().lower().startswith('select') | \
                             sql.strip().lower().startswith('replace')
-            # is_insert_sql = False
 
             begin = "BEGIN IMMEDIATE"
             commit = "COMMIT"
 
             if is_insert_sql:
-                self.cursor.execute(begin)
+                try:
+                    self.cursor.execute(begin)
+                except sqlite3.OperationalError as e:
+                    print(f"sqlite exe error => sql: {begin}, msg: {str(e)}")
 
             self.cursor.execute(sql)
             self.sql_result = self.cursor.fetchall()
