@@ -680,5 +680,37 @@ def is_produce_go_ahead_black_three_soldier_after_rise(symbol, rise_days=0):
     return False
 
 
+def is_trailing_stop_along_day_line(symbol, start_date=None, pre_days=10, interval=3):
+    """
+    if trailing stop along day line
+    """
+    day_line_bars = day_bars(symbol)
+
+    his_day_bars = []
+
+    if not start_date:
+        his_day_bars = day_line_bars[:pre_days]
+    else:
+        for bar in day_line_bars:
+            if bar['date'] >= start_date:
+                his_day_bars.append(bar)
+            else:
+                break
+
+    his_day_bars.reverse()
+    
+    bar_lowest = 0
+    for i in range(0, len(his_day_bars), interval):
+        move_bars = his_day_bars[i:i+interval]
+        min_bar = min(move_bars, key=lambda bar: bar['low'])
+        
+        if min_bar['low'] < bar_lowest:
+            return True
+        else:
+            bar_lowest = min_bar['low']
+
+    return False
+
+
 if __name__ == "__main__":
     pass

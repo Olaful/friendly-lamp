@@ -512,3 +512,32 @@ def is_stagnant_down_black_three_soldier(day_bars):
         return True
 
     return False
+
+
+def is_left_swallow_right_bar(day_bars):
+    """
+    if left bar swallow right bar
+    """
+    if len(day_bars) < 2:
+        return False
+
+    last_day_bar = day_bars[0]
+    pre_day_bar = day_bars[1]
+
+    if pre_day_bar['high'] >= last_day_bar['high'] \
+     and pre_day_bar['low'] <= last_day_bar['low']:
+        return True
+
+    return False
+
+
+def is_in_high_or_low_pos(closes, days=3, direction='down'):
+    """
+    if in high or low position
+    """
+    decline_or_gain_days = util.continuous_decline_or_gain(closes, direction)
+
+    if decline_or_gain_days >= days:
+        return True
+
+    return False
