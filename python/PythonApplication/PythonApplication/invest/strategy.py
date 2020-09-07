@@ -465,12 +465,14 @@ class MyStrategy:
              util.get_config('strategy', 'before_close_sell') * 60
             now = time.time()
             if now >= exe_time:
+                logger.info("Time to sell")
                 return True
         elif action == ExeAction.Buy:
             exe_time = common.get_openclose_time()[1] - \
              util.get_config('strategy', 'before_close_buy') * 60
             now = time.time()
             if now >= exe_time:
+                logger.info("Time to buy")
                 return True
 
         return False
