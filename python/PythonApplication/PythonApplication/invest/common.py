@@ -535,8 +535,27 @@ def is_left_swallow_right_bar(day_bars):
     last_day_bar = day_bars[0]
     pre_day_bar = day_bars[1]
 
-    if pre_day_bar['high'] >= last_day_bar['high'] \
-     and pre_day_bar['low'] <= last_day_bar['low']:
+    if pre_day_bar['high'] >= max(last_day_bar['open'], last_day_bar['close']) \
+     and pre_day_bar['low'] <= min(last_day_bar['open'], last_day_bar['close']):
+        return True
+
+    return False
+
+
+def is_last_change_gt_pre_bar(day_bars):
+    """
+    if change of last bar greater than previous
+    """
+    if len(day_bars) < 2:
+        return False
+
+    last_day_bar = day_bars[0]
+    pre_day_bar = day_bars[1]
+
+    last_bar_change = last_day_bar['high'] / last_day_bar['low'] - 1
+    pre_bar_change = pre_day_bar['high'] / pre_day_bar['low'] - 1
+
+    if last_bar_change > pre_bar_change:
         return True
 
     return False
