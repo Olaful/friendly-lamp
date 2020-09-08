@@ -240,6 +240,17 @@ def get_stock_pool(pool_name):
     return code_list
 
 
+def get_parallel_high_low_key_pos(day_bars, wind=30, inner_percent=0.1, outer_percent=0.2):
+    """
+    get the key pos of parallel high and low
+    :param day_bars:
+    :param wind:
+    :param inner_percent:
+    :param outer_percent:
+    :return:
+    """
+
+
 def is_cross_star(day_bar, open_close_change=0.0025, high_low_change=0.025):
     """
     if it is a cross star
