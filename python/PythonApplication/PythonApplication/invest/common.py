@@ -240,15 +240,52 @@ def get_stock_pool(pool_name):
     return code_list
 
 
-def get_parallel_high_low_key_pos(day_bars, wind=30, inner_percent=0.1, outer_percent=0.2):
+def get_parallel_high_low_key_pos(day_bars, wind=30, inner_percent=0.01, outer_percent=0.02, turn_num=2):
     """
     get the key pos of parallel high and low
     :param day_bars:
     :param wind:
     :param inner_percent:
     :param outer_percent:
+    :param turn_num:
     :return:
     """
+    wind_bar_info = []
+    for i in range(0, len(day_bars), wind):
+        bar_info = {}
+        bar_info['high'] = {}
+        bar_info['low'] = {}
+
+        wind_bars = day_bars[i:i+wind]
+
+        max_bar = max(wind_bars, key=lambda bar: bar['high'])
+        min_bar = min(wind_bars, key=lambda bar: bar['low'])
+
+        bar_info['high']['bar'] = max_bar
+        bar_info['low']['bar'] = min_bar
+
+        max_price = max_bar['high']
+        min_price = min_bar['low']
+
+        high_side_bars = []
+        low_side_bars = []
+        
+        for bar in wind_bars:
+            high_change = max_price / bar['high'] - 1
+            low_change = min_price / bar['low'] - 1
+
+            if abs(high_change) <= inner_percent and bar != max_bar:
+                high_side_bars.append(bar)
+            
+            if abs(low_change) <= inner_percent and bar != min_bar:
+                low_side_bars.append(bar)
+        
+        bar_info['high']['side_bars'] = high_side_bars
+        bar_info['low']['side_bars'] = low_side_bars
+
+        wind_bar_info.append(bar_info)
+
+    test = 1
 
 
 def is_cross_star(day_bar, open_close_change=0.0025, high_low_change=0.025):
