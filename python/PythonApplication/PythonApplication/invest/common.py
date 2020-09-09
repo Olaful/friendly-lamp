@@ -317,7 +317,10 @@ def get_parallel_high_low_key_pos(day_bars, wind=30, inner_percent=0.01, outer_p
             wind_bar_cat[win_bar['low']['bar']['low']] = [win_bar['low']['bar']]
             wind_bar_cat[win_bar['low']['bar']['low']].extend(win_bar['low']['side_bars'])
 
-    test = 1
+    key_pos = [price for price, bl in wind_bar_cat.items() if len(bl) >= turn_num]    
+    key_pos.sort(reverse=False)
+
+    return key_pos
 
 
 def is_cross_star(day_bar, open_close_change=0.0025, high_low_change=0.025):
