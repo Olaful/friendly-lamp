@@ -285,6 +285,38 @@ def get_parallel_high_low_key_pos(day_bars, wind=30, inner_percent=0.01, outer_p
 
         wind_bar_info.append(bar_info)
 
+    wind_bar_cat = {}
+    for win_bar in wind_bar_info:
+        high_cat = None
+        low_cat = None
+        high_cat_found = False
+        low_cat_found = False
+
+        for price in wind_bar_cat.keys():
+            high_change = win_bar['high']['bar']['high'] / price - 1
+            low_change = win_bar['low']['bar']['low'] / price - 1
+
+            if not high_cat_found and abs(high_change) <= outer_percent:
+                high_cat = price
+                high_cat_found = True
+            if not low_cat_found and abs(low_change) <= outer_percent:
+                low_cat = price
+                low_cat_found = True
+
+        if high_cat:
+            wind_bar_cat[high_cat].append(win_bar['high']['bar'])
+            wind_bar_cat[high_cat].extend(win_bar['high']['side_bars'])
+        else:
+            wind_bar_cat[win_bar['high']['bar']['high']] = [win_bar['high']['bar']]
+            wind_bar_cat[win_bar['high']['bar']['high']].extend(win_bar['high']['side_bars'])
+
+        if low_cat:
+            wind_bar_cat[low_cat].append(win_bar['low']['bar'])
+            wind_bar_cat[low_cat].extend(win_bar['low']['side_bars'])
+        else:
+            wind_bar_cat[win_bar['high']['bar']['low']] = [win_bar['low']['bar']]
+            wind_bar_cat[win_bar['high']['bar']['low']].extend(win_bar['low']['side_bars'])
+
     test = 1
 
 
