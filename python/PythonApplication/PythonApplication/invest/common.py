@@ -314,8 +314,8 @@ def get_parallel_high_low_key_pos(day_bars, wind=30, inner_percent=0.01, outer_p
             wind_bar_cat[low_cat].append(win_bar['low']['bar'])
             wind_bar_cat[low_cat].extend(win_bar['low']['side_bars'])
         else:
-            wind_bar_cat[win_bar['high']['bar']['low']] = [win_bar['low']['bar']]
-            wind_bar_cat[win_bar['high']['bar']['low']].extend(win_bar['low']['side_bars'])
+            wind_bar_cat[win_bar['low']['bar']['low']] = [win_bar['low']['bar']]
+            wind_bar_cat[win_bar['low']['bar']['low']].extend(win_bar['low']['side_bars'])
 
     test = 1
 
