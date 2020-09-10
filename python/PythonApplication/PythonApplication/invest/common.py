@@ -597,6 +597,59 @@ def is_stagnant_down_black_three_soldier(day_bars):
     return False
 
 
+def is_in_key_pos(bar, key_pos: list = None, change=0.001):
+    """
+    if in the key position
+    """
+    high = bar['high'] * (1 + change)
+    low = bar['low'] * (1 + change)
+
+    for pos in key_pos:
+        if low <= pos <= high:
+            return True
+    
+    return False
+
+
+def is_in_high_or_low_pos(closes, days=2, direction='down'):
+    """
+    if in high or low position
+    """
+    decline_or_gain_days = util.continuous_decline_or_gain(closes, direction)
+
+    if decline_or_gain_days >= days:
+        return True
+
+    return False
+
+
+def is_noticeable_bar(bar, change=0.06):
+    """
+    if it is a noticeable bar
+    """
+    hig_low_change = bar['high'] / bar['low'] - 1
+
+    if hig_low_change >= change:
+        return True
+
+    return False
+
+
+def is_pretend_breakthrough_key_pos(bar, key_pos, change=0.009):
+    """
+    if pretend to breakthrough the key position
+    """
+    if bar['close'] < key_pos:
+        return False
+
+    key_low_change = key_pos  / bar['low'] - 1
+
+    if key_low_change >= change:
+        return True
+
+    return False
+
+
 def is_left_swallow_right_bar(day_bars):
     """
     if left bar swallow right bar
@@ -633,13 +686,29 @@ def is_last_change_gt_pre_bar(day_bars):
     return False
 
 
-def is_in_high_or_low_pos(closes, days=3, direction='down'):
+def is_key_pos_pl_gt_specify_value(price, key_pos: list = None, pl=1.5, change=0.01):
     """
-    if in high or low position
+    if the profit-loss ratio gt specify value
     """
-    decline_or_gain_days = util.continuous_decline_or_gain(closes, direction)
+    upper_key_pos = [pos for pos in key_pos if pos > price]
+    if not upper_key_pos:
+        return False
 
-    if decline_or_gain_days >= days:
+    nearby_upper_key_pos = min(upper_key_pos)
+
+    lower_key_pos = [pos for pos in key_pos if pos < price]
+    if not lower_key_pos:
+        return False
+
+    nearby_lower_key_pos = max(lower_key_pos)
+
+    upper_profit = nearby_upper_key_pos * (1 + change) - price
+    lower_loss = price - nearby_lower_key_pos * (1 - change)
+
+    pl_ratio = upper_profit / lower_loss
+
+    if pl_ratio >= pl:
         return True
 
     return False
+    

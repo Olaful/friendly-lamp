@@ -35,9 +35,9 @@ def _init():
 def run():
     _init()
 
-    import strategy
+    import strategy_my
 
-    ms = strategy.MyStrategy()
+    ms = strategy_my.MyStrategy()
     is_str_completed = False
 
     while not is_str_completed:
