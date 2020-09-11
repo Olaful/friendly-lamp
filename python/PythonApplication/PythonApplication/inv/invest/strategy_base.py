@@ -1,7 +1,7 @@
 import json
 import abc
-import util
-from stk_data import get_real_time_quo
+from invest import util
+from invest.stk_data import get_real_time_quo
 
 logger = util.get_logger()
 

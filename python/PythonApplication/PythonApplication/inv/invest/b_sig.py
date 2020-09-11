@@ -1,8 +1,8 @@
 import pandas as pd
 from tushare import get_realtime_quotes
-from stk_data import ma, pre_ma, day_bars
-import util
-import common
+from .stk_data import ma, day_bars
+from . import util
+from . import common
 
 
 def is_look_up_from_bottom(symbol, down_days=4):

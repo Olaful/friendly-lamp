@@ -4,7 +4,7 @@ import re
 import pandas as pd
 from baostock import query_dividend_data
 from baostock import login as bao_stk_login
-import util
+from invest import util
 
 _DB_SQLITE = {}
 _DB_FILE = 'sqlite.db'

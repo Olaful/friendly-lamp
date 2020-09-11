@@ -3,7 +3,7 @@ import time
 import pandas as pd
 from quotool import his_quo, last_quo
 from tushare import get_realtime_quotes, get_index
-from common import get_last_dvd_info
+from invest.common import get_last_dvd_info
 
 
 _REALTIME_QUOTES = {}

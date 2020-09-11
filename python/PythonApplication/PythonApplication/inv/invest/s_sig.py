@@ -1,7 +1,7 @@
 from tushare import get_realtime_quotes, get_index
-from stk_data import day_bars
-import util
-import common
+from .stk_data import day_bars
+from . import util
+from . import common
 
 
 def is_index_in_down_trend(index='000001', down_days=3):

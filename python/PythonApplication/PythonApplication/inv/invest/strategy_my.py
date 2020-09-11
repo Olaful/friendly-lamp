@@ -7,11 +7,8 @@ from pprint import pprint
 
 import quotool
 
-import util
-import common
-import b_sig
-import s_sig
-from stk_data import get_real_time_quo, day_bars
+from invest import util, common, b_sig, s_sig
+from invest.stk_data import get_real_time_quo, day_bars
 
 logger = util.get_logger()
 
