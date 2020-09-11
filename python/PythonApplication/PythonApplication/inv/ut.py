@@ -45,7 +45,8 @@ class TestFrame(TestBase):
     def setUpClass(cls) -> None:
         super().setUpClass()
 
-    def test_tmp(self):
+    @unittest.skip('')
+    def test_plot(self):
         from invest.stk_data import day_bars
         import invest.plot as plot
 
@@ -55,7 +56,8 @@ class TestFrame(TestBase):
         key_pos = common.get_parallel_high_low_key_pos(day_line_bar)
         plot.key_line(day_line_bar, key_pos)
 
-        test = 1
+    def test_tmp(self):
+        pass
 
 
 def main():

@@ -1,5 +1,6 @@
 import json
 import abc
+import datetime
 from invest import util
 from invest.stk_data import get_real_time_quo
 
@@ -11,6 +12,11 @@ class StrategyBase(abc.ABC):
         self._buy_reason = []
         self._sell_reason = []
         self._check_table()
+
+    @property
+    @abc.abstractmethod
+    def name(self):
+        return ''
 
     @property
     def buy_reason(self):
@@ -120,6 +126,23 @@ class StrategyBase(abc.ABC):
 
         if pos_rtn >= profit:
             self.record_sell_info(pos['symbol'], 'take profit', avg_price=pos['avgprice'], last_price=round(last_price, 2))
+            return True
+
+        return False
+
+    def max_hold_day_sell(self, pos, max_hold_day):
+        """
+        sell if reach max hold day
+        """
+        addpos_date = str(pos['lastaddpostime'])[:10]
+        today = str(datetime.datetime.today().date())
+
+        hold_day = util.traday_diff(addpos_date, today)
+
+        logger.info(f"{pos['symbol']} hold day: {hold_day}")
+
+        if hold_day >= max_hold_day:
+            self.record_sell_info(pos['symbol'], 'max hold day', addpos_date=addpos_date, hold_day=hold_day)
             return True
 
         return False

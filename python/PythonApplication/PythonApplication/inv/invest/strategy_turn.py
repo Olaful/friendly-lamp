@@ -17,7 +17,7 @@ class StrategyTurn(StrategyBase):
     def __init__(self):
         super().__init__()
 
-        util.init_config('strategy_turn_turn_turn', from_db=True)
+        util.init_config('strategy_turn', from_db=True)
 
         self.check_config()
 
@@ -25,6 +25,10 @@ class StrategyTurn(StrategyBase):
         self.have_sell = False
 
         self._download_day_bar()
+
+    @property
+    def name(self):
+        return 'turn'
 
     def check_config(self):
         logger.info('config check')
@@ -166,10 +170,16 @@ class StrategyTurn(StrategyBase):
         """
         if pretend to breakthrough the key position
         """
-        if bar['close'] < key_pos:
+        lower_key_pos = [pos for pos in key_pos if pos < bar['close']]
+        if not lower_key_pos:
             return False
 
-        key_low_change = key_pos / bar['low'] - 1
+        nearby_lower_key_pos = max(lower_key_pos)
+
+        if bar['close'] < nearby_lower_key_pos:
+            return False
+
+        key_low_change = nearby_lower_key_pos / bar['low'] - 1
 
         if key_low_change >= change:
             return True
@@ -281,7 +291,7 @@ class StrategyTurn(StrategyBase):
         sig_rmk = dict()
         sig_rmk['score'] = round(s_score, 4)
         sig_rmk.update({s[3:] if s.startswith('is_') else s:
-        util.get_config('strategy', 'sell_sig_weight', s) for s in sig})
+        util.get_config('strategy_turn', 'sell_sig_weight', s) for s in sig})
 
         self.record_sell_info(pos['symbol'], 'sell signal', **sig_rmk)
 
@@ -294,11 +304,11 @@ class StrategyTurn(StrategyBase):
         all_pos = common.get_all_pos()
 
         for pos in all_pos:
-            if self.stop_loss(pos):
+            if self.stop_loss(pos, util.get_config('strategy_turn', 'stop_loss')):
                 pass
-            elif self.take_profit(pos):
+            elif self.take_profit(pos, util.get_config('strategy_turn', 'take_profit')):
                 pass
-            elif self.max_hold_day_sell(pos):
+            elif self.max_hold_day_sell(pos, util.get_config('strategy_turn', 'max_hold_day')):
                 pass
             elif self.sig_sell(pos):
                 pass
@@ -325,10 +335,10 @@ class StrategyTurn(StrategyBase):
             key_poss = common.get_parallel_high_low_key_pos(day_lin_bars, wind=30,
                                                             inner_percent=0.01,
                                                             outer_percent=0.02, turn_num=2)
+
             if not self.is_in_key_pos(last_day_bar, key_poss, change=0.001):
                 return False
-
-            if not self.is_in_high_or_low_pos(day_closes, days=2, direction='down'):
+            if not self.is_in_high_or_low_pos(day_closes[1:], days=2, direction='down'):
                 return False
 
             optional_condition = 0
@@ -355,6 +365,9 @@ class StrategyTurn(StrategyBase):
         run
         :return:
         """
+        if self.have_buy:
+            return
+
         if not self.have_sell and self.is_time_exe(ExeAction.Sell):
             self.have_sell = True
 

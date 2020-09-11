@@ -7,6 +7,7 @@ from pprint import pprint
 
 import quotool
 
+from invest.strategy_base import StrategyBase
 from invest import util, common, b_sig, s_sig
 from invest.stk_data import get_real_time_quo, day_bars
 
@@ -18,17 +19,23 @@ class ExeAction(enum.IntEnum):
     Sell = 1
 
 
-class MyStrategy:
+class MyStrategy(StrategyBase):
     def __init__(self):
+        super().__init__()
+
         self.have_sell = False
         self.have_buy = False
 
         self._buy_reason = []
         self._sell_reason = []
 
-        self._check_config()
+        self.check_config()
         self._check_table()
         self._download_day_bar()
+
+    @property
+    def name(self):
+        return 'ms'
 
     @property
     def buy_info(self):
@@ -63,10 +70,8 @@ class MyStrategy:
         buy_info = '\n'.join(b_reason)
             
         return buy_info
-            
 
-    @staticmethod
-    def _check_config():
+    def check_config(self):
         """
         config check
         """
@@ -508,6 +513,9 @@ class MyStrategy:
         run
         :return:
         """
+        if self.have_buy:
+            return
+
         if not self.have_sell and self.is_time_exe(ExeAction.Sell):
             self.have_sell = True
 
