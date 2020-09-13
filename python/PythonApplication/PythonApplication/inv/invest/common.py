@@ -323,6 +323,49 @@ def get_parallel_high_low_key_pos(day_bars, wind=30, inner_percent=0.01, outer_p
     return key_pos
 
 
+def get_ma_list(bars, freq=5, num=10):
+    """
+    get ma list
+    """
+    closes = [bar['close'] for bar in bars]
+    ma_list = []
+
+    for i in range(0, num):
+        freq_closes = closes[i:i+freq]
+        ma = round(sum(freq_closes) / len(freq_closes), 3)
+        ma_list.append(ma)
+
+    return ma_list
+
+
+def merge_bars(bars):
+    """
+    merge bars to a bar
+    """
+    if not bars:
+        return None
+
+    if len(bars) < 2:
+        return bars[0]
+
+    o = bars[-1]['open']
+    h = max(bars, key=lambda bar: bar['high'])['high']
+    l = min(bars, key=lambda bar: bar['low'])['low']
+    c = bars[0]['close']
+    v = sum(bar['volume'] for bar in bars)
+
+    merge_bar = {
+        'date': bars[0]['date'],
+        'open': o,
+        'high': h,
+        'low': l,
+        'close': c,
+        'volume': v
+    }
+
+    return merge_bar
+
+
 def is_cross_star(day_bar, open_close_change=0.0025, high_low_change=0.025):
     """
     if it is a cross star
@@ -409,6 +452,99 @@ def is_T_line(day_bar, open_close_change=0.0025, high_low_change=0.025, up_perce
         return True
 
     return False
+
+
+def is_bullish_swallow(bars, percent=0.002):
+    """
+    if it is a bullish swallow
+    """
+    if len(bars) < 2:
+        return False
+
+    last_day_bar = bars[0]
+    if last_day_bar['close'] < last_day_bar['open']:
+        return False
+
+    pre_day_bar = bars[1]
+    if pre_day_bar['close'] > pre_day_bar['open']:
+        return False
+
+    upper_change = last_day_bar['close'] / pre_day_bar['open'] - 1
+    if upper_change < 0:
+        if abs(upper_change) > percent:
+            return False
+
+    lower_change = last_day_bar['open'] / pre_day_bar['close'] - 1
+    if lower_change > 0:
+        if abs(lower_change) > percent:
+            return False
+
+    return True
+
+
+def is_pierce_line(bars, percent=0.009):
+    """
+    if it is a bullish swallow
+    """
+    if len(bars) < 2:
+        return False
+
+    last_day_bar = bars[0]
+    if last_day_bar['close'] < last_day_bar['open']:
+        return False
+
+    pre_day_bar = bars[1]
+    if pre_day_bar['close'] > pre_day_bar['open']:
+        return False
+
+    lower_change = last_day_bar['open'] / pre_day_bar['close'] - 1
+    if lower_change > 0:
+        if abs(lower_change) > percent:
+            return False
+
+    if last_day_bar['close'] > pre_day_bar['open']:
+        return False
+    
+    pre_day_bar_mid_price = (pre_day_bar['open'] + pre_day_bar['close']) / 2
+
+    if last_day_bar['close'] < pre_day_bar_mid_price:
+        return False
+
+    return True
+
+
+def is_start_morrow_star(bars, percent=0.002, open_close_change=0.0025):
+    """
+    if it is a start morrow star
+    """
+    if len(bars) < 3:
+        return False
+
+    last_day_bar = bars[0]
+
+    if last_day_bar['close'] < last_day_bar['open']:
+        return False
+
+    pre_day_bar = bars[1]
+
+    if not is_cross_star(pre_day_bar, open_close_change):
+        return False
+
+    pre_pre_day_bar = bars[2]
+    if pre_pre_day_bar['close'] > pre_pre_day_bar['open']:
+        return False
+
+    lower_change = last_day_bar['open'] / pre_pre_day_bar['close'] - 1
+    if lower_change > 0:
+        if abs(lower_change) > percent:
+            return False
+
+    pre_pre_day_bar_mid_price = (pre_pre_day_bar['open'] + pre_pre_day_bar['close']) / 2
+
+    if last_day_bar['close'] < pre_pre_day_bar_mid_price:
+        return False
+
+    return True
 
 
 def is_go_ahead_red_three_soldier(day_bars):

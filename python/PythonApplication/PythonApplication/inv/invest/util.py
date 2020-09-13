@@ -188,6 +188,14 @@ def get_logger():
     return _LOGGER
 
 
+def root_path():
+    abs_path = os.path.abspath(__file__)
+    parent_oath = os.path.dirname(abs_path)
+    rootpath = os.path.dirname(parent_oath)
+
+    return rootpath
+
+
 def distrib_weight(d_type='decre', num=10, per=0.3, front_num=5,
                    is_round=True, aligh_obj: dict = None):
     total = 1

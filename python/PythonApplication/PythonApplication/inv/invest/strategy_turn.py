@@ -26,9 +26,17 @@ class StrategyTurn(StrategyBase):
 
         self._download_day_bar()
 
-    @property
-    def name(self):
+    @classmethod
+    def name(cls):
         return 'turn'
+
+    @property
+    def cfg_name(self):
+        return 'strategy_turn'
+
+    @property
+    def pools(self):
+        return util.get_config('strategy_turn', 'pool')
 
     def check_config(self):
         logger.info('config check')
@@ -108,20 +116,28 @@ class StrategyTurn(StrategyBase):
         return False
 
     @staticmethod
-    def is_pin_bar(bar):
+    def is_pin_bar(bars):
         """
         if the bar is a pin bar
         :param bar:
         :return:
         """
-        if common.is_cross_star(bar, open_close_change=0.0025, high_low_change=0.025):
-            return True
-        elif common.is_hang_line(bar, mul=1, up_percent=0.009):
-            return True
-        elif common.is_T_line(bar, open_close_change=0.0025, high_low_change=0.025, up_percent=0.009):
-            return True
-
-        return False
+        if common.is_cross_star(bars[0], open_close_change=0.0025, high_low_change=0.025):
+            return True, bars[:1], 'cross_star'
+        elif common.is_hang_line(bars[0], mul=1, up_percent=0.009):
+            return True, bars[:1], 'hang_line'
+        elif common.is_T_line(bars[0], open_close_change=0.0025, high_low_change=0.025, up_percent=0.009):
+            return True, bars[:1], 'T_line'
+        elif common.is_bullish_swallow(bars[:2], percent=0.002):
+            return True, bars[:2], 'bullish_swallow'
+        elif common.is_pierce_line(bars[:2], percent=0.009):
+            return True, bars[:2], 'pierce_line'
+        elif common.is_start_morrow_star(bars[:3], percent=0.002, open_close_change=0.006):
+            return True, bars[:3], 'start_morrow_star'
+        elif common.is_go_ahead_red_three_soldier(bars[:3]):
+            return True, bars[:3], 'go_ahead_red_three_soldier'
+        
+        return False, [], ''
 
     @staticmethod
     def is_in_key_pos(bar, key_pos: list = None, change=0.001):
@@ -137,16 +153,18 @@ class StrategyTurn(StrategyBase):
 
         for pos in key_pos:
             if low <= pos <= high:
-                return True
+                return True, pos
 
-        return False
+        return False, 0
 
     @staticmethod
-    def is_in_high_or_low_pos(closes, days=2, direction='down'):
+    def is_in_high_or_low_pos(day_bars, days=2, direction='down'):
         """
         if in high or low position
         """
-        decline_or_gain_days = util.continuous_decline_or_gain(closes, direction)
+        ma5_list = common.get_ma_list(day_bars, freq=5, num=days+1+1)
+        pre_ma5_list = ma5_list[1:]
+        decline_or_gain_days = util.continuous_decline_or_gain(pre_ma5_list, direction)
 
         if decline_or_gain_days >= days:
             return True
@@ -161,9 +179,9 @@ class StrategyTurn(StrategyBase):
         hig_low_change = bar['high'] / bar['low'] - 1
 
         if hig_low_change >= change:
-            return True
+            return True, hig_low_change
 
-        return False
+        return False, 0.0
 
     @staticmethod
     def is_pretend_breakthrough_key_pos(bar, key_pos, change=0.009):
@@ -172,19 +190,19 @@ class StrategyTurn(StrategyBase):
         """
         lower_key_pos = [pos for pos in key_pos if pos < bar['close']]
         if not lower_key_pos:
-            return False
+            return False, 0.0
 
         nearby_lower_key_pos = max(lower_key_pos)
 
         if bar['close'] < nearby_lower_key_pos:
-            return False
+            return False, 0.0
 
         key_low_change = nearby_lower_key_pos / bar['low'] - 1
 
         if key_low_change >= change:
-            return True
+            return True, nearby_lower_key_pos
 
-        return False
+        return False, 0.0
 
     @staticmethod
     def is_left_swallow_right_bar(day_bars):
@@ -223,19 +241,19 @@ class StrategyTurn(StrategyBase):
         return False
 
     @staticmethod
-    def is_key_pos_pl_gt_specify_value(price, key_pos: list = None, pl=1.5, change=0.01):
+    def is_key_pos_pl_gt_specify_value(price, key_pos: list = None, pl=1.2, change=0.01):
         """
         if the profit-loss ratio gt specify value
         """
         upper_key_pos = [pos for pos in key_pos if pos > price]
         if not upper_key_pos:
-            return False
+            return False, 0.0
 
         nearby_upper_key_pos = min(upper_key_pos)
 
         lower_key_pos = [pos for pos in key_pos if pos < price]
         if not lower_key_pos:
-            return False
+            return False, 0.0
 
         nearby_lower_key_pos = max(lower_key_pos)
 
@@ -245,9 +263,9 @@ class StrategyTurn(StrategyBase):
         pl_ratio = upper_profit / lower_loss
 
         if pl_ratio >= pl:
-            return True
+            return True, pl_ratio
 
-        return False
+        return False, 0.0
 
     @staticmethod
     def sell_sig(symbol):
@@ -297,6 +315,40 @@ class StrategyTurn(StrategyBase):
 
         return True
 
+    @staticmethod
+    def get_buy_sig_frame():
+        buy_sig = {
+            'pool': '',
+            'symbol': '',
+            'necessary_cond': {
+                'is_pin_bar': '',
+                'is_in_key_pos': 0,
+                'is_in_low_pos': 0,
+            },
+            'nece_score': 0,
+            'optional_cond': {
+                'is_noticeable_bar': 0,
+                'is_pretend_breakthrough_key_pos': 0,
+                'is_left_swallow_right_and_change_gt_pre_bar': False,
+                'is_key_pos_pl_gt_threshold': 0,
+                'is_rise_in_good_condition': False,
+            },
+            'opt_score': 0
+        }
+
+        return buy_sig
+
+    @staticmethod
+    def get_key_pos(day_line_bars):
+        """
+        get the key pos
+        """
+        key_poss = common.get_parallel_high_low_key_pos(day_line_bars, wind=util.get_config('strategy_turn', 'key_pos_wind'),
+                                                            inner_percent=util.get_config('strategy_turn', 'key_pos_wind_inner_change'),
+                                                            outer_percent=util.get_config('strategy_turn', 'key_pos_wind_outer_change'),
+                                                             turn_num=util.get_config('strategy_turn', 'key_pos_turn_num'))
+        return key_poss
+
     def sell(self):
         """
         :return:
@@ -313,52 +365,106 @@ class StrategyTurn(StrategyBase):
             elif self.sig_sell(pos):
                 pass
 
+    def buy_necess_cond(self, buy_sig, key_poss, day_line_bars, last_day_bar):
+        """
+        necessary condition
+        """
+        in_key_pos, key_pos = self.is_in_key_pos(last_day_bar, key_poss,
+         change=util.get_config('strategy_turn', 'in_key_pos_change'))
+        if in_key_pos:
+            buy_sig['necessary_cond']['is_in_key_pos'] = key_pos
+            buy_sig['nece_score'] += 1
+
+        if self.is_in_high_or_low_pos(day_line_bars,
+         days=util.get_config('strategy_turn', 'in_low_pos_down_day'), direction='down'):
+            buy_sig['necessary_cond']['is_in_low_pos'] = True
+            buy_sig['nece_score'] += 1
+
+    def buy_option_cond(self, buy_sig, symbol, key_poss, last_day_bar, last_2_day_bars):
+        """
+        optional condition
+        """
+        is_noticeable, high_low_change = self.is_noticeable_bar(last_day_bar,
+         change=util.get_config('strategy_turn', 'noticeable_bar_change'))
+        if is_noticeable:
+            buy_sig['optional_cond']['is_noticeable_bar'] = round(high_low_change, 4)
+            buy_sig['opt_score'] += 1
+
+        is_pretend_brk, nearby_lower_key_pos = self.is_pretend_breakthrough_key_pos(last_day_bar, key_poss,
+         change=util.get_config('strategy_turn', 'pretend_brk_key_pos_change'))
+        if is_pretend_brk:
+            buy_sig['optional_cond']['is_pretend_breakthrough_key_pos'] = nearby_lower_key_pos
+            buy_sig['opt_score'] += 1
+
+        if self.is_left_swallow_right_bar(last_2_day_bars) and self.is_last_change_gt_pre_bar(last_2_day_bars):
+            buy_sig['optional_cond']['is_left_swallow_right_and_change_gt_pre_bar'] = True
+            buy_sig['opt_score'] += 1
+
+        quo = get_real_time_quo(symbol)
+        last_price = float(quo['price'].iloc[0])
+        is_gt_pl, pl_ratio = self.is_key_pos_pl_gt_specify_value(last_price, key_poss,
+         pl=util.get_config('strategy_turn', 'key_pos_pl'), change=util.get_config('strategy_turn', 'key_pos_pl_change'))
+        if is_gt_pl:
+            buy_sig['optional_cond']['is_key_pos_pl_gt_threshold'] = round(pl_ratio, 4)
+            buy_sig['opt_score'] += 1
+
+        if b_sig_is_rise_in_good_condition(symbol, days=180, step=30, percent=0.6):
+            buy_sig['optional_cond']['is_rise_in_good_condition'] = True
+            buy_sig['opt_score'] += 1
+
     def buy(self):
         """
-        买入逻辑
+        buy logic
         :return:
         """
-        pools = util.get_config('strategy_turn', 'pool')
+        buy_sig_info = []
 
-        symbol_list = []
-        for pool in pools:
-            symbol_list = common.get_stock_pool(pool)
+        for pool, symbol in self.symbol_pools:
+            day_line_bars = day_bars(symbol, num=util.get_config('strategy_turn', 'day_bars'))
 
-        for symbol in symbol_list:
-            day_lin_bars = day_bars(symbol, num=180)
-            last_day_bar = day_lin_bars[0]
-            day_closes = [bar['close'] for bar in day_lin_bars]
+            buy_sig = self.get_buy_sig_frame()
+            buy_sig['pool'] = pool
+            buy_sig['symbol'] = symbol
 
-            if not self.is_pin_bar(last_day_bar):
+            is_pin, pin_bars, bar_type = self.is_pin_bar(day_line_bars)
+            if is_pin:
+                buy_sig['necessary_cond']['is_pin_bar'] = bar_type
+                buy_sig['nece_score'] += 1
+
+            last_day_bar = common.merge_bars(pin_bars)
+            key_poss = self.get_key_pos(day_line_bars)
+
+            last_day_bar = last_day_bar if last_day_bar else day_line_bars[0]
+
+            self.buy_necess_cond(buy_sig, key_poss, day_line_bars, last_day_bar)
+
+            last_2_day_bars = [last_day_bar, day_line_bars[1]]
+
+            self.buy_option_cond(buy_sig, symbol, key_poss, last_day_bar, last_2_day_bars)
+
+            buy_sig_info.append(buy_sig)
+        
+        buy_sig_info.sort(key=lambda sig: (sig['nece_score'], sig['opt_score']), reverse=True)
+
+        for b_sig in buy_sig_info:
+            if not b_sig['nece_score'] >= 3:
+                continue
+            if not b_sig['opt_score'] >= 2:
                 continue
 
-            key_poss = common.get_parallel_high_low_key_pos(day_lin_bars, wind=30,
-                                                            inner_percent=0.01,
-                                                            outer_percent=0.02, turn_num=2)
+            sig_rmk = dict()
+            sig_rmk['nece_score'] = b_sig['nece_score']
+            sig_rmk['opt_score'] = b_sig['opt_score']
 
-            if not self.is_in_key_pos(last_day_bar, key_poss, change=0.001):
-                return False
-            if not self.is_in_high_or_low_pos(day_closes[1:], days=2, direction='down'):
-                return False
+            sig_rmk['necessary_cond'] = ', '.join([f"{sig[3:] if sig.startswith('is_') else sig} => {value}"
+             for sig, value in b_sig['necessary_cond'].items()])
 
-            optional_condition = 0
-            last_2_day_bars = day_lin_bars[:2]
-            quo = get_real_time_quo(symbol)
-            last_price = float(quo['price'].iloc[0])
+            sig_rmk['optional_cond'] = ', '.join([f"{sig[3:] if sig.startswith('is_') else sig} => {value}"
+             for sig, value in b_sig['optional_cond'].items() if value])
 
-            if self.is_noticeable_bar(last_day_bar, change=0.06):
-                optional_condition += 1
-            if self.is_pretend_breakthrough_key_pos(last_day_bar, key_poss, change=0.009):
-                optional_condition += 1
-            if self.is_left_swallow_right_bar(last_2_day_bars) and self.is_last_change_gt_pre_bar(last_2_day_bars):
-                optional_condition += 1
-            if self.is_key_pos_pl_gt_specify_value(last_price, key_poss, pl=1.5, change=0.01):
-                optional_condition += 1
-            if b_sig_is_rise_in_good_condition(symbol, days=180, step=30, percent=0.6):
-                optional_condition += 1
+            self.record_buy_info(b_sig['symbol'], b_sig['pool'], **sig_rmk)
 
-            if optional_condition < 2:
-                self.record_buy_info(symbol, 'pool', sig=f"2 + {optional_condition}")
+        return buy_sig_info
 
     def run(self):
         """
@@ -368,7 +474,8 @@ class StrategyTurn(StrategyBase):
         if self.have_buy:
             return
 
-        if not self.have_sell and self.is_time_exe(ExeAction.Sell):
+        if not self.have_sell and self.is_time_exe(ExeAction.Sell) and \
+         util.get_config('strategy_turn', 'sell_enable'):
             self.have_sell = True
 
             self.sell()
@@ -378,7 +485,8 @@ class StrategyTurn(StrategyBase):
             if sell_info and util.get_config('strategy_turn', 'is_mail'):
                 util.send_mail('turn_s', sell_info)
 
-        if not self.have_buy and self.is_time_exe(ExeAction.Buy):
+        if not self.have_buy and self.is_time_exe(ExeAction.Buy) and \
+         util.get_config('strategy_turn', 'buy_enable'):
             self.have_buy = True
 
             sig_info = self.buy()

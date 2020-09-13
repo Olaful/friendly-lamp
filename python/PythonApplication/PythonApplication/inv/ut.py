@@ -2,6 +2,7 @@
 
 import unittest
 from invest import util, common
+from invest.stk_data import day_bars
 
 
 class TestBase(unittest.TestCase):
@@ -45,23 +46,25 @@ class TestFrame(TestBase):
     def setUpClass(cls) -> None:
         super().setUpClass()
 
-    @unittest.skip('')
+    # @unittest.skip('')
     def test_plot(self):
-        from invest.stk_data import day_bars
         import invest.plot as plot
 
-        day_line_bar = day_bars('002100')
-        day_bar = day_line_bar[0]
+        day_line_bar = day_bars('000858')
 
         key_pos = common.get_parallel_high_low_key_pos(day_line_bar)
         plot.key_line(day_line_bar, key_pos)
 
+    @unittest.skip('')
     def test_tmp(self):
-        pass
+        day_line_bar = day_bars('600059')
+        rls = common.get_ma_list(day_line_bar)
+        print(rls)
+        test = 1
 
 
 def main():
-    suite = unittest.TestLoader().loadTestsFromTestCase(TestStrategyTurn)
+    suite = unittest.TestLoader().loadTestsFromTestCase(TestFrame)
     rls = unittest.TextTestRunner(verbosity=2).run(suite)
     print('Total TestCase:', rls.testsRun)
 

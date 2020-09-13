@@ -23,6 +23,8 @@ class MyStrategy(StrategyBase):
     def __init__(self):
         super().__init__()
 
+        util.init_config('strategy', from_db=True)
+
         self.have_sell = False
         self.have_buy = False
 
@@ -30,12 +32,19 @@ class MyStrategy(StrategyBase):
         self._sell_reason = []
 
         self.check_config()
-        self._check_table()
         self._download_day_bar()
 
-    @property
-    def name(self):
+    @classmethod
+    def name(cls):
         return 'ms'
+
+    @property
+    def cfg_name(self):
+        return 'strategy'
+
+    @property
+    def pools(self):
+        return util.get_config('strategy', 'pool')
 
     @property
     def buy_info(self):

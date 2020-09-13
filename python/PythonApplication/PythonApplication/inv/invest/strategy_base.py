@@ -1,7 +1,7 @@
 import json
 import abc
 import datetime
-from invest import util
+from invest import (util, common)
 from invest.stk_data import get_real_time_quo
 
 logger = util.get_logger()
@@ -13,10 +13,20 @@ class StrategyBase(abc.ABC):
         self._sell_reason = []
         self._check_table()
 
+    @classmethod
+    @abc.abstractmethod
+    def name(cls):
+        return ''
+
     @property
     @abc.abstractmethod
-    def name(self):
+    def cfg_name(self):
         return ''
+
+    @property
+    @abc.abstractmethod
+    def pools(self):
+        return []
 
     @property
     def buy_reason(self):
@@ -25,6 +35,16 @@ class StrategyBase(abc.ABC):
     @property
     def sell_reason(self):
         return self._sell_reason
+
+    @property
+    def symbol_pools(self):
+        symbol_list = []
+        for pool in self.pools:
+            symbols = common.get_stock_pool(pool)
+            symbol_info = list(zip([pool] * len(symbols), symbols))
+            symbol_list.extend(symbol_info)
+
+        return symbol_list
 
     @abc.abstractmethod
     def check_config(self):
@@ -50,7 +70,7 @@ class StrategyBase(abc.ABC):
         """
         record the info of sell
         """
-        if len(self._sell_reason) > util.get_config('strategy', 'max_pos'):
+        if len(self._sell_reason) > util.get_config(self.cfg_name, 'max_pos'):
             self._sell_reason.clear()
 
         rmk = {}
@@ -66,7 +86,7 @@ class StrategyBase(abc.ABC):
         """
         record the info of buy
         """
-        if len(self._buy_reason) > util.get_config('strategy', 'max_pos'):
+        if len(self._buy_reason) > util.get_config(self.cfg_name, 'max_pos'):
             self._buy_reason.clear()
 
         rmk = {}

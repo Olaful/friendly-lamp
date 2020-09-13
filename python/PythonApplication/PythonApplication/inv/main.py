@@ -10,7 +10,6 @@ def _init_config():
 
 def _init_db_config():
     util.init_config('global', from_db=True)
-    util.init_config('strategy', from_db=True)
     util.init_config('market', from_db=True)
     util.init_config('mail', from_db=True)
 
@@ -41,7 +40,7 @@ def _load_strategies():
     strategy_switch = util.get_config('global', 'str_status')
     enable_str = [s for s, status in strategy_switch.items() if status == 1]
 
-    all_files = os.listdir('invest')
+    all_files = os.listdir(os.path.join(util.root_path(), 'invest'))
     str_files = [f for f in all_files if f.endswith('.py') and f.startswith('strategy')]
 
     str_seen = set()
@@ -65,10 +64,9 @@ def _load_strategies():
             if attr is StrategyBase:
                 continue
 
-            str_ins = attr()
-            if str_ins.name in enable_str and str_ins.name not in str_seen:
-                str_list.append(str_ins)
-                str_seen.add(str_ins.name)
+            if attr.name() in enable_str and attr.name() not in str_seen:
+                str_list.append(attr())
+                str_seen.add(attr.name())
 
     return str_list
 
