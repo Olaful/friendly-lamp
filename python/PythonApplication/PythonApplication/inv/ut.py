@@ -50,7 +50,7 @@ class TestFrame(TestBase):
     def test_plot(self):
         import invest.plot as plot
 
-        day_line_bar = day_bars('000333')
+        day_line_bar = day_bars('600887')
 
         key_pos = common.get_parallel_high_low_key_pos(day_line_bar)
         plot.key_line(day_line_bar, key_pos)
