@@ -68,13 +68,17 @@ def _load_strategies():
                 str_list.append(attr())
                 str_seen.add(attr.name())
 
-    return str_list
+    return str_list, str_seen
 
 
 def run():
     _init()
 
-    all_str = _load_strategies()
+    all_str, str_names = _load_strategies()
+
+    logger = util.get_logger()
+    logger.info(f"Begin to run: {str_names}")
+
     if not all_str:
         return
 
