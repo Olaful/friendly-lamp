@@ -1,7 +1,6 @@
 from invest import common
 from invest import util
 import time
-from pprint import pprint
 import quotool
 from invest.strategy_base import StrategyBase
 from .types import ExeAction

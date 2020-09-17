@@ -71,6 +71,14 @@ def _load_strategies():
     return str_list, str_seen
 
 
+def _record_pid():
+    pid = os.getpid()
+    file_name = os.path.join(util.root_path(), 'str.pid')
+
+    with open(file_name, 'w') as f:
+        f.write(str(pid))
+
+
 def run():
     _init()
 
@@ -81,6 +89,8 @@ def run():
 
     if not all_str:
         return
+
+    _record_pid()
 
     while True:
         time.sleep(0.1)
