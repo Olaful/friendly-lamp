@@ -16,3 +16,4 @@ bigdata.data
 *.png
 *.jpg
 settings.json
+logs/

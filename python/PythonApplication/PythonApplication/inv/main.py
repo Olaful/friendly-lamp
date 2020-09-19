@@ -68,15 +68,29 @@ def _load_strategies():
                 str_list.append(attr())
                 str_seen.add(attr.name())
 
-    return str_list
+    return str_list, str_seen
+
+
+def _record_pid():
+    pid = os.getpid()
+    file_name = os.path.join(util.root_path(), 'str.pid')
+
+    with open(file_name, 'w') as f:
+        f.write(str(pid))
 
 
 def run():
     _init()
 
-    all_str = _load_strategies()
+    all_str, str_names = _load_strategies()
+
+    logger = util.get_logger()
+    logger.info(f"Begin to run: {str_names}")
+
     if not all_str:
         return
+
+    _record_pid()
 
     while True:
         time.sleep(0.1)

@@ -1,7 +1,6 @@
 from invest import common
 from invest import util
 import time
-from pprint import pprint
 import quotool
 from invest.strategy_base import StrategyBase
 from .types import ExeAction
@@ -420,6 +419,8 @@ class StrategyTurn(StrategyBase):
         buy_sig_info = []
 
         for pool, symbol in self.symbol_pools:
+            logger.info(f"dealing: {pool} => {symbol}")
+
             day_line_bars = day_bars(symbol, num=util.get_config('strategy_turn', 'day_bars'))
 
             buy_sig = self.get_buy_sig_frame()
@@ -490,10 +491,10 @@ class StrategyTurn(StrategyBase):
             self.have_buy = True
 
             sig_info = self.buy()
-            pprint(sig_info)
+            logger.info(sig_info)
 
             buy_info = self.buy_info
-            print(buy_info)
+            logger.info(buy_info)
 
             if buy_info and util.get_config('strategy_turn', 'is_mail'):
                 util.send_mail('turn_b', buy_info)
