@@ -46,7 +46,7 @@ class TestFrame(TestBase):
     def setUpClass(cls) -> None:
         super().setUpClass()
 
-    # @unittest.skip('')
+    @unittest.skip('')
     def test_plot(self):
         import invest.plot as plot
 
@@ -55,16 +55,23 @@ class TestFrame(TestBase):
         key_pos = common.get_parallel_high_low_key_pos(day_line_bar)
         plot.key_line(day_line_bar, key_pos)
 
-    @unittest.skip('')
+    # @unittest.skip('')
     def test_tmp(self):
-        day_line_bar = day_bars('600059')
-        rls = common.get_ma_list(day_line_bar)
-        print(rls)
+        util.send_mail('1', '1')
         test = 1
 
 
+class TestPool(unittest.TestCase):
+    """
+    pool test
+    """
+    from invest.pool_tool.fetch_pool import fetch_pool
+    fetch_pool()
+    test = 1
+
+
 def main():
-    suite = unittest.TestLoader().loadTestsFromTestCase(TestFrame)
+    suite = unittest.TestLoader().loadTestsFromTestCase(TestPool)
     rls = unittest.TextTestRunner(verbosity=2).run(suite)
     print('Total TestCase:', rls.testsRun)
 
