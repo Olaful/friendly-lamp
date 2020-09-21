@@ -1,11 +1,13 @@
 import time
 import lxml
+import pytesseract
 from selenium import webdriver
 from urllib.parse import urlencode
 
 from invest import util
 
 browser = None
+MAX_TRY_LOGIN = 5
 
 
 def _init_config():
@@ -61,9 +63,104 @@ def _pop_up_login_page():
     e_switch_account_login.click()
 
 
-def _auto_login():
-    _pop_up_login_page()
+def _get_captcha_pos(e_captcha):
+    captcha_location = e_captcha.location
+    captcha_size = e_captcha.size
 
+    top, left = captcha_location['y'], captcha_location['x']
+    right = left + captcha_size['width']
+    bottom = top + captcha_size['height']
+
+    return left, top, right, bottom
+
+
+def _screenshot_captcha():
+    e_captcha = _find_elements_by_css('img.pointer captcha_img')[0]
+    e_captcha.click()
+
+    screenshot = browser.get_screenshot_as_png()
+    captcha_pos = _get_captcha_pos(e_captcha)
+    captcha_sc = screenshot.crop(captcha_pos)
+
+    return captcha_sc
+
+
+def _captcha_rem_noise(img):
+    def sum_9_scope_new(img, x, y):
+        cur_pixel = img.getpixel((x, y))
+        width = img.width
+        height = img.height
+
+        # the white point
+        if cur_pixel == 1:
+            return 0
+
+        # remove the black point of surrounding
+        if y < 3:
+            return 1
+        # the two rows of bottom
+        elif y > height - 3:
+            return 1
+        # y not in the border
+        else:
+            # two col of front
+            if x < 3:
+                return 1
+            # not top point of right
+            elif x == width - 1:
+                return 1
+            # meet the condition of 9 region
+            else:
+                sum_pixel = img.getpixel((x - 1, y - 1)) \
+                      + img.getpixel((x - 1, y)) \
+                      + img.getpixel((x - 1, y + 1)) \
+                      + img.getpixel((x, y - 1)) \
+                      + cur_pixel \
+                      + img.getpixel((x, y + 1)) \
+                      + img.getpixel((x + 1, y - 1)) \
+                      + img.getpixel((x + 1, y)) \
+                      + img.getpixel((x + 1, y + 1))
+                return 9 - sum_pixel
+
+    def collect_noise_point(img):
+        noise_points = []
+        for x in range(img.width):
+            for y in range(img.height):
+                scope_9 = sum_9_scope_new(img, x, y)
+                # the isolated point
+                if img.getpixel((x, y)) == 0 and 0 < scope_9 < 3:
+                    noise_point_list.append((x, y))
+        return noise_points
+
+    def remove_noise(img, noise_poss):
+        for pos in noise_poss:
+            img.putpixel((pos[0], pos[1]), 1)
+
+    gray_img = img.convert('L')
+    threshold = 109
+    black_white_img = gray_img.point([0 if i < threshold else 1 for i in range(256)], '1')
+
+    noise_point_list = collect_noise_point(black_white_img)
+
+    remove_noise(img, noise_point_list)
+
+    return img
+
+
+def _parse_captcha(try_num=0):
+    captcha_img = _screenshot_captcha()
+    rem_noise_img = _captcha_rem_noise(captcha_img)
+    words = pytesseract.image_to_string(image=rem_noise_img, lang='eng', config='--psm 7')
+    if words:
+        return words
+    max_try = 5
+    if try_num < max_try:
+        _parse_captcha(try_num + 1)
+
+    return ''
+
+
+def _auto_login(try_num=0):
     e_uname_input = _find_elements_by_css('input#uname')[0]
     e_uname_input.send_keys(util.get_config('chrome', 'ths_uname'))
 
@@ -71,10 +168,31 @@ def _auto_login():
     pwd = [chr(int(w) - 12) for w in util.get_config('chrome', 'ths_pwd')]
     e_pwd_input.send_keys(pwd)
 
+    captcha = _parse_captcha()
+    e_pwd_input = _find_elements_by_css('input#account_captcha')[0]
+    e_pwd_input.send_keys(captcha)
+
+    time.sleep(2)
+
+    e_login = _find_elements_by_css('div[class="b_f pointer tc submit_btn"]')[0]
+    e_login.click()
+
+    print(f'login...captcha: {captcha}')
+
+    e_error_box = _find_elements_by_css('div[class="fl error_c msg_box"]')[0]
+    error_msg = e_error_box.text
+    if error_msg.find('验证码输入错误') != -1:
+        print("login retry...")
+        if try_num < MAX_TRY_LOGIN:
+            time.sleep(2)
+            _auto_login(try_num + 1)
+        return False
+
+    return True
+
 
 def _get_current_html(try_num=0):
-    e_page = browser.find_elements_by_css_selector('ul.pcwencai-pagination > li')
-    browser.implicitly_wait(30)
+    e_page = _find_elements_by_css('ul.pcwencai-pagination > li')
 
     e_next = e_page[-1]
     e_next = e_next.find_element_by_css_selector('a')
@@ -93,7 +211,7 @@ def _get_query_url(query_param):
 
 
 def _get_page_num():
-    e_page = browser.find_elements_by_css_selector('ul.pcwencai-pagination > li.page-item')
+    e_page = _find_elements_by_css('ul.pcwencai-pagination > li.page-item')
     browser.implicitly_wait(30)
 
     e_last_page_num = e_page[-1]
@@ -118,7 +236,7 @@ def _get_code(current_html):
 
 
 def _next_page(try_num=0):
-    e_page = browser.find_elements_by_css_selector('ul.pcwencai-pagination > li')
+    e_page = _find_elements_by_css('ul.pcwencai-pagination > li')
     browser.implicitly_wait(30)
 
     e_next = e_page[-1]
@@ -143,12 +261,18 @@ def _to_db(pool, codes: list = None):
 
 
 def run():
+    home_page = 'http://www.iwencai.com/unifiedwap/home/index'
+    browser.get(home_page)
+
+    _pop_up_login_page()
+
+    if not _auto_login():
+        return
+
     for pool, query_word in util.get_config('chrome', 'pool_where').items():
         query_param = urlencode({'w': query_word})
         url = _get_query_url(query_param)
         browser.get(url)
-
-        _auto_login()
 
         pool_codes = []
 
