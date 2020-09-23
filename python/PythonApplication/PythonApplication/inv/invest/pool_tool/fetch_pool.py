@@ -2,6 +2,8 @@ import time
 import lxml
 import pytesseract
 from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.common.exceptions import NoSuchElementException
 from urllib.parse import urlencode
 
 from invest import util
@@ -57,10 +59,6 @@ def _pop_up_login_page():
     e_login.click()
 
     browser.switch_to.frame('login_iframe')
-
-    e_switch_account_login = browser.find_element_by_css_selector('a#to_account_login')
-    browser.implicitly_wait(30)
-    e_switch_account_login.click()
 
 
 def _get_captcha_pos(e_captcha):
@@ -161,6 +159,17 @@ def _parse_captcha(try_num=0):
 
 
 def _auto_login(try_num=0):
+    try:
+        e_login_img = browser.find_element(by=By.CLASS_NAME, value='touxiangAvatar')
+        e_login_img.click()
+        time.sleep(2)
+        return True
+    except NoSuchElementException:
+        pass
+
+    e_switch_account_login = _find_elements_by_css('a#to_account_login')[0]
+    e_switch_account_login.click()
+
     e_uname_input = _find_elements_by_css('input#uname')[0]
     e_uname_input.send_keys(util.get_config('chrome', 'ths_uname'))
 
@@ -169,8 +178,8 @@ def _auto_login(try_num=0):
     e_pwd_input.send_keys(pwd)
 
     captcha = _parse_captcha()
-    e_pwd_input = _find_elements_by_css('input#account_captcha')[0]
-    e_pwd_input.send_keys(captcha)
+    e_captcha_input = _find_elements_by_css('input#account_captcha')[0]
+    e_captcha_input.send_keys(captcha)
 
     time.sleep(2)
 
@@ -185,6 +194,11 @@ def _auto_login(try_num=0):
         print("login retry...")
         if try_num < MAX_TRY_LOGIN:
             time.sleep(2)
+
+            e_uname_input.send_keys("")
+            e_pwd_input.send_keys("")
+            e_captcha_input.send_keys("")
+
             _auto_login(try_num + 1)
         return False
 
@@ -237,7 +251,6 @@ def _get_code(current_html):
 
 def _next_page(try_num=0):
     e_page = _find_elements_by_css('ul.pcwencai-pagination > li')
-    browser.implicitly_wait(30)
 
     e_next = e_page[-1]
     e_next = e_next.find_element_by_css_selector('a')
@@ -254,8 +267,8 @@ def _to_db(pool, codes: list = None):
     db = util.get_mysql('test')
     insert_sql = "REPLACE INTO `code_pool`" \
                  "(`code`, `name`, `pool`) VALUES" \
-                 "( '{code}', NULL, '{pool}')"
-    insert_param = [{'code': code, 'pool': pool} for code in codes]
+                 "( %s, NULL, %s )"
+    insert_param = [(code, pool) for code in codes]
 
     db.executemany(insert_sql, insert_param)
 
@@ -286,6 +299,7 @@ def run():
             if len(pool_codes) >= util.get_config('chrome', 'pool_num'):
                 break
 
+            time.sleep(3)
             _next_page()
 
             current_html = _get_current_html()
