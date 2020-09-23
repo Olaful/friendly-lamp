@@ -1,6 +1,9 @@
 import time
 import lxml
 import pytesseract
+import re
+from PIL import Image
+from io import BytesIO
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
@@ -62,7 +65,7 @@ def _pop_up_login_page():
 
 
 def _get_captcha_pos(e_captcha):
-    captcha_location = e_captcha.location
+    captcha_location = e_captcha.location_once_scrolled_into_view
     captcha_size = e_captcha.size
 
     top, left = captcha_location['y'], captcha_location['x']
@@ -73,12 +76,14 @@ def _get_captcha_pos(e_captcha):
 
 
 def _screenshot_captcha():
-    e_captcha = _find_elements_by_css('img.pointer captcha_img')[0]
+    e_captcha = _find_elements_by_css('img[class="pointer captcha_img"]')[0]
     e_captcha.click()
 
     screenshot = browser.get_screenshot_as_png()
+    screen_img = Image.open(BytesIO(screenshot))
+    screen_img.save('E:\picture\sreen.png')
     captcha_pos = _get_captcha_pos(e_captcha)
-    captcha_sc = screenshot.crop(captcha_pos)
+    captcha_sc = screen_img.crop(captcha_pos)
 
     return captcha_sc
 
@@ -127,7 +132,7 @@ def _captcha_rem_noise(img):
                 scope_9 = sum_9_scope_new(img, x, y)
                 # the isolated point
                 if img.getpixel((x, y)) == 0 and 0 < scope_9 < 3:
-                    noise_point_list.append((x, y))
+                    noise_points.append((x, y))
         return noise_points
 
     def remove_noise(img, noise_poss):
@@ -140,14 +145,15 @@ def _captcha_rem_noise(img):
 
     noise_point_list = collect_noise_point(black_white_img)
 
-    remove_noise(img, noise_point_list)
+    remove_noise(black_white_img, noise_point_list)
 
-    return img
+    return black_white_img
 
 
 def _parse_captcha(try_num=0):
     captcha_img = _screenshot_captcha()
     rem_noise_img = _captcha_rem_noise(captcha_img)
+    rem_noise_img.save('E:\picture\iwencai_captcha.png')
     words = pytesseract.image_to_string(image=rem_noise_img, lang='eng', config='--psm 7')
     if words:
         return words
@@ -159,13 +165,12 @@ def _parse_captcha(try_num=0):
 
 
 def _auto_login(try_num=0):
-    try:
+    is_record_login_info = re.search('touxiangAvatar', browser.page_source)
+    if is_record_login_info:
         e_login_img = browser.find_element(by=By.CLASS_NAME, value='touxiangAvatar')
         e_login_img.click()
         time.sleep(2)
         return True
-    except NoSuchElementException:
-        pass
 
     e_switch_account_login = _find_elements_by_css('a#to_account_login')[0]
     e_switch_account_login.click()
@@ -174,7 +179,7 @@ def _auto_login(try_num=0):
     e_uname_input.send_keys(util.get_config('chrome', 'ths_uname'))
 
     e_pwd_input = _find_elements_by_css('input#passwd')[0]
-    pwd = [chr(int(w) - 12) for w in util.get_config('chrome', 'ths_pwd')]
+    pwd = ''.join([chr(int(w) - 12) for w in util.get_config('chrome', 'ths_pwd').split(',')])
     e_pwd_input.send_keys(pwd)
 
     captcha = _parse_captcha()
@@ -183,14 +188,17 @@ def _auto_login(try_num=0):
 
     time.sleep(2)
 
-    e_login = _find_elements_by_css('div[class="b_f pointer tc submit_btn"]')[0]
+    e_login = _find_elements_by_css('div[class="b_f pointer tc submit_btn enable_submit_btn"]')[0]
     e_login.click()
+    time.sleep(1)
 
     print(f'login...captcha: {captcha}')
 
     e_error_box = _find_elements_by_css('div[class="fl error_c msg_box"]')[0]
     error_msg = e_error_box.text
-    if error_msg.find('验证码输入错误') != -1:
+    print(error_msg)
+
+    if error_msg:
         print("login retry...")
         if try_num < MAX_TRY_LOGIN:
             time.sleep(2)
