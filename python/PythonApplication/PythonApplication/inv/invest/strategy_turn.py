@@ -2,6 +2,7 @@ from invest import common
 from invest import util
 import time
 import quotool
+from pprint import pprint
 from invest.strategy_base import StrategyBase
 from .types import ExeAction
 from .stk_data import get_real_time_quo, day_bars
@@ -492,6 +493,7 @@ class StrategyTurn(StrategyBase):
 
             sig_info = self.buy()
             logger.info(sig_info)
+            pprint(sig_info)
 
             buy_info = self.buy_info
             logger.info(buy_info)

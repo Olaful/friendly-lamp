@@ -1,18 +1,20 @@
 import time
 import lxml
-import pytesseract
 import re
 from PIL import Image
 from io import BytesIO
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import NoSuchElementException
 from urllib.parse import urlencode
+import hashlib
 
 from invest import util
+from invest.pool_tool.captcha_ident import parse_captcha
+from invest.types import CaptchaWay
 
 browser = None
-MAX_TRY_LOGIN = 5
+MAX_TRY_LOGIN = 3
+logger = None
 
 
 def _init_config():
@@ -25,6 +27,12 @@ def _init_db():
 
 def _init_db_config():
     util.init_config('chrome', from_db=True)
+    
+    
+def _init_logger():
+    util.init_logger()
+    global logger
+    logger = util.get_logger()
 
 
 def _init_browser():
@@ -79,101 +87,72 @@ def _screenshot_captcha():
     e_captcha = _find_elements_by_css('img[class="pointer captcha_img"]')[0]
     e_captcha.click()
 
+    time.sleep(1.5)
+
     screenshot = browser.get_screenshot_as_png()
     screen_img = Image.open(BytesIO(screenshot))
-    screen_img.save('E:\picture\sreen.png')
     captcha_pos = _get_captcha_pos(e_captcha)
     captcha_sc = screen_img.crop(captcha_pos)
 
     return captcha_sc
 
 
-def _captcha_rem_noise(img):
-    def sum_9_scope_new(img, x, y):
-        cur_pixel = img.getpixel((x, y))
-        width = img.width
-        height = img.height
-
-        # the white point
-        if cur_pixel == 1:
-            return 0
-
-        # remove the black point of surrounding
-        if y < 3:
-            return 1
-        # the two rows of bottom
-        elif y > height - 3:
-            return 1
-        # y not in the border
-        else:
-            # two col of front
-            if x < 3:
-                return 1
-            # not top point of right
-            elif x == width - 1:
-                return 1
-            # meet the condition of 9 region
-            else:
-                sum_pixel = img.getpixel((x - 1, y - 1)) \
-                      + img.getpixel((x - 1, y)) \
-                      + img.getpixel((x - 1, y + 1)) \
-                      + img.getpixel((x, y - 1)) \
-                      + cur_pixel \
-                      + img.getpixel((x, y + 1)) \
-                      + img.getpixel((x + 1, y - 1)) \
-                      + img.getpixel((x + 1, y)) \
-                      + img.getpixel((x + 1, y + 1))
-                return 9 - sum_pixel
-
-    def collect_noise_point(img):
-        noise_points = []
-        for x in range(img.width):
-            for y in range(img.height):
-                scope_9 = sum_9_scope_new(img, x, y)
-                # the isolated point
-                if img.getpixel((x, y)) == 0 and 0 < scope_9 < 3:
-                    noise_points.append((x, y))
-        return noise_points
-
-    def remove_noise(img, noise_poss):
-        for pos in noise_poss:
-            img.putpixel((pos[0], pos[1]), 1)
-
-    gray_img = img.convert('L')
-    threshold = 109
-    black_white_img = gray_img.point([0 if i < threshold else 1 for i in range(256)], '1')
-
-    noise_point_list = collect_noise_point(black_white_img)
-
-    remove_noise(black_white_img, noise_point_list)
-
-    return black_white_img
-
-
-def _parse_captcha(try_num=0):
+def _parse_captcha():
     captcha_img = _screenshot_captcha()
-    rem_noise_img = _captcha_rem_noise(captcha_img)
-    rem_noise_img.save('E:\picture\iwencai_captcha.png')
-    words = pytesseract.image_to_string(image=rem_noise_img, lang='eng', config='--psm 7')
-    if words:
-        return words
-    max_try = 5
-    if try_num < max_try:
-        _parse_captcha(try_num + 1)
 
-    return ''
+    if util.get_config('chrome', 'save_capt'):
+        captcha_img.save(util.get_config('chrome', 'capt_path'))
+
+    api_key = ''
+    username = ''
+    pwd = ''
+    soft_id = 0
+    code_type = 0
+    secret_key = ''
+    bin_thres = 0
+
+    way = util.get_config('chrome', 'capt_way')
+    if way == CaptchaWay.Local:
+        bin_thres = util.get_config('chrome', 'local_capt_bin_thres')
+    elif way == CaptchaWay.BaiduApi:
+        api_key = util.get_config('chrome', 'baidu_capt_api_key')
+        soft_id = util.get_config('chrome', 'baidu_capt_soft_id')
+        secret_key = util.get_config('chrome', 'baidu_capt_api_secret_key')
+    elif way == CaptchaWay.NineKwApi:
+        api_key = util.get_config('chrome', '9kw_capt_api_key')
+    elif way == CaptchaWay.ChaoJiYingApi:
+        username = util.get_config('chrome', 'chaojiying_uname')
+        ori_pwd = ''.join([chr(int(w) - 12) for w in util.get_config('chrome', 'chaojiying_upwd').split(',')])
+        pwd_md5 = hashlib.md5()
+        pwd_md5.update(ori_pwd.encode())
+        pwd = pwd_md5.hexdigest()
+        soft_id = util.get_config('chrome', 'chaojiying_soft_id')
+        code_type = util.get_config('chrome', 'chaojiying_code_type')
+    else:
+        raise ValueError(f"not support way: {way}")
+
+    words = parse_captcha(captcha_img, way=way,
+                          api_key=api_key, username=username,
+                          pwd=pwd, soft_id=soft_id,
+                          code_type=code_type, secret_key=secret_key,
+                          bin_thres=bin_thres)
+    return words
 
 
 def _auto_login(try_num=0):
     is_record_login_info = re.search('touxiangAvatar', browser.page_source)
+
     if is_record_login_info:
         e_login_img = browser.find_element(by=By.CLASS_NAME, value='touxiangAvatar')
         e_login_img.click()
         time.sleep(2)
         return True
 
-    e_switch_account_login = _find_elements_by_css('a#to_account_login')[0]
-    e_switch_account_login.click()
+    try:
+        e_switch_account_login = _find_elements_by_css('a#to_account_login')[0]
+        e_switch_account_login.click()
+    except Exception:
+        pass
 
     e_uname_input = _find_elements_by_css('input#uname')[0]
     e_uname_input.send_keys(util.get_config('chrome', 'ths_uname'))
@@ -183,6 +162,7 @@ def _auto_login(try_num=0):
     e_pwd_input.send_keys(pwd)
 
     captcha = _parse_captcha()
+    captcha = captcha.replace(' ', '')
     e_captcha_input = _find_elements_by_css('input#account_captcha')[0]
     e_captcha_input.send_keys(captcha)
 
@@ -190,24 +170,25 @@ def _auto_login(try_num=0):
 
     e_login = _find_elements_by_css('div[class="b_f pointer tc submit_btn enable_submit_btn"]')[0]
     e_login.click()
-    time.sleep(1)
+    time.sleep(2)
 
-    print(f'login...captcha: {captcha}')
+    logger.info(f'login...captcha: {captcha}')
 
-    e_error_box = _find_elements_by_css('div[class="fl error_c msg_box"]')[0]
-    error_msg = e_error_box.text
-    print(error_msg)
+    login_error_info = re.search('fl error_c msg_box', browser.page_source)
 
-    if error_msg:
-        print("login retry...")
+    if login_error_info:
+        e_error_box = _find_elements_by_css('div[class="fl error_c msg_box"]')[0]
+        error_msg = e_error_box.text
+        logger.info(error_msg)
+        logger.info("login retry...")
         if try_num < MAX_TRY_LOGIN:
             time.sleep(2)
 
-            e_uname_input.send_keys("")
-            e_pwd_input.send_keys("")
-            e_captcha_input.send_keys("")
+            e_uname_input.clear()
+            e_pwd_input.clear()
+            e_captcha_input.clear()
 
-            _auto_login(try_num + 1)
+            return _auto_login(try_num + 1)
         return False
 
     return True
@@ -222,7 +203,7 @@ def _get_current_html(try_num=0):
     max_try = 3
     if not e_next.is_enabled() and try_num < max_try:
         time.sleep(2)
-        _get_current_html(try_num + 1)
+        return _get_current_html(try_num + 1)
 
     return browser.page_source
 
@@ -238,7 +219,9 @@ def _get_page_num():
 
     e_last_page_num = e_page[-1]
 
-    return int(e_last_page_num.text)
+    page_num = e_last_page_num.text
+
+    return int(page_num) if page_num else 1
 
 
 def _get_code(current_html):
@@ -266,8 +249,9 @@ def _next_page(try_num=0):
     max_try = 3
     if not e_next.is_enabled() and try_num < max_try:
         time.sleep(2)
-        _next_page(try_num + 1)
+        return _next_page(try_num + 1)
 
+    time.sleep(1)
     e_next.click()
 
 
@@ -288,11 +272,16 @@ def run():
     _pop_up_login_page()
 
     if not _auto_login():
+        logger.info("login failed")
         return
 
     for pool, query_word in util.get_config('chrome', 'pool_where').items():
+        logger.info(f"fetch pool: {pool}")
+
         query_param = urlencode({'w': query_word})
         url = _get_query_url(query_param)
+
+        time.sleep(2)
         browser.get(url)
 
         pool_codes = []
@@ -307,8 +296,8 @@ def run():
             if len(pool_codes) >= util.get_config('chrome', 'pool_num'):
                 break
 
-            time.sleep(3)
             _next_page()
+            time.sleep(3)
 
             current_html = _get_current_html()
             page_codes = _get_code(current_html)
@@ -321,13 +310,14 @@ def fetch_pool():
     _init_config()
     _init_db()
     _init_db_config()
+    _init_logger()
     _init_browser()
 
     try:
         run()
         _close_browser()
     except Exception as e:
-        print(f"run error: {str(e)}")
+        logger.info(f"run error: {str(e)}")
         _close_browser()
         
 

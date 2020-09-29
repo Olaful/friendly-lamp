@@ -307,16 +307,16 @@ def send_mail(sub, text):
     from email.header import Header
     
     mail_host = 'smtp.qq.com'
-    mail_user = '1764740905@qq.com'
+    mail_user = get_config('mail', 'user')
     db_pwd = get_config('mail', 'pwd')
     mail_pwd = ''.join([chr(int(item)-12) for item in db_pwd.split(',')])
 
-    sender = '1764740905@qq.com'
-    receivers = ['1764740905@qq.com']
+    sender = get_config('mail', 'user')
+    receivers = [rev.strip() for rev in get_config('mail', 'receivers')]
 
     msg = MIMEText(text, 'plain', 'utf8')
     msg['From'] = Header('tbq', 'utf8')
-    msg['To'] = Header('tbq', 'utf8')
+    msg['To'] = Header('you', 'utf8')
 
     msg['Subject'] = Header(sub, 'utf8')
 
@@ -327,4 +327,4 @@ def send_mail(sub, text):
         smtp_obj.sendmail(sender, receivers, msg.as_string())
         print('mail send success')
     except smtplib.SMTPException as e:
-        print(f'mail send faild: {str(e)}')
+        print(f'mail send failed: {str(e)}')
