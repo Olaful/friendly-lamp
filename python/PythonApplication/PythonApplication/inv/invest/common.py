@@ -323,6 +323,38 @@ def get_parallel_high_low_key_pos(day_bars, wind=30, inner_percent=0.01, outer_p
     return key_pos
 
 
+def get_gap_key_pos(day_bars, threshold):
+    """
+    get key poss of gap
+    :param day_bars:
+    :param threshold:
+    :return:
+    """
+    key_poss = []
+
+    for i in range(len(day_bars) - 1):
+        cur_bar = day_bars[i]
+        next_bar = day_bars[i+1]
+
+        cur_min_oc = min(cur_bar['open'], cur_bar['close'])
+        next_max_oc = max(next_bar['open'], next_bar['close'])
+        if cur_min_oc > next_max_oc:
+            up_gap_change = cur_min_oc / next_max_oc - 1
+            if up_gap_change >= threshold:
+                key_poss.append(cur_min_oc)
+
+        cur_max_oc = max(cur_bar['open'], cur_bar['close'])
+        next_min_oc = min(next_bar['open'], next_bar['close'])
+        if next_min_oc > cur_max_oc:
+            down_gap_change = next_min_oc / cur_max_oc - 1
+            if down_gap_change >= threshold:
+                key_poss.append(cur_max_oc)
+
+    key_poss.sort(reverse=False)
+
+    return key_poss
+
+
 def get_ma_list(bars, freq=5, num=10):
     """
     get ma list

@@ -343,10 +343,17 @@ class StrategyTurn(StrategyBase):
         """
         get the key pos
         """
-        key_poss = common.get_parallel_high_low_key_pos(day_line_bars, wind=util.get_config('strategy_turn', 'key_pos_wind'),
+        parallel_bars = day_line_bars[:util.get_config('strategy_turn', 'parallel_key_pos_bar_num')]
+        parallel_key_poss = common.get_parallel_high_low_key_pos(parallel_bars, wind=util.get_config('strategy_turn', 'key_pos_wind'),
                                                             inner_percent=util.get_config('strategy_turn', 'key_pos_wind_inner_change'),
                                                             outer_percent=util.get_config('strategy_turn', 'key_pos_wind_outer_change'),
                                                              turn_num=util.get_config('strategy_turn', 'key_pos_turn_num'))
+        gap_bars = day_line_bars[:util.get_config('strategy_turn', 'gap_key_pos_bar_num')]
+        gap_key_poss = common.get_gap_key_pos(gap_bars, util.get_config('strategy_turn', 'gap_threshold'))
+
+        key_poss = set(parallel_key_poss + gap_key_poss)
+        key_poss.sort(reverse=True)
+
         return key_poss
 
     def sell(self):

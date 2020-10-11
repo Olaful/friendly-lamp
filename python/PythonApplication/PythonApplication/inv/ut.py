@@ -51,9 +51,10 @@ class TestFrame(TestBase):
     def test_plot(self):
         import invest.plot as plot
 
-        day_line_bar = day_bars('000668')
+        day_line_bar = day_bars('600089')
+        day_line_bar = day_line_bar[0:45]
 
-        key_pos = common.get_parallel_high_low_key_pos(day_line_bar)
+        key_pos = common.get_gap_key_pos(day_line_bar, 0.01)
         plot.key_line(day_line_bar, key_pos)
 
     @unittest.skip('')
@@ -85,7 +86,7 @@ class TestPool(unittest.TestCase):
     from invest.pool_tool.fetch_pool import fetch_pool
     from invest.pool_tool.captcha_ident import CaptCha9KAPI
     # img = Image.open(r'E:\picture\iwencai_captcha.png')
-    # cc9k = CaptChaAPI9K(img, api_key='X8BOZF05VI5GZGCGH1')
+    # cc9k = CaptChaAPI9K(img, api_key='')
     # rls = cc9k.solve()
 
     # fetch_pool()
