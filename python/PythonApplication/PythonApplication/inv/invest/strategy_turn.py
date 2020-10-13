@@ -352,7 +352,7 @@ class StrategyTurn(StrategyBase):
         gap_key_poss = common.get_gap_key_pos(gap_bars, util.get_config('strategy_turn', 'gap_threshold'))
 
         key_poss = set(parallel_key_poss + gap_key_poss)
-        key_poss.sort(reverse=True)
+        key_poss = sorted(list(key_poss))
 
         return key_poss
 
