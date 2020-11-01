@@ -51,11 +51,14 @@ class TestFrame(TestBase):
     def test_plot(self):
         import invest.plot as plot
 
-        day_line_bar = day_bars('600089')
-        day_line_bar = day_line_bar[0:45]
+        day_line_bar = day_bars('000001', is_index=True)
+        day_line_bar = day_line_bar[1:]
 
-        key_pos = common.get_gap_key_pos(day_line_bar, 0.01)
-        plot.key_line(day_line_bar, key_pos)
+        parallel_key_pos = common.get_parallel_high_low_key_pos(day_line_bar)
+        gap_key_pos = common.get_gap_key_pos(day_line_bar[:45], 0.005)
+        key_poss = set(parallel_key_pos + gap_key_pos)
+        key_poss = sorted(list(key_poss))
+        plot.key_line(day_line_bar, key_poss)
 
     @unittest.skip('')
     def test_captcha(self):

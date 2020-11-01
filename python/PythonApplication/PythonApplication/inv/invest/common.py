@@ -177,7 +177,11 @@ def get_last_dvd_info(symbol):
                 start = rls.start()
                 dividCashPsAfterTax = float(dividCashPsAfterTax[:start])
             else:
-                dividCashPsAfterTax = float(dividCashPsAfterTax)
+                if isinstance(dividCashPsAfterTax, str):
+                    print("dividCashPsAfterTax is str")
+                    dividCashPsAfterTax = 0.0
+                else:
+                    dividCashPsAfterTax = float(dividCashPsAfterTax)
 
             insert_param.update({
                 'dividOperateDate': row.dividOperateDate,

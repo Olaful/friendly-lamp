@@ -1,5 +1,5 @@
 import time
-import lxml
+import lxml.html
 import re
 from PIL import Image
 from io import BytesIO
