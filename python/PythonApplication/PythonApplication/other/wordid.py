@@ -1,14 +1,16 @@
-from aip import AipOcr
+import argparse
 import re
+from aip import AipOcr
 
-def imgOcr():
+
+def imgOcr(path):
     APP_ID = '15920597'
     API_KEY = 'DDjpHGGAnMk6BBdxSZRekdPq'
     SECRET_KEY = 'Su56XKHynhNrYByAhOSfESjzuf9kqtyz'
 
     client = AipOcr(APP_ID, API_KEY, SECRET_KEY)
 
-    f = open(r'F:\picture\11.png', 'rb')
+    f = open(path, 'rb')
     img = f.read()
 
     msg = client.basicGeneral(img)
@@ -17,5 +19,18 @@ def imgOcr():
     print(wordDict)
 
 
+def main():
+    arg_parser = argparse.ArgumentParser()
+    arg_parser.add_argument('--path',
+                            default='',
+                            type=str,
+                            required=False,
+                            help='the path of original img')
+    args = arg_parser.parse_args()
+
+    if args.path:
+        imgOcr(args.path)
+
+
 if __name__ == '__main__':
-    imgOcr()
+    main()

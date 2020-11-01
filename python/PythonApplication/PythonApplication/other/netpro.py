@@ -10,6 +10,8 @@ import socket
 import argparse
 from datetime import datetime
 import sys, random
+import dns.resolver
+
 
 def getlltitude():
     """
@@ -22,6 +24,7 @@ def getlltitude():
     coordinates = Geocoder.geocode(address2)[0].coordinates
     print(coordinates)
 
+
 def getlltitude2():
     """
     通过requests库请求
@@ -33,6 +36,7 @@ def getlltitude2():
     resp = requests.get(url, params=param)
     answer = resp.json()
     rls = answer['result'][0]['geometry']['location']
+
 
 def getlltitude3():
     """
@@ -48,6 +52,7 @@ def getlltitude3():
     # 接收导的是网络字节，需要解码
     reply = json.loads(rawreply.decode('utf-8'))
     rls = reply['result'][0]['geometry']['location']
+
 
 def getlltitude4():
     address = '207 N. Defiance St, Archbold, OH'
@@ -66,6 +71,7 @@ def getlltitude4():
         raw_reply += more
     rls = raw_reply.decode('utf-8')
 
+
 def decode_encode():
     input_bytes = b'\xff\xfe4\x001\x003\x00\ \x00i\x00s\x00 \x00i\x00n\x00.\x00'
     # input_characters = input_bytes.decode('utf-16')
@@ -75,6 +81,7 @@ def decode_encode():
     output_bytes = output_characters.encode('utf-8')
 
     print(output_bytes)
+
 
 def get_ip_with_hostname():
     """
@@ -86,6 +93,7 @@ def get_ip_with_hostname():
     addr = socket.gethostbyname(hostname)
     # port = socket.getservbyname(hostname)
     print(addr)
+
 
 def udpserver(port):
     """
@@ -108,6 +116,7 @@ def udpserver(port):
         text = 'Your data was {} bytes long'.format(len(data))
         data = text.encode('ascii')
         sock.sendto(data, address)
+
 
 def udpclient(port):
     """
@@ -179,6 +188,7 @@ def udpclient2(hostname, port):
             break
     print('The server say {!r}'.format(data.decode('ascii')))
 
+
 def udpserver3(interface, port):
     max_bytes = 65535
 
@@ -190,6 +200,7 @@ def udpserver3(interface, port):
         text = data.decode('ascii')
         print('The client at {} says {!r}'.format(address, text))
 
+
 def udpclient3(network, port):
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     # SO_BROADCAST选项为允许广播，即允许向多台服务器发送数据包
@@ -198,6 +209,7 @@ def udpclient3(network, port):
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
     text = 'Brocast datagram'
     sock.sendto(text.encode('ascii'), (network, port))
+
 
 def recvall(sock, length):
     # 由于接收客户端并不知道要接收多大数据，
@@ -211,6 +223,7 @@ def recvall(sock, length):
         data += more
 
     return data
+
 
 def tcpserver1(interface, port):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -239,6 +252,7 @@ def tcpserver1(interface, port):
         # 发送FIN数据包的三次握手来关闭连接
         sc.close()
         print(' Reply sent, socket closed')
+
 
 def tcpclient1(host, port):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -278,6 +292,7 @@ def tcpserver2(host, port, bytecount):
         print()
         sc.close()
         print(' Socket closed')
+
 
 def tcpclient2(host, port, bytecount):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -328,6 +343,114 @@ def tcpclient2(host, port, bytecount):
     sock.close()
 
 
+def getaddr():
+    # get the addrinfo of server, may return not only addr, aim to disbute press
+    addr_info = socket.getaddrinfo('baidu', 'www')
+    # can know which ip and port can use to transfer of smtp, 0: general pair protocol
+    addr_info2 = socket.getaddrinfo('127.0.0.1', 'smtp', 0, socket.SOCK_STREAM, 0, socket.AI_PASSIVE)
+    # AI_ADDRCONFIG: filer the invalid addr, AI_V4MAPPED: map ipv4 to ipv6
+    addr_info3 = socket.getaddrinfo('baidu.com', 'www', 0, socket.SOCK_STREAM, 0, socket.AI_ADDRCONFIG | socket.AI_V4MAPPED)
+    # AI_CANONNAME reverse search: get host name according, but the return result may be anything
+    addr_info4 = socket.getaddrinfo('baidu.com', 'www', 0, socket.SOCK_STREAM, 0,
+                                    socket.AI_ADDRCONFIG | socket.AI_V4MAPPED | socket.AI_CANONNAME)
+    # my_sock = server_sock.accept()
+    # addr, port = my_sock.getpeername()
+    # get host name through the connect info of client, cannot get info if client no define the reverse host name
+    # addr_info5 = socket.getaddrinfo(addr, port, my_sock.family, my_sock.type, my_sock.proto, socket.AI_CANONNAME)
+
+    # get host name
+    hn = socket.gethostname()
+    # get full host info
+    hn2 = socket.getfqdn()
+    # get ip by host name
+    ip = socket.gethostbyname('tbq-pc')
+    # get host info by ip
+    host_info = socket.gethostbyaddr('127.0.0.1')
+    # get pro no
+    pro_no = socket.getprotobyname('UDP')
+    # get serv
+    port = socket.getservbyname('www')
+    # get serv
+    serv = socket.getservbyport(80)
+
+
+def connect_www_through_host_info(hostname_or_ip):
+    try:
+        addr_info = socket.getaddrinfo(hostname_or_ip, 'www', 0, socket.SOCK_STREAM, 0,
+                                       socket.AI_ADDRCONFIG | socket.AI_V4MAPPED | socket.AI_CANONNAME)
+    except socket.gaierror as e:
+        print("Name service failure:", e.args[1])
+        sys.exit(1)
+    try_first_addr = addr_info[0]
+
+    addr_family = try_first_addr[0].value
+    sock_type = try_first_addr[1].value
+    proto_type = try_first_addr[2]
+    ip = try_first_addr[4][0]
+    port = try_first_addr[4][1]
+    host_name = try_first_addr[3]
+
+    sock = socket.socket(addr_family, sock_type, proto_type)
+    try:
+        sock.connect((ip, port))
+    except socket.error as e:
+        print('Network failure: ', e.args[1])
+    else:
+        print("Success host ", host_name, 'is listening on port ', port)
+
+
+def lookup_dns(host_name):
+    # ipv4, ipv6, other name, mail server, name server
+    for qtype in ('A', 'AAAA', 'CNAME', 'MX', 'NS'):
+        answer = dns.resolver.query(host_name, qtype, raise_on_no_answer=False)
+        if answer.rrset is not None:
+            # result format: name valid_cache_time class addr_type
+            print(answer.rrset)
+
+
+def resolve_email_domain(domain):
+    # try: A->AAAA->CNAME
+    def resolve_hostname(hostname, indent=''):
+        indent = indent + ' '
+        answer = dns.resolver.query(hostname, 'A')
+
+        if answer.rrset is not None:
+            for record in answer:
+                print(indent, hostname, 'has A address', record.address)
+            return
+        answer = dns.resolver.query(hostname, 'AAAA')
+        if answer.rrset is not None:
+            for record in answer:
+                print(indent, hostname, 'has AAAA address', record.address)
+            return
+        answer = dns.resolver.query(hostname, 'CNAME')
+        if answer.rrset is not None:
+            record = answer[0]
+            cname = record.address
+            print(indent, hostname, 'is a CNAME alias for', cname)
+            resolve_hostname(cname, indent)
+            return
+
+        print(indent, 'ERROR: no A, AAAA, CNAME record for', hostname)
+
+    try:
+        answer = dns.resolver.query(domain, 'MX', raise_on_no_answer=False)
+    except dns.resolver.NXDOMAIN:
+        print('No such domain', domain)
+        return
+    if answer.rrset is not None:
+        records = sorted(answer, key=lambda record: record.preference)
+        for idx, record in enumerate(records, start=1):
+            name = record.exchange.to_text(omit_final_dot=True)
+            print("This domain has ", idx, 'th MX record')
+            print('Priority', record.preference)
+            resolve_hostname(name)
+    else:
+        print("This domain has no explicit MX record")
+        print("Attempting resolve it as an A, AAAA, or CNAME")
+        resolve_hostname(domain)
+
+
 def bootudp():
     choices = {'client': udpclient3, 'server': udpserver3}
     parser = argparse.ArgumentParser(description='Send and receive UDP locally')
@@ -340,6 +463,7 @@ def bootudp():
     # function(args.p)
     function(args.host, args.p)
 
+
 def boottcp():
     choices = {'client': tcpclient1, 'server': tcpserver1}
     parser = argparse.ArgumentParser(description='Send and receive over TCP')
@@ -350,6 +474,7 @@ def boottcp():
     args = parser.parse_args()
     function = choices[args.role]
     function(args.host, args.p)
+
 
 def boottcp2():
     choices = {'client': tcpclient2, 'server': tcpserver2}
@@ -363,8 +488,10 @@ def boottcp2():
     function = choices[args.role]
     function(args.host, args.p, args.bytecount)
 
+
 def main():
-    boottcp2()
+    resolve_email_domain('baidu.com')
+
 
 if __name__ == '__main__':
     main()

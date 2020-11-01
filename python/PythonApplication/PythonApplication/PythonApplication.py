@@ -5040,7 +5040,6 @@ class CaptChaAPI:
     "9kw其实是由各个用户进行人工检查验证码的"
     "如果发送相同的图像数据，9kw服务器会从缓存读取数据"
     "可以帮别人验证验证码，获取积分"
-    "注：9kw帐户:...@qq.com/6ZJ34BHNXT8P6XT"
 
     def __init__(self, api_key=None, timeout=60):
         self.api_key = api_key if api_key is not None else 'X8BOZF05VI5GZGCGH1'
