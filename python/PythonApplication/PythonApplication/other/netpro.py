@@ -343,6 +343,47 @@ def tcpclient2(host, port, bytecount):
     sock.close()
 
 
+def tcpserver3(address):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    sock.bind(address)
+    sock.listen(1)
+    print("Run this script in another window with '-c' to connect")
+    print("Listening at ", sock.getsockname())
+
+    sc, sockname = sock.accept()
+    print("Accept connect from ", sockname)
+    # close the write direction
+    sc.shutdown(socket.SHUT_WR)
+    message = b''
+
+    # will get a full data from client that not split
+    while True:
+        more = sc.recv(8192)
+        # sock has closed
+        if not more:
+            print("Received zero bytes - end of file")
+            break
+        print("Received {} bytes".format(len(more)))
+        message += more
+    print("Message: \n")
+    print(message.decode('ascii'))
+    sc.close()
+    sock.close()
+
+
+def tcpclient3(address):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.connect(address)
+    # close the read direction
+    sock.shutdown(socket.SHUT_RD)
+    sock.sendall("Beautiful is better than ugly.\n")
+    sock.sendall("Explicit is better than implicit.\n")
+    sock.sendall("Simple is better than complex.\n")
+    # will send a empty str to server to express the end of send
+    sock.close()
+
+
 def getaddr():
     # get the addrinfo of server, may return not only addr, aim to disbute press
     addr_info = socket.getaddrinfo('baidu', 'www')
