@@ -9,8 +9,14 @@ from urllib.parse import quote_plus
 import socket
 import argparse
 from datetime import datetime
+import time
 import sys, random
 import dns.resolver
+import struct
+import ssl
+import ctypes
+import sys
+import textwrap
 
 
 def getlltitude():
@@ -137,6 +143,12 @@ def udpclient(port):
 
 
 def udpserver2(interface, port):
+    """
+    simulate drop packet
+    :param interface:
+    :param port:
+    :return:
+    """
     MAX_BYTES = 65535
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -202,6 +214,12 @@ def udpserver3(interface, port):
 
 
 def udpclient3(network, port):
+    """
+    broadcast
+    :param network:
+    :param port:
+    :return:
+    """
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     # SO_BROADCAST选项为允许广播，即允许向多台服务器发送数据包
     # 广播的IP为类似xxx.xxx.xxx.255,或者IP可为"<broadcast>"
@@ -295,6 +313,13 @@ def tcpserver2(host, port, bytecount):
 
 
 def tcpclient2(host, port, bytecount):
+    """
+    dead lock
+    :param host:
+    :param port:
+    :param bytecount:
+    :return:
+    """
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     bytecount = (bytecount + 15) // 16 * 16
     message = b'capitalize this!'
@@ -373,15 +398,312 @@ def tcpserver3(address):
 
 
 def tcpclient3(address):
+    """
+    set a full frame
+    :param address:
+    :return:
+    """
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.connect(address)
     # close the read direction
     sock.shutdown(socket.SHUT_RD)
-    sock.sendall("Beautiful is better than ugly.\n")
-    sock.sendall("Explicit is better than implicit.\n")
-    sock.sendall("Simple is better than complex.\n")
+    # seal several frame
+    sock.sendall(b"Beautiful is better than ugly.\n")
+    sock.sendall(b"Explicit is better than implicit.\n")
+    sock.sendall(b"Simple is better than complex.\n")
     # will send a empty str to server to express the end of send
     sock.close()
+
+
+def tcpserver4(address):
+    """
+    use struct to block msg
+    :param address:
+    :return:
+    """
+    # message up to 2 * 32 - 1 in length
+    header_struct = struct.Struct('!I')
+
+    def recvall(sock, length):
+        blocks = []
+        while length:
+            block = sock.recv(length)
+            print('length..:', len(block))
+            if not block:
+                raise EOFError("sock closed with {0} bytes left"
+                               " in this block".format(length))
+            length -= len(block)
+            blocks.append(block)
+        return b''.join(blocks)
+
+    def get_block(sock):
+        # receive length info, header_struct.size: every frame up size
+        data = recvall(sock, header_struct.size)
+        (block_length, ) = header_struct.unpack(data)
+        print('block length:', block_length)
+        # receive the real data
+        return recvall(sock, block_length)
+
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    sock.bind(address)
+    sock.listen(1)
+    print("Run this script in another window with '-c' to connect")
+    print("Listening at ", sock.getsockname())
+
+    sc, sockname = sock.accept()
+    print("Accept connect from ", sockname)
+    # close the write direction
+    sc.shutdown(socket.SHUT_WR)
+
+    # will get a full data from client that not split
+    while True:
+        print('get block...')
+        block = get_block(sc)
+        # sock has closed
+        if not block:
+            break
+        print("Block says:", repr(block))
+    sc.close()
+    sock.close()
+
+
+def tcpclient4(address):
+    header_struct = struct.Struct('!I')
+
+    def put_block(sock, message):
+        block_length = len(message)
+        # first send the length info
+        sock.send(header_struct.pack(block_length))
+        sock.send(message)
+
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.connect(address)
+    # close the read direction
+    sock.shutdown(socket.SHUT_RD)
+    # seal several block
+    put_block(sock, b"Beautiful is better than ugly.")
+    put_block(sock, b"Explicit is better than implicit.")
+    # mean the end
+    put_block(sock, b'')
+    # will send a empty str to server to express the end of send
+    sock.close()
+
+
+def tcpserver5(host, port, certfile, cafile=None):
+    """
+    use TLS
+    :param host:
+    :param port:
+    :param certfile:
+    :param cafile:
+    :return:
+    """
+    purpose = ssl.Purpose.CLIENT_AUTH
+    # create TLS obj, opt may change when new python edition release
+    # cafile: trust CA agency, None: load the sys's CA
+    # if openssl is enough new, the encode algorithm may support PFS
+    # PFS: perfect forward security
+    context = ssl.create_default_context(purpose=purpose, cafile=cafile)
+    context.load_cert_chain(certfile=certfile)
+
+    listener = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    listener.bind((host, port))
+    listener.listen(1)
+
+    print(f"Listening at interface {host} and port {port}")
+
+    raw_sock, address = listener.accept()
+    print("Connecting from host {} and port".format(*address))
+    # wrap sock, then will use TLS to communicate
+    ssl_sock = context.wrap_socket(raw_sock, server_side=True)
+
+    ssl_sock.sendall("Simple is better than complex".encode('ascii'))
+    ssl_sock.close()
+
+
+def tcpclient5(host, port, cafile=None):
+    purpose = ssl.Purpose.SERVER_AUTH
+    # if server have a cerfile, cafile must use to signature it
+    context = ssl.create_default_context(purpose=purpose, cafile=cafile)
+
+    raw_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    raw_sock.connect((host, port))
+    print(f"Connecting to host {host} and port {port}")
+    ssl_sock = context.wrap_socket(raw_sock, server_hostname=host)
+
+    while True:
+        data = ssl_sock.recv(1024)
+        if not data:
+            break
+        print(repr(data))
+
+
+class TCPServerClient6:
+    """
+    display the detail of TLS config
+    """
+    class PySSLSocket(ctypes.Structure):
+        """
+        The first few field of a PySSLSocket
+        """
+        _fields = [('ob_refcnt', ctypes.c_ulong), ('ob_type', ctypes.c_void_p),
+                   ('Socket', ctypes.c_void_p), ('ssl', ctypes.c_void_p)]
+
+    def open_tls(self, context, address, server=False):
+        raw_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        if server:
+            raw_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            raw_sock.bind(address)
+            raw_sock.listen(1)
+            self.say("Interface we are listening", address)
+            raw_client_sock, client_address = raw_sock.accept()
+            self.say("Client has connected from address", address)
+            return context.wrap_socket(raw_client_sock, server_side=True)
+        else:
+            self.say("Address we want to talk to", address)
+            raw_sock.connect(address)
+            return context.wrap_socket(raw_sock)
+
+    def describe(self, ssl_sock, context, hostname, server=False, debug=False):
+        cert = ssl_sock.getpeercert()
+        if cert is None:
+            self.say("Peer certificate", "None")
+        else:
+            self.say("Peer certificate", "provided")
+            subject = cert.get('subject', [])
+            names = [name for names in subject for (key, name) in names if key == 'commonName']
+
+            if 'subjectAltName' in cert:
+                names.extend(name for (key, name) in cert['subjectAltName'] if key == 'DNS')
+            self.say("Name(s) on peer certificate", *names or ['none'])
+
+            if not server and names:
+                try:
+                    ssl.match_hostname(cert, hostname)
+                except ssl.CertificateError as e:
+                    message = str(e)
+                else:
+                    message = 'yes'
+                self.say("Whether name(s) match the hostname", message)
+            for category, count in sorted(context.cert_store_stats().items()):
+                self.say("Certificate loaded of type {}".format(category), count)
+
+        try:
+            protocol_version = self.SSL_get_version(ssl_sock)
+        except Exception:
+            if debug:
+                raise
+        else:
+            self.say("Protocol negotiated", protocol_version)
+
+        cipher, version, bits = ssl_sock.cipher()
+        compression = ssl_sock.compression()
+
+        self.say("Cipher chosen for this connection", cipher)
+        self.say("Cipher defined in TLS version", version)
+        self.say("Cipher this has many bits", bits)
+        self.say("Compress algorithm in use", compression or 'none')
+
+        return cert
+
+    def SSL_get_version(self, ssl_sock):
+        """
+        Reach behind the scenes for a socket's TLS protocol version.
+        :param ssl_sock:
+        :return:
+        """
+        lib = ctypes.CDLL(ssl._ssl.__file__)
+        lib.SSL_get_version.restype = ctypes.c_char_p
+        address = id(ssl_sock.__sslobj)
+        struct = ctypes.cast(address, ctypes.POINTER(self.PySSLSocket)).contents
+        version_bytestring = lib.SSL_get_version(struct.ssl)
+        return version_bytestring.decode('ascii')
+
+    def look_up(self, prefix, name):
+        if not name.startswith(prefix):
+            name = prefix + name
+        try:
+            return getattr(ssl, name)
+        except AttributeError:
+            matching_names = (s for s in dir(ssl) if s.startwith(prefix))
+            message = "Error: {!r} is not one of the available names: \n{}" \
+                      "".format(name, ' '.join(sorted(matching_names)))
+            print(self.fill(message), file=sys.stderr)
+            sys.exit(2)
+
+    def say(self, title, *words):
+        print(self.fill(title.ljust(36, '.') + ' ' + ' '.join(str(w) for w in words)))
+
+    @staticmethod
+    def fill(text):
+        return textwrap.fill(text, subsequent_indent=' ', break_long_words=False, break_on_hyphens=False)
+
+
+class TCPServerTool:
+    aphorisms = {
+        b"Beautiful is better than?": b"Ugly",
+        b"Explicit is better than?": b"Implicit.",
+        b"Simple is better than?": b"Complex.",
+    }
+
+    def get_answer(self, aphorism):
+        time.sleep(0.0)
+        return self.aphorisms.get(aphorism, b"Error: unknown aphorism: " + aphorism)
+
+    @staticmethod
+    def parse_command_line(description):
+        parser = argparse.ArgumentParser(description=description)
+        parser.add_argument('host', help='IP address or hostname')
+        parser.add_argument('p', metavar='port', type=int, default=1060,
+                            help='TCP port number(default: %(default)s)')
+        args = parser.parse_args()
+        address = (args.host, args.p)
+        return address
+
+    @staticmethod
+    def create_srv_socket(address):
+        listener = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        listener.bind(address)
+        listener.listen(64)
+        print("listening at {}".format(address))
+        return listener
+
+    def accept_connections_forever(self, listener):
+        while True:
+            sock, address = listener.accept()
+            print("Accept connection from {}".format(address))
+            self.hand_conversation(sock, address)
+
+    def hand_conversation(self, sock, address):
+        try:
+            while True:
+                self.handle_request(sock)
+        except EOFError:
+            print("Client socket to {} has closed".format(address))
+        except Exception as e:
+            print("Client {} error: {}".format(address, e))
+        finally:
+            sock.close()
+
+    def handle_request(self, sock):
+        aphorism = self.recv_until(sock, b'?')
+        answer = self.get_answer(aphorism)
+        sock.sendall(answer)
+
+    @staticmethod
+    def recv_until(sock, suffix):
+        message = sock.recv(4096)
+        if not message:
+            raise EOFError("socket closed")
+        while not message.endswith(suffix):
+            data = sock.recv(4096)
+            if not data:
+                raise IOError('Received {!r} then socket closed'.format(message))
+            message += data
+
+        return message
 
 
 def getaddr():
@@ -530,8 +852,111 @@ def boottcp2():
     function(args.host, args.p, args.bytecount)
 
 
+def boottcp3():
+    parser = argparse.ArgumentParser(description='Transmit & receive a data stream')
+    parser.add_argument('hostname', nargs='?', default='127.0.0.1',
+                        help='IP address or hostname(default: %(default)s)')
+    parser.add_argument('-c', action='store_true', help='run as the client')
+    parser.add_argument('-p', type=int, metavar='port', default=1060,
+                        help='TCP port number(default: %(default)s)')
+    args = parser.parse_args()
+
+    function = tcpclient3 if args.c else tcpserver3
+    function((args.hostname, args.p))
+
+
+def boottcp4():
+    parser = argparse.ArgumentParser(description='Transmit & receive a data stream')
+    parser.add_argument('hostname', nargs='?', default='127.0.0.1',
+                        help='IP address or hostname(default: %(default)s)')
+    parser.add_argument('-c', action='store_true', help='run as the client')
+    parser.add_argument('-p', type=int, metavar='port', default=1060,
+                        help='TCP port number(default: %(default)s)')
+    args = parser.parse_args()
+
+    function = tcpclient4 if args.c else tcpserver4
+    function((args.hostname, args.p))
+
+
+def boottcp5():
+    parser = argparse.ArgumentParser(description='Transmit & receive a data stream')
+    parser.add_argument('host', nargs='?', default='127.0.0.1',
+                        help='IP address or hostname(default: %(default)s)')
+    parser.add_argument('port', type=int, default=1060, help='TCP port number(default: %(default)s)')
+    # signature file
+    parser.add_argument('-a', metavar='cafile', default=None,
+                        help='authority: path to CA certificate PEM file')
+    parser.add_argument('-s', metavar='certfile', default=None,
+                        help='run as server: path to server PEM file')
+    args = parser.parse_args()
+
+    if args.s:
+        tcpserver5(args.host, args.port, args.s, args.a)
+    else:
+        tcpclient5(args.host, args.port, args.a)
+
+
+def boottcp6():
+    from pprint import pprint
+
+    parser = argparse.ArgumentParser(description='Transmit & receive a data stream')
+    parser.add_argument('host', nargs='?', default='127.0.0.1',
+                        help='IP address or hostname(default: %(default)s)')
+    parser.add_argument('port', type=int, default=1060, help='TCP port number(default: %(default)s)')
+    # signature file
+    parser.add_argument('-a', metavar='cafile', default=None,
+                        help='authority: path to CA certificate PEM file')
+    parser.add_argument('-c', metavar='certfile', default=None,
+                        help='authority: path to PEM file with client certificate')
+    parser.add_argument('-C', metavar='ciphers', default='ALL',
+                        help='list of ciphers, formatted for per OpenSSL')
+    parser.add_argument('-p', metavar='PROCOTOL', default='SSLv23',
+                        help='protocol version(default: "SSLv23")')
+    parser.add_argument('-s', metavar='certfile', default=None,
+                        help='run as server: path to server PEM file')
+    parser.add_argument('-d', action='store_true', default=False,
+                        help='debug mode: do not hide "ctypes" exceptions')
+    parser.add_argument('-v', action='store_true', default=False,
+                        help='verbose: print out remote certificate')
+
+    args = parser.parse_args()
+
+    address = (args.host, args.port)
+
+    tcp_obj = TCPServerClient6()
+    # if the protocol of client not match server demand, will connect fail
+    protocol = tcp_obj.look_up('PROTOCOL_', args.p)
+
+    context = ssl.SSLContext(protocol)
+    context.set_ciphers(args.C)
+    context.check_hostname = False
+
+    if args.s is not None and args.c is not None:
+        parser.error("you cannot specify both -c and -s")
+    elif args.s is not None:
+        context.verify_mode = ssl.CERT_OPTIONAL
+        purpose = ssl.Purpose.CLIENT_AUTH
+        context.load_cert_chain(args.s)
+    else:
+        context.verify_mode = ssl.CERT_REQUIRED
+        purpose = ssl.Purpose.SERVER_AUTH
+        if args.c is not None:
+            context.load_cert_chain(args.c)
+    if args.a is None:
+        context.load_default_certs(purpose)
+    else:
+        context.load_verify_locations(args.a)
+
+    print()
+    ssl_sock = tcp_obj.open_tls(context, address, args.s)
+    cert = tcp_obj.describe(ssl_sock, context, args.host, server=args.s, debug=args.d)
+    print()
+    if args.v:
+        pprint(cert)
+
+
 def main():
-    resolve_email_domain('baidu.com')
+    boottcp6()
 
 
 if __name__ == '__main__':
