@@ -640,7 +640,7 @@ class TCPServerClient6:
         return textwrap.fill(text, subsequent_indent=' ', break_long_words=False, break_on_hyphens=False)
 
 
-class TCPServerTool:
+class TCPUtils:
     aphorisms = {
         b"Beautiful is better than?": b"Ugly",
         b"Explicit is better than?": b"Implicit.",
