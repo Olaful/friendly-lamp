@@ -642,18 +642,19 @@ class TCPServerClient6:
 
 class TCPUtils:
     aphorisms = {
-        b"Beautiful is better than?": b"Ugly",
+        b"Beautiful is better than?": b"Ugly.",
         b"Explicit is better than?": b"Implicit.",
         b"Simple is better than?": b"Complex.",
     }
 
     def get_answer(self, aphorism):
         time.sleep(0.0)
-        return self.aphorisms.get(aphorism, b"Error: unknown aphorism: " + aphorism)
+        return self.aphorisms.get(aphorism, b"Error: unknown aphorism: " + aphorism + b'.')
 
     @staticmethod
     def parse_command_line(description):
         parser = argparse.ArgumentParser(description=description)
+        parser.add_argument('placeholder', help='no use')
         parser.add_argument('host', help='IP address or hostname')
         parser.add_argument('p', metavar='port', type=int, default=1060,
                             help='TCP port number(default: %(default)s)')
@@ -680,6 +681,7 @@ class TCPUtils:
         try:
             while True:
                 self.handle_request(sock)
+        # self raise error
         except EOFError:
             print("Client socket to {} has closed".format(address))
         except Exception as e:
@@ -695,6 +697,7 @@ class TCPUtils:
     @staticmethod
     def recv_until(sock, suffix):
         message = sock.recv(4096)
+        print(message)
         if not message:
             raise EOFError("socket closed")
         while not message.endswith(suffix):
@@ -704,6 +707,30 @@ class TCPUtils:
             message += data
 
         return message
+
+
+def tcpclient7():
+    parser = argparse.ArgumentParser(description='Example client')
+    parser.add_argument('placeholder', help='no use')
+    parser.add_argument('host', help='IP or hostname')
+    parser.add_argument('-e', action='store_true', help='cause a error')
+    parser.add_argument('-p', metavar='port', type=int, default=1060, help='TCP port default(%(default))')
+
+    args = parser.parse_args()
+    address = (args.host, args.p)
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.connect(address)
+
+    tcp_util = TCPUtils()
+
+    aphorisms = list(tcp_util.aphorisms)
+    if args.e:
+        sock.sendall(aphorisms[0][:1])
+        return
+    for aphorism in random.sample(aphorisms, 3):
+        sock.sendall(aphorism)
+        print(aphorism, tcp_util.recv_until(sock, b'.'))
+    sock.close()
 
 
 def getaddr():
@@ -955,8 +982,21 @@ def boottcp6():
         pprint(cert)
 
 
+def boottcp7():
+    role = sys.argv[1]
+
+    tcp_util = TCPUtils()
+
+    if role == 'server7':
+        address = tcp_util.parse_command_line('simple single-threaded server')
+        listener = tcp_util.create_srv_socket(address)
+        tcp_util.accept_connections_forever(listener)
+    elif role == 'client7':
+        tcpclient7()
+
+
 def main():
-    boottcp6()
+    boottcp7()
 
 
 if __name__ == '__main__':
