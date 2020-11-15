@@ -9,7 +9,7 @@ from urllib.parse import quote_plus
 import socket
 import argparse
 from datetime import datetime
-import time
+import time, timeit
 import sys, random
 import dns.resolver
 import struct
@@ -17,6 +17,14 @@ import ssl
 import ctypes
 import sys
 import textwrap
+from threading import Thread
+from socketserver import BaseRequestHandler, TCPServer, ThreadingMixIn
+import select
+import asyncio
+import asyncore, asynchat
+import memcache
+import hashlib
+import zmq
 
 
 def getlltitude():
@@ -673,8 +681,10 @@ class TCPUtils:
 
     def accept_connections_forever(self, listener):
         while True:
+            # first connection will contain client request data, so first recv will be fast
             sock, address = listener.accept()
             print("Accept connection from {}".format(address))
+            # will not accept other client util current session completed
             self.hand_conversation(sock, address)
 
     def hand_conversation(self, sock, address):
@@ -708,6 +718,25 @@ class TCPUtils:
 
         return message
 
+    @asyncio.coroutine
+    def hand_conversation_coroutine(self, reader, writer):
+        address = writer.get_extra_info('peername')
+        print("Accepted connection from {}".format(address))
+        while True:
+            data = b''
+            while not data.endswith(b'?'):
+                # not blocking
+                more_data = yield from reader.read(4096)
+                if not more_data:
+                    if data:
+                        print('Client {} sent {!r} but then closed'.format(address, data))
+                    else:
+                        print('Client {} closed socket normally'.format(address))
+                    return
+                data += more_data
+            answer = self.get_answer(data)
+            writer.write(answer)
+
 
 def tcpclient7():
     parser = argparse.ArgumentParser(description='Example client')
@@ -731,6 +760,131 @@ def tcpclient7():
         sock.sendall(aphorism)
         print(aphorism, tcp_util.recv_until(sock, b'.'))
     sock.close()
+
+
+def tcpserver10(listener):
+    """
+    register socket to poll event
+    :param listener:
+    :return:
+    """
+    def all_events_forever(poll_obj):
+        while True:
+            # always poll
+            for fd, event in poll_obj.poll():
+                yield fd, event
+
+    sockets = {listener.fileno(): listener}
+    addresses = {}
+    bytes_received = {}
+    bytes_to_sends = {}
+
+    poll_obj = select.poll()
+    poll_obj.register(listener, select.POLLIN)
+
+    tcp_util = TCPUtils()
+
+    for fd, event in all_events_forever(poll_obj):
+        sock = sockets[fd]
+
+        if event & (select.POLLHUP | select.POLLERR | select.POLLNVAL):
+            address = addresses.pop(sock)
+            rb = bytes_received.pop(sock, b'')
+            sb = bytes_to_sends.pop(sock, b'')
+            if rb:
+                print('Client {} sent {} but then closed'.format(address, rb))
+            elif sb:
+                print('Client {} closed before we send {}'.format(address, sb))
+            else:
+                print('Client {} closed socket normally'.format(address))
+            poll_obj.unregister(fd)
+            del sockets[sock]
+        # there is new client to connect
+        elif sock is listener:
+            sock, address = listener.accept()
+            print('Accept connection from {}'.format(address))
+            # set no blocking mode
+            sock.setblocking(False)
+            sockets[sock.fileno()] = sock
+            addresses[sock] = address
+
+            # register in poll, and thus sock will not block with recv and send method
+            poll_obj.register(sock, select.POLLIN)
+        elif event & select.POLLIN:
+            more_data = sock.recv(4096)
+            if not more_data:
+                # next poll() will POLLNVAL, and thus clean up
+                sock.close()
+                continue
+
+            data = bytes_received.pop(sock, 'b') + more_data
+            if data.endswith(b'?'):
+                bytes_to_sends[sock] = tcp_util.get_answer(data)
+                poll_obj.modify(sock, select.POLLOUT)
+            else:
+                bytes_received[sock] = data
+        elif event & select.POLLOUT:
+            data = bytes_to_sends.pop(sock)
+            n = sock.send(data)
+
+            if n < len(data):
+                bytes_to_sends[sock] = data[n:]
+            else:
+                poll_obj.modify(sock, select.POLLIN)
+
+
+class TcpServer11(asyncio.Protocol):
+    tcp_util = TCPUtils()
+
+    def connection_made(self, transport) -> None:
+        self.transport = transport
+        self.address = transport.get_extra_info('peername')
+        self.data = b''
+        print('Accepted connection from {}'.format(self.address))
+
+    # recv and send hide in this method
+    def data_received(self, data: bytes) -> None:
+        self.data += data
+        if self.data.endswith(b'?'):
+            # operate may be more complex, such as read db
+            # so the asyncio should deal both connection between server and client
+            # and connection between server and db
+            answer = self.tcp_util.get_answer(self.data)
+            self.transport.write(answer)
+            self.data = b''
+
+    def connection_lost(self, exc) -> None:
+        if exc:
+            print("Client {} error: {}".format(self.address, exc))
+        elif self.data:
+            print("Client {} sent {} but closed".format(self.address, self.data))
+        else:
+            print("Client {} closed socket".format(self.address))
+
+
+class TcpServer13(asyncore.dispatcher):
+    class ReqHandler(asynchat.async_chat):
+        tcp_util = TCPUtils()
+
+        def __init__(self, sock):
+            asynchat.async_chat.__init__(self, sock)
+            # data not contain terminator
+            self.set_terminator(b'?')
+            self.data = b''
+
+        def collect_incoming_data(self, more_data):
+            self.data += more_data
+
+        def found_terminator(self):
+            answer = self.tcp_util.get_answer(self.data + b'?')
+            self.push(answer)
+            self.initiate_send()
+            self.data = b''
+
+    def handle_accept(self) -> None:
+        sock, address = self.accept()
+        # every accept will deliver to new handler
+        self.ReqHandler(sock)
 
 
 def getaddr():
@@ -839,6 +993,148 @@ def resolve_email_domain(domain):
         print("This domain has no explicit MX record")
         print("Attempting resolve it as an A, AAAA, or CNAME")
         resolve_hostname(domain)
+
+
+def memcache1():
+    def compute(mc, n):
+        # key is str that is a genera key
+        # get value from the memcache first
+        # so it will cost a shorter time
+        # memcache will lost data that no use for long time
+        value = mc.get('sq:%d' % n)
+        if value is None:
+            time.sleep(0.001)
+            value = n * n
+            mc.set('sq:%d' % n, value)
+        return value
+
+    # should run the memcache process before connect
+    mc = memcache.Client(['127.0.0.1:11211'])
+
+    def make_request():
+        compute(mc, random.randint(0, 5000))
+
+    print('Ten successive runs:')
+    for i in range(1, 11):
+        print(' %.2fs' % timeit.timeit(make_request, number=2000), end='')
+    print()
+
+
+def hash1():
+    """divide work with difference way, that hash is best way"""
+
+    def alpha_shard(word):
+        if word[0] < 'g':
+            return 'server0'
+        elif word[0] < 'n':
+            return 'server1'
+        elif word[0] < 't':
+            return 'server2'
+        else:
+            return 'server3'
+
+    def hash_shard(word):
+        return 'server%d' % (hash(word) % 4)
+
+    def md5_shard(word):
+        data = word.encode('utf-8')
+        return 'server%d' % (hashlib.md5(data).digest()[-1] % 4)
+
+    words = 'in this lift time you do not have to prove nothing to nobody except yourself'.split()
+    word_len = len(words)
+    for function in alpha_shard, hash_shard, md5_shard:
+        d = {'server0': 0, 'server1': 0, 'server2': 0, 'server3': 0}
+        for word in words:
+            d[function(word)] += 1
+        print(function.__name__[:-6])
+        for key, value in sorted(d.items()):
+            print(' {} {} {:.2}'.format(key, value, value / word_len))
+        print()
+
+
+class MsgQueue:
+    B = 32
+
+    @staticmethod
+    def ones_and_zeros(digits):
+        return bin(random.getrandbits(digits)).lstrip('0b').zfill(digits)
+
+    def bitsources(self, zcontext, url):
+        zsock = zcontext.socket(zmq.PUB)
+        zsock.bind(url)
+        while True:
+            zsock.send_string(self.ones_and_zeros(self.B * 2))
+            time.sleep(0.01)
+
+    @staticmethod
+    def aways_yes(zcontext, in_url, out_url):
+        isock = zcontext.socket(zmq.SUB)
+        isock.connect(in_url)
+        isock.setsockopt(zmq.SUBCIREBE, b'00')
+        osock = zcontext.socket(zmq.PUSH)
+        osock.connect(out_url)
+        while True:
+            isock.recv_string()
+            osock.send_string('Y')
+
+    def judge(self, zcontext, in_url, pythagoras_url, out_url):
+        isock = zcontext.socket(zmq.SUB)
+        isock.connect(in_url)
+        for prefix in b'01', b'10', b'11':
+            isock.setsockopt(zmq.SUBCRIBE, prefix)
+        psock = zcontext.socket(zmq.REQ)
+        psock.connect(pythagoras_url)
+        osock = zcontext.socket(zmq.PUSH)
+        osock.connect(out_url)
+        unit = 2 ** (self.B * 2)
+        while True:
+            bits = isock.recv_string()
+            n, m = int(bits[::2], 2), int(bits[1::2], 2)
+            psock.send_json((n, m))
+            sumsquares = psock.recv_json()
+            osock.send_string('Y' if sumsquares < unit else 'N')
+
+    @staticmethod
+    def pythagoras(zcontext, url):
+        zsock = zcontext.socket(zmq.REP)
+        zsock.bind(url)
+        while True:
+            numbers = zsock.recv_json()
+            zsock.send_json(sum(n * n for n in numbers))
+
+    @staticmethod
+    def tally(zcontext, url):
+        zsock = zcontext.socket(zmq.PULL)
+        zsock.bind(url)
+        p = q = 0
+        while True:
+            decision = zsock.recv_string()
+            q += 1
+            if decision == 'Y':
+                p += 4
+            print(decision, p / q)
+
+
+def msg_queue():
+    def start_thread(function, *args):
+        thread = Thread(target=function, args=args)
+        thread.daemon = True
+        thread.start()
+
+    pubsub = 'tcp://127.0.0.1:6700'
+    reqrep = 'tcp://127.0.0.1:6701'
+    pushpull = 'tcp://127.0.0.1:6702'
+
+    mq_obj = MsgQueue()
+    zcontext = zmq.Context()
+
+    # it is not safe that multiple thread share one socket
+    start_thread(mq_obj.bitsources, zcontext, pubsub)
+    start_thread(mq_obj.aways_yes, zcontext, pubsub, pushpull)
+    start_thread(mq_obj.judge, zcontext, pubsub, reqrep, pushpull)
+    start_thread(mq_obj.pythagoras, zcontext, reqrep)
+    start_thread(mq_obj.tally, zcontext, pushpull)
+    time.sleep(30)
 
 
 def bootudp():
@@ -991,12 +1287,96 @@ def boottcp7():
         address = tcp_util.parse_command_line('simple single-threaded server')
         listener = tcp_util.create_srv_socket(address)
         tcp_util.accept_connections_forever(listener)
+    elif role == 'server8':
+        address = tcp_util.parse_command_line('multiple single-threaded server')
+        listener = tcp_util.create_srv_socket(address)
+        # create specify amount of thread for server,
+        # so can accept multiple connection at the same time
+        worker = 4
+        for i in range(worker):
+            Thread(target=tcp_util.accept_connections_forever, args=(listener,)).start()
+    elif role == 'server9':
+        class ReqHandler(BaseRequestHandler):
+            def handle(self) -> None:
+                tcp_util.hand_conversation(self.request, self.client_address)
+
+        # ForkingMixIn: use apart process to accept client, not threading
+        class Server(ThreadingMixIn, TCPServer):
+            allow_reuse_address = 1
+            request_queue_size = 4
+
+        address = tcp_util.parse_command_line('legacy "SocketServer" server')
+        # two mode: server, handler, but it not limit thread amount, therefore this isn't safe
+        server = Server(address, ReqHandler)
+        server.serve_forever()
+    elif role == 'server10':
+        address = tcp_util.parse_command_line('low-level async server')
+        listener = tcp_util.create_srv_socket(address)
+        # only one thread, buy can accept multiple connection through poll
+        # tips: poll only available in linux
+        tcpserver10(listener)
+    elif role == 'server11':
+        address = tcp_util.parse_command_line('asyncio server using callbacks')
+        loop = asyncio.get_event_loop()
+        # only one thread, but can deal multiple connection at the same time
+        coro = loop.create_server(TcpServer11, *address)
+        server = loop.run_until_complete(coro)
+        print("Listening at {}".format(address))
+        try:
+            loop.run_forever()
+        finally:
+            server.close()
+            loop.close()
+    elif role == 'server12':
+        address = tcp_util.parse_command_line('asyncio server using coroutine')
+        loop = asyncio.get_event_loop()
+        coro = asyncio.start_server(tcp_util.hand_conversation_coroutine, *address)
+        server = loop.run_until_complete(coro)
+        print("Listening at {}".format(address))
+        try:
+            loop.run_forever()
+        finally:
+            server.close()
+            loop.close()
+    elif role == 'server13':
+        address = tcp_util.parse_command_line('legacy "asyncore" server')
+        listener = tcp_util.create_srv_socket(address)
+        server = TcpServer13(listener)
+        # already call listen()
+        server.accepting = True
+        asyncore.loop()
+    elif role == 'server14':
+        # use inted daemon to run socket, not available in window
+        # inetd will manage its process, such as reboot server
+        # /etc/inetd.conf:
+        # 1060 stream tcp nowait tbq /usr/bin/python3 /usr/bin/python3 server.py
+        # distribute every client connection to a new process
+        # nowait: accept control by process
+        # run: inetd -d inet.conf
+        sock = socket.fromfd(0, socket.AF_INET, socket.SOCK_STREAM)
+        # not real operate the fd, only file instance, thus unnecessary call close
+        sys.stdin = open('/dev/null', 'r')
+        sys.stdout = sys.stderr = open('log.txt', 'a', buffering=1)
+        address = sock.getpeername()
+        print("Accepted connection from {}".format(address))
+        tcp_util.hand_conversation(sock, address)
+    elif role == 'server15':
+        sock = socket.fromfd(0, socket.AF_INET, socket.SOCK_STREAM)
+        sys.stdin = open('/dev/null', 'r')
+        sys.stdout = sys.stderr = open('log.txt', 'a', buffering=1)
+        sock.settimeout(9)
+        try:
+            # if conf to 'wait', accept method deliver to script,
+            # so one process can accept multiple connection
+            tcp_util.accept_connections_forever(sock)
+        except socket.timeout:
+            print('Waited 9 seconds with no further connection; shutting down')
     elif role == 'client7':
         tcpclient7()
 
 
 def main():
-    boottcp7()
+    hash1()
 
 
 if __name__ == '__main__':
