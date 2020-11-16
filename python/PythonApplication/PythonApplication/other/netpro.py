@@ -112,6 +112,8 @@ def get_ip_with_hostname():
 def udpserver(port):
     """
     udp服务器
+    udp相比于tcp,为不可靠传输,即不保证数据的准确送达,没有保存
+    连接会话
     :return:
     """
     # 每一次最大接收65535字节长度的内容
@@ -1053,6 +1055,9 @@ def hash1():
 
 
 class MsgQueue:
+    """
+    mode: 1.pub-sub; 2.req-rep 3.push-pull
+    """
     B = 32
 
     @staticmethod
@@ -1060,6 +1065,7 @@ class MsgQueue:
         return bin(random.getrandbits(digits)).lstrip('0b').zfill(digits)
 
     def bitsources(self, zcontext, url):
+        # PUB: producer - to more consumer
         zsock = zcontext.socket(zmq.PUB)
         zsock.bind(url)
         while True:
@@ -1068,9 +1074,13 @@ class MsgQueue:
 
     @staticmethod
     def aways_yes(zcontext, in_url, out_url):
+        # SUB: consumer
         isock = zcontext.socket(zmq.SUB)
+        # if connect before server bind the url, zmq will timed poll
+        # to try connect
         isock.connect(in_url)
-        isock.setsockopt(zmq.SUBCIREBE, b'00')
+        # filter: b'00' only recv the msg which start with b'00'
+        isock.setsockopt(zmq.SUBSCRIBE, b'00')
         osock = zcontext.socket(zmq.PUSH)
         osock.connect(out_url)
         while True:
@@ -1081,9 +1091,11 @@ class MsgQueue:
         isock = zcontext.socket(zmq.SUB)
         isock.connect(in_url)
         for prefix in b'01', b'10', b'11':
-            isock.setsockopt(zmq.SUBCRIBE, prefix)
+            isock.setsockopt(zmq.SUBSCRIBE, prefix)
+        # req-rep will consider the tcp protocol common problem
         psock = zcontext.socket(zmq.REQ)
         psock.connect(pythagoras_url)
+        # PUSH: producer - to one consumer
         osock = zcontext.socket(zmq.PUSH)
         osock.connect(out_url)
         unit = 2 ** (self.B * 2)
@@ -1100,6 +1112,7 @@ class MsgQueue:
         zsock.bind(url)
         while True:
             numbers = zsock.recv_json()
+            # actually send to the client who send msg to the server, like common tcp
             zsock.send_json(sum(n * n for n in numbers))
 
     @staticmethod
@@ -1134,6 +1147,8 @@ def msg_queue():
     start_thread(mq_obj.judge, zcontext, pubsub, reqrep, pushpull)
     start_thread(mq_obj.pythagoras, zcontext, reqrep)
     start_thread(mq_obj.tally, zcontext, pushpull)
+    # in order to avoid main process quit fast, let the thread run longer to
+    # produce more example data
     time.sleep(30)
 
 
@@ -1376,7 +1391,7 @@ def boottcp7():
 
 
 def main():
-    hash1()
+    msg_queue()
 
 
 if __name__ == '__main__':
