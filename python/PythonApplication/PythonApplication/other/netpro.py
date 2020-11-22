@@ -1,16 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from pygeocoder import Geocoder
-import requests
-import http.client
 import json
-from urllib.parse import quote_plus
 import socket
 import argparse
 from datetime import datetime
 import time, timeit
-import sys, random
+import random
 import dns.resolver
 import struct
 import ssl
@@ -25,6 +21,14 @@ import asyncore, asynchat
 import memcache
 import hashlib
 import zmq
+import requests
+from urllib.request import urlopen
+import urllib.error
+from wsgiref.simple_server import make_server
+import os, pprint, sqlite3
+from collections import namedtuple
+from flask import Flask, redirect, request, url_for
+from jinja2 import Environment, PackageLoader
 
 
 def getlltitude():
@@ -32,6 +36,7 @@ def getlltitude():
     协议层次api<-url<-http<-tcp/ip
     :return:
     """
+    from pygeocoder import Geocoder
 
     address1 = '207 N. Defiance St, Archbold, OH'
     address2 = 'shenzhen'
@@ -57,6 +62,9 @@ def getlltitude3():
     直接使用http请求
     :return:
     """
+    import http.client
+    from urllib.parse import quote_plus
+
     base_url = 'maps/api/geocode/json'
     address = '207 N. Defiance St, Archbold, OH'
     path = f'{base_url}?address={quote_plus(address)}&sensor=false'
@@ -1152,6 +1160,365 @@ def msg_queue():
     time.sleep(30)
 
 
+def http_client1():
+    url = 'http://httpbin.org/headers'
+
+    r = requests.get(url)
+    # support gzip and deflate formation response
+    # also can specify Accept-Encoding: gzip in the headers
+    # requests will unzip data in backstage
+    # requests not support cache
+    # Accept: text/html;q=0.9, text/plain, image/jpg, */*;q=0.8
+    # accept content will distribute diff weight, first weight equal 1
+    # Content-Type: text/html; charset=utf-8 => specify charset of server data
+    print(r.text)
+
+    s = requests.Session()
+    # customize header
+    s.headers.update({'Accept-Language': 'en-US, en;q=0.8'})
+    # auth, later get and post can use this auth msg
+    s.auth = 'tbq', '123'
+    # use cookies
+    s.cookies.set('user', 'tbq')
+
+    # urllib not support reuse tcp connection
+    import http.client
+    h = http.client.HTTPConnection('localhost:8000')
+    h.request('GET', '/ip')
+    r = h.getresponse()
+    print(r.status)
+
+    # will recreate a new tcp connection
+    h.request('GET', '/user-agent')
+    r = h.getresponse()
+    print(r.status)
+
+    # urllib not support cache
+    r = urlopen(url)
+    # not support gzip and deflate formation response
+    # default use get method
+    print(r.read().decode('ascii'))
+
+
+def http_client2():
+    url = 'http://httpbin.org/status/301'
+
+    r = requests.get(url)
+    print(r.status_code, r.url)
+    # show the redirect his
+    print(r.history)
+
+    # not allow redirect
+    r = requests.get(url, allow_redirects=False)
+    r.raise_for_status()
+    print(r.status_code, r.url, r.headers['Location'])
+
+    # will redirect to https://www.baidu.com
+    r = requests.get('https://baidu.com')
+    print(r.url)
+
+    # get error msg from Error obj
+    try:
+        urlopen('http://httpbin.org/status/500')
+    except urllib.error.HTTPError as e:
+        print(e.status, repr(e.headers['Content-Type']))
+
+    requests.get('http://httpbin.org/status/500')
+    # if http error, will raise error, if not call this method
+    # then will not raise error
+    r.raise_for_status()
+    print(r.status_code)
+
+
+def http_block_frame():
+    # req rep
+    # first end with CR-LF(回车换行)
+    # whole end with CR-LF-CR-LF(空行)
+
+    req = """
+        GET /ip HTTP/1.1
+        ...
+    """
+
+    # block frame according to Content-Length
+    # Transfer-Encoding: chunked =>
+    # hex_len : CR-LF : data : CR-LF
+    # end => 0 : CR-LF : empty data : CR-LF
+    # Connection: close =>
+    # server once send msg over then close the socket
+    # status code: 200
+    # 200-300: success, 300-400: redirect, 400-500: not know or illicit
+    # 500-600: server error
+    # 3xx not contain msg body, but 4xx and 5xx contain
+    rep = """
+        HTTP/1.1 200 OK
+        ...
+        Content-Length: 27
+    """
+
+
+def http_method():
+    """
+    get: only get data not modify server data
+    post: can modify server data, can't retry without rep of server
+    options: only req the path that pair the http header
+    head: only sent the head msg
+    put: like post, can modift server data, put a document to server
+    can retry without rep of server
+    delete: req to delete specify path and that data under the path
+    can retry without rep of server
+    trace: debug
+    connect: convert protocol from http to other protocol
+    :return:
+    """
+
+
+def wsgi_app1():
+    # wsgi: make the middleware between http server and web server
+    # but not support async, other framework like Twisted, Tornado
+    # support async
+
+    from pprint import pformat
+
+    # this app should be callable
+    # environ contains the req info
+    def app(environ, start_response):
+        headers = {'Content-Type': 'text/plain; charset=utf-8'}
+        start_response('200 ok', list(headers.items()))
+        yield 'Here is the WSGI environment:\r\n\r\n'.encode('utf-8')
+        yield pformat(environ).encode('utf-8')
+
+    # other framework can call app like this
+    httpd = make_server('', 800, app)
+    host, port = httpd.socket.getsockname()
+    print('Serving on ', host, 'port ', port)
+    httpd.serve_forever()
+
+
+def wsgi_app2():
+    """
+    write callable obj without framework, so
+    you must parse url req, but framework will
+    do this task
+    :return:
+    """
+    def app(environ, start_response):
+        host = environ.get('HTTP_HOST', '127.0.0.1')
+        path = environ.get('PATH_INFO', '/')
+
+        if ':' in host:
+            host, port = host.split(':', 1)
+        if '?' in path:
+            path, query = path.split('?', 1)
+        headers = [('Content-Type', 'text/plain; charset=utf-8')]
+        if environ['REQUEST-METHOD'] != 'GET':
+            start_response('501 Not Implemented', headers)
+            yield b'501 Not Implemented'
+        elif host != '127.0.0.1' or path != '/':
+            start_response('404 Not Found', headers)
+            yield b'404 Not Found'
+        else:
+            start_response('200 OK', headers)
+            yield time.ctime().encode('ascii')
+
+
+def wsgi_app3():
+    """
+    use webob deal with req and rep
+    :return:
+    """
+
+    import webob
+
+    def app(environ, start_response):
+        request = webob.Request(environ)
+        if environ['REQUEST_METHOD'] != 'GET':
+            response = webob.Response('501 Not Implemented', status=501)
+        elif request.domain != '127.0.0.1' or request.path != '/':
+            response = webob.Response('404 Not Found', status=404)
+        else:
+            response = webob.Response(time.ctime())
+        return response(environ, start_response)
+
+
+def wsgi_app4():
+    """
+    use werkzeug deal with req and rep
+    :return:
+    """
+
+    from werkzeug.wrappers import Request, Response
+
+    @Request.application
+    def app(request):
+        host = request.host
+        if ':' in host:
+            host, port = host.split(':', 1)
+        if request.method != 'GET':
+            return Response('501 Not Implemented', status=501)
+        elif host != '127.0.0.1' or request.path != '/':
+            return Response('404 Not Found', status=404)
+        else:
+            return Response(time.ctime())
+
+
+def server_framework():
+    """
+    httpserver -> wsgi
+    apache -> mod_wsgi:
+    if use mod_python, every apache thread reserve a python interpreter,
+    but only one thread can run python at the same time
+    reverse proxy(like apache, nginx) -> httpserver(like gunicorn):
+    static source will delivery to reverse proxy to deal, dynamic source can delivery to server,
+    reverse proxy will save the uncompleted req to the cache, if req over, then actually send to
+    server, some error req will directly deny
+    reverse proxy(like varnish) -> (apache, nginx) -> httpserver
+    other: varnish -> httpserver: if you don't need reverse proxy to deal static source
+    :return:
+    """
+
+
+def http_standard():
+    """
+    rest =>
+    1. url: explict locate src
+    2. src format: such as html, json, so can accepted by common customer
+    3. msg self describe: such as can cache data through msg info
+    4. hateoas
+    protocol://hostname/path/querystring
+    hyperlink: word and link
+    http://www.baidu.com/otherpath?q=hello&page=10
+    :return:
+    """
+
+
+def parse_build_url():
+    from urllib.parse import urlsplit, parse_qs, parse_qsl, unquote, \
+        quote, urlunsplit, urlencode, urljoin
+    # split url
+    u = urlsplit('https://www.google.com/search?q=apod&btnI=yes')
+    scheme = u.scheme
+    netloc = u.netloc
+
+    # \s encode to %20 or +
+    u = urlsplit('http://example/com/Q%26A/TCP%2FIP?q=packet+loss')
+    path = [unquote(s) for s in u.path.split('/')]
+    query = parse_qsl(u.query)
+    # query word can be same, parse_qs: key: [v1, v2]
+    query2 = parse_qs(u.query)
+
+    # build url, safe: if is '/', will directly regard as normal char
+    u = urlunsplit(('http', 'example.com', '/'.join(quote(p, safe='') for p in path), urlencode(query), ''))
+    print(u)
+
+    # if '/' append to the end, then current dir is rfc3986, otherwise html
+    base = 'http://tools.ietf.org/html/rfc3986'
+    print(urljoin(base, 'rfc7320'))
+    print(urljoin(base, '.'))
+    print(urljoin(base, '..'))
+    print(urljoin(base, '/dailydose'))
+    print(urljoin(base, '?version=1.0'))
+    print(urljoin(base, '#section-5.4'))
+    # directly return the absolute address
+    print(urljoin(base, 'https://www.baidu.com'))
+    # http will join to the head
+    print(urljoin(base, '//www.baidu.com'))
+
+
+class DB1:
+    def open_database(self, path=r'E:\file\bank.db'):
+        new = not os.path.exists(path)
+        db = sqlite3.connect(path)
+        if new:
+            c = db.cursor()
+            c.execute('CREATE TABLE payment(id INTERGER PRIMARY KEY, '
+                      ' debit TEXT, credit TEXT, dollars INTERGER, memo TEXT)')
+            self.add_payment(db, 'debit1', 'credit1', 125, 'Registration for PyCon')
+            self.add_payment(db, 'debit1', 'credit2', 200, 'Payment for writing that code')
+            self.add_payment(db, 'debit2', 'debit1', 25, 'Gas money-thanks for the ride')
+
+            db.commit()
+
+        return db
+
+    @staticmethod
+    def add_payment(db, debit, credit, dollars, memo):
+        db.cursor().execute('INSERT INTO payment(debit, credit, dollars, memo) '
+                            ' VALUES(?, ?, ?, ?)', (debit, credit, dollars, memo))
+
+    @staticmethod
+    def get_payments_of(db, account):
+        c = db.cursor()
+        c.execute('SELECT * FROM payment WHERE credit = ? or debit = ?'
+                  ' ORDER BY id', (account, account))
+        # can get value like Row.attr, it is readable
+        Row = namedtuple('Row', [tup[0] for tup in c.description])
+        return [Row(*row) for row in c.fetchall()]
+
+
+class InsecureWebApp:
+    app = Flask(__name__)
+    sys.path.append(r'E:\python')
+    get = Environment(loader=PackageLoader(r'html', 'templates')).get_template
+    db_obj = DB1()
+
+    @staticmethod
+    @app.route('/login', methods=['GET', 'POST'])
+    def login():
+        username = request.form.get('username', '')
+        password = request.form.get('password', '')
+        if request.method == 'POST':
+            if (username, password) in [('user1', 'pwd1'), ('user2', 'pwd2')]:
+                response = redirect(url_for('index'))
+                response.set_cookie('username', username)
+                return response
+        return InsecureWebApp.get('login.html').render(username=username)
+
+    @staticmethod
+    @app.route('/logout')
+    def logout():
+        response = redirect(url_for('login'))
+        response.set_cookie('username', '')
+        return response
+
+    @staticmethod
+    @app.route('/')
+    def index():
+        username = request.cookies.get('username')
+        if not username:
+            return redirect(url_for('login'))
+        payments = InsecureWebApp.db_obj.get_payments_of(InsecureWebApp.db_obj.open_database(), username)
+        return InsecureWebApp.get('index.html').render(payments=payments, username=username,
+                                                       flash_messages=request.args.getlist('flash'))
+
+    @staticmethod
+    @app.route('/pay', methods=['GET', 'POST'])
+    def pay():
+        username = request.cookies.get('username')
+        if not username:
+            return redirect(url_for('login'))
+        account = request.form.get('account', '').strip()
+        dollars = request.form.get('dollars', '').strip()
+        memo = request.form.get('memo', '').strip()
+        complaint = None
+        if request.method == 'POST':
+            if account and dollars and dollars.isdigit() and memo:
+                db = InsecureWebApp.db_obj.open_database()
+                InsecureWebApp.db_obj.add_payment(db, username, account, dollars, memo)
+                db.commit()
+                return redirect(url_for('index', flash='Payment successful'))
+            complaint = ('Dollars must be an interger' if not dollars.isdigit()
+                         else 'Please fill in all three fields')
+        return InsecureWebApp.get('pay.html').render(complaint=complaint, account=account,
+                                                     dollars=dollars, memo=memo)
+
+
+def insecure_web_app():
+    iwa = InsecureWebApp()
+    iwa.app.debug = True
+    iwa.app.run()
+
+
 def bootudp():
     choices = {'client': udpclient3, 'server': udpserver3}
     parser = argparse.ArgumentParser(description='Send and receive UDP locally')
@@ -1391,7 +1758,7 @@ def boottcp7():
 
 
 def main():
-    msg_queue()
+    insecure_web_app()
 
 
 if __name__ == '__main__':
