@@ -10,6 +10,7 @@ logger = util.get_logger()
 class StrategyBase(abc.ABC):
     def __init__(self):
         self._buy_reason = []
+        self._buy_reason_dict = []
         self._sell_reason = []
         self._check_table()
 
@@ -31,6 +32,10 @@ class StrategyBase(abc.ABC):
     @property
     def buy_reason(self):
         return self._buy_reason
+
+    @property
+    def buy_reason_dict(self):
+        return self._buy_reason_dict
 
     @property
     def sell_reason(self):
@@ -97,6 +102,7 @@ class StrategyBase(abc.ABC):
         j_remark = j_remark.replace('"', '').replace('{', '').replace('}', '')
 
         self._buy_reason.append(j_remark)
+        self._buy_reason_dict.append(rmk)
 
     def stop_loss(self, pos, loss):
         """

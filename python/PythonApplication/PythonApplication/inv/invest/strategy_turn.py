@@ -74,6 +74,52 @@ class StrategyTurn(StrategyBase):
 
         return buy_info
 
+    @property
+    def buy_info_html(self):
+        """
+        buy info
+        :return:
+        """
+        p_style = "color: #000001; font-family: 'DrukTextWideBold', " \
+                     "'Helvetica Neue', sans-serif; font-size: 16px; " \
+                     "font-synthesis: none; font-weight: bold; " \
+                     "line-height: 18px; margin: 0; " \
+                     "padding: 0; text-transform: uppercase;"
+        html = """
+        <div>
+            <p style="%s">{code}</p>
+            <ul>
+                <li>pool: {pool}</li>
+                <li>nece_score: {nece_score}</li>
+                <li>opt_score: {opt_score}</li>
+                <li>necessary_cond:<br> 
+                {necessary_cond}
+                </li>
+                <li>optional_cond:<br> 
+                {optional_cond}
+                </li>
+            </ul>
+        </div>
+        """ % p_style
+        div_list = []
+        for buy_info in self.buy_reason_dict:
+            necessary_cond = '\n'.join([nc+'<br>' for nc in buy_info['necessary_cond'].split('#')])
+            optional_cond = '\n'.join([oc + '<br>' for oc in buy_info['optional_cond'].split('#')])
+            html_param = {
+                'code': buy_info['symbol'],
+                'pool': buy_info['pool'],
+                'nece_score': buy_info['nece_score'],
+                'opt_score': buy_info['opt_score'],
+                'necessary_cond': necessary_cond,
+                'optional_cond': optional_cond
+            }
+            div = html.format(**html_param)
+            div_list.append(div)
+
+        divs = '\n'.join(div_list)
+
+        return divs
+
     @staticmethod
     def _download_day_bar():
         """
@@ -465,10 +511,10 @@ class StrategyTurn(StrategyBase):
             sig_rmk['nece_score'] = b_sig['nece_score']
             sig_rmk['opt_score'] = b_sig['opt_score']
 
-            sig_rmk['necessary_cond'] = ', '.join([f"{sig[3:] if sig.startswith('is_') else sig} => {value}"
+            sig_rmk['necessary_cond'] = '#'.join([f"{sig[3:] if sig.startswith('is_') else sig} => {value}"
              for sig, value in b_sig['necessary_cond'].items()])
 
-            sig_rmk['optional_cond'] = ', '.join([f"{sig[3:] if sig.startswith('is_') else sig} => {value}"
+            sig_rmk['optional_cond'] = '#'.join([f"{sig[3:] if sig.startswith('is_') else sig} => {value}"
              for sig, value in b_sig['optional_cond'].items() if value])
 
             self.record_buy_info(b_sig['symbol'], b_sig['pool'], **sig_rmk)
@@ -504,9 +550,10 @@ class StrategyTurn(StrategyBase):
 
             buy_info = self.buy_info
             logger.info(buy_info)
+            buy_info_html = self.buy_info_html
 
             if buy_info and util.get_config('strategy_turn', 'is_mail'):
-                util.send_mail('turn_b', buy_info)
+                util.send_mail('turn_b', buy_info_html)
 
             logger.info("strategy_turn completed")
 

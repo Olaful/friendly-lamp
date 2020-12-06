@@ -303,6 +303,8 @@ def sig_not_in_using(sig_type='buy'):
 
 def send_mail(sub, text):
     import smtplib
+    import ssl
+    import sys
     from email.mime.text import MIMEText
     from email.header import Header
     
@@ -314,17 +316,37 @@ def send_mail(sub, text):
     sender = get_config('mail', 'user')
     receivers = [rev.strip() for rev in get_config('mail', 'receivers')]
 
-    msg = MIMEText(text, 'plain', 'utf8')
+    msg = MIMEText(text, 'html', 'utf8')
     msg['From'] = Header('tbq', 'utf8')
     msg['To'] = Header('you', 'utf8')
 
     msg['Subject'] = Header(sub, 'utf8')
 
+    smtp_obj = smtplib.SMTP()
     try:
-        smtp_obj = smtplib.SMTP()
         smtp_obj.connect(mail_host, 25)
+        code = smtp_obj.ehlo()[0]
+        use_esmtp = (200 <= code <= 299)
+        if use_esmtp and smtp_obj.has_extn('starttls'):
+            context = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
+            context.set_default_verify_paths()
+
+            context.verify_mode = ssl.CERT_REQUIRED
+            purpose = ssl.Purpose.SERVER_AUTH
+            context.load_default_certs(purpose=purpose)
+
+            smtp_obj.starttls(context=context)
+
+            code = smtp_obj.ehlo()[0]
+            if not (200 <= code <= 299):
+                print('Could not EHLO AFTER STARTTLS')
+                sys.exit(5)
+
         smtp_obj.login(mail_user, mail_pwd)
         smtp_obj.sendmail(sender, receivers, msg.as_string())
         print('mail send success')
     except smtplib.SMTPException as e:
         print(f'mail send failed: {str(e)}')
+
+    smtp_obj.quit()
+
