@@ -27,8 +27,14 @@ import urllib.error
 from wsgiref.simple_server import make_server
 import os, pprint, sqlite3
 from collections import namedtuple
-from flask import Flask, redirect, request, url_for
+from flask import Flask, redirect, request, url_for, flash, get_flashed_messages, \
+    render_template, session, abort
 from jinja2 import Environment, PackageLoader
+import uuid
+import bs4, lxml.html, requests
+from selenium import webdriver
+from urllib.parse import urljoin, urlsplit
+from lxml import etree
 
 
 def getlltitude():
@@ -1459,10 +1465,22 @@ class DB1:
 class InsecureWebApp:
     app = Flask(__name__)
     sys.path.append(r'E:\python')
-    get = Environment(loader=PackageLoader(r'html', 'templates')).get_template
+    get = Environment(loader=PackageLoader('myhtml', 'templates')).get_template
     db_obj = DB1()
 
+    # attacker can via XSS(cross-site scripting)
+    # to attack if webserver run this script
+    """
+    <script>
+    var x = new XMLHTTPRequest();
+    x.open('POST', 'http://localhost:5000/pay');
+    x.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    x.send('account=hacker&dollars=100&memo=Theft);
+    </script>
+    """
+
     @staticmethod
+    # post method will not display query world in url
     @app.route('/login', methods=['GET', 'POST'])
     def login():
         username = request.form.get('username', '')
@@ -1470,6 +1488,9 @@ class InsecureWebApp:
         if request.method == 'POST':
             if (username, password) in [('user1', 'pwd1'), ('user2', 'pwd2')]:
                 response = redirect(url_for('index'))
+                # if cookies have set, so can through requests.post('url', cookies={'username': 'user1'})
+                # to entry another url, so this cookie is not safe, can encode cookie or certify to ensure
+                # safety
                 response.set_cookie('username', username)
                 return response
         return InsecureWebApp.get('login.html').render(username=username)
@@ -1513,10 +1534,1390 @@ class InsecureWebApp:
                                                      dollars=dollars, memo=memo)
 
 
+class ImproveWebApp:
+    app = Flask(__name__)
+    # use secret key to sign cookies
+    app.secret_key = 'saiGeij8AiS2ahleahMo5dahveixuV3J'
+    app.template_folder = r'E:\python\myhtml\templates'
+    db_obj = DB1()
+
+    @staticmethod
+    @app.route('/login', methods=['GET', 'POST'])
+    def login():
+        username = request.form.get('username', '')
+        password = request.form.get('password', '')
+        if request.method == 'POST':
+            if (username, password) in [('user1', 'pwd1'), ('user2', 'pwd2')]:
+                session['username'] = username
+                # post will contain this token, if illegal user
+                # forgery form data, but not pair the real session token
+                # that will be forbidden by the server
+                session['csrf_token'] = uuid.uuid4().hex
+                return redirect(url_for('index'))
+        # will escape such as '<', so str that include js will not run
+        return render_template('login.html', username=username)
+
+    @staticmethod
+    @app.route('/logout')
+    def logout():
+        session.pop('username', None)
+        return redirect(url_for('login'))
+
+    @staticmethod
+    @app.route('/')
+    def index():
+        username = session.get('username')
+        if not username:
+            return redirect(url_for('login'))
+        payments = InsecureWebApp.db_obj.get_payments_of(InsecureWebApp.db_obj.open_database(), username)
+        return render_template('index.html', payments=payments, username=username,
+                                                       # get_flashed_messages will consider the attack of xss
+                                                       flash_messages=get_flashed_messages())
+
+    @staticmethod
+    @app.route('/pay', methods=['GET', 'POST'])
+    def pay():
+        username = session.get('username')
+        if not username:
+            return redirect(url_for('login'))
+        account = request.form.get('account', '').strip()
+        dollars = request.form.get('dollars', '').strip()
+        memo = request.form.get('memo', '').strip()
+        complaint = None
+        if request.method == 'POST':
+            if request.form.get('csrf_token') != session['csrf_token']:
+                abort(403)
+            if account and dollars and dollars.isdigit() and memo:
+                db = InsecureWebApp.db_obj.open_database()
+                InsecureWebApp.db_obj.add_payment(db, username, account, dollars, memo)
+                db.commit()
+                # flash msg will send to index
+                flash('Payment successful')
+                return redirect(url_for('index'))
+            complaint = ('Dollars must be an interger' if not dollars.isdigit()
+                         else 'Please fill in all three fields')
+        return render_template('pay2.html', complaint=complaint, account=account,
+                                                     dollars=dollars, memo=memo,
+                                                        csrf_token=session['csrf_token'])
+
+    @staticmethod
+    @app.route('/robots.txt', methods=['GET'])
+    def test():
+        return 'hello world'
+
+
+def web_app_with_django():
+    """
+    使用django重新实现
+    login与logout可以直接使用框架内置的功能
+    csrf也提供支持
+    支持orm对象映射
+    :return:
+    """
+
+
 def insecure_web_app():
     iwa = InsecureWebApp()
     iwa.app.debug = True
     iwa.app.run()
+
+
+def improve_web_app():
+    iwa = ImproveWebApp()
+    iwa.app.debug = False
+    iwa.app.run()
+
+
+def attack_url1():
+    """
+    nonpersistent xss
+    some explorer will prevent xss
+    :return:
+    """
+    from urllib.parse import urlencode
+    attack_js = """
+    <script>
+    var x = new XMLHTTPRequest();
+    x.open('POST', 'http://localhost:5000/pay');
+    x.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    x.send('account=hacker&dollars=100&memo=Theft);
+    </script>
+    """
+    attack_js = attack_js.strip().replace('\n', ' ')
+    query = {'flash': attack_js}
+    url = 'http://localhost:5000/?' + urlencode(query)
+    print(url)
+
+
+def attack_url2():
+    """
+    persistent xss
+    if js run in such as for or while program
+    then it namely persistent
+    :return:
+    """
+    from urllib.parse import urlencode
+    attack_js = """
+    <script>
+    var x = new XMLHTTPRequest();
+    x.open('POST', 'http://localhost:5000/pay');
+    x.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    x.send('account=hacker&dollars=100&memo=Theft);
+    </script>
+    """
+    attack_js = attack_js.strip().replace('\n', ' ')
+    query = {'memo': attack_js}
+    url = 'http://localhost:5000/?' + urlencode(query)
+    print(url)
+
+
+def attack_url3():
+    """
+    CSRF: Cross-Site Request Forgery
+    embed attack js to form
+    :return:
+    """
+
+
+def web_socket():
+    """
+    can send msg on two direction at the same time
+    :return:
+    """
+
+
+class Scraper1:
+    ROW = '{:>12} {}'
+
+    @staticmethod
+    def download_page_with_requests(base):
+        session = requests.session()
+        # if privacy key contains in form
+        # then we must need it to post
+        response = session.post(urljoin(base, '/login'),
+                                {'username': 'user1', 'password': 'pwd1'})
+        assert response.url == urljoin(base, '/')
+        return response.text
+
+    @staticmethod
+    def download_page_with_selenium(base):
+        br = webdriver.Chrome(executable_path=r'C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe')
+        br.get(base)
+        assert br.current_url == urljoin(base, '/login')
+        css = br.find_element_by_css_selector
+        # just like common explorer, thus if form contain privacy key,
+        # it also post success
+        css('input[name="username"]').send_keys('user1')
+        css('input[name="password"]').send_keys('pwd1')
+        css('input[name="password"]').submit()
+        assert br.current_url == urljoin(base, '/')
+        return br.page_source
+
+    @staticmethod
+    def scrape_with_soup(text):
+        soup = bs4.BeautifulSoup(text, features='lxml')
+        total = 0
+        for li in soup.find_all('li', 'to'):
+            dollars = int(li.get_text().split()[0].lstrip('$'))
+            memo = li.find('i').get_text()
+            total += dollars
+            print(Scraper1.ROW.format(dollars, memo))
+        print(Scraper1.ROW.format('-' * 8, '-' * 30))
+        print(Scraper1.ROW.format(total, 'Total payment made'))
+
+    @staticmethod
+    def scrap_with_lxml(text):
+        root = lxml.html.document_fromstring(text)
+        total = 0
+        for li in root.cssselect('li.to'):
+            dollars = int(li.text_content().split()[0].lstrip('$'))
+            memo = li.cssselect('i')[0].text_content()
+            total += dollars
+            print(Scraper1.ROW.format(dollars, memo))
+        print(Scraper1.ROW.format('-' * 8, '-' * 30))
+        print(Scraper1.ROW.format(total, 'Total payment made'))
+
+
+class Scraper2:
+    """
+    recursive scraper
+    """
+
+    def GET(self, url):
+        response = requests.get(url)
+        if response.headers.get('Content-Type', '').split(';')[0] != 'text/html':
+            return
+        text = response.text
+        try:
+            html = etree.HTML(text)
+        except Exception as e:
+            print(' {}: {}'.format(e.__class__.__name__, e))
+            return
+        links = html.findall('.//a[@href]')
+        for link in links:
+            yield self.GET, urljoin(url, link.attrib['href'])
+
+    @staticmethod
+    def scrape(start, url_filter):
+        further_work = {start}
+        already_seen = {start}
+        while further_work:
+            call_tuple = further_work.pop()
+            function, url, *etc = call_tuple
+            print(function.__name__, url, *etc)
+            for call_tuple in function(url, *etc):
+                if call_tuple in already_seen:
+                    continue
+                already_seen.add(call_tuple)
+                function, url, *etc = call_tuple
+                if not url_filter(url):
+                    continue
+                further_work.add(call_tuple)
+
+
+class Scraper3:
+    """
+    render page by explorer
+    """
+    def __init__(self):
+        self.br = webdriver.Chrome(executable_path=r'C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe')
+
+    def GET(self, url):
+        self.br.get(url)
+        time.sleep(2)
+        yield from self.parse()
+        if self.br.find_elements_by_xpath('.//form'):
+            yield self.submit_form, url
+
+    def parse(self):
+        url = self.br.current_url
+        links = self.br.find_elements_by_xpath('.//a[@href]')
+        for link in links:
+            yield self.GET, urljoin(url, link.get_attribute('href'))
+
+    def submit_form(self, url):
+        self.br.get(url)
+        self.br.find_element_by_xpath('.//form').submit()
+        yield from self.parse
+
+
+def scraper1():
+    parser = argparse.ArgumentParser(description='Scrape our payment site')
+    parser.add_argument('url', help='the URL at which to begin')
+    parser.add_argument('-l', action='store_true', help='scrape using lxml')
+    parser.add_argument('-s', action='store_true', help='get with selenium')
+    args = parser.parse_args()
+    scraper_obj = Scraper1()
+    if args.s:
+        text = scraper_obj.download_page_with_selenium(args.url)
+    else:
+        text = scraper_obj.download_page_with_requests(args.url)
+    if args.l:
+        scraper_obj.scrap_with_lxml(text)
+    else:
+        scraper_obj.scrape_with_soup(text)
+
+
+def scraper2():
+    parser = argparse.ArgumentParser(description='Scrape a simple site')
+    parser.add_argument('url', help='the URL at which to begin')
+    args = parser.parse_args()
+
+    start_url = args.url
+    start_netloc = urlsplit(start_url).netloc
+    url_filter = (lambda url: urlsplit(url).netloc == start_netloc)
+
+    scraper_obj = Scraper2()
+    scraper_obj.scrape((scraper_obj.GET, start_url), url_filter)
+
+
+def scraper3():
+    parser = argparse.ArgumentParser(description='Scrape a simple site')
+    parser.add_argument('--url', default='https://www.baidu.com/', help='the URL at which to begin')
+    args = parser.parse_args()
+
+    scraper_obj = Scraper3()
+    for function, url in scraper_obj.GET(args.url):
+        print(url)
+
+
+def email1():
+    """
+    email may added other head while sending
+    through diff server
+    email format:
+    From:
+    Reply-to:
+    To:
+    Cc:
+    Bcc:
+    Subject:
+    Date: must support
+    Message-Id: must support
+    In-Reply-To:
+    Received:
+    :return:
+    """
+
+    import email.message, email.policy, email.utils
+
+    text = """Hello, 
+    This is a MIME message from this chapter.
+     - Anonymous"""
+
+    # header not case sensitive
+    message = email.message.EmailMessage(email.policy.SMTP)
+    message['To'] = 'recipient@example.com'
+    message['From'] = 'Test Sender <sender@example.com>'
+    message['Subject'] = 'Test Message, Chapter this'
+    message['Date'] = email.utils.formatdate(localtime=True)
+    # RFC 2392: must be globally unique
+    message['Message-ID'] = email.utils.make_msgid()
+
+    # context should end with CRLF
+    message.set_content(text)
+    sys.stdout.buffer.write(message.as_bytes())
+
+
+def email2():
+    """
+    MIME(Multipurpose Internet Mail Extension) email
+    :return:
+    """
+    parser = argparse.ArgumentParser(description='Build, print a MIME email')
+    parser.add_argument('-i', action='store_true', help='Include GIF image')
+    parser.add_argument('filename', nargs='*', help='Attachment filename')
+    args = parser.parse_args()
+
+    import email.message, email.policy, email.utils, mimetypes
+
+    plain = """Hello, 
+    This is a MIME message from this chapter.
+     - Anonymous"""
+
+    html = """<p>Hello,</p>
+    <p>This is a <b>test message</b> from Chapter this.</p>
+    <p>- <i>Anonymous</i></p>"""
+
+    img = """<p>This is the smallest possible blue GIF:</p>
+    <img src="cid:{}" height="80" width="80">"""
+
+    blue_dot = (b'GIF89a1010\x900000\xff000,000010100\x02\x02\x0410;'
+                .replace(b'0', b'\x00').replace(b'1', b'\x01'))
+
+    message = email.message.EmailMessage(email.policy.SMTP)
+    message['To'] = 'recipient@example.com'
+    message['From'] = 'Test Sender <sender@example.com>'
+    message['Subject'] = 'Test Message, Chapter this'
+    message['Date'] = email.utils.formatdate(localtime=True)
+    message['Message-ID'] = email.utils.make_msgid()
+
+    # every email body contain "head, CRLF, body"
+    # and depart with boundary
+
+    if not args.i:
+        # email head: multipart/*: support diff version to cilent
+        message.set_content(html, subtype='html')
+        # make sure some client which has weak function can generate msg
+        message.add_alternative(plain)
+    else:
+        cid = email.utils.make_msgid()
+        # cid must contained in '<>'
+        message.set_content(html + img.format(cid.strip('<>')), subtype='html')
+        # add other src, such as msg, css, js,
+        # link to html
+        # msg will be a attachment
+        message.add_related(blue_dot, 'image', 'gif', cid=cid, filename='blue-dot.gif')
+        message.add_alternative(plain)
+    for filename in args.filename:
+        mime_type, encoding = mimetypes.guess_type(filename)
+        if encoding or (mime_type is None):
+            mime_type = 'application/octet-stream'
+        main, sub = mime_type.split('/')
+        if main == 'text':
+            with open(filename, encoding='utf-8') as f:
+                text = f.read()
+            # add attachment, such as msg, pdf, excel
+            # if content contain unicode, it will whole encode to base64
+            # if specify cte, ASCII char still keep in email
+            message.add_attachment(text, sub, filename=filename, cte='quoted-printable')
+        else:
+            with open(filename, 'rb') as f:
+                data = f.read()
+            message.add_attachment(data, main, sub, filename=filename)
+
+    sys.stdout.buffer.write(message.as_bytes())
+
+
+def display_email1():
+    """
+    display email from file
+    :return:
+    """
+    parser = argparse.ArgumentParser(description='Parse and print an email')
+    parser.add_argument('filename', nargs='?', help='File Containing an email')
+    args = parser.parse_args()
+
+    import email.policy
+
+    if args.filename is None:
+        binary_file = sys.stdin.buffer
+    else:
+        binary_file = open(args.filename, 'rb')
+
+    policy = email.policy.SMTP
+    message = email.message_from_binary_file(binary_file, policy=policy)
+    for header in ['From', 'To', 'Date', 'Subject']:
+        print(header + ':' + message.get(header, '(none)'))
+    print()
+
+    try:
+        # if preferencelist default, some client can parse complex
+        # content
+        body = message.get_body(preferencelist=('html', 'plain'))
+    except KeyError:
+        print('<This message lack a printable text of HTML body>')
+    else:
+        print(body.get_content())
+
+    for part in message.walk():
+        cd = part['Content-Disposition']
+        is_attachment = cd and cd.split(';')[0].lower() == 'attachment'
+        if not is_attachment:
+            continue
+        content = part.get_content()
+        # get_content_maintype: get main type, get_content_subtype: get sub type,
+        print('* {} attachment named {!r}: {} object of length {}'.format(
+            part.get_content_type(), part.get_filename(),
+            type(content).__name__, len(content)
+        ))
+
+    if binary_file.name != '<stdin>':
+        binary_file.close()
+
+
+def email3():
+    """
+    head that contain international char
+    :return:
+    """
+    import email.message, email.policy
+
+    text = """
+    Bạn là gì?Trương Bạn bận thế nào?
+    Cai gi lam bạn bận rôn?
+    Bạn làm nghề gì?
+    Bạn đã có một giấc mơ?
+    """
+
+    message = email.message.EmailMessage(email.policy.SMTP)
+    message['To'] = 'Νικόλαος<recipient@example.com>'
+    message['From'] = 'Eardstapa <sender@example.com>'
+    message['Subject'] = 'Four line from The Wanderer'
+    message['Date'] = email.utils.formatdate(localtime=True)
+    message.set_content(text, cte='quoted-printable')
+    sys.stdout.buffer.write(message.as_bytes())
+
+
+def display_email2():
+    """
+    walk every part of an email
+    :return:
+    """
+    parser = argparse.ArgumentParser(description='Parse and print an email')
+    parser.add_argument('filename', nargs='?', help='File Containing an email')
+    args = parser.parse_args()
+
+    import email.policy
+
+    if args.filename is None:
+        binary_file = sys.stdin.buffer
+    else:
+        binary_file = open(args.filename, 'rb')
+
+    def walk(part, prefix=''):
+        yield prefix, part
+        # iter_parts: get sub part
+        for i, subpart in enumerate(part.iter_parts()):
+            yield from walk(subpart, prefix + '.{}'.format(i))
+
+    policy = email.policy.SMTP
+    message = email.message_from_binary_file(binary_file, policy=policy)
+    # if you have known the part info, can through get_payload to get part
+    specify_part = message.get_payload(0).get_payload(0).get_payload(1)
+    print('specify-----\n', specify_part)
+    for prefix, part in walk(message):
+        line = '{} type={}'.format(prefix, part.get_content_type())
+        # if not multipart, so can get its content
+        if not part.is_multipart():
+            content = part.get_content()
+            line += ' {} len={}'.format(type(content).__name__, len(content))
+            cd = part['Content-Disposition']
+            is_attachment = cd and cd.split(';')[0].lower() == 'attachment'
+            if is_attachment:
+                line += ' attachment'
+            filename = part.get_filename()
+            if filename is not None:
+                line += ' filename = {!r}'.format(filename)
+            print(line)
+
+
+def email_parse_date():
+    """
+    parse_date
+    :return:
+    """
+    import email.utils
+    # if date formation not correct, it return None
+    d1 = email.utils.parsedate('Tue, 25 Error 2014 17:14:01 -0400')
+    print(d1)
+    d2 = email.utils.parsedate_tz('Tue, 25 Mar 2014 17:14:01 -0400')
+    print(d2)
+    d3 = email.utils.parsedate_to_datetime('Tue, 25 Mar 2014 17:14:01 -0400')
+    print(d3)
+
+
+def smtp_mail1():
+    """
+    send mail use smtp
+    smtp no use Cc and Bcc
+    normally no need auth between servers
+    a simple send process: client->MTA(mail transfer agent)->
+    ->server1(DNS found)->server2->..->rubbish filter server(if exist)
+    ->final sever(save mail)
+    every server have a Received header that added self above
+    once msg send to server, client think that it send successful
+    :return:
+    """
+
+    import smtplib
+
+    # To: this is unrelated to real recipient
+    message_template = """
+    To: {}
+    From: {}
+    Subject: Test Message from test
+    Hello,
+    This is a test message sent to you from test program
+    """
+    if len(sys.argv) < 4:
+        name = sys.argv[0]
+        print('usage: {} server fromaddr toaddr [toaddr...]'.format(name))
+        sys.exit(2)
+    server, fromaddr, toaddr = sys.argv[1], sys.argv[2], sys.argv[3:]
+    message = message_template.format(', '.join(toaddr), fromaddr)
+    connection = smtplib.SMTP(server)
+    # once one of recipient receive faild, it will raise exception
+    connection.sendmail(fromaddr, toaddr,  message)
+    connection.quit()
+
+    s = '' if len(toaddr) == 1 else 's'
+    print('Message sent to {} recipients{}'.format(len(toaddr), s))
+
+
+def smtp_mail2():
+    """
+    deal exception
+    :return:
+    """
+
+    import smtplib
+
+    message_template = """
+    To: {}
+    From: {}
+    Subject: Test Message from test
+    Hello,
+    This is a test message sent to you from test program
+    """
+    if len(sys.argv) < 4:
+        name = sys.argv[0]
+        print('usage: {} server fromaddr toaddr [toaddr...]'.format(name))
+        sys.exit(2)
+    server, user, pwd, fromaddr, toaddr = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5:]
+    message = message_template.format(', '.join(toaddr), fromaddr)
+
+    try:
+        connection = smtplib.SMTP(server)
+        # show the session detail msg
+        connection.set_debuglevel(1)
+        # some mail server need auth
+        connection.login(user, pwd)
+        connection.sendmail(fromaddr, toaddr,  message)
+    except (socket.gaierror, socket.error, socket.herror,
+            smtplib.SMTPException) as e:
+        print("Your message may not have been sent")
+        print(e)
+        sys.exit(1)
+    else:
+        s = '' if len(toaddr) == 1 else 's'
+        print('Message sent to {} recipients{}'.format(len(toaddr), s))
+        connection.quit()
+
+
+def smtp_mail3():
+    """
+    use esmtp(extend smtp) to get more info
+    such max msg size
+    diff server support diff esmtp function
+    :return:
+    """
+
+    import smtplib
+
+    def report_on_message_size(connection, fromaddr, toaddr, message):
+        # ehlo support more feature than helo
+        code = connection.ehlo()[0]
+        # success retcode between 200 and 299
+        use_esmtp = (200 <= code <= 299)
+        if not use_esmtp:
+            # some client and server only support helo
+            code = connection.helo()[0]
+            if not (200 <= code <= 299):
+                print('Remote server refused HELO; code:', code)
+                sys.exit(1)
+        if use_esmtp and connection.has_extn('size'):
+            max_msg_size = connection.esmtp_features['size']
+            print('Maximum message size is ', max_msg_size)
+            if len(message) > int(max_msg_size):
+                print('Message to large; aborting.')
+                sys.exit(1)
+        connection.sendmail(fromaddr, toaddr, message)
+
+    message_template = """
+    To: {}
+    From: {}
+    Subject: Test Message from test
+    Hello,
+    This is a test message sent to you from test program
+    """
+    if len(sys.argv) < 4:
+        name = sys.argv[0]
+        print('usage: {} server fromaddr toaddr [toaddr...]'.format(name))
+        sys.exit(2)
+    server, user, pwd, fromaddr, toaddr = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5:]
+    message = message_template.format(', '.join(toaddr), fromaddr)
+
+    try:
+        connection = smtplib.SMTP(server)
+        connection.login(user, pwd)
+        report_on_message_size(connection, fromaddr, toaddr, message)
+    except (socket.gaierror, socket.error, socket.herror,
+            smtplib.SMTPException) as e:
+        print("Your message may not have been sent")
+        print(e)
+        sys.exit(1)
+    else:
+        s = '' if len(toaddr) == 1 else 's'
+        print('Message sent to {} recipients{}'.format(len(toaddr), s))
+        connection.quit()
+
+
+def smtp_mail4():
+    """
+    use tls to connect
+    :return:
+    """
+
+    import smtplib
+
+    def send_message_securely(connection, user, pwd, fromaddr, toaddr, message):
+        code = connection.ehlo()[0]
+        use_esmtp = (200 <= code <= 299)
+        if not use_esmtp:
+            code = connection.helo()[0]
+            if not (200 <= code <= 299):
+                print('Remote server refused HELO; code:', code)
+                sys.exit(1)
+        # if sever not support esmtp, it will not support tls
+        if use_esmtp and connection.has_extn('starttls'):
+            print('Negotiating TLS...')
+            context = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
+            context.set_default_verify_paths()
+            context.verify_mode = ssl.CERT_REQUIRED
+            purpose = ssl.Purpose.SERVER_AUTH
+            context.load_default_certs(purpose=purpose)
+            connection.starttls(context=context)
+            # if server has auth, should call ehlo again
+            code = connection.ehlo()[0]
+            if not (200 <= code <= 299):
+                print("Couldn't EHLO after STARTTLS")
+                sys.exit(5)
+            print("Using TLS connection")
+        else:
+            print("Server does not support TLS; using normal connection.")
+
+        # should first build tls, then use it to send auth info
+        # most server not support auth, so should make sure that
+        # it support auth
+        if connection.has_extn('auth'):
+            connection.login(user, pwd)
+        connection.sendmail(fromaddr, toaddr, message)
+
+    message_template = """
+    To: {}
+    From: {}
+    Subject: Test Message from test
+    Hello,
+    This is a test message sent to you from test program
+    """
+    if len(sys.argv) < 4:
+        name = sys.argv[0]
+        print('usage: {} server fromaddr toaddr [toaddr...]'.format(name))
+        sys.exit(2)
+    server, user, pwd, fromaddr, toaddr = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5:]
+    message = message_template.format(', '.join(toaddr), fromaddr)
+
+    try:
+        connection = smtplib.SMTP(server)
+        # connection.login(user, pwd)
+        send_message_securely(connection, user, pwd, fromaddr, toaddr, message)
+    except (socket.gaierror, socket.error, socket.herror,
+            smtplib.SMTPException) as e:
+        print("Your message may not have been sent")
+        print(e)
+        sys.exit(1)
+    else:
+        s = '' if len(toaddr) == 1 else 's'
+        print('Message sent to {} recipients{}'.format(len(toaddr), s))
+        connection.quit()
+
+
+def pop_mail1():
+    """
+    pop(post office protocol)
+    use it to get email info from server, such as download
+    some pop sever will modify mail flag, such as to unread
+    once connect to server or download mail, or lock mailbox during
+    connection, diff server have diff behavior
+    only support access one dir
+    :return:
+    """
+    import getpass, poplib
+
+    if len(sys.argv) != 3:
+        print("usage: %s hostname username" % sys.argv[0])
+        sys.exit(2)
+    hostname, username = sys.argv[1:]
+    passwd = getpass.getpass()
+    p = poplib.POP3_SSL(host=hostname)
+    try:
+        print("Attempting APOP authentication...")
+        # apop will encrypt passwd
+        p.apop(username, passwd)
+    # some server not support apop
+    except poplib.error_proto:
+        print("Attempting standard authentication...")
+        try:
+            p.user(username)
+            p.pass_(passwd)
+        except poplib.error_proto as e:
+            print('Login failed:', e)
+            sys.exit(1)
+        else:
+            status = p.stat()
+            print("You have %d message totalling %d bytes" % status)
+        finally:
+            # some server will lock mailbox during connection
+            # so should close connection at last
+            p.quit()
+
+
+def pop_mail2():
+    """
+    list every mail info
+    :return:
+    """
+    import getpass, poplib
+
+    if len(sys.argv) != 3:
+        print("usage: %s hostname username" % sys.argv[0])
+        sys.exit(2)
+    hostname, username = sys.argv[1:]
+    passwd = getpass.getpass()
+    p = poplib.POP3_SSL(host=hostname)
+    try:
+        print("Attempting APOP authentication...")
+        p.apop(username, passwd)
+    except poplib.error_proto:
+        print("Attempting standard authentication...")
+        try:
+            p.user(username)
+            p.pass_(passwd)
+        except poplib.error_proto as e:
+            print('Login failed:', e)
+            sys.exit(1)
+        else:
+            response, listings, octet_count = p.list()
+            if not listings:
+                print("No message")
+            for listing in listings:
+                # msg_id in diff connection may diff
+                number, size = listing.decode('utf-8').split()
+                print("Message %s has %s bytes" % (number, size))
+        finally:
+            p.quit()
+
+
+def pop_mail3():
+    """
+    download and delete mail
+    :return:
+    """
+    import getpass, poplib
+    import email
+
+    decode = 'ascii'
+
+    def visit_all_listings(p):
+        response, listings, octets = p.list()
+        for listing in listings:
+            visit_listing(p, listing)
+
+    def visit_listing(p, listing):
+        number, size = listing.decode(decode).split()
+        print('Message', number, '(size is ', size, 'bytes):')
+        print()
+        # return specify line if mail, not set seen flag
+        response, lines, octets = p.top(number, 0)
+        # every msg's row will construct to a list to return
+        document = '\n'.join(line.decode(decode) for line in lines)
+        message = email.message_from_string(document)
+        for header in 'From', 'To', 'Subject', 'Date':
+            if header in message:
+                print(header + ":" + message[header])
+        print()
+        print('Read this message [ny]?')
+        answer = input()
+        if answer.lower().startswith('y'):
+            # most server will set seen flag
+            response, lines, octets = p.retr(number)
+            document = '\n'.join(line.decode(decode) for line in lines)
+            message = email.message_from_string(document)
+            print('-' * 72)
+            for part in message.walk():
+                if part.get_content_type() == 'text/plain':
+                    print(part.get_payload())
+                    print('-' * 72)
+        print()
+        print("Delete this message [ny]?")
+        answer = input()
+        if answer.lower().startswith('y'):
+            # delete mail from server
+            p.dele(number)
+            print('Deleted.')
+
+    if len(sys.argv) != 3:
+        print("usage: %s hostname username" % sys.argv[0])
+        sys.exit(2)
+    hostname, username = sys.argv[1:]
+    passwd = getpass.getpass()
+    p = poplib.POP3_SSL(host=hostname)
+    try:
+        print("Attempting APOP authentication...")
+        p.apop(username, passwd)
+    except poplib.error_proto:
+        print("Attempting standard authentication...")
+        try:
+            p.user(username)
+            p.pass_(passwd)
+        except poplib.error_proto as e:
+            print('Login failed:', e)
+            sys.exit(1)
+        else:
+            visit_all_listings(p)
+        finally:
+            p.quit()
+
+
+def imap_mail1():
+    """
+    imap(internet message access protocal)
+    compare with pop:
+    1. classify mail into diff dir
+    2. flag msg such have read, have deleted
+    3. search info in server
+    4. upload local info to remote dir
+    5. unique msg id to ensure sync between local and server
+    6. share dir with other, flag dir to have read
+    7. some server show none mail src in dir, such as Usenet news group
+    8. download part of msg with choice, such as some attachment
+    :return:
+    """
+
+    import getpass, imaplib
+
+    if len(sys.argv) != 3:
+        print("usage: %s hostname username" % sys.argv[0])
+        sys.exit(2)
+
+    hostname, username = sys.argv[1:]
+    # IMAP4rev1: most popular version
+    m = imaplib.IMAP4_SSL(host=hostname)
+    m.login(username, getpass.getpass())
+    try:
+        # show supported imap feature
+        print("Capabilities:", m.capabilities)
+        print("Listing mailboxes")
+        status, data = m.list()
+        print("Status:", repr(status))
+        print("Data:")
+        for datum in data:
+            print(datum.decode('GB2312'))
+    finally:
+        m.logout()
+
+
+def imap_mail2():
+    """
+    user third part package(imapclient) to
+    fetch mail info
+    :return:
+    """
+
+    import getpass
+    from imapclient import IMAPClient
+
+    if len(sys.argv) != 3:
+        print("usage: %s hostname username" % sys.argv[0])
+        sys.exit(2)
+
+    hostname, username = sys.argv[1:]
+    # msg uid not the same, but tmp msg id may be same
+    # between diff session
+    c = IMAPClient(host=hostname, ssl=True, use_uid=True)
+    try:
+        c.login(username, getpass.getpass())
+    except c.Error as e:
+        print("Could not log in:", e)
+    else:
+        print("Capabilities:", c.capabilities())
+        print("Listing mailboxes")
+        # no need judge status code, if problem happen it
+        # will raise exception
+        data = c.list_folders()
+        # folder name return on str formation
+        # flag: NoSelect: no contain any msg
+        # HasNoChildren: no sub folder
+        # HasChildren: contain sub folder
+        for flags, delimiter, folder_name in data:
+            print("%-30s%s %s" % (' '.join(map(repr, flags)), delimiter, folder_name))
+        # if folder has been selected, later operation such as download
+        # only affect in this folder, surpport rw control
+        # c.select_folder(readonly=True)
+    finally:
+        c.logout()
+
+
+def imap_mail3():
+    """
+    display digest of folder
+    :return:
+    """
+
+    import getpass
+    from imapclient import IMAPClient
+
+    if len(sys.argv) != 4:
+        print("usage: %s hostname username" % sys.argv[0])
+        sys.exit(2)
+
+    hostname, username, foldername = sys.argv[1:]
+    c = IMAPClient(host=hostname, ssl=True)
+    try:
+        c.login(username, getpass.getpass())
+    except c.Error as e:
+        print("Could not log in:", e)
+    else:
+        select_dict = c.select_folder(folder=foldername, readonly=True)
+        # EXISTS(must rtn): total msg,
+        # FLAGS(must rtn): flag of can set in msg
+        # RECENTS(must rtn): msg appeal after select_folder last
+        # PERMANENTFLAGS: self define flag of can set in msg
+        # UIDNEXT: next msg uid that server guest
+        # UIDVALIDITY: confirm uid of msg if change, if diff between
+        # new and last, it prove that uid reallocate to the msg, last one
+        # is invalid
+        # UNSEEN: first unread msg in the folder
+        for k, v in sorted(select_dict.items()):
+            print('%s:  %r' % (k, v))
+    finally:
+        c.logout()
+
+
+def imap_mail4():
+    """
+    retrieving the whole mailbox
+    :return:
+    """
+
+    import getpass
+    import email
+    from imapclient import IMAPClient
+
+    def print_summary(c, foldername):
+        c.select_folder(foldername, readonly=True)
+        # msg index: exemple: 2,4:6,20: msg 2, msg4 to msg6, msg20 to msg of
+        # id gt 20
+        # PEEK: only query msg, don't set seen flag to msg
+        msgdict = c.fetch('1:*', ['BODY.PEEK[]'])
+        for message_id, message in list(msgdict.items()):
+            # also can save mail in file
+            # with open(fr'E:\file\mailbox\{message_id}.txt', 'w', encoding='gbk') as f:
+            #     f.write(message[b'BODY[]'].decode())
+            # BODY[] mean whole msg
+            e = email.message_from_string(message[b'BODY[]'].decode())
+            print(message_id, e['From'])
+            pay_load = e.get_payload()
+            if isinstance(pay_load, list):
+                part_content_types = [part.get_content_type() for part in pay_load]
+                print(' Parts:', ' '.join(part_content_types))
+            else:
+                print(' ', ' '.join(pay_load[:60].split()), '...')
+
+    if len(sys.argv) != 4:
+        print("usage: %s hostname username" % sys.argv[0])
+        sys.exit(2)
+
+    hostname, username, foldername = sys.argv[1:]
+    c = IMAPClient(host=hostname, ssl=True)
+    try:
+        c.login(username, getpass.getpass())
+    except c.Error as e:
+        print("Could not log in:", e)
+    else:
+        print_summary(c, foldername)
+    finally:
+        c.logout()
+
+
+def imap_mail5(*args):
+    """
+    browse folder, messages, message parts
+    :return:
+    """
+
+    import getpass
+    from imapclient import IMAPClient
+    import email.header
+
+    banner = '-' * 72
+
+    def operate_folder(c):
+        c.create_folder('MyFolder')
+        c.delete_folder('MyFolder2')
+
+        c.select_folder('MyFolder3')
+        c.copy([1, 2], 'MyFolder4')
+        
+        msg = '\r\n'.join('one\rtwo\r\three'.splitlines())
+        c.append('MyFolder5', msg)
+
+    def decode_header(header):
+        decoded_header = email.header.decode_header(header)
+        decoded_header = ''.join([part.decode(encoding) if encoding else
+                                  (part.decode('utf-8', 'replace') if not isinstance(part, str) else part)
+                                  for part, encoding in decoded_header])
+        return decoded_header
+
+    # other api: asynchronous api
+
+    def explore_account(c):
+        while True:
+            print()
+            folder_flags = {}
+            data = c.list_folders()
+            for flags, delimiter, name in data:
+                folder_flags[name] = flags
+            for name in sorted(folder_flags.keys()):
+                flags = list(map(bytes.decode, folder_flags[name]))
+                print('%-30s %s' % (name, ' '.join(flags)))
+            print()
+
+            reply = input('Type a folder name, or "q" to quit:').strip()
+            if reply.lower() == 'q':
+                break
+            if reply in folder_flags:
+                explore_folder(c, reply)
+            else:
+                print('Error: no folder named', repr(reply))
+
+    def explore_folder(c, name):
+        while True:
+            c.select_folder(name, readonly=True)
+
+            reply = input('Folder %s - type a search text:'
+                          % name).strip()
+            if reply:
+                # search text example:
+                # 1. SINCE 13-Jan-2020 TEXT Apple
+                # 2. OR (SINCE 13-Jan-2020) (TEXT Apple)
+                # 3. UID
+                # 4. SMALLER m: msg less than 100 octets in length
+                # 5. DRAFT: have the flag \Draft
+                # 6. CC string FROM string BODY string
+                # 7. BEFORE 01-Jan-2020: actual date that receive
+                # 8. SENTBEFORE 01-Jan-2020: actual date that sent
+                # ...
+                try:
+                    print(c.search(reply.encode()))
+                except Exception as e:
+                    print('Search error: ', str(e))
+
+            msgdict = c.fetch('1:*', ['BODY.PEEK[HEADER.FIELDS (FROM SUBJECT)]',
+                                      'FLAGS', 'INTERNALDATE', 'RFC822.SIZE'])
+            print()
+            for uid in sorted(msgdict):
+                items = msgdict[uid]
+                flags = list(map(bytes.decode, items[b'FLAGS']))
+                print('%6d %20s %6d bytes %s' % (
+                    uid, items[b'INTERNALDATE'], items[b'RFC822.SIZE'],
+                    ' '.join(flags)))
+                for i in items[b'BODY[HEADER.FIELDS (FROM SUBJECT)]'].splitlines():
+                    decoded_header = decode_header(i.strip().decode())
+                    print(' ' * 6, decoded_header)
+            reply = input('Folder %s - type a message uid, or "q" to quit:'
+                          % name).strip()
+            if reply.lower() == 'q':
+                break
+            try:
+                reply = int(reply)
+            except ValueError:
+                print('Please  type a integer or "q" to quit:')
+            else:
+                if reply in msgdict:
+                    explore_message(c, reply)
+
+    def explore_message(c, uid):
+        # fetch specify part
+        msgdict = c.fetch(uid, ['BODYSTRUCTURE', 'FLAGS'])
+
+        # set flag on msg
+        # c.get_flags(uid)
+        # c.remove_flags(uid, ['\\Seen'])
+        # c.add_flags(uid, ['\\Answered'])
+        # c.set_flags(uid, ['\\Seen', '\\Answered'])
+
+        # first: mark flag to \Delete; second: delete actually
+        # c.delete_messages([uid])
+        # c.expunge()
+
+        while True:
+            print()
+            print('Flags:', end=' ')
+            # common flags: Answered, Draft, Flagged, Recent, Seen
+            flag_list = msgdict[uid][b'FLAGS']
+            if flag_list:
+                flags = list(map(bytes.decode, flag_list))
+                print(' '.join(flags))
+            else:
+                print('none')
+
+            print('Structure:')
+            display_structure(msgdict[uid][b'BODYSTRUCTURE'])
+            print()
+            reply = input('Message %s - type a part name, or "q" to quit:'
+                          % uid).strip()
+            if reply.lower() == 'q':
+                break
+            key = 'BODY[%s]' % reply
+            # truncate msg
+            # key2 = 'BODY[%s]<100>' % reply
+            try:
+                msgdict2 = c.fetch(uid, key)
+            except c._imap.error:
+                print('Error - cannot fetch section' % reply)
+            else:
+                content = msgdict2[uid][key.encode()]
+                if content:
+                    print(banner)
+                    print(content.strip())
+                    print(banner)
+                else:
+                    print('No such section')
+
+    def display_structure(structure, parentparts=[]):
+        if parentparts:
+            name = '.'.join(parentparts)
+        else:
+            print(" HEADER")
+            name = 'TEXT'
+
+        is_multipart = isinstance(structure[0], (list, tuple))
+
+        if not is_multipart:
+            stru = tuple(map(bytes.decode, structure[:2]))
+            parttype = ('%s/%s' % stru).lower()
+            print(' %-9s' % name, parttype, end=' ')
+            if structure[6]:
+                print('size = %s' % structure[6], end=' ')
+            if structure[9]:
+                print('disposition = %s' % structure[9][0],
+                      ' '.join('{}={}'.format(k, v) for k, v in structure[9][1:]),
+                      end=' ')
+            print()
+            return
+
+        parttype = 'multipart/%s' % structure[1].lower().decode()
+        print(' %-9s' % name, parttype, end=' ')
+        print()
+        subparts = structure[0]
+        for i in range(len(subparts)):
+            display_structure(subparts[i], parentparts + [str(i+1)])
+
+    if len(sys.argv) != 3:
+        print("usage: %s hostname username" % sys.argv[0])
+        if not args:
+            sys.exit(2)
+        hostname, username, passwd = args[:3]
+    else:
+        hostname, username = sys.argv[1:]
+        passwd = getpass.getpass()
+
+    c = IMAPClient(host=hostname, ssl=True)
+    try:
+        c.login(username, passwd)
+    except c.Error as e:
+        print("Could not log in:", e)
+    else:
+        explore_account(c)
+    finally:
+        c.logout()
+
+
+def shell1():
+    """
+    subprocess can call os command
+    """
+    import subprocess
+
+    # special character only affect in shell,
+    # no associate with operate system
+    args = ['echo', 'Sometimes', '*', 'is just an asterisk']
+    # \0 regarded as special char by os, mean the end of args
+    # will raise exception
+    args2 = ['echo', 'Sentences can end\0 abruptly']
+    subprocess.call(args2)
+
+
+def shell2():
+    import subprocess
+
+    # not support special char
+    while True:
+        args = input('] ').strip().split()
+        if not args:
+            pass
+        elif args == ['exit']:
+            break
+        elif args[0] == 'show':
+            print('Arguments: ', args[1:])
+        else:
+            try:
+                subprocess.call(args)
+            except Exception as e:
+                print(e)
+
+
+def shell3():
+    # not like subprocess, system will call shell like bash
+    # so if this call in linux, it will echo all file in current
+    # dir
+    os.system('echo *')
+
+
+def shell4():
+    from subprocess import list2cmdline
+    from pipes import quote
+
+    # escape special char
+    print(quote('file "single quoted" inside!'))
+
+    # if ssh to window, args will be a text to new process
+    # so use this method convert list to text
+    args = ['rename', 'first "second".xls', 'first-second.xls']
+    print(list2cmdline(args))
+
+
+def shell5():
+    """
+    :return:
+    """
+    # interactive app only show prompt in tty input
+    """
+    cat | bash
+    echo Here we are inside of bash, with no prompt
+    # python read all script to buffer, then begin to run
+    python
+    # will not response info
+    # only show response with the end of cat(ctrl+D)
+    print('Python has no printed a prompt, either.')
+    import sys
+    print('Is this a terminal?', sys.stdin.isatty())
+    """
+
+    """
+    # out formation adj to tty side
+    ls 
+    # but out to pipe, out formation will any width
+    ls | cat
+    """
+
+    """
+    # no show prompt
+    ssh -T host port
+    """
+
+    """
+    # close std input, every char will read by app
+    # immediately
+    stty -icanon
+    # ctrl + s stop output, ctrl + q continute output
+    # close the feature above
+    stty -ixon -ixoff
+    # disable or enable set feature above
+    stty raw
+    stty cooked
+    """
+
+
+def telnet1():
+    """
+    telnet only build a channel to show the
+    transfer info like password, it don't know
+    any auth, so it no safe
+    :return:
+    """
+    import getpass, telnetlib
+
+    parser = argparse.ArgumentParser(description='Use telnet to login')
+    parser.add_argument('hostname', help='Remote host to telnet to')
+    parser.add_argument('username', help='Remote username')
+    args = parser.parse_args()
+    password = getpass.getpass('Password: ')
+
+    t = telnetlib.Telnet(host=args.hostname)
+    t.set_debuglevel(1)
+    t.read_until(b'login:')
+    t.write(args.username.encode('utf-8'))
+    t.write(b'\r')
+
+    # first letter must be 'P' or 'p'
+    t.read_until(b'assword:')
+    t.write(password.encode('utf-8'))
+    t.write(b'\r')
+
+    n, match, previous_text = t.expect([br'Login incorrect', br'\$'], 10)
+
+    if n == 0:
+        print('Username and password failed - giving up')
+    else:
+        t.write(b'exec uptime\r')
+        # read util socket closes
+        print(t.read_all().decode('utf-8'))
+
+
+
 
 
 def bootudp():
@@ -1758,8 +3159,9 @@ def boottcp7():
 
 
 def main():
-    insecure_web_app()
+    telnet1()
 
 
 if __name__ == '__main__':
     main()
+
