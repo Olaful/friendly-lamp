@@ -1464,7 +1464,7 @@ class DB1:
 
 class InsecureWebApp:
     app = Flask(__name__)
-    sys.path.append(r'E:\python')
+    sys.path.append(r'E:\\')
     get = Environment(loader=PackageLoader('myhtml', 'templates')).get_template
     db_obj = DB1()
 
@@ -2892,17 +2892,68 @@ def telnet1():
 
     parser = argparse.ArgumentParser(description='Use telnet to login')
     parser.add_argument('hostname', help='Remote host to telnet to')
+    parser.add_argument('port', help='Remote port to telnet to')
     parser.add_argument('username', help='Remote username')
     args = parser.parse_args()
     password = getpass.getpass('Password: ')
 
-    t = telnetlib.Telnet(host=args.hostname)
+    t = telnetlib.Telnet(host=args.hostname, port=args.port)
     t.set_debuglevel(1)
     t.read_until(b'login:')
     t.write(args.username.encode('utf-8'))
     t.write(b'\r')
 
     # first letter must be 'P' or 'p'
+    t.read_until(b'password:')
+    t.write(password.encode('utf-8'))
+    t.write(b'\r')
+
+    # index of match in the regex list, regex match obj, match text
+    n, match, previous_text = t.expect([br'Login incorrect', br'\$'], 10)
+
+    if n == 0:
+        print('Username and password failed - giving up')
+    else:
+        t.write(b'exec uptime\r')
+        # read util socket closes
+        print(t.read_all().decode('utf-8'))
+
+    
+def telnet2():
+    """
+    :return:
+    """
+    import getpass
+    from telnetlib import Telnet, IAC, DO, DONT, WILL, WONT, SB, SE, TTYPE
+
+    def process_option(tsocket, command, option):
+        # should suport response for every type
+        # otherwise server's wait will interrupt session
+        if command == DO or command == TTYPE:
+            tsocket.sendall(IAC + WILL + TTYPE)
+            print('Sendging terminal type "mypython"')
+            tsocket.sendall(IAC + SB + TTYPE + b'\0' + b'mypython' + IAC + SE)
+        elif command in (DO, DONT):
+            print('will not', ord(option))
+            tsocket.sendall(IAC + WONT + option)
+        elif command in (WILL, WONT):
+            print('Do not', ord(option))
+            tsocket.sendall(IAC + DONT + option)
+
+    parser = argparse.ArgumentParser(description='Use telnet to login')
+    parser.add_argument('hostname', help='Remote host to telnet to')
+    parser.add_argument('port', help='Remote port to telnet to')
+    parser.add_argument('username', help='Remote username')
+    args = parser.parse_args()
+    password = getpass.getpass('Password: ')
+
+    t = Telnet(host=args.hostname, port=args.port)
+    t.set_debuglevel(1)
+    t.set_option_negotiation_callback(process_option)
+    t.read_until(b'login:')
+    t.write(args.username.encode('utf-8'))
+    t.write(b'\r')
+
     t.read_until(b'assword:')
     t.write(password.encode('utf-8'))
     t.write(b'\r')
@@ -2917,10 +2968,720 @@ def telnet1():
         print(t.read_all().decode('utf-8'))
 
 
+def ssh1():
+    """
+    secure shell
+    only one connection, laster session
+    reuse this connection,
+    ssh support port forward
+    """
+    import paramiko, getpass
 
+    # if need some self strategy to deal with host key auth
+    # can inherit this class to achive
+    class AllowAnythingPolicy(paramiko.MissingHostKeyPolicy):
+        def missing_host_key(self, client, hostname, key):
+            return
+    
+    parser = argparse.ArgumentParser(description='Connect over SSH')
+    parser.add_argument('hostname', help='Remote host to telnet to')
+    parser.add_argument('username', help='Remote username')
+    parser.add_argument('port', help='Remote port to telnet to')
+    args = parser.parse_args()
+
+    password = getpass.getpass()
+
+    client = paramiko.SSHClient()
+    # if not support this method and connect to unknow host,
+    # ssh will raise exception, some strategy will add remote host keys
+    # to local, next connection will not raise auth exception
+    client.set_missing_host_key_policy(AllowAnythingPolicy)
+    client.connect(args.hostname, username=args.username, port=args.port, password=password)
+    
+    # start a session for shell
+    channel = client.invoke_shell()
+    stdin = channel.makefile('wb')
+    stdout = channel.makefile('rb')
+
+    stdin.write(b'echo Hello, world\rexit\r')
+    # output result like normal tty, include show of prompt
+    output = stdout.read()
+    client.close()
+
+    sys.stdout.buffer.write(output)
+
+
+def ssh2():
+    import paramiko, getpass
+
+    class AllowAnythingPolicy(paramiko.MissingHostKeyPolicy):
+        def missing_host_key(self, client, hostname, key):
+            return
+    
+    parser = argparse.ArgumentParser(description='Connect over SSH')
+    parser.add_argument('hostname', help='Remote host to telnet to')
+    parser.add_argument('username', help='Remote username')
+    parser.add_argument('port', help='Remote port to telnet to')
+    args = parser.parse_args()
+
+    password = getpass.getpass()
+
+    client = paramiko.SSHClient()
+    client.set_missing_host_key_policy(AllowAnythingPolicy)
+    client.connect(args.hostname, username=args.username, port=args.port, password=password)
+
+    # seperate every command, and invoke_shell can't do this
+    for command in 'echo "Hello, world!"', 'uname', 'uptime':
+        # exec_command only accept whole text command, not like 
+        # subprocess, other use like subprocess
+        # build channel for every_command
+        stdin, stdout, stderr = client.exec_command(command)
+        stdin.close()
+        print(repr(stdout.read()))
+        stdout.close()
+        stderr.close()
+    
+    client.close()
+
+
+def ssh3():
+    """
+    run multiple commands simultaneously in diff channels
+    """
+    import paramiko, getpass
+    import threading
+
+    class AllowAnythingPolicy(paramiko.MissingHostKeyPolicy):
+        def missing_host_key(self, client, hostname, key):
+            return
+    
+    parser = argparse.ArgumentParser(description='Connect over SSH')
+    parser.add_argument('hostname', help='Remote host to telnet to')
+    parser.add_argument('username', help='Remote username')
+    parser.add_argument('port', help='Remote port to telnet to')
+    args = parser.parse_args()
+
+    password = getpass.getpass()
+
+    client = paramiko.SSHClient()
+    client.set_missing_host_key_policy(AllowAnythingPolicy)
+    client.connect(args.hostname, username=args.username, port=args.port, password=password)
+
+    def read_until_EOF(fileobj):
+        s = fileobj.readline()
+        while s:
+            print(s.strip())
+            s = fileobj.readline()
+
+    # two channel not effect each other
+    ioe1 = client.exec_command('echo One;sleep 2;echo Two;sleep 1;echo Three')
+    ioe2 = client.exec_command('echo A;sleep 1;echo B;sleep 2;echo C')
+    thread1 = threading.Thread(target=read_until_EOF, args=(ioe1[1], ))
+    thread2 = threading.Thread(target=read_until_EOF, args=(ioe2[1], ))
+    thread1.start()
+    thread2.start()
+    thread1.join()
+    thread2.join()
+
+    client.close()
+
+
+def ssh4():
+    """
+    sftp is a sub protocol of ssh
+    every open file has its channel
+    if filename contain specify char,
+    sftp will regards it as a part of filename
+    """
+    import paramiko, getpass
+    import functools
+
+    class AllowAnythingPolicy(paramiko.MissingHostKeyPolicy):
+        def missing_host_key(self, client, hostname, key):
+            return
+    
+    parser = argparse.ArgumentParser(description='Connect over SSH')
+    parser.add_argument('hostname', help='Remote host to telnet to')
+    parser.add_argument('username', help='Remote username')
+    parser.add_argument('port', help='Remote port to telnet to')
+    parser.add_argument('filenames', nargs='+', help='Remote port to telnet to')
+    args = parser.parse_args()
+
+    password = getpass.getpass()
+
+    client = paramiko.SSHClient()
+    client.set_missing_host_key_policy(AllowAnythingPolicy)
+    client.connect(args.hostname, username=args.username, port=args.port, password=password)
+
+    def print_status(filename, bytes_so_far, bytes_total):
+        percent = 100. * bytes_so_far / bytes_total
+        print('Transfer of %r is at %d/%d bytes (%.1f%%)' % (
+            filename, bytes_so_far, bytes_total, percent
+        ))
+
+    sftp = client.open_sftp()
+    for filename in args.filenames:
+        if filename.endswith('.copy'):
+            continue
+        callback = functools.partial(print_status, filename)
+        sftp.get(filename, filename + '.copy', callback=callback)
+    
+    client.close()
+
+
+def ftp1():
+    """
+    build two tcp
+    1. control channel
+    2. data channel
+    process:
+    1. client connect to server
+    2. auth
+    3. change dir of server
+    4. client listen on port for data transfer
+    and tell this to server to connect, but most
+     situation, this process is reverse
+    5. transfer file
+
+    more secure replacement: sftp, http
+    """
+
+    from ftplib import FTP
+    import getpass
+
+    parser = argparse.ArgumentParser(description='FTP')
+    parser.add_argument('host', help='host')
+    parser.add_argument('user', help='user')
+    args = parser.parse_args()
+
+    passwd = getpass.getpass()
+
+    ftp = FTP(args.host)
+    print("Welcome:", ftp.getwelcome())
+    ftp.login(user=args.user, passwd=passwd)
+    print('Current working directory:', ftp.pwd())
+    ftp.quit()
+
+
+def ftp2():
+    """
+    download text file
+    """
+
+    from ftplib import FTP
+    import getpass
+
+    parser = argparse.ArgumentParser(description='FTP')
+    parser.add_argument('host', help='host')
+    parser.add_argument('user', help='user')
+    args = parser.parse_args()
+
+    passwd = getpass.getpass()
+
+    if os.path.exists('README'):
+        raise IOError('refusing to overwrite your README file')
+
+    ftp = FTP(args.host)
+    print("Welcome:", ftp.getwelcome())
+    ftp.login(user=args.user, passwd=passwd)
+    ftp.cwd(r'\file')
+
+    with open('README', 'w') as f:
+        def writeline(data):
+            f.write(data)
+            # transfer not contain line sep
+            # so add it by self
+            f.write(os.linesep)
+        # param1: command filename
+        # param2: callback
+        # ascii mode: transfer one line per
+        ftp.retrlines('RETR README', writeline)
+
+    ftp.quit()
+
+
+def ftp3():
+    """
+    download binary file
+    """
+
+    from ftplib import FTP
+    import getpass
+
+    parser = argparse.ArgumentParser(description='FTP')
+    parser.add_argument('host', help='host')
+    parser.add_argument('user', help='user')
+    args = parser.parse_args()
+
+    passwd = getpass.getpass()
+
+    if os.path.exists('patch.zip'):
+        raise IOError('refusing to overwrite your patch.zip file')
+
+    ftp = FTP(args.host)
+    print("Welcome:", ftp.getwelcome())
+    ftp.login(user=args.user, passwd=passwd)
+    ftp.cwd(r'\file')
+
+    with open('patch.zip', 'wb') as f:
+        ftp.retrbinary('RETR patch.zip', f.write)
+
+    ftp.quit()
+
+
+def ftp4():
+    """
+    download binary file
+    more detail transfer info
+    """
+
+    from ftplib import FTP
+    import getpass
+
+    parser = argparse.ArgumentParser(description='FTP')
+    parser.add_argument('host', help='host')
+    parser.add_argument('user', help='user')
+    args = parser.parse_args()
+
+    passwd = getpass.getpass()
+
+    if os.path.exists('patch.zip'):
+        raise IOError('refusing to overwrite your patch.zip file')
+
+    ftp = FTP(args.host)
+    print("Welcome:", ftp.getwelcome())
+    ftp.login(user=args.user, passwd=passwd)
+    ftp.cwd(r'\file')
+    # set image transfer mode
+    # no return
+    ftp.voidcmd('TYPE I')
+
+    # retrbinary call voidcmd, but this method wont
+    # size may be not correct
+    socket, size = ftp.ntransfercmd('RETR patch.zip')
+    nbytes = 0
+
+    f = open('patch.zip', 'wb')
+
+    while True:
+        data = socket.recv(2048)
+        if not data:
+            break
+        f.write(data)
+        nbytes += len(data)
+        # \r alway move cursor to left-right
+        print('\rReceived ', nbytes, end=' ')
+        if size:
+            print('of %d total bytes (%.1f%%)' % (size, 
+            100 * nbytes / float(size)), end=' ')
+        else:
+            print('bytes', end=' ')
+        sys.stdout.flush()
+
+    print()
+    f.close()
+    socket.close()
+    # read resp from server, should call this method
+    # otherwise server may wait too long
+    ftp.voidresp()
+    ftp.quit()
+
+
+def ftp5():
+    """
+    upload binary file
+    """
+
+    from ftplib import FTP
+    import getpass
+
+    parser = argparse.ArgumentParser(description='FTP')
+    parser.add_argument('host', help='host')
+    parser.add_argument('user', help='user')
+    parser.add_argument('localfile', help='localfile')
+    parser.add_argument('remotedir', help='remotedir')
+    args = parser.parse_args()
+
+    prompt = 'Enter the password for {} on {}:'.format(args.user, args.host)
+    passwd = getpass.getpass(prompt)
+
+    ftp = FTP(args.host)
+    print("Welcome:", ftp.getwelcome())
+    ftp.login(user=args.user, passwd=passwd)
+    ftp.cwd(args.remotedir)
+
+    with open(args.localfile, 'rb') as f:
+        ftp.storbinary('STOR % s' % os.path.basename(args.localfile), f)
+
+    ftp.quit()
+
+
+def ftp6():
+    """
+    upload binary file
+    more detail transfer info
+    """
+
+    from ftplib import FTP
+    import getpass
+
+    BLOCKSIZE = 8192
+
+    parser = argparse.ArgumentParser(description='FTP')
+    parser.add_argument('host', help='host')
+    parser.add_argument('user', help='user')
+    parser.add_argument('localfile', help='localfile')
+    parser.add_argument('remotedir', help='remotedir')
+    args = parser.parse_args()
+
+    passwd = getpass.getpass()
+
+    ftp = FTP(args.host)
+    print("Welcome:", ftp.getwelcome())
+    ftp.login(user=args.user, passwd=passwd)
+    ftp.cwd(args.remotedir)
+    ftp.voidcmd('TYPE I')
+
+    datasock, esize = ftp.ntransfercmd('STOR %s' % os.path.basename(args.localfile))
+    size = os.stat(args.localfile)[6]
+    nbytes = 0
+
+    f = open(args.localfile, 'rb')
+
+    while True:
+        data = f.read(BLOCKSIZE)
+        if not data:
+            break
+        datasock.sendall(data)
+        nbytes += len(data)
+        print('\r Sent', nbytes, 'of', size, 'bytes',
+        '(%.1f%%)\r' % (100 * nbytes / float(size)), end=' ')
+        sys.stdout.flush()
+
+    print()
+    f.close()
+    datasock.close()
+    ftp.voidresp()
+    ftp.quit()
+
+
+def ftp7():
+    """
+    show remote file and dir
+    """
+
+    from ftplib import FTP
+    import getpass
+
+    parser = argparse.ArgumentParser(description='FTP')
+    parser.add_argument('host', help='host')
+    parser.add_argument('user', help='user')
+    parser.add_argument('remotedir', help='remotedir')
+    args = parser.parse_args()
+
+    passwd = getpass.getpass()
+
+    ftp = FTP(args.host)
+    print("Welcome:", ftp.getwelcome())
+    ftp.login(user=args.user, passwd=passwd)
+    ftp.cwd(args.remotedir)
+    entries = ftp.nlst()
+    ftp.quit()
+
+    print(len(entries), 'entries:')
+
+    for entry in sorted(entries):
+        print(entry)
+
+
+def ftp8():
+    """
+    show remote file and dir
+    more detail info
+    """
+
+    from ftplib import FTP
+    import getpass
+
+    parser = argparse.ArgumentParser(description='FTP')
+    parser.add_argument('host', help='host')
+    parser.add_argument('user', help='user')
+    parser.add_argument('remotedir', help='remotedir')
+    args = parser.parse_args()
+
+    passwd = getpass.getpass()
+
+    ftp = FTP(args.host)
+    print("Welcome:", ftp.getwelcome())
+    ftp.login(user=args.user, passwd=passwd)
+    ftp.cwd(args.remotedir)
+    entries = []
+    # out formation depend on os
+    # every file or dir will callback
+    ftp.dir(entries.append)
+    ftp.quit()
+
+    print(len(entries), 'entries:')
+
+    for entry in sorted(entries):
+        print(entry)
+
+
+def ftp9():
+    """
+    recurse dir
+    """
+
+    from ftplib import FTP, error_perm
+    import getpass
+
+    parser = argparse.ArgumentParser(description='FTP')
+    parser.add_argument('host', help='host')
+    parser.add_argument('user', help='user')
+    parser.add_argument('remotedir', help='remotedir')
+    args = parser.parse_args()
+
+    passwd = getpass.getpass()
+
+    def walk_dir(ftp, dirpath):
+        original_dir = ftp.pwd()
+        try:
+            # sniff dir
+            ftp.cwd(dirpath)
+        except error_perm:
+            return 
+        print(dirpath)
+        names = sorted(ftp.nlst())
+        for name in names:
+            walk_dir(ftp, os.path.join(dirpath, name))
+        ftp.cwd(original_dir)
+
+    ftp = FTP(args.host)
+    print("Welcome:", ftp.getwelcome())
+    ftp.login(user=args.user, passwd=passwd)
+    walk_dir(ftp, args.remotedir)
+    ftp.quit()
+
+
+def ftp10():
+    """
+    delete
+    mkd
+    rmd
+    rename
+    ftp_tls
+    """
+
+
+def rpc_server1():
+    """
+    xmlrpc: data convert to xml to deliver
+
+    remote procedure call
+    just like normal function call
+    usage:
+    1. distribute task to diff machine
+    2. get remote info
+
+    features:
+    1. limited data type
+    2. raise exception immediately
+    3. show supported caller
+    4. need supply addressing method
+    5. some rpc support auth
+
+    rpc can use in web, mq
+    exception example:
+    call over, but resp error as network error,
+    so try again must consider the over task
+    """
+
+    import operator, math
+    from xmlrpc.server import SimpleXMLRPCServer
+    from functools import reduce
+
+    
+    def addtogether(*things):
+        """Add together everthing in the list `things`."""
+        return reduce(operator.add, things)
+
+    def quadratic(a, b, c):
+        """Determin `x` values satisfying: `a` * x * x + `b` * x * x == 0"""
+        b24ac = math.sqrt(b*b - 4.0*a*c)
+        return list(set([(-b-b24ac) / 2.0*a, (-b+b24ac) / 2.0*a]))
+
+    def remote_repr(arg):
+        """Return the `repr()` rendering of supplied `args`."""
+        return arg
+
+    server = SimpleXMLRPCServer(('127.0.0.1', 7001))
+    server.register_introspection_functions()
+    # this server allow simultaneously call multiple func
+    # package in network
+    server.register_multicall_functions()
+    server.register_function(addtogether)
+    server.register_function(quadratic)
+    server.register_function(remote_repr)
+    print('Server ready')
+    server.serve_forever()
+
+
+def rpc_server2():
+    """
+    json-rpc
+    data formation: json
+    one of features: support async call
+    """
+    from jsonrpclib.SimpleJSONRPCServer import SimpleJSONRPCServer
+
+    def lengths(*args):
+        """
+        Measure the length of each input argument.
+        """
+        results = []
+        for arg in args:
+            try:
+                arglen = len(arg)
+            except TypeError:
+                # json-rpc support return None value
+                arglen = None
+            results.append((arglen, arg))
+        return results
+
+    server = SimpleJSONRPCServer(('localhost', 7002))
+    server.register_function(lengths)
+    print('Starting server')
+    server.serve_forever()
+
+
+def rpc_server3():
+    """
+    RpyC
+    support other obj, like file obj
+    """
+    import rpyc
+    from rpyc.utils.server import ThreadedServer
+
+    class MyServer(rpyc.Service):
+        # method name should start with exposed
+        def exposed_line_counter(self, fileobj, function):
+            print('Client has invoked exposed_line_counter()')
+            for linenum, line in enumerate(fileobj.readlines()):
+                # this function define in client
+                function(line)
+            return linenum + 1 
+
+    t = ThreadedServer(MyServer, port=18861)
+    print('Starting server')
+    t.start()
+
+
+def rpc_client1():
+    """
+    show method supported by server with the use
+    of introspect
+    """
+    import xmlrpc.client
+
+    proxy = xmlrpc.client.ServerProxy('http://127.0.0.1:7001')
+
+    print('Here are the functions supported by this server')
+    # this method need server support introspect function
+    for method_name in proxy.system.listMethods():
+        if method_name.startswith('system.'):
+            continue
+
+        # because python have not type definition,
+        # so there are nothing return
+        signatures = proxy.system.methodSignature(method_name)
+        if isinstance(signatures, list) and signatures:
+            for signature in signatures:
+                print('%s(%s)' % (method_name, signature))
+        else:
+            print('%s(...)' % (method_name, ))
+        
+        # get the doc the method
+        method_help = proxy.system.methodHelp(method_name)
+        if method_help:
+            print(' ', method_help)
+
+
+def rpc_client2():
+    """
+    call rpc
+    """
+    import xmlrpc.client
+
+    proxy = xmlrpc.client.ServerProxy('http://127.0.0.1:7001')
+    # no limit for param type
+    # return value must only one
+    print(proxy.addtogether('x', 'y', 'z'))
+    print(proxy.addtogether(20, 30, 41, 1))
+    print(proxy.quadratic(2, -4, 0))
+    print(proxy.quadratic(1, 2, 1))
+    # param will convert to list to pass
+    # as most language support list param
+    print(proxy.remote_repr((1, 2.0, 'thress')))
+    print(proxy.remote_repr([1, 2.0, 'thress']))
+    # if param is dict, key must be a string
+    print(proxy.remote_repr({'name': 'Mike', 
+                             'data': {'age': 41, 'sex': 'M'}}))
+    # exception formation only one as ignore what language that
+    # server use
+    print(proxy.quadratic(1, 0, 1))
+
+    # None type param can set option to support
+
+
+def rpc_client3():
+    """
+    multi call at an network loop
+    """
+    import xmlrpc.client
+
+    proxy = xmlrpc.client.ServerProxy('http://127.0.0.1:7001')
+    multicall = xmlrpc.client.MultiCall(proxy)
+    multicall.addtogether('a', 'b', 'c')
+    multicall.quadratic(2, -4, 0)
+    multicall.remote_repr([1, 2.0, 'three'])
+    for answer in multicall():
+        print(answer)
+
+
+def rpc_client4():
+    """
+    json rpc
+    """
+    from jsonrpclib import Server
+
+    proxy = Server('http://localhost:7002')
+    # param will convert to list to pass, key of dict must be string
+    # but can achive this through list that contain multiple dict
+    print(proxy.lengths((1, 2, 3), 27, {'Sirius': -1.46, 'Rigel': 0.12}))
+
+
+def rpc_client5():
+    """
+    rpyc client
+    """
+    import rpyc
+
+    def noisy(string):
+        print('Noisy:', repr(string))
+
+    # this config allow remote call attrs of local obj
+    config = {'allow_public_attrs': True}
+    proxy = rpyc.connect('localhost', 18861, config=config)
+    # open a local file
+    fileobj = open('wordid.py')
+    # this file obj will deliver to server
+    # server can call obj's method
+    linecount = proxy.root.line_counter(fileobj, noisy)
+    print('The number of lines in the file was', linecount)
 
 
 def bootudp():
+
     choices = {'client': udpclient3, 'server': udpserver3}
     parser = argparse.ArgumentParser(description='Send and receive UDP locally')
     parser.add_argument('role', choices=choices, help='which role to play')
@@ -3158,8 +3919,31 @@ def boottcp7():
         tcpclient7()
 
 
+def bootrpc():
+    if len(sys.argv) != 2:
+        print('usage:', sys.argv[0], 'type')
+        return
+
+    if sys.argv[1] == 'rpcserver1':
+        rpc_server1()
+    elif sys.argv[1] == 'rpcserver2':
+        rpc_server2()
+    elif sys.argv[1] == 'rpcserver3':
+        rpc_server3()
+    elif sys.argv[1] == 'rpcclient1':
+        rpc_client1()
+    elif sys.argv[1] == 'rpcclient2':
+        rpc_client2()
+    elif sys.argv[1] == 'rpcclient3':
+        rpc_client3()
+    elif sys.argv[1] == 'rpcclient4':
+        rpc_client4()
+    elif sys.argv[1] == 'rpcclient5':
+        rpc_client5()
+
+
 def main():
-    telnet1()
+    bootrpc()
 
 
 if __name__ == '__main__':
