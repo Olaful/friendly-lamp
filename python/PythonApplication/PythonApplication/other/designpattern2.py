@@ -1,5 +1,5 @@
-import json
-import xml.etree.ElementTree as etree
+#/usr/bin/python
+#! -*- coding:utf-8 -*-
 
 
 def pattern_factory():
@@ -10,8 +10,10 @@ def pattern_factory():
 
     create diff obj only in one func
     easily to track the building of obj
-    decoupling obj genaration and obj using
+    decoupling obj generation and obj using
     """
+    import json
+    import xml.etree.ElementTree as etree
 
     class JSONDataExtractor:
         def __init__(self, filepath):
