@@ -1,0 +1,17 @@
+{
+  "multitimeframe":
+  {
+    "noresample": false,
+    "timeframe": "weekly",
+    "compression": 1,
+    "indicator": true,
+    "onlydaily": true,
+    "period": 10
+  },
+  "replaystr":
+  {
+    "timeframe": "weekly",
+    "compression": 1,
+    "period": 10
+  }
+}
