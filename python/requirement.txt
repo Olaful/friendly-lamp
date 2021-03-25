@@ -89,7 +89,7 @@ python-whois==0.7.0
 pytidylib==0.3.2
 pytz==2018.7
 pywin32==224
-PyYAML==3.13
+PyYAML==5.4
 queuelib==1.5.0
 redis==3.0.1
 reportlab==3.5.9
