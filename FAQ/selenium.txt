@@ -1,0 +1,21 @@
+1. element visible in check element page, but invisible in page source code
+ans: because driver current page resource in another frame, need switch frame that element in,
+switch frame through id, name, index, WebElement obj of selenium, use default_content switch to main document
+use parent_frame switch to parent frame
+
+2. element not found after quickly switch page
+ans: new page has not loaded complete, need wait for some time
+
+3. element not clickable
+ans: use this: expected_conditions.element_to_be_clickable
+
+4. StaleElementReferenceException
+ans: reference old element after fresh page or jump to another page, should reacquire
+
+5. raise excpetion, main process exit, but browser not exit
+ans: use quit instead of close, or taskill /im chromedriver /F(cron)
+
+6. ConnectionRefusedError
+ans: because selenium use urllib to connect chromedriver, but chromedriver not run
+
+7. multiple window switch
