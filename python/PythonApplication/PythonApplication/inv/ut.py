@@ -47,7 +47,7 @@ class TestFrame(TestBase):
     def setUpClass(cls) -> None:
         super().setUpClass()
 
-    # @unittest.skip('')
+    @unittest.skip('')
     def test_plot(self):
         import invest.plot as plot
 
@@ -75,7 +75,7 @@ class TestFrame(TestBase):
         # rls = cjy.solve()
         test = 1
 
-    @unittest.skip('')
+    # @unittest.skip('')
     def test_tmp(self):
         util.send_mail('1', '1')
         test = 1

@@ -95,7 +95,10 @@ def run():
     while True:
         time.sleep(0.1)
         for strategy in all_str:
-            strategy.run()
+            try:
+                strategy.run()
+            except Exception as e:
+                logger.error(f"{str(e)}", exc_info=True)
 
 
 if __name__ == '__main__':

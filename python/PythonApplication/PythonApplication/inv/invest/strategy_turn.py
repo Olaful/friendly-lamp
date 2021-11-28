@@ -481,7 +481,12 @@ class StrategyTurn(StrategyBase):
             buy_sig['pool'] = pool
             buy_sig['symbol'] = symbol
 
-            is_pin, pin_bars, bar_type = self.is_pin_bar(day_line_bars)
+            try:
+                is_pin, pin_bars, bar_type = self.is_pin_bar(day_line_bars)
+            except Exception as e:
+                logger.error(f"{str(e)}", exc_info=True)
+                continue
+
             if is_pin:
                 buy_sig['necessary_cond']['is_pin_bar'] = bar_type
                 buy_sig['nece_score'] += 1

@@ -17,3 +17,7 @@ bigdata.data
 *.jpg
 settings.json
 logs/
+*.xml
+.idea/
+*.pid
+setting.json
