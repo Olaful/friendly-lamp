@@ -31,7 +31,7 @@ docopt==0.6.2
 Flask==1.0.2
 Flask-Login==0.4.1
 future==0.17.1
-gerapy==0.8.5
+gerapy==0.9.8
 h11==0.7.0
 h2==3.0.1
 hpack==3.0.0
